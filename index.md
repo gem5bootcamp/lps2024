@@ -66,6 +66,11 @@ The bootcamp will run from 9am-4pm each day in the [UC Davis Conference Center](
       - Creating disk images
       - `gem5-bridge` application
       - Bundling FS resources together into `Workload`s
+    - Accelerating simulation
+      - Fast-fowarding
+      - KVM-based CPU
+      - Checkpointing
+      - Sampling
 - **Day 3: Advanced gem5 uses and beginning gem5 development**
   - **Morning: Advanced gem5 uses**
     - gem5's GPU model
@@ -73,11 +78,6 @@ The bootcamp will run from 9am-4pm each day in the [UC Davis Conference Center](
       - Requirements for running the GPU model
       - GPU resources
       - Limitations of the GPU model
-    - Accelerating simulation
-      - Fast-fowarding
-      - KVM-based CPU
-      - Checkpointing
-      - Sampling
   - **Afternoon: Getting started with gem5 development**
     - Getting started with gem5 development and setting up a development environment
     - Creating your own `SimObject`s
