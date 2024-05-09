@@ -66,48 +66,48 @@ The bootcamp will run from 9am-4pm each day in the [UC Davis Conference Center](
       - Creating disk images
       - `gem5-bridge` application
       - Bundling FS resources together into `Workload`s
-- **Day 3: Advanced gem5 uses and beginning gem5 development**
-  - **Morning: Advanced gem5 uses**
-    - gem5's GPU model
-    - Introduction to the GPU model
-    - Requirements for running the GPU model
-    - GPU resources
-    - Limitations of the GPU model
-    - Accelerating simulation
-    - Fast-fowarding
-    - KVM-based CPU
-    - Checkpointing
-    - Sampling
-  - **Afternoon: Getting started with gem5 development**
-    - Getting started with gem5 development and setting up a development environment
-    - Creating your own `SimObject`s
-    - Understand how a request travels through the system
-    - Implement a SimObject
-    - Learn how to model real-world hardware timing
-    - Learn how to add SimStats and how it maps to real-world hardware
-    - Debug a gem5 SimObject
-- **Day 4: Advanced gem5 development**
-  - **Morning: gem5's memory system**
-    - Learn how to extend a packet with a new MemCmd
-    - Learn how to use Garnet (How to create different network topologies with specific characteristics; using the Garnet synthetic traffic; and understanding the output statistics)
-    - Create and extend cache coherence protocols (create a classic coherence protocol; design a Ruby coherence protocol)
-  - **Afternoon: gem5's execution model and adding new instructions**
-    - Understand the details of the ISA sub-system
-    - Extend gem5 to simulate an unsupported instruction
-    - Understand the differences between modeling a user-mode and supervisor mode instruction
-    - Understand gem5 debug traces for a particular execution
-- **Day 5: Integrations with other simulators and contributing to gem5**
-  - **Morning: Integrations with other simulators**
-    - gem5's integration with other simulators
-    - SystemC in gem5 & gem5 in SystemC
-    - DRAMSys
-    - DRAMSim
-    - gem5 + [SST](https://sst-simulator.org/)
-  - **Afternoon: Contributing to gem5**
-    - Overview of gem5 governance model
-    - Contributing to gem5
-    - Understand the gem5 contribution process
-    - Learn how to write a gem5 patch
-    - Learn how to review a gem5 patch
-    - Using git with gem5
-    - gem5 testing
+  - **Day 3: Advanced gem5 uses and beginning gem5 development**
+    - **Morning: Advanced gem5 uses**
+      - gem5's GPU model
+        - Introduction to the GPU model
+        - Requirements for running the GPU model
+        - GPU resources
+        - Limitations of the GPU model
+      - Accelerating simulation
+        - Fast-fowarding
+        - KVM-based CPU
+        - Checkpointing
+        - Sampling
+    - **Afternoon: Getting started with gem5 development**
+      - Getting started with gem5 development and setting up a development environment
+      - Creating your own `SimObject`s
+        - Understand how a request travels through the system
+        - Implement a SimObject
+        - Learn how to model real-world hardware timing
+        - Learn how to add SimStats and how it maps to real-world hardware
+        - Debug a gem5 SimObject
+  - **Day 4: Advanced gem5 development**
+    - **Morning: gem5's memory system**
+      - Learn how to extend a packet with a new MemCmd
+      - Learn how to use Garnet (How to create different network topologies with specific characteristics; using the Garnet synthetic traffic; and understanding the output statistics)
+      - Create and extend cache coherence protocols (create a classic coherence protocol; design a Ruby coherence protocol)
+    - **Afternoon: gem5's execution model and adding new instructions**
+      - Understand the details of the ISA sub-system
+      - Extend gem5 to simulate an unsupported instruction
+      - Understand the differences between modeling a user-mode and supervisor mode instruction
+      - Understand gem5 debug traces for a particular execution
+  - **Day 5: Integrations with other simulators and contributing to gem5**
+    - **Morning: Integrations with other simulators**
+      - gem5's integration with other simulators
+        - SystemC in gem5 & gem5 in SystemC
+        - DRAMSys
+        - DRAMSim
+      - gem5 + [SST](https://sst-simulator.org/)
+    - **Afternoon: Contributing to gem5**
+      - Overview of gem5 governance model
+      - Contributing to gem5
+        - Understand the gem5 contribution process
+        - Learn how to write a gem5 patch
+        - Learn how to review a gem5 patch
+        - Using git with gem5
+      - gem5 testing
