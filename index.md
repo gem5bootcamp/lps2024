@@ -23,6 +23,9 @@ Videos from that bootcamp are available [on YouTube](https://www.youtube.com/wat
 The bootcamp will be held from July 29th to August 2nd, 2024.
 The bootcamp will run from 9am-4pm each day in the [UC Davis Conference Center](https://conferencecenter.ucdavis.edu/).
 
+The full five day registration runs Monday-Friday.
+The three day registration runs Tuesday-Thursday.
+
 **Note: The links on this website are under construction and will be updated as the bootcamp approaches.**
 
 - **Day 1: Computer architecture and computer architectures simulation 101**
