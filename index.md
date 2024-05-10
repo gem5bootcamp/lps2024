@@ -5,6 +5,8 @@ title: Learning gem5 Bootcamp 2024
 
 Welcome to the gem5 Bootcamp!
 
+[Register for the 2024 gem5 Bootcamp](https://na.eventscloud.com/ereg/index.php?eventid=799532&){: .btn .btn-lg .btn-primary}
+
 As the premier destination for computer architecture enthusiasts and researchers, our bootcamp offers an immersive experience into the world of architectural simulation and modeling.
 Whether you're a student eager to learn, a professional looking to sharpen your skills, or a researcher seeking to push the boundaries of technology, the gem5 Bootcamp is your gateway to mastering the gem5 simulator.
 
@@ -15,8 +17,6 @@ Dive into the dynamic world of simulation with the gem5 Bootcamp, and emerge equ
 
 We also held a [gem5 Bootcamp in 2022](https://gem5bootcamp.github.io/gem5-bootcamp-env/) which you can check out for more information.
 Videos from that bootcamp are available [on YouTube](https://www.youtube.com/watch?v=orASbQ02pDw&list=PL_hVbFs_loVSaSDPr1RJXP5RRFWjBMqq3).
-
-[Register for the 2024 gem5 Bootcamp](https://na.eventscloud.com/ereg/index.php?eventid=799532&){: .btn .btn-lg .btn-secondary .btn-outline-primary}
 
 ## Tentative schedule for 2024
 
