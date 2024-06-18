@@ -1,19 +1,34 @@
 {
+    "name": "gem5 Development Container",
+    "image": "ghcr.io/gem5/devcontainer:latest",
     "hostRequirements": {
         "cpus": 2,
-        "memory": "8gb",
+        "memory": "16gb",
         "storage": "32gb"
-    },
-    "build": { "dockerfile": "Dockerfile" },
-    "onCreateCommand" : "bash ./.devcontainer/on_create.sh",
+     },
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-vscode.cpptools",
-                "streetsidesoftware.code-spell-checker",
+                "GitHub.copilot",
+                "GitHub.copilot-chat",
+                "GitHub.vscode-pull-request-github",
+                "ms-python.debugpy",
+                "ms-python.isort",
+                "ms-python.python",
                 "ms-python.vscode-pylance",
-                "ms-python.python"
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-extension-pack",
+                "ms-vscode.cpptools-themes",
+                "ms-vscode.makefile-tools",
+                "Tsinghua-Hexin-Joint-Institute.gem5-slicc"
             ]
         }
-    }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers-contrib/features/actionlint:1": {},
+        "ghcr.io/devcontainers-contrib/features/vscode-cli:1": {}
+    },
+    "onCreateCommand": "./.devcontainer/on-create.sh"
 }
