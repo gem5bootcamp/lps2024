@@ -1,4 +1,7 @@
+# gem5 bootcamp environment
+
 This repository has been designed for use in gem5 tutorials.
+
 It has been built with the assumption users will utilize [Codespaces](https://github.com/features/codespaces) to learn gem5.
 
 The repository contains the following directories:
@@ -13,19 +16,19 @@ gem5-resources which may be used with v22.0 of gem5.
 * modules: Source for the accompying website: https://gem5bootcamp.github.io/gem5-bootcamp-env
 The website contains links to slides, presentation videos, and notes for the tutorials.
 
-**Note:** 'gem5' and 'gem5-resources' are submodules though the [.devcontainer/devcontainer.json](.devcontainer/devcontainer.json) file specifies that a `git module update --init --recursive` command is executed when the Codespace Docker container is created.
+**Note:** 'gem5' and 'gem5-resources' are submodules though the [.devcontainer/devcontainer.json](.devcontainer/devcontainer.json) file specifies that a `git submodule update --init --recursive` command is executed when the Codespace Docker container is created.
 
 The container used by Codespaces is built from [.devcontainer/Dockerfile](.devcontainer/Dockerfile).
 It contains:
 
 * All gem5 dependencies (inc. optional dependencies).
 * Prebuilt gem5 binaries:
-    - `/usr/local/bin/gem5-x86`
-    - `/usr/local/bin/gem5-arm`
-    - `/usr/local/bin/gem5-riscv`
+  * `/usr/local/bin/gem5-x86`
+  * `/usr/local/bin/gem5-arm`
+  * `/usr/local/bin/gem5-riscv`
 * A RISCV64 and an AARCH64 GNU cross-compiler:
-    * RISCV64 GNU cross-compiler found in `/opt/cross-compiler/riscv64-linux/`.
-    * AARCH64 GNU cross-compiler found in `/opt/cross-compiler/aarch64-linux/`.
+  * RISCV64 GNU cross-compiler found in `/opt/cross-compiler/riscv64-linux/`.
+  * AARCH64 GNU cross-compiler found in `/opt/cross-compiler/aarch64-linux/`.
 
 ## Beginners' example
 
