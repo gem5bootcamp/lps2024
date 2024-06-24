@@ -1,6 +1,6 @@
 {
     "name": "gem5 Development Container",
-    "image": "ghcr.io/gem5/devcontainer:latest",
+    "image": "ghcr.io/gem5/devcontainer:isca2024",
     "hostRequirements": {
         "cpus": 1,
         "memory": "8gb",
