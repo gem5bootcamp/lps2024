@@ -20,7 +20,8 @@
                 "ms-vscode.cpptools-extension-pack",
                 "ms-vscode.cpptools-themes",
                 "ms-vscode.makefile-tools",
-                "Tsinghua-Hexin-Joint-Institute.gem5-slicc"
+                "Tsinghua-Hexin-Joint-Institute.gem5-slicc",
+                "ms-python.black-formatter"
             ]
         }
     },
