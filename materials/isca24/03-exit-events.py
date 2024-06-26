@@ -1,8 +1,8 @@
 from gem5.components.boards.simple_board import SimpleBoard
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400
 from gem5.components.processors.simple_processor import SimpleProcessor
-from gem5.components.cachehierarchies.ruby.mesi_two_level_cache_hierarchy import (
-    MESITwoLevelCacheHierarchy,
+from gem5.components.cachehierarchies.chi.private_l1_cache_hierarchy import (
+    PrivateL1CacheHierarchy
 )
 from gem5.components.processors.cpu_types import CPUTypes
 from gem5.isas import ISA
@@ -17,14 +17,9 @@ simple_in_order_core = SimpleProcessor(
 
 main_memory = SingleChannelDDR4_2400(size="2GB")
 
-caches = MESITwoLevelCacheHierarchy(
-    l1d_size="32KiB",
-    l1d_assoc=8,
-    l1i_size="32KiB",
-    l1i_assoc=8,
-    l2_size="256KiB",
-    l2_assoc=16,
-    num_l2_banks=1,
+caches = PrivateL1CacheHierarchy(
+    size = "128KiB",
+    assoc = 8,
 )
 
 board = SimpleBoard(
@@ -34,22 +29,19 @@ board = SimpleBoard(
     clk_freq="3GHz",
 )
 
-board.set_workload(obtain_resource("x86-npb-is-size-s-run"))
+board.set_se_binary_workload(
+    binary=obtain_resource("x86-m5-exit")
+)
 
-def on_work_begin():
-    print("Work begin")
+def on_exit():
+    print("Work exit!")
     m5.stats.reset()
     yield False # Do not exit
-
-def on_work_end():
-    print("Work end")
-    yield True # Exit the simulation
 
 simulator = Simulator(
     board=board,
     on_exit_event={
-        ExitEvent.WORKBEGIN: on_work_begin,
-        ExitEvent.WORKEND: on_work_end
+        ExitEvent.EXIT: on_exit,
     }
 )
 simulator.run()
