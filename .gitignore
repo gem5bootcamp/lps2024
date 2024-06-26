@@ -1,5 +1,6 @@
 # Ignore all m5out directories and build directories
 **/m5out/
+**/checkpoint/
 
 # Jekyll stuff
 _site/
