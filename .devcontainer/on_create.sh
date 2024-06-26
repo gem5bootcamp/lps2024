@@ -20,3 +20,5 @@ popd # gem5
 # Pre-download the resources we use
 
 gem5 pre-download-resources.py
+
+docker pull ghcr.io/gem5/gcn-gpu:v24-0
