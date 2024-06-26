@@ -26,6 +26,7 @@ It contains:
   * `/usr/local/bin/gem5` (gem5 ALL ISAs with CHI protocol)
   * `/usr/local/bin/gem5-default` (default gem5 ALL build with MESI_Two_Level)
   * `/usr/local/bin/gem5-vega` (x86-only with GPU protocol)
+  * `/usr/local/bin/gem5-vega-se` (same as above, but compiled with 20.04)
 * A RISCV64 and an AARCH64 GNU cross-compiler:
   * RISCV64 GNU cross-compiler found in `/opt/cross-compiler/riscv64-linux/`.
   * AARCH64 GNU cross-compiler found in `/opt/cross-compiler/aarch64-linux/`.
@@ -116,4 +117,13 @@ To see a list of all available branches you can execute:
 
 ```sh
 git branch
+```
+
+## Note on running GPU SE
+
+You can use docker.
+Below is an example command
+
+```sh
+docker run -v $PWD:$PWD -v /usr/local/bin:/usr/local/bin -w $PWD ghcr.io/gem5/gcn-gpu:v24-0 gem5-vega-se gem5/configs/example/apu_se.py -n 3 -c square
 ```
