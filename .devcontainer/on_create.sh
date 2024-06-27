@@ -22,3 +22,5 @@ popd # gem5
 gem5 pre-download-resources.py
 
 docker pull ghcr.io/gem5/gcn-gpu:v24-0
+
+wget http://dist.gem5.org/dist/v24-0/test-progs/square/square
