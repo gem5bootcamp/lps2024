@@ -16,3 +16,6 @@ __pycache__
 
 # Ignore downloaded files
 square
+vmlinux-gpu-ml
+x86-ubuntu-gpu-ml-isca
+x86-ubuntu-gpu-ml-isca.gz
