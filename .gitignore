@@ -13,3 +13,6 @@ typings/
 .vscode/*.log
 
 __pycache__
+
+# Ignore downloaded files
+square
