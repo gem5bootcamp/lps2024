@@ -9,7 +9,7 @@ The repository contains the following directories:
 * [docker](docker) :
 The source code for the Docker image used by the [Dockerfile](gem5/util/dockerfiles/devcontainer/Dockerfile) to create the Codespace Docker container.
 * gem5 :
-v24.0.0.0 of gem5. (Staging branch for now.)
+v24.0.0.0 of gem5.
 * gem5-resources :
 gem5-resources which may be used with v24.0 of gem5.
 * materials: Example materials used as part of the tutorial.
@@ -30,6 +30,7 @@ It contains:
 * A RISCV64 and an AARCH64 GNU cross-compiler:
   * RISCV64 GNU cross-compiler found in `/opt/cross-compiler/riscv64-linux/`.
   * AARCH64 GNU cross-compiler found in `/opt/cross-compiler/aarch64-linux/`.
+* ROCm development environment 6.1.2 (note, this is why the container is based on 22.04 instead of 24.04)
 
 ## Beginners' example
 
