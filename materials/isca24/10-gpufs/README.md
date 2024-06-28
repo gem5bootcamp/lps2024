@@ -1,0 +1,59 @@
+## Note on running GPU FS
+
+You need not use docker to run simulations in GPU FS mode. We will be simulating AMD's latest GPU, MI300, in FS mode
+
+To compile square for MI300
+```sh
+cd /workspaces/gem5-bootcamp-env
+```
+```sh
+wget https://cs.wisc.edu/~ramadas/gem5-isca24/gpu-fs/Makefile
+```sh
+mv Makefile gem5-resources/src/gpu/square/Makefile
+```
+```sh
+cd /workspaces/gem5-bootcamp-env/gem5-resources/src/gpu/square
+```
+```sh
+make
+```
+
+To run square in FS mode,
+
+```sh
+cd /workspaces/gem5-bootcamp-env
+```
+```sh
+/usr/local/bin/gem5-vega gem5/configs/example/gpufs/mi200.py --kernel ./vmlinux-gpu-ml-isca --disk-image ./x86-ubuntu-gpu-ml-isca --app ./gem5-resources/src/gpu/square/bin/square --no-kvm-perf
+```
+
+To create a checkpoint (assuming m5_checkpoint_addr() is already included in the application), we need to recompile square so that it creates a checkpoint
+
+```sh
+cd /workspaces/gem5-bootcamp-env
+```
+```sh
+wget https://cs.wisc.edu/~ramadas/gem5-isca24/gpu-fs/square-cpt/square.cpp
+```
+```sh
+mv square.cpp gem5-resources/src/gpu/square/
+```
+```sh
+wget -O mi300.py https://cs.wisc.edu/~ramadas/gem5-isca24/gpu-fs/mi300
+```
+```sh
+mv mi300.py gem5/configs/example/gpufs/
+```
+```sh
+cd /workspaces/gem5-bootcamp-env/gem5-resources/src/gpu/square
+```
+```sh
+make
+```
+
+# To create checkpoint
+cd /workspaces/gem5-bootcamp-env
+/usr/local/bin/gem5-vega gem5/configs/example/gpufs/mi200.py --kernel ./vmlinux-gpu-ml-isca --disk-image ./x86-ubuntu-gpu-ml-isca --app ./gem5-resources/src/gpu/square/bin/square --no-kvm-perf --checkpoint-dir ./m5out
+
+
+# To restore
