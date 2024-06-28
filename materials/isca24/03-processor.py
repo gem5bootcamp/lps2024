@@ -1,5 +1,8 @@
 """
 Script with a specialized O3 CPU
+IS takes about 2-3 minutes with this script
+
+Run with `gem5 03-processor.py`
 """
 
 from gem5.components.boards.simple_board import SimpleBoard
@@ -9,6 +12,7 @@ from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarc
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400
 from gem5.resources.resource import obtain_resource
 from gem5.simulate.simulator import Simulator
+from gem5.isas import ISA
 
 from gem5.components.processors.base_cpu_core import BaseCPUCore
 from gem5.components.processors.base_cpu_processor import BaseCPUProcessor

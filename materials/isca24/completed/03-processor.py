@@ -1,5 +1,8 @@
 """
 Script with a specialized O3 CPU
+IS takes about 2-3 minutes with this script
+
+Run with `gem5 03-processor.py`
 """
 
 from gem5.components.boards.simple_board import SimpleBoard

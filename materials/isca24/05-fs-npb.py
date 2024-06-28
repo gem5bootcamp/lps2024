@@ -1,5 +1,12 @@
 """
-Simple example to play around with KVM
+Simple example to play around with KVM fast-forwarding and switching
+between KVM and Timing CPU models. This script boots a Linux kernel
+using KVM, runs a simple workload, and then switches to a Timing CPU at
+work begin and ends at the work end designation
+
+To run `gem5-mesi 05-fs-npb.py`
+Takes about 30 seconds to boot and 30 seconds to run IS
+It's about 1 minute total
 """
 
 from gem5.coherence_protocol import CoherenceProtocol

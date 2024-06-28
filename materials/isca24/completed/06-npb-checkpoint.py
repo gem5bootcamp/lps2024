@@ -1,5 +1,11 @@
 """
-Simple example to play around with KVM
+Example of how to take checkpoint after booting linux.
+Most useful for when you have to use a timing CPU to boot, not with KVM.
+Let's use KVM so it's fast, though.
+Note: Checkpointing with switchable processor is not well supported
+
+Run with `gem5-mesi 06-npb-checkpoint.py`
+Takes about 1 minute to boot and write the checkpoint
 """
 
 from gem5.coherence_protocol import CoherenceProtocol

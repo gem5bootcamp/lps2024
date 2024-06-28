@@ -1,5 +1,16 @@
 """
-Simple example to play around with KVM
+Example of how to take restore from a checkpoint taken after booting linux.
+Most useful for when you have to use a timing CPU to boot, not with KVM.
+Let's use KVM so it's fast, though.
+Note: Checkpointing with switchable processor is not well supported
+
+This script changes the CPU type to O3 as an example of what can change
+(Note: It's not a great example... but it's an example)
+
+Run with `gem5-mesi 06-npb-restore.py`
+
+When running SP instead of IS, it takes about 5 minutes with timing CPU and
+15 minutes with O3
 """
 
 from gem5.coherence_protocol import CoherenceProtocol
@@ -51,7 +62,7 @@ memory = SingleChannelDDR4_2400(size="3GiB")
 # a function to be called when an exit event happens).
 processor = SimpleSwitchableProcessor(
     starting_core_type=CPUTypes.KVM,
-    switch_core_type=CPUTypes.TIMING,
+    switch_core_type=,
     isa=ISA.X86,
     num_cores=1,
 )
@@ -77,6 +88,7 @@ board.set_kernel_disk_workload(
             "lpj=7999923",
             "root=/dev/sda2"
         ],
+    readfile_contents=f"echo 12345 | sudo -S /home/gem5/NPB3.4-OMP/bin/is.S.x; sleep 5; m5 exit;",
 )
 
 def on_work_begin():

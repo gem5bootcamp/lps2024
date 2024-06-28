@@ -1,5 +1,12 @@
 """
-Simple example to play around with KVM
+Simple example to play around with KVM fast-forwarding and switching
+between KVM and Timing CPU models. This script boots a Linux kernel
+using KVM, runs a simple workload, and then switches to a Timing CPU at
+work begin and ends at the work end designation
+
+To run `gem5-mesi 05-fs-npb.py`
+Takes about 30 seconds to boot and 30 seconds to run IS
+It's about 1 minute total
 """
 
 from gem5.coherence_protocol import CoherenceProtocol
@@ -69,17 +76,7 @@ board = X86Board(
     cache_hierarchy=cache_hierarchy,
 )
 
-board.set_kernel_disk_workload(
-    kernel=obtain_resource("x86-linux-kernel-5.4.0-105-generic"),
-    disk_image=obtain_resource("x86-ubuntu-24.04-npb-img"),
-    kernel_args=[
-            "earlyprintk=ttyS0",
-            "console=ttyS0",
-            "lpj=7999923",
-            "root=/dev/sda2"
-        ],
-    readfile_contents=f"echo 12345 | sudo -S /home/gem5/NPB3.4-OMP/bin/is.S.x; sleep 5; m5 exit;"
-)
+board.set_workload(obtain_resource("x86-ubuntu-24.04-npb-is-s"))
 
 def on_exit():
     print("Exiting the simulation for kernel boot")

@@ -1,6 +1,8 @@
 """
-This will build a Ruby/CHI based system to run a simple x86 SE mode workload.
-IS takes about 20 seconds.
+This will build a classic caches based system to run a simple x86 SE workload.
+IS takes about 40 seconds.
+
+run with `gem5 02-components.py`
 """
 
 from gem5.components.boards.simple_board import SimpleBoard

@@ -1,5 +1,8 @@
 """
 Simple example to play around with KVM
+Takes about 30 seconds to boot to the interactive prompt.
+
+Run with gem5-mesi 04-kvm.py
 """
 
 from gem5.coherence_protocol import CoherenceProtocol
