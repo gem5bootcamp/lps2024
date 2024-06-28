@@ -1,3 +1,4 @@
+#!/bin/bash
 
 if [ ! -f /tmp/x86-ubuntu-gpu-ml-isca ]; then
   cp ~/x86-ubuntu-gpu-ml-isca.gz /tmp
