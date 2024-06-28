@@ -7,12 +7,10 @@ To compile square for MI300
 cd /workspaces/gem5-bootcamp-env
 ```
 ```sh
-wget https://cs.wisc.edu/~ramadas/gem5-isca24/gpu-fs/Makefile
-```sh
-mv Makefile gem5-resources/src/gpu/square/Makefile
+cp materials/isca24/10-gpufs/Makefile gem5-resources/src/gpu/square/
 ```
 ```sh
-cd /workspaces/gem5-bootcamp-env/gem5-resources/src/gpu/square
+cd gem5-resources/src/gpu/square
 ```
 ```sh
 make
@@ -33,27 +31,27 @@ To create a checkpoint (assuming m5_checkpoint_addr() is already included in the
 cd /workspaces/gem5-bootcamp-env
 ```
 ```sh
-wget https://cs.wisc.edu/~ramadas/gem5-isca24/gpu-fs/square-cpt/square.cpp
+cp materials/isca24/10-gpufs/square-cpu/square.cpp gem5-resources/src/gpu/square/
 ```
 ```sh
-mv square.cpp gem5-resources/src/gpu/square/
+cp materials/isca24/10-gpufs/mi300.py gem5/configs/example/gpufs/
 ```
 ```sh
-wget -O mi300.py https://cs.wisc.edu/~ramadas/gem5-isca24/gpu-fs/mi300
-```
-```sh
-mv mi300.py gem5/configs/example/gpufs/
-```
-```sh
-cd /workspaces/gem5-bootcamp-env/gem5-resources/src/gpu/square
+cd gem5-resources/src/gpu/square
 ```
 ```sh
 make
 ```
 
 # To create checkpoint
+```sh
 cd /workspaces/gem5-bootcamp-env
+```
+```sh
 /usr/local/bin/gem5-vega gem5/configs/example/gpufs/mi200.py --kernel ./vmlinux-gpu-ml-isca --disk-image ./x86-ubuntu-gpu-ml-isca --app ./gem5-resources/src/gpu/square/bin/square --no-kvm-perf --checkpoint-dir ./m5out
-
+```
 
 # To restore
+```sh
+/usr/local/bin/gem5-vega gem5/configs/example/gpufs/mi200.py --kernel ./vmlinux-gpu-ml-isca --disk-image ./x86-ubuntu-gpu-ml-isca --app ./gem5-resources/src/gpu/square/bin/square --no-kvm-perf --restore-dir ./m5out
+```
