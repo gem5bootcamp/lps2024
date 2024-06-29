@@ -50,7 +50,7 @@ cp materials/isca24/10-gpufs/mi300.py gem5/configs/example/gpufs/
 cd gem5-resources/src/gpu/square
 ```
 ```sh
-make
+make clean && make
 ```
 
 # To create checkpoint
