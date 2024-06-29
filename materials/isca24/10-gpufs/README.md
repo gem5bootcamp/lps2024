@@ -14,13 +14,10 @@ scons build/x86/out/m5
 #To compile square for MI300
 
 ```sh
-cd /workspaces/gem5-bootcamp-env
+cd /workspaces/gem5-bootcamp-env/gem5-resources/src/gpu/square
 ```
 ```sh
-cp materials/isca24/10-gpufs/Makefile gem5-resources/src/gpu/square/
-```
-```sh
-cd gem5-resources/src/gpu/square
+cp /workspaces/gem5-bootcamp-env/materials/isca24/10-gpufs/Makefile ./
 ```
 ```sh
 make
@@ -37,9 +34,6 @@ cd /workspaces/gem5-bootcamp-env
 
 #To create a checkpoint (assuming m5_checkpoint_addr() is already included in the application), we need to recompile square so that it creates a checkpoint
 
-```sh
-cd /workspaces/gem5-bootcamp-env
-```
 ```sh
 cp materials/isca24/10-gpufs/square-cpt/square.cpp gem5-resources/src/gpu/square/
 ```
