@@ -134,7 +134,7 @@ See the [gem5 resource page](https://resources.gem5.org/resources/x86-ubuntu-24.
 
 [Link](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-no-systemd?version=1.0.0)
 
-![Screenshot of gem5 resources webpage](resources-screenshot.png)
+![Screenshot of gem5 resources webpage](02-getting-started-imgs/resources-screenshot.png)
 
 ---
 
@@ -153,7 +153,6 @@ sim.run(20_000_000_000) # 20 billion ticks or 20 ms
 from gem5.prebuilt.demo.x86_demo_board import X86DemoBoard
 from gem5.resources.resource import obtain_resource
 from gem5.simulate.simulator import Simulator
-
 board = X86DemoBoard()
 board.set_workload(
     obtain_resource("x86-ubuntu-24.04-boot-no-systemd")
@@ -169,3 +168,17 @@ To run it:
 ```
 
 ---
+
+## Take aways
+
+- `gem5` is a Python interpreter.
+- The *interface* to `gem5` is Python scripts.
+- `gem5` contains many Python libraries.
+  - All of the models in gem5 (e.g., caches, CPUs, etc.).
+  - The standard library (stdlib)
+- The output of gem5 is in `m5out/` by default.
+  - Details of configuration
+  - Other output
+  - **Statistics** (the most important part)
+- The codespaces environment is configured to make things easy.
+  - You'll need to do some work to set up your own environment.

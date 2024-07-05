@@ -15,3 +15,22 @@ Note: The local paths for the css file and the markdown don't work great. YMMV.
 ```sh
 docker run --rm -v $PWD:/home/marp/app/ -e MARP_USER=$UID:$GID -e LANG=$LANG marpteam/marp-cli <markdown file>
 ```
+
+## Style rules
+
+- Use `---` to separate slides.
+- The first slide should be a "title" slide `<!-- _class: title -->`.
+- The titles of all slides should be heading 2 `##`
+- Code should be at most 65 characters wide.
+
+## Adding diagrams
+
+To add diagrams, you can use the [draw.io VS Code extension](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio).
+
+After installing the extension, create a file with the name "\<name\>.drawio.png" and open it in VS Code.
+Make sure you create a directory for each slide deck with its images.
+You can then embed the image in the slide with the following markdown.
+
+```md
+![<description of the image>](<current slide name>/<name>.drawio.png)
+```

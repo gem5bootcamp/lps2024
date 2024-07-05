@@ -9,6 +9,8 @@
  * @size 4:3 960px 720px
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
 :root {
     --gem5-gem5: #008EB0;
     --gem5-background: #F6F8FA;
@@ -119,7 +121,7 @@ section.title footer img {
 }
 
 section.title h2 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin-top: 50px;
     display: block;
     text-align: center;
@@ -143,16 +145,14 @@ section.title p {
 /* For code block */
 
 pre {
-    font-size: 1.02em;
-    line-height: 1.2;
     padding: 10px;
     border-radius: 5px;
     background-color: #ffffff;
 }
 
 code {
-    font-family: monospace;
-    font-size: 1.05em;
+    font-family: "Roboto Mono", monospace;
+    font-size: 0.85em;
     background-color: #ffffff;
 }
 
