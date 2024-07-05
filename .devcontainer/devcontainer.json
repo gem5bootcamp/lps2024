@@ -1,10 +1,10 @@
 {
     "name": "gem5 Development Container",
-    "image": "ghcr.io/gem5/devcontainer:latest",
+    "image": "ghcr.io/gem5/devcontainer:isca2024",
     "hostRequirements": {
-        "cpus": 2,
-        "memory": "16gb",
-        "storage": "32gb"
+        "cpus": 1,
+        "memory": "8gb",
+        "storage": "64gb"
      },
     "customizations": {
         "vscode": {
@@ -20,7 +20,8 @@
                 "ms-vscode.cpptools-extension-pack",
                 "ms-vscode.cpptools-themes",
                 "ms-vscode.makefile-tools",
-                "Tsinghua-Hexin-Joint-Institute.gem5-slicc"
+                "Tsinghua-Hexin-Joint-Institute.gem5-slicc",
+                "ms-python.black-formatter"
             ]
         }
     },
@@ -30,5 +31,6 @@
         "ghcr.io/devcontainers-contrib/features/actionlint:1": {},
         "ghcr.io/devcontainers-contrib/features/vscode-cli:1": {}
     },
-    "onCreateCommand": "./.devcontainer/on_create.sh"
+    "onCreateCommand": "./.devcontainer/on_create.sh",
+    "postStartCommand": "./.devcontainer/post_start.sh"
 }
