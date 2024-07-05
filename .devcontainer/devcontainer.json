@@ -21,7 +21,8 @@
                 "ms-vscode.cpptools-themes",
                 "ms-vscode.makefile-tools",
                 "Tsinghua-Hexin-Joint-Institute.gem5-slicc",
-                "ms-python.black-formatter"
+                "ms-python.black-formatter",
+                "marp-team.marp-vscode"
             ]
         }
     },
