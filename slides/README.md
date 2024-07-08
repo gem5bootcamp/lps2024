@@ -18,10 +18,12 @@ docker run --rm -v $PWD:/home/marp/app/ -e MARP_USER=$UID:$GID -e LANG=$LANG mar
 
 ## Style rules
 
+- INSTALL THE [MARKDOWN LINT EXTENSION IN VS CODE](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint) TO HELP WITH FORMATTING.
 - Use `---` to separate slides.
 - The first slide should be a "title" slide `<!-- _class: title -->`.
 - The titles of all slides should be heading 2 `##`
 - Code should be at most 65 characters wide.
+- One line per sentence in Markdown.
 
 ## Adding diagrams
 
@@ -38,3 +40,5 @@ You can then embed the image in the slide with the following markdown.
 ## Improvement to make
 
 - [ ] Fix `[bg left]` `[bg right]` in the slides so that the gem5 logo at the bottom doesn't move
+- [ ] Extend marp to support [asciinema](https://github.com/asciinema/asciinema-player/releases/tag/v3.8.0)
+  - We could [embed an SVG](https://docs.asciinema.org/manual/server/embedding/#preview-image-link).
