@@ -3,7 +3,6 @@ marp: true
 paginate: true
 theme: gem5
 title: Modeling DRAM in gem5
-footer: "![gem5 logo](../themes/gem5Long.png)"
 ---
 
 <!-- _class: title -->

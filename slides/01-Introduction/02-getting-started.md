@@ -3,7 +3,6 @@ marp: true
 paginate: true
 theme: gem5
 title: Getting Started with gem5
-footer: "![gem5 logo](../themes/gem5Long.png)"
 ---
 
 <!-- _class: title -->
@@ -60,7 +59,7 @@ Again, note that this is the repo where the slides are.
 
 <https://github.com/gem5bootcamp-2024/>
 
-![Screenshot]()
+![Screenshot of starting a codespace](02-getting-started-imgs/codespaces-screenshot-1.drawio.png)
 
 ---
 
@@ -81,6 +80,9 @@ Again, note that this is the repo where the slides are.
 - This takes a while (10-15 minutes with 16 cores, ~1hr on 1 core).
 - If you're using codespaces, we have prebuilt binaries for you.
 - We'll talk more about the build system and options later.
+
+[![asciicast](https://asciinema.org/a/6rAd24brgGqb3Sj8Kmvy1msaG.svg)](https://asciinema.org/a/6rAd24brgGqb3Sj8Kmvy1msaG)
+<script src="https://asciinema.org/a/6rAd24brgGqb3Sj8Kmvy1msaG.js" id="asciicast-6rAd24brgGqb3Sj8Kmvy1msaG" async="true"></script>
 
 ---
 
@@ -134,7 +136,7 @@ See the [gem5 resource page](https://resources.gem5.org/resources/x86-ubuntu-24.
 
 [Link](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-no-systemd?version=1.0.0)
 
-![Screenshot of gem5 resources webpage](02-getting-started-imgs/resources-screenshot.png)
+![Screenshot of gem5 resources webpage](02-getting-started-imgs/resources-screenshot.drawio.png)
 
 ---
 

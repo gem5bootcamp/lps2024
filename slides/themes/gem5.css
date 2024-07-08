@@ -19,11 +19,16 @@
 }
 
 section {
-    font-size: 2.0em;
+    font-size: 1.6rem;
     font-family: sans-serif;
-    line-height: 1.35;
+    line-height: 2rem;
     padding: 70px;
     background-color: var(--gem5-background);
+    background-image: url("../themes/gem5Long.png");
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-size: 220px;
+    background-position-y: 97%;
 }
 
 /* Move the title of the slide up a bit */
@@ -36,7 +41,7 @@ section>header:first-child+* {
 h2::before {
     content: "";
     position: absolute;
-    top: 78px;
+    top: 65px;
     left: -10px;
     width: 0;
     height: 0;
@@ -88,8 +93,8 @@ a {
 
 blockquote {
     position: relative;
-    margin: 1em 0;
-    padding: 0 1em;
+    margin: 0.6rem 0;
+    padding: 0 1.2rem;
     border-left: 4px solid var(--gem5-gem5);
     background-color: var(--gem5-light);
 }
@@ -121,7 +126,8 @@ section.title footer img {
 }
 
 section.title h2 {
-    font-size: 1.3rem;
+    font-size: 5rem;
+    line-height: 5rem;
     margin-top: 50px;
     display: block;
     text-align: center;
@@ -133,12 +139,14 @@ section.title {
     background-image: url("../../slides/themes/gem5ColorVert.png");
     background-repeat: no-repeat;
     background-position: right;
+    background-size: contain;
 }
 
 /* title on the left */
 section.title p {
     width: 60%;
-    font-size: 0.6rem;
+    font-size: 2.5rem;
+    line-height: 2.5rem;
 }
 
 /****************************************************/
@@ -152,7 +160,7 @@ pre {
 
 code {
     font-family: "Roboto Mono", monospace;
-    font-size: 0.85em;
+    font-size: 1.4rem;
     background-color: #ffffff;
 }
 
@@ -176,7 +184,7 @@ Typically this "required" baseline CSS is added by `makestuff.js` during build.
 pre code.hljs {
     display: block;
     overflow-x: auto;
-    padding: 1em;
+    padding: 1rem;
     background-color: #ffffff;
 }
 
