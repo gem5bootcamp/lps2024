@@ -3,7 +3,6 @@ marp: true
 paginate: true
 theme: gem5
 title: Running Things on gem5
-footer: "![gem5 logo](../themes/gem5Long.png)"
 author: "Maryam Babaie"
 editor: "Jason Lowe-Power"
 ---
