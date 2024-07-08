@@ -34,3 +34,7 @@ You can then embed the image in the slide with the following markdown.
 ```md
 ![<description of the image>](<current slide name>/<name>.drawio.png)
 ```
+
+## Improvement to make
+
+- [ ] Fix `[bg left]` `[bg right]` in the slides so that the gem5 logo at the bottom doesn't move

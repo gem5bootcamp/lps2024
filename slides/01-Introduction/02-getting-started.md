@@ -68,7 +68,7 @@ Again, note that this is the repo where the slides are.
 
 > **Step 3:** Wait for the environment to load.
 
-![Screenshot]()
+![Screenshot](test.drawio.png)
 
 ---
 
