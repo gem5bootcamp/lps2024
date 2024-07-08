@@ -89,7 +89,7 @@ git branch example-1 # Creating a new branch named 'example-1'.
 3. Checkout this branch:
 
 ```sh
-git checkout example-`
+git checkout example-1
 ```
 
 4. Make changes on this branch and commit the changes.
