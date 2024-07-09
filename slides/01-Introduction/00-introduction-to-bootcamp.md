@@ -3,6 +3,7 @@ marp: true
 paginate: true
 theme: gem5
 title: Getting Started with gem5
+author: Jason Lowe-Power
 ---
 
 <!-- _class: title -->
@@ -20,9 +21,6 @@ title: Getting Started with gem5
 
 ## Plan for the week
 
-| Monday | Tuesday | Wednesday | Thursday | Friday |
-|--------|---------|-----------|----------|--------|
-
 - Introduction
   - [Background on simulation](01-simulation-background.md): 1 hour (Jason)
     - What is is simulation and why does it matter
@@ -35,26 +33,26 @@ title: Getting Started with gem5
     - Python in gem5
     - Object-oriented programming in Python
 - Using gem5
-  - [gem5's standard library](../02-Using-0gem5/01-stdlib.md): 2 hours (Bobby)
-  - [gem5 resources](../02-Using-0gem5/02-gem5-resources.md): 1 hour (Harshil)
+  - [gem5's standard library](../02-Using-gem5/01-stdlib.md): 2 hours (Bobby)
+  - [gem5 resources](../02-Using-gem5/02-gem5-resources.md): 1 hour (Harshil)
     - What are resources? (Disks, kernels, binaries, etc.)
     - How to get resources
     - How to use resources
     - Workloads and suites
     - Local resources
-  - [Running things in gem5](../02-Using-0gem5/03-running-in-gem5.md): 2 hours (Erin / Zhantong)
+  - [Running things in gem5](../02-Using-gem5/03-running-in-gem5.md): 2 hours (Erin / Zhantong)
     - Intro to syscall emulation mode
     - The gem5-bridge utility and library
     - Cross compiling
     - Traffic generator (Test board)
     - Process.map and drivers in SE mode (maybe cut)
-  - [Modeling cores in gem5](../02-Using-0gem5/04-cores.md): 1 hour (Mysore / Jason)
+  - [Modeling cores in gem5](../02-Using-gem5/04-cores.md): 1 hour (Mysore / Jason)
     - CPU models in gem5
     - Using the CPU models
     - Branch predictors
     - Look at the gem5 generated statistics
     - Overview of ISAs and tradeoffs
-  - [Modeling caches in gem5](../02-Using-0gem5/05-cache-hierarchies.md): 1.5 hour (Leo / Mahyar)
+  - [Modeling caches in gem5](../02-Using-gem5/05-cache-hierarchies.md): 1.5 hour (Leo / Mahyar)
     - Cache models in gem5 (Ruby and classic)
     - Using the cache models
     - Replacement policies
@@ -112,7 +110,7 @@ title: Getting Started with gem5
     - A simple memory object that forwards things
     - Connecting ports and writing config files
     - Adding stats to a SimObject
-  - [Modeling Cores (Bobby)](../03-Developing-gem5-models/05-modeling-cores.md) 1.5 hours
+  - [Modeling Cores](../03-Developing-gem5-models/05-modeling-cores.md) (Bobby) 1.5 hours
     - New instructions
     - How the execution model works
     - Debugging
