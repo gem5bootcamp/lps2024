@@ -13,7 +13,6 @@
                 "GitHub.copilot-chat",
                 "GitHub.vscode-pull-request-github",
                 "ms-python.debugpy",
-                "ms-python.isort",
                 "ms-python.python",
                 "ms-python.vscode-pylance",
                 "ms-vscode.cpptools",
