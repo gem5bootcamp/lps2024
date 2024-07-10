@@ -5,6 +5,7 @@ theme: gem5
 title: Running Things on gem5
 author: "Maryam Babaie"
 editor: "Jason Lowe-Power"
+
 ---
 
 <!-- _class: title -->
@@ -12,6 +13,40 @@ editor: "Jason Lowe-Power"
 ## Running Things on gem5
 
 ---
+
+<style>
+  /* from https://github.com/marp-team/marpit/issues/141 */
+  img[alt~="center"]{
+    display:block;
+    margin: 0 auto;
+  }
+
+  .section-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+  height: 100%;
+  /* background-color: black */
+  font-size: 4rem
+}
+  .center-image-div{
+    display:flex;
+    align-items: center;
+    justify-content:space-around;
+    width:100%;
+  }
+
+  .code-block-div{
+    display:flex;
+    flex-direction:row;
+    justify-content:space-around;
+  }
+
+</style>
+
+
 
 ## OOO Action Item
 
@@ -30,7 +65,7 @@ editor: "Jason Lowe-Power"
 
 ---
 
-## Intro to Syscall Emulation Mode
+<div class=section-start> Intro to Syscall Emulation Mode </div>
 
 ---
 
@@ -45,7 +80,7 @@ editor: "Jason Lowe-Power"
 `build/{ISA}/gem5.{variant} [gem5 options] {simulation script} [script options]`
 
 - example:
-'build/X86/gem5.fast --outdir=simple_out configs/learning_gem5/part1/simple.py --l1i_size=32kB​'
+`build/X86/gem5.fast --outdir=simple_out configs/learning_gem5/part1/simple.py --l1i_size=32kB​`
 
 ---
 
@@ -68,8 +103,8 @@ editor: "Jason Lowe-Power"
 
 ---
 
-## The m5 Utility
-<!-- Is m5 called gem5-bridge now? -->
+<div class=section-start> The m5 Utility </div>
+<!-- Is m5 called gem5-bridge nowadays? -->
 
 ---
 
@@ -84,7 +119,7 @@ editor: "Jason Lowe-Power"
   - exit (delay): Stop the simulation in delay nanoseconds.​
   - resetstats (delay, period): Reset simulation statistics in delay nanoseconds; repeat this every period nanoseconds.​
   - dumpstats (delay , period): Save simulation statistics to a file in delay nanoseconds; repeat this every period nanoseconds.​
-  - dumpresetstats (delay ,period): same as dumpstats; resetstats;​
+  - dumpresetstats (delay, period): same as dumpstats; resetstats;​
 - Full list of options can be found here.​
 
 ---
@@ -93,9 +128,9 @@ editor: "Jason Lowe-Power"
 
 - It is best to insert the option(s) directly in the source code of the application.​
 
-- m5ops.h header file has prototypes for all the functionalities/options must be included.​
+- **m5ops.h** header file has prototypes for all the functionalities/options must be included.​
 
-- The application should be linked with the appropriate m5 & libm5.a files.​
+- The application should be linked with the appropriate **m5** & **libm5.a** files.​
   - m5: The command line utility
   - libm5.a: C library for the utility
 
@@ -105,7 +140,7 @@ editor: "Jason Lowe-Power"
 
 - The m5 utility is in “gem5/util/m5/” directory.​
 
-- To build m5 and libm5.a, run the following command in the gem5/util/m5/ directory.​
+- To build **m5** and **libm5.a**, run the following command **in the gem5/util/m5/ directory**.​
 
 `scons build/{TARGET_ISA}/out/m5​`
 
@@ -117,13 +152,13 @@ editor: "Jason Lowe-Power"
   - arm64
   - Riscv
 
-- This will generate libm5.a and m5 binaries in the util/m5/build/{TARGET_ISA}/out/ directory.​
+- This will generate libm5.a and m5 binaries in the **util/m5/build/{TARGET_ISA}/out/** directory.​
 
 ---
 
 ## Building m5 and libm5 (cont.)
 
-- Note: if you are using a x86 system for other ISAs, you need to have the cross-compiler​
+- **Note:** if you are using a x86 system for other ISAs, you need to have the cross-compiler​
 - Cross-compiler for each target ISA:​
   - arm : arm-linux-gnueabihf-gcc​
   - thumb : arm-linux-gnueabihf-gcc​
@@ -139,58 +174,54 @@ editor: "Jason Lowe-Power"
 
 - After building the m5 and libm5.a as described, link them to your code:​
 
-  1. Include gem5/m5ops.h in your source file(s).​
+  1. Include **gem5/m5ops.h** in your source file(s).​
 
-  2. Add gem5/include to your compiler’s include search path.​
+  2. Add **gem5/include** to your compiler’s include search path.​
 
-  3. Add gem5/util/m5/build/{TARGET_ISA}/out to the linker search path.​
+  3. Add **gem5/util/m5/build/{TARGET_ISA}/out** to the linker search path.​
 
-  4. Link against libm5.a.​
+  4. Link against **libm5.a**.​
 
 ---
 
 ## Example 1: print in std out​
 
-### Commands
+<div class=code-block-div>
+  <div style="width:95%">
 
-<style scoped>
-pre {
-    width:45rem;
-    margin:0
-}
-#code-block {
-    display:flex;
-    flex-direction:row
-}
-</style>
+  ```c++
+  #include <unistd.h>
+  #include "gem5/m5ops.h"
 
+  int main()
+  {
+      m5_reset_stats(0, 0);
+      write(1, "This will be output to standard out\n", 36);
+      m5_exit(0);
+      return 0;
+  }
+  ```
 
-<div id=code-block>
-
-```c++
-#include <unistd.h>
-#include "gem5/m5ops.h"
-
-int main()
-{
-    m5_reset_stats(0, 0);
-    write(1, "This will be output to standard out\n", 36);
-    m5_exit(0);
-    return 0;
-}
-```
+  </div>
 <!-- The original has empty lines between each line in main.
 Removed to save space in slides -->
-<div>
-<p>- Example 1 code: ​materials/using-gem5/03-running/example1/se_example.cpp</p>
-<p>- Config file:​ materials/using-gem5/03-running/simple.py</p>
-</div>
+  <div>
+
+  - Example 1 code: ​materials/using-gem5/03-running/example1/se_example.cpp
+
+  - Config file:​ materials/using-gem5/03-running/simple.py
+  </div>
 
 </div>
+
+<div>
+
+**Commands**
 
 - Compile the code:​ `gcc materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin​`
 - Run workload: `./exampleBin​`
 - Run gem5: `gem5-x86 materials/using-gem5/03-running/simple.py​`
+</div>
 
 ---
 
@@ -220,44 +251,239 @@ int main()
 
 ## Example 1​
 
-<style scoped>
-#block{
-    display:flex;
-    flex-direction:row;
-    font-size:1.4rem
-}
-.inner{
-    flex:1
-}
-</style>
-<div id=block>
-
-<div class=inner>
-
 ```bash
 gcc materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin​
 
--I gem5/include/ ​
+-I gem5/include/                # Add gem5/include to your compiler's include
+                                # search path.
+-lm5 ​                           # Link against libm5.a.​
 
--lm5 ​
+-Lgem5/util/m5/build/x86/out​    # Add gem5/util/m5/build/{TARGET_ISA}/out to
+                                # the linker search path.​
+```
 
--Lgem5/util/m5/build/x86/out​
+- Note: if you try to locally run the output binary in your host, it will generate error:​
+`Illegal instruction (core dumped)`
+
+---
+
+## SE mode uses the host for many things.​
+
+- SE mode treats a system call as one instruction for the guest.​
+<!-- Note to self: come back to this later to get text version of output message-->
+
+<div class=center-image-div>
+
+![Example of code that causes a syscall center](03-running-in-gem5-imgs/slide-18-a.drawio.jpg)
+
+![Output that shows that a syscall was performed center](03-running-in-gem5-imgs/slide-18-b.drawio.jpg)
+
+</div>
+
+- Run gem5:
+`gem5/build/X86/gem5.debug  --debug-flags=ExecAll  materials/using-gem5/03-running/simple.py > debugOut.txt​`
+
+---
+
+## Example 2: checking a directory​
+
+<div class=code-block-div>
+
+<div style="width:40%">
+
+```c++
+#include<iostream>
+#include<dirent.h>
+
+using namespace std;
+
+int main()
+{
+    struct dirent *d;
+    DIR *dr;
+    dr = opendir("/workspaces/gem5-bootcamp-env/materials/using-gem5/03-running");
+    if (dr!=NULL) {
+        std::cout<<"List of Files & Folders:\n";
+        for (d=readdir(dr); d!=NULL; d=readdir(dr)) {
+            std::cout<<d->d_name<< ", ";
+        }
+        closedir(dr);
+    }
+    else {
+        std::cout<<"\nError Occurred!";
+    }
+    std::cout<<endl;
+    return 0;
+}
 
 ```
 
 </div>
+<div style="width:50%">
 
-<div class=inner>
+- Example 2 code: ​materials/using-gem5/03-running/example2/dir_example.cpp
 
-```bash
+- Config file:​ materials/using-gem5/03-running/simple.py
+</div>
+</div>
 
+**Commands**
 
-- Add gem5/include to your compilers include search path.
+- Compile the code:​ `g++ materials/using-gem5/03-running/example2/dir_example.cpp -o exampleBin​`
+- Run gem5:​ `gem5-x86 materials/using-gem5/03-running/simple.py​`
 
-- Link against libm5.a.​
+---
 
-- Add gem5/util/m5/build/{TARGET_ISA}/out to the linker search path.​
+## SE mode uses the host for many things.​ (cont.)
+
+- For things like creating/reading a file, it will create/read files on the host.​
+<!-- Insert images here. page 21 on old slides -->
+
+<div class=center-image-div>
+
+![Code sample](03-running-in-gem5-imgs/slide-21-a.drawio.jpg)
+
+![SE mode creating files on host](03-running-in-gem5-imgs/slide-21-b.drawio.jpg)
+
+</div>
+
+---
+
+## SE mode does NOT implement many things!​
+
+- Filesystem​
+- Most of systemcalls
+- I/O devices
+- Interrupts
+- TLB misses
+- Page table walks
+- Context switches
+- multiple threads
+  - You may have a multithreaded execution, but there's no context switches & no spin locks​
+
+---
+
+<div class=section-start> Cross-compiling </div>
+
+---
+
+## Cross-compiling from one ISA to another.​
+
+<!-- Insert image here -->
+
+![Cross compiling width:800px center](03-running-in-gem5-imgs/slide-24.drawio.jpg)
+
+---
+
+## Example: Cross-compiling​
+
+- Host = X86  Target: ARM64​
+<!-- Insert code or image here. old slides slide 25 -->
+<!-- ![Cross compiling width:90% bg right](03-running-in-gem5-imgs/slide-25.drawio.jpg) -->
+
+<div>
+
+1. Build m5 utility for arm64​
+`cd gem5/util/m5​`
+`scons arm64.CROSS_COMPILE=aarch64-linux-  build/arm64/out/m5​`
+
+2. Cross-compile the program with m5 utility​
+`aarch64-linux-g++  materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin -I gem5/include/  -lm5 -Lgem5/util/m5/build/arm64/out -static​`
+
+3. Run gem5
+`gem5-arm materials/using-gem5/03-running/simple.py​`
+
+</div>
+
+---
+
+## Example: Cross-compiling (Dynamic)​
+<!-- Insert code example here. From page 26 of old slides -->
+<!-- ![Cross compiling width:90% bg right](03-running-in-gem5-imgs/slide-25.drawio.jpg) -->
+1. Build m5 utility for ARM, as shown before.​
+2. Cross-compile the program with m5 utility​
+
+`aarch64-linux-g++  materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin -I gem5/include/  -lm5 -Lgem5/util/m5/build/arm64/out​`
+
+- Also, you need to let gem5 know where the libraries associated with the guest ISA are located, using “redirect”.​
+
+---
+
+## Example: Cross-compiling (Dynamic)​ (cont.)
+
+You should modify the config file (simple.py) as follows:
+
+```python
+from m5.core import setInterpDir
 ```
 
-</div>
-</div>
+```python
+binary = "/workspaces/gem5-bootcamp-env/exampleBin"
+
+setInterpDir("/usr/aarch64-linux-genu/")
+system.redirect_paths = [RedirectPath(app_path="/lib", host_paths=["/usr/aarch64-linux-genu/lib"])]
+```
+
+3. Run gem5
+
+`gem5-arm materials/using-gem5/03-running/simple.py​`
+
+---
+
+<div class=section-start> Traffic Generator in gem5 </div>
+
+---
+
+## Traffic Generator
+
+- A traffic generator module generates stimuli for the memory system.​
+
+- Used for creating test cases for caches, interconnects, and memory controllers, etc.​
+
+![Traffic generator center](03-running-in-gem5-imgs/slide-29.drawio.png)
+
+---
+
+## gem5’s Traffic Gen: PyTrafficGen​
+
+- PyTrafficGen is a traffic generator module (SimObject) located in: `gem5/src/cpu/testers/traffic_gen`
+
+- Used as a black box replacement for any generator of read/write requestor.​
+
+![PyTrafficGen center](03-running-in-gem5-imgs/slide-30.drawio.png)
+
+---
+
+## PyTrafficGen: Params​
+
+- PyTrafficGen’s parameters allow you to control the characteristics of the generated traffic.​
+
+| Parameter | Definition |
+| :--------- | ---------- |
+| pattern | The pattern of generated addresses: linear/ random ​|
+| duration | The duration of generating requests in ticks (quantum of time in gem5).​ |
+| start address​ | The lower bound for addresses that the synthetic traffic will access.​ |
+| end address​ | The upper bound for addresses that the synthetic traffic will access.​ |
+| minimum period​ | The minimum timing difference between two consecutive requests in ticks. ​|
+| maximum period​ | The maximum timing difference between two consecutive requests in ticks. ​|
+| request size | The number of bytes that are read/written by each request. ​|
+| read percentage​ | The percentage of reads among all the requests, the rest of requests are write requests.​ |
+
+---
+
+## Example3: PyTrafficGen​
+
+![PyTrafficGen with labels center](03-running-in-gem5-imgs/slide-32.drawio.png)
+
+- Command to run tests for this example: `./materials/using-gem5/03-running/example3/traffGen_run.sh​`
+
+---
+
+## Summary​
+
+- SE mode is easy to configure and fast for development purposes, if OS is not involved.​
+
+- m5 utility API is a useful tool for simulation behavior and performance analysis.​
+- Cross compilers should be used if the host and guest ISAs are different.​
+
+- Traffic generator can abstract away the details of a data requestor such as CPU for generating test cases for memory systems.​
