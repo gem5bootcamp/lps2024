@@ -6,6 +6,7 @@ title: Running Things on gem5
 author: "Maryam Babaie"
 editor: "Jason Lowe-Power"
 
+
 ---
 
 <!-- _class: title -->
@@ -13,6 +14,40 @@ editor: "Jason Lowe-Power"
 ## Running Things on gem5
 
 ---
+
+<style>
+  /* from https://github.com/marp-team/marpit/issues/141 */
+  img[alt~="center"]{
+    display:block;
+    margin: 0 auto;
+  }
+
+  .section-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+  height: 100%;
+  /* background-color: black */
+  font-size: 4rem
+}
+  .center-image-div{
+    display:flex;
+    align-items: center;
+    justify-content:space-around;
+    width:100%;
+  }
+
+  .code-block-div{
+    display:flex;
+    flex-direction:row;
+    justify-content:space-around;
+  }
+
+</style>
+
+
 
 ## OOO Action Item
 
@@ -467,6 +502,80 @@ int main()
 3. Run gem5
 `gem5/build/ARM/gem5.debug materials/using-gem5/03-running/simple.py​`
 </div>
+<div style="width:50%">
+
+- Example 2 code: ​materials/using-gem5/03-running/example2/dir_example.cpp
+
+- Config file:​ materials/using-gem5/03-running/simple.py
+</div>
+</div>
+
+**Commands**
+
+- Compile the code:​ `g++ materials/using-gem5/03-running/example2/dir_example.cpp -o exampleBin​`
+- Run gem5:​ `gem5-x86 materials/using-gem5/03-running/simple.py​`
+
+---
+
+## SE mode uses the host for many things.​ (cont.)
+
+- For things like creating/reading a file, it will create/read files on the host.​
+<!-- Insert images here. page 21 on old slides -->
+
+<div class=center-image-div>
+
+![Code sample](03-running-in-gem5-imgs/slide-21-a.drawio.jpg)
+
+![SE mode creating files on host](03-running-in-gem5-imgs/slide-21-b.drawio.jpg)
+
+</div>
+
+---
+
+## SE mode does NOT implement many things!​
+
+- Filesystem​
+- Most of systemcalls
+- I/O devices
+- Interrupts
+- TLB misses
+- Page table walks
+- Context switches
+- multiple threads
+  - You may have a multithreaded execution, but there's no context switches & no spin locks​
+
+---
+
+<div class=section-start> Cross-compiling </div>
+
+---
+
+## Cross-compiling from one ISA to another.​
+
+<!-- Insert image here -->
+
+![Cross compiling width:800px center](03-running-in-gem5-imgs/slide-24.drawio.jpg)
+
+---
+
+## Example: Cross-compiling​
+
+- Host = X86  Target: ARM64​
+<!-- Insert code or image here. old slides slide 25 -->
+<!-- ![Cross compiling width:90% bg right](03-running-in-gem5-imgs/slide-25.drawio.jpg) -->
+
+<div>
+
+1. Build m5 utility for arm64​
+`cd gem5/util/m5​`
+`scons arm64.CROSS_COMPILE=aarch64-linux-  build/arm64/out/m5​`
+
+2. Cross-compile the program with m5 utility​
+`aarch64-linux-g++  materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin -I gem5/include/  -lm5 -Lgem5/util/m5/build/arm64/out -static​`
+
+3. Run gem5
+`gem5-arm materials/using-gem5/03-running/simple.py​`
+
 </div>
 
 ---
