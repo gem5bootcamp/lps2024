@@ -31,6 +31,14 @@ section {
     background-position-y: 97%;
 }
 
+section li {
+    margin-bottom: 0.2rem;
+}
+
+section ul {
+    margin-bottom: 0.5rem;
+}
+
 /* Move the title of the slide up a bit */
 section>*:first-child,
 section>header:first-child+* {
