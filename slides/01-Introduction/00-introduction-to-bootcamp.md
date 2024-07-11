@@ -122,7 +122,11 @@ author: Jason Lowe-Power
     - Debugging
     - Ruby network
     - (Note to Jason: could do a whole day here if split like before.)
-  - [Extending gem5](../03-Developing-gem5-models/08-extending-gem5-models.md) (Zhantong) 1 hours
+  - [Modeling the on-chip network with Garnet](../03-Developing-gem5-models/08-ruby-network.md) (Jason) 1 hours
+    - Garnet intro
+    - Building/running/configuring networks
+    - Debugging
+  - [Extending gem5](../03-Developing-gem5-models/09-extending-gem5-models.md) (Zhantong) 1 hours
     - Probe points
     - Generic cache object
     - Base utilites (e.g., bitset)
