@@ -122,7 +122,7 @@ author: Jason Lowe-Power
     - Debugging
     - Ruby network
     - (Note to Jason: could do a whole day here if split like before.)
-  - [Extending gem5](../03-Developing-gem5-models/07-extending-gem5-models.md) (Zhantong) 1 hours
+  - [Extending gem5](../03-Developing-gem5-models/08-extending-gem5-models.md) (Zhantong) 1 hours
     - Probe points
     - Generic cache object
     - Base utilites (e.g., bitset)
