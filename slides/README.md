@@ -24,6 +24,8 @@ docker run --rm -v $PWD:/home/marp/app/ -e MARP_USER=$UID:$GID -e LANG=$LANG mar
 - The titles of all slides should be heading 2 `##`
 - Code should be at most 65 characters wide.
 - One line per sentence in Markdown.
+- Do not use inline HTML unless *absolutely* necessary.
+- Images should use markdown syntax `![alt text](path/to/image.png)`
 
 ## Adding diagrams
 
