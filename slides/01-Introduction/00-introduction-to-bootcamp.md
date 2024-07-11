@@ -110,6 +110,7 @@ author: Jason Lowe-Power
     - A simple memory object that forwards things
     - Connecting ports and writing config files
     - Adding stats to a SimObject
+    - Adding latency and and modeling buffers/computing time
   - [Modeling Cores](../03-Developing-gem5-models/05-modeling-cores.md) (Bobby) 1.5 hours
     - New instructions
     - How the execution model works
@@ -131,6 +132,8 @@ author: Jason Lowe-Power
   - [SST](../05-Other-simulators/01-sst.md)
   - [DRAMSim/DRAMSys](../05-Other-simulators/02-dram.md)
   - [SystemC](../05-Other-simulators/03-systemc.md)
+- Other things to try to fit in
+  - KConfig
 
 ---
 
