@@ -29,24 +29,31 @@ editor: "Jason Lowe-Power"
   width:100%;
   height: 100%;
   /* background-color: black */
-  font-size: 4rem
+  font-size: 4rem;
+  line-height: 75px;
+  background: linear-gradient(to right,rgb(67,124,205), rgb(69,214,202));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-  .center-image-div{
+   .center-image-div{
     display:flex;
     align-items: center;
-    justify-content:space-around;
+    /* justify-content:space-around; */
     width:100%;
   }
-
-  .code-block-div{
+    .code-block-div{
     display:flex;
     flex-direction:row;
+    width: 100%;
+    /* height: 80%; */
     justify-content:space-around;
-  }
+    margin: 0px;
+    padding: 0px;
+    gap:0px;
+    /* background-color:black; */
+    }
 
 </style>
-
-
 
 ## OOO Action Item
 
@@ -272,24 +279,68 @@ gcc materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin​
 - SE mode treats a system call as one instruction for the guest.​
 <!-- Note to self: come back to this later to get text version of output message-->
 
-<div class=center-image-div>
+<div class=code-block-div>
 
-![Example of code that causes a syscall center](03-running-in-gem5-imgs/slide-18-a.drawio.jpg)
+<!-- ![Example of code that causes a syscall center](03-running-in-gem5-imgs/slide-18-a.drawio.jpg) -->
 
-![Output that shows that a syscall was performed center](03-running-in-gem5-imgs/slide-18-b.drawio.jpg)
+<div style="flex:1">
+
+```c++
+#include <unistd.h>
+#include "gem5/m5ops.h"
+
+int main()
+{
+    m5_reset_stats(0, 0);
+
+    write(1, "This will be output to standard out\n", 36);
+
+    m5_exit(0);
+
+    return 0;
+}
+
+```
+</div>
+
+<!--
+![Output that shows that a syscall was performed center](03-running-in-gem5-imgs/slide-18-b.drawio.jpg) -->
+
+
+
+<div style="flex:1">
+
+```txt
+8401562000: system.cpu: A0 T0 : 0x7ffff7c8256b @_end+140737350460435. 1 :   JZ_I : limm   t2, 0x13   : IntAlu :  D=0x0000000000000013  flags=(IsInteger|IsMicroop|IsDelayedCommit)
+148401562000: system.cpu: A0 T0 : 0x7ffff7c8256b @_end+140737350460435. 2 :   JZ_I : wrip   t1, t2     : IntAlu :   flags=(IsInteger|IsControl|IsDirectControl|IsCondControl|IsMicroop|IsLastMicroop)
+148401660000: system.cpu: A0 T0 : 0x7ffff7c8256d @_end+140737350460437    : mov	eax, 0x1
+148401660000: system.cpu: A0 T0 : 0x7ffff7c8256d @_end+140737350460437. 0 :   MOV_R_I : limm   eax, 0x1 : IntAlu :  D=0x0000000000000001  flags=(IsInteger|IsMicroop|IsLastMicroop|IsFirstMicroop)
+148401709000: system.cpu: A0 T0 : 0x7ffff7c82572 @_end+140737350460442    :   syscall                  : IntAlu :   flags=()
+Error Occurred!
+```
 
 </div>
+
+
+</div>
+
 
 - Run gem5:
 `gem5/build/X86/gem5.debug  --debug-flags=ExecAll  materials/using-gem5/03-running/simple.py > debugOut.txt​`
 
+
+<!-- The c++ file appears to be /home/bees/2024/materials/using-gem5/03-running/example1/se_example.cpp -->
+
+<!-- The debug file is really big. I got an "Error occurred!" message for this
+example as well
+-->
 ---
 
 ## Example 2: checking a directory​
 
 <div class=code-block-div>
 
-<div style="width:40%">
+<div style="flex:1">
 
 ```c++
 #include<iostream>
@@ -301,7 +352,7 @@ int main()
 {
     struct dirent *d;
     DIR *dr;
-    dr = opendir("/workspaces/gem5-bootcamp-env/materials/using-gem5/03-running");
+    dr = opendir("/workspaces/2024/materials/using-gem5/03-running");
     if (dr!=NULL) {
         std::cout<<"List of Files & Folders:\n";
         for (d=readdir(dr); d!=NULL; d=readdir(dr)) {
@@ -319,18 +370,25 @@ int main()
 ```
 
 </div>
-<div style="width:50%">
+<div style="flex:1">
 
 - Example 2 code: ​materials/using-gem5/03-running/example2/dir_example.cpp
 
 - Config file:​ materials/using-gem5/03-running/simple.py
-</div>
-</div>
 
 **Commands**
 
 - Compile the code:​ `g++ materials/using-gem5/03-running/example2/dir_example.cpp -o exampleBin​`
 - Run gem5:​ `gem5-x86 materials/using-gem5/03-running/simple.py​`
+</div>
+</div>
+
+<!-- Important note: 03-running/simple.py doesn't seem to work right out of the box anymore -->
+<!-- I modified two lines that had to do with ISAs and changed the path to the compiled C++ code  -->
+<!-- This code also looks old and according to the copyright, was written in 2015-->
+<!-- After this, it runs until an error occurs in the c++ file-->
+
+<!-- I copied a gem5-library config script, changed the path in the example code, then recompiled. Try as I might, the simulation always ends with "Error Occurred!" -->
 
 ---
 
@@ -339,11 +397,50 @@ int main()
 - For things like creating/reading a file, it will create/read files on the host.​
 <!-- Insert images here. page 21 on old slides -->
 
-<div class=center-image-div>
+<div class=code-block-div>
 
-![Code sample](03-running-in-gem5-imgs/slide-21-a.drawio.jpg)
+<div style="flex:1">
 
-![SE mode creating files on host](03-running-in-gem5-imgs/slide-21-b.drawio.jpg)
+```c++
+//path: materials/using-gem5/03-running/example2/dir_example.cpp
+#include<iostream>
+#include<dirent.h>
+
+using namespace std;
+
+int main()
+{
+    struct dirent *d;
+    DIR *dr;
+    dr = opendir("/workspaces/2024/materials/using-gem5/03-running");
+    if (dr!=NULL) {
+        std::cout<<"List of Files & Folders:\n";
+        for (d=readdir(dr); d!=NULL; d=readdir(dr)) {
+            std::cout<<d->d_name<< ", ";
+        }
+        closedir(dr);
+    }
+    else {
+        std::cout<<"\nError Occurred!";
+    }
+    std::cout<<endl;
+    return 0;
+}
+```
+
+</div>
+
+<div style="flex:1">
+
+```txt
+src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
+
+Error Occurred!
+Exiting @ tick 149336343000 because exiting with last active thread context
+```
+</div>
 
 </div>
 
@@ -381,8 +478,28 @@ int main()
 <!-- Insert code or image here. old slides slide 25 -->
 <!-- ![Cross compiling width:90% bg right](03-running-in-gem5-imgs/slide-25.drawio.jpg) -->
 
-<div>
+<div class=code-block-div>
 
+<div style="flex:1">
+
+```c++
+#include <unistd.h>
+#include "gem5/m5ops.h"
+
+int main()
+{
+    m5_reset_stats(0, 0);
+
+    write(1, "This will be output to standard out\n", 36);
+
+    m5_exit(0);
+
+    return 0;
+}
+```
+</div>
+
+<div style="flex:1">
 1. Build m5 utility for arm64​
 `cd gem5/util/m5​`
 `scons arm64.CROSS_COMPILE=aarch64-linux-  build/arm64/out/m5​`
@@ -392,7 +509,7 @@ int main()
 
 3. Run gem5
 `gem5-arm materials/using-gem5/03-running/simple.py​`
-
+</div>
 </div>
 
 ---
