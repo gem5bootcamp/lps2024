@@ -194,7 +194,7 @@ editor: "Jason Lowe-Power"
 ## Example 1: print in std out​
 
 <div class=code-block-div>
-  <div style="width:95%">
+  <div style="flex:1">
 
   ```c++
   #include <unistd.h>
@@ -212,7 +212,7 @@ editor: "Jason Lowe-Power"
   </div>
 <!-- The original has empty lines between each line in main.
 Removed to save space in slides -->
-  <div>
+  <div style="flex:1">
 
   - Example 1 code: ​materials/using-gem5/03-running/example1/se_example.cpp
 
