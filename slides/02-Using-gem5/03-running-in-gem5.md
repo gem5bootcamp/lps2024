@@ -86,7 +86,7 @@ editor: "Jason Lowe-Power"
   - resetstats (delay, period): Reset simulation statistics in delay nanoseconds; repeat this every period nanoseconds.​
   - dumpstats (delay , period): Save simulation statistics to a file in delay nanoseconds; repeat this every period nanoseconds.​
   - dumpresetstats (delay, period): same as dumpstats; resetstats;​
-- Full list of options can be found here.​
+- Full list of options can be found [here](https://www.gem5.org/documentation/general_docs/m5ops/).​
 
 ---
 
@@ -152,7 +152,7 @@ editor: "Jason Lowe-Power"
 
 ## Example 1: print in std out​
 
-<div class=code-block-div>
+<div class=side-by-side-div>
   <div style="flex:1">
 
   ```c++
@@ -176,19 +176,16 @@ Removed to save space in slides -->
   - Example 1 code: ​materials/using-gem5/03-running/example1/se_example.cpp
 
   - Config file:​ materials/using-gem5/03-running/simple.py
-  </div>
 
-</div>
-
-<div>
-
-**Commands**
+  **Commands**
 
 - Compile the code:​ `gcc materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin​`
 - Run workload: `./exampleBin​`
 - Run gem5: `gem5/build/X86/gem5.debug materials/using-gem5/03-running/simple.py​`
+  </div>
 
 </div>
+
 
 ---
 
@@ -239,7 +236,7 @@ gcc materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin​
 - SE mode treats a system call as one instruction for the guest.​
 <!-- Note to self: come back to this later to get text version of output message-->
 
-<div class=code-block-div>
+<div class=side-by-side-div>
 
 <!-- ![Example of code that causes a syscall center](03-running-in-gem5-imgs/slide-18-a.drawio.jpg) -->
 
@@ -278,12 +275,12 @@ int main()
 Error Occurred!
 ```
 
-</div>
-
-</div>
-
 - Run gem5:
 `gem5/build/X86/gem5.debug  --debug-flags=ExecAll  materials/using-gem5/03-running/simple.py > debugOut.txt​`
+</div>
+
+</div>
+
 
 <!-- The c++ file appears to be 2024/materials/using-gem5/03-running/example1/se_example.cpp -->
 
@@ -294,7 +291,7 @@ example as well
 
 ## Example 2: checking a directory​
 
-<div class=code-block-div>
+<div class=side-by-side-div>
 
 <div style="flex:1">
 
@@ -354,7 +351,7 @@ int main()
 - For things like creating/reading a file, it will create/read files on the host.​
 <!-- Insert images here. page 21 on old slides -->
 
-<div class=code-block-div>
+<div class=side-by-side-div>
 
 <div style="flex:1">
 
@@ -436,7 +433,7 @@ Exiting @ tick 149336343000 because exiting with last active thread context
 <!-- Insert code or image here. old slides slide 25 -->
 <!-- ![Cross compiling width:90% bg right](03-running-in-gem5-imgs/slide-25.drawio.jpg) -->
 
-<div class=code-block-div>
+<div class=side-by-side-div>
 
 <div style="flex:1">
 
