@@ -14,47 +14,6 @@ editor: "Jason Lowe-Power"
 
 ---
 
-<style>
-  /* from https://github.com/marp-team/marpit/issues/141 */
-  img[alt~="center"]{
-    display:block;
-    margin: 0 auto;
-  }
-
-  .section-start {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width:100%;
-  height: 100%;
-  /* background-color: black */
-  font-size: 4rem;
-  line-height: 75px;
-  background: linear-gradient(to right,rgb(67,124,205), rgb(69,214,202));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-   .center-image-div{
-    display:flex;
-    align-items: center;
-    /* justify-content:space-around; */
-    width:100%;
-  }
-    .code-block-div{
-    display:flex;
-    flex-direction:row;
-    width: 100%;
-    /* height: 80%; */
-    justify-content:space-around;
-    margin: 0px;
-    padding: 0px;
-    gap:0px;
-    /* background-color:black; */
-    }
-
-</style>
-
 ## OOO Action Item
 
 - Launch codespaces and run the following commands:
@@ -228,6 +187,7 @@ Removed to save space in slides -->
 - Compile the code:​ `gcc materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin​`
 - Run workload: `./exampleBin​`
 - Run gem5: `gem5/build/X86/gem5.debug materials/using-gem5/03-running/simple.py​`
+
 </div>
 
 ---
@@ -301,12 +261,11 @@ int main()
 }
 
 ```
+
 </div>
 
 <!--
 ![Output that shows that a syscall was performed center](03-running-in-gem5-imgs/slide-18-b.drawio.jpg) -->
-
-
 
 <div style="flex:1">
 
@@ -321,15 +280,12 @@ Error Occurred!
 
 </div>
 
-
 </div>
-
 
 - Run gem5:
 `gem5/build/X86/gem5.debug  --debug-flags=ExecAll  materials/using-gem5/03-running/simple.py > debugOut.txt​`
 
-
-<!-- The c++ file appears to be /home/bees/2024/materials/using-gem5/03-running/example1/se_example.cpp -->
+<!-- The c++ file appears to be 2024/materials/using-gem5/03-running/example1/se_example.cpp -->
 
 <!-- The debug file is really big. I got an "Error occurred!" message for this
 example as well
@@ -380,6 +336,7 @@ int main()
 
 - Compile the code:​ `g++ materials/using-gem5/03-running/example2/dir_example.cpp -o exampleBin​`
 - Run gem5:​ `gem5/build/X86/gem5.debug materials/using-gem5/03-running/simple.py​`
+
 </div>
 </div>
 
@@ -440,6 +397,7 @@ src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
 Error Occurred!
 Exiting @ tick 149336343000 because exiting with last active thread context
 ```
+
 </div>
 
 </div>
@@ -497,9 +455,11 @@ int main()
     return 0;
 }
 ```
+
 </div>
 
 <div style="flex:1">
+
 1. Build m5 utility for arm64​
 `cd gem5/util/m5​`
 `scons arm64.CROSS_COMPILE=aarch64-linux-  build/arm64/out/m5​`
