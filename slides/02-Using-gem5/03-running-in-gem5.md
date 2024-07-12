@@ -227,7 +227,7 @@ Removed to save space in slides -->
 
 - Compile the code:​ `gcc materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin​`
 - Run workload: `./exampleBin​`
-- Run gem5: `gem5-x86 materials/using-gem5/03-running/simple.py​`
+- Run gem5: `gem5/build/X86/gem5.debug materials/using-gem5/03-running/simple.py​`
 </div>
 
 ---
@@ -379,7 +379,7 @@ int main()
 **Commands**
 
 - Compile the code:​ `g++ materials/using-gem5/03-running/example2/dir_example.cpp -o exampleBin​`
-- Run gem5:​ `gem5-x86 materials/using-gem5/03-running/simple.py​`
+- Run gem5:​ `gem5/build/X86/gem5.debug materials/using-gem5/03-running/simple.py​`
 </div>
 </div>
 
@@ -508,7 +508,7 @@ int main()
 `aarch64-linux-g++  materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin -I gem5/include/  -lm5 -Lgem5/util/m5/build/arm64/out -static​`
 
 3. Run gem5
-`gem5-arm materials/using-gem5/03-running/simple.py​`
+`gem5/build/ARM/gem5.debug materials/using-gem5/03-running/simple.py​`
 </div>
 </div>
 
@@ -543,7 +543,7 @@ system.redirect_paths = [RedirectPath(app_path="/lib", host_paths=["/usr/aarch64
 
 3. Run gem5
 
-`gem5-arm materials/using-gem5/03-running/simple.py​`
+`gem5/build/ARM/gem5.debug materials/using-gem5/03-running/simple.py​`
 
 ---
 
