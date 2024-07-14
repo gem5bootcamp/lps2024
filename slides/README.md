@@ -44,3 +44,4 @@ You can then embed the image in the slide with the following markdown.
 - [ ] Fix `[bg left]` `[bg right]` in the slides so that the gem5 logo at the bottom doesn't move
 - [ ] Extend marp to support [asciinema](https://github.com/asciinema/asciinema-player/releases/tag/v3.8.0)
   - We could [embed an SVG](https://docs.asciinema.org/manual/server/embedding/#preview-image-link).
+- [ ] Can we possibly make it so that there's a button to copy the code examples?
