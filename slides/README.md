@@ -23,9 +23,19 @@ docker run --rm -v $PWD:/home/marp/app/ -e MARP_USER=$UID:$GID -e LANG=$LANG mar
 - The first slide should be a "title" slide `<!-- _class: title -->`.
 - The titles of all slides should be heading 2 `##`
 - Code should be at most 65 characters wide.
-- One line per sentence in Markdown.
 - Do not use inline HTML unless *absolutely* necessary.
 - Images should use markdown syntax `![alt text](path/to/image.png)`
+- Always put links to the resources when referencing.
+
+### Linking to materials and slides
+
+When linking to materials, use the following format:
+
+```md
+[path relative to the root of the repo](path relative to the current file)
+```
+
+Use the relative path from the current file.
 
 ### Layouts
 
@@ -43,6 +53,7 @@ Here are some of the available layouts:
 ## Adding diagrams
 
 To add diagrams, you can use the [draw.io VS Code extension](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio).
+**You are strongly encouraged to use svg images for diagrams.**
 
 After installing the extension, create a file with the name "\<name\>.drawio.png" and open it in VS Code.
 Make sure you create a directory for each slide deck with its images.
@@ -51,6 +62,9 @@ You can then embed the image in the slide with the following markdown.
 ```md
 ![<description of the image>](<current slide name>/<name>.drawio.png)
 ```
+
+If you need to have images on the left or right use `[bg left]` and `[bg right]` respectively.
+In this case, you cannot have a description of the image, unfortunately.
 
 ## Improvement to make
 
