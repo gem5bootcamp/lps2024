@@ -91,8 +91,36 @@ In this section, we will cover how to accelerate gem5 simulations using fast-for
 
 ### There are different types of exit events in gem5
 
-- ExitEvent.EXIT
-- ExitEvent.CHECKPOINT
-- ExitEvent.FAIL
-- ExitEvent.SIWTHCH
+<ul style="list-style-type: disc; padding-left: 20px; font-size: 1.2em;">
+  <li style="margin-bottom: 20px;">ExitEvent.EXIT</li>
+  <li style="margin-bottom: 20px;">ExitEvent.CHECKPOINT</li>
+  <li style="margin-bottom: 20px;">ExitEvent.FAIL</li>
+  <li style="margin-bottom: 20px;">ExitEvent.SWITCHCPU</li>
+  <li style="margin-bottom: 20px;">ExitEvent.WORKBEGIN</li>
+  <li style="margin-bottom: 20px;">ExitEvent.WORKEND</li>
+  <li style="margin-bottom: 20px;">ExitEvent.USER_INTERRUPT</li>
+  <li style="margin-bottom: 20px;">ExitEvent.MAX_TICK</li>
+</ul>
+
+More info can be found on [gem5 website](https://www.gem5.org/documentation/general_docs/m5ops/)
+
+---
+
+## (Holder for example slides on annotation)
+
+---
+
+## Now we mark the ROI, how can we get to it
+
+### <span style="margin-top: 80px; display: block;">There are two ways:</span>
+
+<ol style="margin-top: 50px; padding-left: 20px; font-size: 1.2em;">
+  <li style="margin-bottom: 30px;">Fast-forwarding with KVM</li>
+  <li style="margin-bottom: 30px;">Checkpoint</li>
+</ol>
+
+---
+
+## Fast-forwarding with KVM
+
 
