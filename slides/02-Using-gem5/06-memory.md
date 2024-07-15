@@ -95,7 +95,6 @@ For full list of their configuration options, investigate their Python object fi
 
 ## Configuring Memory Controllers & Interfaces
 
-<!-- ![w:1100px](06-memory-imgs/memory-controller-script-hbm.png) -->
 ```python
 # memory controller parameters
 system.mem_ctrl = HBMCtrl()
@@ -121,7 +120,6 @@ For full list of their configuration options, investigate their Python object fi
 
 ## Configuring Memory Controllers & Interfaces
 
-<!--![w:550px](06-memory-imgs/memory-controller-script.png) ![w:550px](06-memory-imgs/memory-controller-script-hetero.png) -->
 ```python
 # memory controller parameters
 system.mem_ctrl = HeteroMemCtrl()
@@ -140,13 +138,12 @@ system.mem_ctrl.nvm.device_size = '256MB'
 system.mem_ctrl.port = system.membus.mem_side_ports
 ```
 
-For full list of their configuration options, investigate their Python object files in: `gem5/src/mem`
+<!-- For full list of their configuration options, investigate their Python object files in: `gem5/src/mem` -->
 
 ---
 
 ## Configuring Memory Controllers & Interfaces
 
-<!--![w:550px](06-memory-imgs/memory-controller-script.png) ![w:550px](06-memory-imgs/memory-controller-script-hetero.png) -->
 ```python
 # memory controller parameters
 num_chnls = 2
@@ -165,7 +162,7 @@ for i, mem_ctrl in enumerate(system.mem_ctrls):
     mem_ctrl.port = system.membus.mem_side_ports
 ```
 
-For full list of their configuration options, investigate their Python object files in: `gem5/src/mem`
+<!-- For full list of their configuration options, investigate their Python object files in: `gem5/src/mem` -->
 
 ---
 
@@ -187,9 +184,7 @@ system.mem_ctrl.dram.write_buffer_size = 64
 system.mem_ctrl.dram.device_size = '512MB'
 
 system.mem_ctrl.port = system.membus.mem_side_ports
-
 ```
- - Run with ```/gem5/build/NULL/gem5.opt materials/using-gem5/06-memory-models/blank_memory.py
 
 ---
 
@@ -210,7 +205,6 @@ system.mem_ctrl.dram.write_buffer_size = 64
 system.mem_ctrl.dram.device_size = '512MB'
 
 system.mem_ctrl.port = system.membus.mem_side_ports
-
 ```
 
 ---
