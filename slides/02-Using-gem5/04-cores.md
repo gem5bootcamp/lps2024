@@ -464,17 +464,6 @@ In general, if you don't specify the out-directory, it will be **m5out/stats.txt
 
 ---
 
-<!--> Make this a class? <-->
-<!-- <style scoped>
-  h3{
-    /* font-size: 1.8rem; */
-  }
-  h2{
-    margin-bottom: 60px;
-  } -->
-
-</style>
-
 ## SimpleCPU
 
 ### **Atomic**
@@ -488,7 +477,6 @@ Use: Warming up, FF
 Backdoor access to mem.
 (loading binaries)
 No effect on coherency states
-<!-- </br> -->
 
 ### **Timing**
 
@@ -497,19 +485,8 @@ Models queuing delay and
 resource contention
 
 ![bg auto width:1250px Diagram to show different CPU Model Timings](04-cores-imgs/Simple-CPU.png)
-<!-- ![bg right Diagram to show different CPU Model Timings](04-cores-imgs/Simple-CPU-2.png) -->
 
 ---
-
-<!-- <style scoped>
-  h3{
-    font-size: 1.8rem;
-    margin-bottom: 0px;
-    line-height: 0px;
-  }
-  h2{
-    margin-bottom: 60px;
-  } -->
 
 ## Other Simple CPUS
 
@@ -519,8 +496,6 @@ resource contention
 - Uses **_Atomic_** memory accesses
   - No resource contentions or queuing delay
   - Mostly used for fast-forwarding and warming of caches
-
-</br>
 
 ### TimingSimpleCPU
 
@@ -539,7 +514,7 @@ resource contention
 
 ## O3CPU Model Parameters (very configurable)
 
-src/cpu/o3/BaseO3CPU.py
+[src/cpu/o3/BaseO3CPU.py](../../gem5/src/cpu/o3/BaseO3CPU.py)
 
 ```python
     decodeToFetchDelay = Param.Cycles(1, "Decode to fetch delay")
@@ -557,7 +532,7 @@ src/cpu/o3/BaseO3CPU.py
 
 ## O3CPU Model Parameters (very configurable)
 
-src/cpu/o3/BaseO3CPU.py
+[src/cpu/o3/BaseO3CPU.py](../../gem5/src/cpu/o3/BaseO3CPU.py)
 
 ```python
     renameToDecodeDelay = Param.Cycles(1, "Rename to decode delay")
@@ -572,7 +547,7 @@ src/cpu/o3/BaseO3CPU.py
 
 ## O3CPU Model Parameters (very configurable)
 
-src/cpu/o3/BaseO3CPU.py
+[src/cpu/o3/BaseO3CPU.py](../../gem5/src/cpu/o3/BaseO3CPU.py)
 
 ```python
     LQEntries = Param.Unsigned(32, "Number of load queue entries")
@@ -590,7 +565,7 @@ src/cpu/o3/BaseO3CPU.py
 
 ## O3CPU Model Parameters (very configurable)
 
-src/cpu/o3/BaseO3CPU.py
+[src/cpu/o3/BaseO3CPU.py](../../gem5/src/cpu/o3/BaseO3CPU.py)
 
 ```python
     store_set_clear_period = Param.Unsigned(
@@ -612,7 +587,7 @@ src/cpu/o3/BaseO3CPU.py
 
 ## O3CPU Model Parameters (very configurable)
 
-src/cpu/o3/BaseO3CPU.py
+[src/cpu/o3/BaseO3CPU.py](../../gem5/src/cpu/o3/BaseO3CPU.py)
 
 ```python
     numPhysFloatRegs = Param.Unsigned(
@@ -650,7 +625,7 @@ src/cpu/o3/BaseO3CPU.py
 - Very useful for functional tests and fast-forwarding
 
 ---
-
+<!--
 <style scoped>
   h3{
     font-size: 1.8rem;
@@ -661,24 +636,21 @@ src/cpu/o3/BaseO3CPU.py
     margin-bottom: 0;
   }
 </style>
+-->
 
 ## Summary of gem5 CPU Models
-
-</br>
 
 ### **BaseKvmCPU**
 
 - Very fast
 - No timing
 - No caches, BP
-</br>
 
 ### **BaseSimpleCPU**
 
 - Fast
 - Some timing
 - Caches, limited BP
-</br>
 
 ### **DerivO3CPU and MinorCPU**
 
@@ -747,13 +719,14 @@ src/cpu/o3/BaseO3CPU.py
 
 ### Start by opening the following file
 
-> materials/using-gem5/04-cores/cores.py
+> [materials/developing-gem5-models/04-cores/cores.py](../../materials/developing-gem5-models/04-cores/cores.py)
 
 ---
 
 ## Let's configure a simple system with Atomic CPU
 
-materials/developing-gem5-models/04-cores/cores.py
+[materials/developing-gem5-models/04-cores/cores.py](../../materials/developing-gem5-models/04-cores/cores.py)
+
 ```python
 from gem5.resources.resource import obtain_resource
 from gem5.simulate.simulator import Simulator
@@ -787,7 +760,7 @@ cpu_type = CPUTypes.ATOMIC
 ```
 
 > Let's run it!
-> ```bash
+> ```sh
 > gem5 --outdir=atomic-normal-cache ./materials/developing-gem5-models/04-cores/cores.py
 > ```
 > Make sure the out directory is set to **atomic-normal-cache**
@@ -806,7 +779,7 @@ cpu_type = CPUTypes.TIMING
 ```
 
 > Let's run it!
-> ```bash
+> ```sh
 > gem5 --outdir=timing-normal-cache ./materials/developing-gem5-models/04-cores/cores.py
 >  ```
 > Make sure the out directory is set to **timing-normal-cache**
@@ -828,7 +801,7 @@ cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="1KiB", l1i_size="1KiB")
 ```
 
 > Let's run it!
->```bash
+>```sh
 > gem5 --outdir=timing-small-cache ./materials/developing-gem5-models/04-cores/cores.py
 >```
 > Make sure the out directory is set to **timing-small-cache**
@@ -848,7 +821,7 @@ cpu_type = CPUTypes.ATOMIC
 ```
 
 > Let's run it!
-> ```bash
+> ```sh
 > gem5 --outdir=atomic-small-cache ./materials/developing-gem5-models/04-cores/cores.py
 > ```
 > Make sure the out directory is set to **atomic-small-cache**
@@ -920,13 +893,13 @@ cpu_type = CPUTypes.ATOMIC
 
 Run the following command
 
-```bash
+```sh
 grep -ri "simOps" atomic-normal-cache atomic-small-cache timing-normal-cache timing-small-cache
 ```
 
 Here are the expected results
 
-```bash
+```sh
 atomic-normal-cache/stats.txt:simOps                                       33954560
 atomic-small-cache/stats.txt:simOps                                        33954560
 timing-normal-cache/stats.txt:simOps                                       33954560
@@ -938,13 +911,13 @@ timing-small-cache/stats.txt:simOps                                        33954
 
 Run the following command
 
-```bash
+```sh
 grep -ri "numCycles" atomic-normal-cache atomic-small-cache timing-normal-cache timing-small-cache | grep "cores0"
 ```
 
 Here are the expected results
 
-```bash
+```sh
 atomic-normal-cache/stats.txt:board.processor.cores0.core.numCycles        38157549
 atomic-small-cache/stats.txt:board.processor.cores0.core.numCycles         38157549
 timing-normal-cache/stats.txt:board.processor.cores0.core.numCycles        62838389
