@@ -162,6 +162,8 @@ section.title p {
     line-height: 2.5rem;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+
 /****************************************************/
 /* For two-column layout */
 section.two-col {
