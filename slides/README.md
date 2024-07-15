@@ -48,7 +48,7 @@ To use a different layout, you specify a class in the markdown file.
 Here are some of the available layouts:
 
 - `title`: Title slide
-- `twoCol`: Two columns. To split the slide into two columns, use `###` (heading 3) to create a new column.
+- `two-col`: Two columns. To split the slide into two columns, use `###` (heading 3) to create a new column.
 - `center-image`: Centers images horizontally
 
 ## Adding diagrams
