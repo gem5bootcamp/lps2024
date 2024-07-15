@@ -378,12 +378,15 @@ In general, if you don't specify the out-directory, it will be **m5out/stats.txt
 ## Outline
 
 - CPU models in gem5​
+
   - AtomicSimpleCPU, TimingSimpleCPU, O3CPU, MinorCPU, KvmCPU​
 
 - Using the CPU models​
+
   - Set-up a simple system with two cache sizes and three CPU models​
 
 - Look at the gem5 generated statistics​
+
   - To understand differences among CPU models
 
 ---
@@ -402,13 +405,16 @@ In general, if you don't specify the out-directory, it will be **m5out/stats.txt
 
 ## Outline
 
-- **CPU models in gem5​**
-  - AtomicSimpleCPU, TimingSimpleCPU, O3CPU, MinorCPU, KvmCPU​
+> - **CPU models in gem5​**
+>
+>   - AtomicSimpleCPU, TimingSimpleCPU, O3CPU, MinorCPU, KvmCPU​
 
 - Using the CPU models​
+
   - Set-up a simple system with two cache sizes and three CPU models​
 
 - Look at the gem5 generated statistics​
+
   - To understand differences among CPU models
 
 ---
@@ -702,12 +708,15 @@ src/cpu/o3/BaseO3CPU.py
 ## Outline
 
 - CPU models in gem5​
+
   - AtomicSimpleCPU, TimingSimpleCPU, O3CPU, MinorCPU, KvmCPU​
 
-- **Using the CPU models​**
-  - Set-up a simple system with two cache sizes and three CPU models​
+> - **Using the CPU models​**
+>
+>   - Set-up a simple system with two cache sizes and three CPU models​
 
 - Look at the gem5 generated statistics​
+
   - To understand differences among CPU models
 
 ---
@@ -738,7 +747,7 @@ src/cpu/o3/BaseO3CPU.py
 
 ### Start by opening the following file
 
-materials/using-gem5/04-cores/cores.py
+> materials/using-gem5/04-cores/cores.py
 
 ---
 
@@ -849,13 +858,16 @@ cpu_type = CPUTypes.ATOMIC
 ## Outline
 
 - CPU models in gem5​
+
   - AtomicSimpleCPU, TimingSimpleCPU, O3CPU, MinorCPU, KvmCPU​
 
 - Using the CPU models​
+
   - Set-up a simple system with two cache sizes and three CPU models​
 
-- **Look at the gem5 generated statistics​**
-  - To understand differences among CPU models
+> - **Look at the gem5 generated statistics​**
+>
+>   - To understand differences among CPU models
 
 ---
 
