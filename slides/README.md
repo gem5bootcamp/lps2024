@@ -27,6 +27,19 @@ docker run --rm -v $PWD:/home/marp/app/ -e MARP_USER=$UID:$GID -e LANG=$LANG mar
 - Do not use inline HTML unless *absolutely* necessary.
 - Images should use markdown syntax `![alt text](path/to/image.png)`
 
+### Layouts
+
+To use a different layout, you specify a class in the markdown file.
+
+```md
+<!-- _class: <layout> -->
+```
+
+Here are some of the available layouts:
+
+- `title`: Title slide
+- `twoCol`: Two columns. To split the slide into two columns, use `###` (heading 3) to create a new column.
+
 ## Adding diagrams
 
 To add diagrams, you can use the [draw.io VS Code extension](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio).

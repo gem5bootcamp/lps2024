@@ -158,6 +158,21 @@ section.title p {
 }
 
 /****************************************************/
+/* For two-column layout */
+section.twoCol {
+    columns: 2;
+    display: block;
+}
+
+section.twoCol h2 {
+    column-span: all;
+}
+
+section.twoCol h3 {
+    break-before: column;
+}
+
+/****************************************************/
 /* For code block */
 
 pre {
