@@ -24,7 +24,7 @@ Description Goes Here
 2. Memory Interface(s)
 <br/>
 
-![Diagram of the gem5 memory system](06-memory-imgs/memory-system.drawio.png)
+![Diagram of the gem5 memory system](06-memory-imgs/memory-system.drawio.svg)
 
 ---
 
@@ -39,7 +39,7 @@ Description Goes Here
 2. Applies **scheduling algorithm** (FCFS, FR-FCFS, ...) to issue read and write requests
 <br/>
 
-![Diagram of the gem5 memory controller queues](06-memory-imgs/memory-controller-queues.drawio.png)
+![Diagram of the gem5 memory controller queues](06-memory-imgs/memory-controller-queues.drawio.svg)
 
 ---
 
@@ -52,7 +52,7 @@ Description Goes Here
 - It manages the **media specific operations** like activation, pre-charge, refresh and low-power modes, etc.
 <br/>
 
-![Diagram of the gem5 memory interface](06-memory-imgs/memory-interface.drawio.png)
+![Diagram of the gem5 memory interface](06-memory-imgs/memory-interface.drawio.svg)
 
 ---
 
@@ -60,7 +60,7 @@ Description Goes Here
 
 ## gem5's Memory Controllers
 
-![Hierarchy of gem5 memory controller classes](06-memory-imgs/memory-controller-classes.drawio.png)
+![Hierarchy of gem5 memory controller classes](06-memory-imgs/memory-controller-classes.drawio.svg)
 
 ---
 
@@ -68,13 +68,12 @@ Description Goes Here
 
 ## gem5's Memory Interfaces
 
-![Hierarchy of gem5 memory interface classes](06-memory-imgs/memory-interface-classes.drawio.png)
+![Hierarchy of gem5 memory interface classes](06-memory-imgs/memory-interface-classes.drawio.svg)
 
 ---
 
 ## Configuring Memory Controllers & Interfaces
 
-<!--![w:550px](06-memory-imgs/memory-controller-script.png) ![w:550px](06-memory-imgs/memory-controller-script-hetero.png) -->
 ```python
 # memory controller parameters
 system.mem_ctrl = MemCtrl()
@@ -299,7 +298,7 @@ def SingleChannelLPDDR2_S4_1066_1x32(
 
 ### Simple system to modify
 
-![Simple system diagram](06-memory-imgs/comm-monitor-0.drawio.png)
+![Simple system diagram](06-memory-imgs/comm-monitor-0.drawio.svg)
 
 ### Let's simulate:
 
@@ -314,7 +313,7 @@ Run ```/gem5/build/NULL/gem5.opt  materials/using-gem5/06-memory-models/blank_me
 
 ### Let's add the CommMonitor
 
-![Simple system with CommMonitor diagram](06-memory-imgs/comm-monitor-1.drawio.png)
+![Simple system with CommMonitor diagram](06-memory-imgs/comm-monitor-1.drawio.svg)
 
 <!-- ### Let's simulate: -->
 
@@ -353,7 +352,7 @@ Run ```/gem5/build/NULL/gem5.opt  materials/using-gem5/06-memory-models/blank_me
 
 ### For example...
 
-![Diagram showing an example of address interleaving](06-memory-imgs/address-interleaving.drawio.png)
+![Diagram showing an example of address interleaving](06-memory-imgs/address-interleaving.drawio.svg)
 
 ---
 
