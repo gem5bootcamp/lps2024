@@ -43,6 +43,25 @@ title: gem5 Resources
 - To use the resources in gem5, we can use the `obtain_resource` function.
 - Lets to an example to use the `x86-hello64-static` binary in an example.
 
+- Go to the `materials/02-Using-gem5/02-gem5-resources/complete/01-hello-example.py`
+  - This file builds a basic board and we use the `x86-hello64-static` resource and run the simulation.
+
+---
+
+## Answer
+
+- To get the binary we write the line `board.set_se_binary_workload(obtain_resource("x86-hello64-static"))`
+  - Lets break down this code
+  - The part `obtain_resource("x86-hello64-static")` gets the binary from gem5 resources
+  - The part `board.set_se_binary_workload` tells the board to run the binary that it is given.
+
+- Then we run the simulation
+
+```<python>
+  simulator = Simulator(board=board)
+  simulator.run()
+```
+
 ---
 
 ## Workloads and Suites
@@ -60,7 +79,63 @@ title: gem5 Resources
 - Lets do an example that obtains a suite and then runs a workload from the suite.
 
 ---
-## Local Resources
+
+## Printing all the workloads in a suite
+
+- The `SuiteResource` class act as a generator so we can iterate through the workloads.
+
+- Lets print the `id` and `resource_version` of the workloads in the `x86-getting-started-benchmark-suite` suite.
+
+  - lets get the resource with `getting_started_suite = obtain_resource("x86-getting-started-benchmark-suite")`
+  - Lets iterate through the suite and print id and version of the workloads
+
+    ```<python>
+    for workload in getting_started_suite:
+    print(f"Workload ID: {workload.get_id()}")
+    print(f"workload version: {workload.get_resource_version()}")
+    print("=========================================")
+    ```
+
+---
+
+## Filtering suites by `input_groups`
+
+- Each workload in a suite has some `input_group` that we can filter it by.
+
+- Lets print all the unique input groups the suite has
+  - we can do this by using the `get_input_groups()` function
+
+  ```<python>
+  print("Input groups in the suite")
+  print(getting_started_suite.get_input_groups())
+  ```
+
+---
+
+## Running a workload from the suite
+
+- Lets run the npb IS benchmark that is in the suite
+
+- We need to filter the suite so that we get the workload we want
+  - `npb_is_workload = list(getting_started_suite.with_input_group("is"))[0]`
+    - The above line filters the suite to return a suite that contains all workloads that have the input tag `is`, we convert the returned object to a list and get the first workload in it.
+
+    - This works because `is` is a unique tag that only one workload has.
+
+  - lets print the id of our workload: `print(f"Workload ID: {npb_is_workload.get_id()}")`
+
+- Lets run the workload with the board that we have.
+
+```<python>
+board.set_workload(npb_is_workload)
+
+simulator = Simulator(board)
+simulator.run()
+```
+
+---
+
+## Local resources
 
 - You can also use resources that you have created locally in gem5.
 - You can create a local JSON file that you can use as a data source by setting the
