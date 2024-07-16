@@ -57,7 +57,7 @@ build/X86/gem5.fast --outdir=simple_out configs/learning_gem5/part1/simple.py --
 ```
 ---
 
-## What is Syscall Emulation mode and when to use/avoid it?​
+## What is Syscall Emulation mode, and when to use/avoid it
 
 **Syscall Emulation (SE)** mode does not model all the devices in a system. It focuses on simulating the CPU and memory system. It only emulates Linux system calls, and only models user-mode code.
 
