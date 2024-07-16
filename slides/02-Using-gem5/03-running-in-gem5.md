@@ -3,7 +3,10 @@ marp: true
 paginate: true
 theme: gem5
 title: Running Things on gem5
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8f1346e (modified up to 'How to use m4ops')
 ---
 
 <!-- _class: title -->
@@ -69,12 +72,20 @@ However, if the experiment needs to model the OS interaction, or needs to model 
 
 <!-- _class: start -->
 
+<<<<<<< HEAD
 ## m5ops
+=======
+- Syscall Emulation (SE) mode does not model all the devices in a system
+  - It focuses on simulating the CPU and memory system
+
+- However, SE only emulates Linux system calls, and only models user-mode code
+>>>>>>> 8f1346e (modified up to 'How to use m4ops')
 
 ---
 
 ## What is m5ops
 
+<<<<<<< HEAD
 - The **m5ops** provides different funcitonilties that can be used to communicate between ​the simulated workload and the simulator
   - the commonly used functionailites, and more can be found in [the m5ops doucmentation](https://www.gem5.org/documentation/general_docs/m5ops/):
     - exit [delay]: Stop the simulation in delay nanoseconds
@@ -130,6 +141,63 @@ The commonly used functions (they are matched with the commonly used functionail
 
 In order to call these functions in the workload, we will need to link the m5ops library to the workload.
 So, first, we need to build the m5ops library.
+=======
+- If you do not need to model the OS (such as, translations), and you want faster simulation,​ then you should use SE mode
+
+- However, if you need high fidelity modeling of the system, or if OS interactions like page table walks are important, then you should use the full-system mode. The FS mode will be introduced in [07-full-system](07-full-system.md).
+
+---
+
+<!-- _class: start -->
+
+## The m5ops
+
+---
+
+## The m5ops
+
+- The **m5ops** provides different funcitonilties that can be used to communicate between ​the simulated workload and the simulator
+  - the commonly used functionailites, and more can be found in [the m5ops doucmentation](https://www.gem5.org/documentation/general_docs/m5ops/):
+    - exit [delay]: Stop the simulation in delay nanoseconds
+    - workbegin: Cause an exit event of type, "workbegin", that can be used to mark the begining of an ROI
+    - workend: Cause and exit event of type, "workend", that can be used to mark the ending of an ROI
+    - resetstats [delay[period]]: Reset simulation statistics in delay nanoseconds; repeat this every period nanoseconds
+    - dumpstats [delayp[period]]: Save simulation statistics to a file in delay nanoseconds; repeat this every period nanoseconds
+    - checkpoint [delay [period]]: Create a checkpoint in delay nanoseconds; repeat this every period nanoseconds
+    - switchcpu: Cause an exit event of type, “switch cpu,” allowing the Python to switch to a different CPU model if desired
+
+---
+
+## More about m5ops
+
+There are three versions of the m5ops:
+
+1. Instruction mode: it only works with native CPU models
+
+2. Address mode: it works with native CPU models and KVM CPU (only supports arm and X86)
+
+3. Semihosting: it works with native CPU models and Fast Model
+
+Different mode should be used depending on the CPU type and ISA.
+
+The address mode m5ops will be covered in [07-full-system](07-full-system.md) as gem5-bridge and [08-accelerating-simulation](08-accelerating-simulation.md) after introducing the KVM CPU.
+In this session, we will only cover the instruction mode.
+
+---
+
+## When to use m5ops
+
+There are two main ways of using the m5ops:
+
+1. annotate workloads
+2. gem5-bridge calls in disk image
+
+In this session, we will focus on learning how to use the m5ops to annotate workloads.
+
+---
+
+## How to use m5ops
+>>>>>>> 8f1346e (modified up to 'How to use m4ops')
 
 ---
 
