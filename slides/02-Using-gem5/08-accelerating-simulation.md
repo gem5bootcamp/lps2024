@@ -89,7 +89,10 @@ arm64 is `0x10010000`
 ### Let's use KVM to fast forward to the ROI
 
 1. Setup a switchable processor to switch from the KVM CPU to O3 CPU after reaching
+<!-- the example have them fill in the processor -->
 2. Setup exit event handler to switch the cpu type when m5 workbegin is encountered
+<!-- the example have them fill in the handler -->
+<!-- also show them the default handler they might able to use -->
 3. Let's boot it up!
 
 <!-- give example here -->
