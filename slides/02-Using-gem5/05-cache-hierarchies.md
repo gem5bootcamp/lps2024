@@ -88,7 +88,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 ###
 
-![w:600px](05-cache-hierarchies/snoop_protocol.drawio.svg)
+![w:600px Snoop protocol](05-cache-hierarchies/snoop_protocol.drawio.svg)
 
 ---
 
@@ -97,30 +97,26 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 ## Directory Protocol
 
 * Directory tracks which processor have data when in the shared state
-    * Local node where a request originates (interact with CPU cache)
-    * Home node where the memory location of an address resides
-    * Remote node has a copy of a cache block whether exclusive or shared (interact with CPU cache)
+  * Local node where a request originates (interact with CPU cache)
+  * Home node where the memory location of an address resides
+  * Remote node has a copy of a cache block whether exclusive or shared (interact with CPU cache)
 * A general interconnection network allows processor to communicate
 
 ###
 
-![w:590px](05-cache-hierarchies/directory_protocol.drawio.svg)
+![w:590px Directory protocol](05-cache-hierarchies/directory_protocol.drawio.svg)
 
 ---
 
-<!-- _class: center-title -->
-
 ## Simple Cache
 
-<div style="text-align: center; margin-top: 60px; font-size: 3rem">
-    Snooping Based
-</div>
+### Snooping Based
 
 ---
 
 ## Classic Cache: Coherence protocol (Snooping)
 
-![w:1100px](05-cache-hierarchies/crossbar.drawio.svg)
+![w:1100px Categories of Crossbars](05-cache-hierarchies/crossbar.drawio.svg)
 
 ---
 
@@ -144,31 +140,34 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 ## Example of system with simple cache
 
-![Example of a system with simple cache and crossbars](05-cache-hierarchies/Example_system.drawio.svg)
+![bg center w:600 Example of a system with simple cache and crossbars](05-cache-hierarchies/Example_system.drawio.svg)
 
 ---
 
 ## Classic Cache: Pameters
 
-* build/src/mem/cache/Cache.py
-    *  build/src/mem/cache/cache.cc
-    * build/src/mem/cache/noncoherent_cache.cc
+* src/mem/cache/Cache.py
+  * src/mem/cache/cache.cc
+  * src/mem/cache/noncoherent_cache.cc
 
 Parameters:
 
-    size, associativity, number of miss status handler register (MSHR) entries, prefetcher, replacement policy
+* size
+* associativity
+* number of miss status handler register (MSHR) entries
+* prefetcher
+* replacement policy
 
 ---
-
-<!-- _class: center-title -->
 
 ## Ruby
 
-<div style="text-align: center; margin-top: 60px; font-size: 3rem">
-    Directory Based
-</div>
+### Directory Based
+
 
 ---
+
+<!-- _class: twoCol -->
 
 ## Ruby Cache
 
@@ -176,18 +175,24 @@ Parameters:
 2. Caches + Interface
 3. Interconnect
 
+###
+
+![w:600 System with Ruby Caches](05-cache-hierarchies/ruby_cache.drawio.svg)
+
 ---
 
 ## Ruby
+
+![ On chip interconnect + controllers](05-cache-hierarchies/ruby.drawio.svg)
 
 ---
 
 ## Ruby Components
 
-* Controller models (cache controller, directory controller)
-* Controller topology (Mesh, all-to-all, etc.)
-* Network models
-* Interface (classic ports)
+* **Controller models** (cache controller, directory controller)
+* **Controller topology** (Mesh, all-to-all, etc.)
+* **Network models**
+* **Interface** (classic ports)
 
 ---
 
