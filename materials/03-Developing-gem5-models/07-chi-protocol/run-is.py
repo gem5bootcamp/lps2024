@@ -4,7 +4,7 @@ This script runs the IS-A benchmark on a gem5 simulator with a the CHI hierachy
 in `hierarchy.py`. This script can be used to run either Arm SE mode or X86 FS
 mode. (You can change the comment.)
 
-Running IS-A in SE mode takes about 10 minutes
+Running IS-A takes about 10 minutes
 """
 
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400
@@ -17,16 +17,10 @@ from gem5.resources.resource import obtain_resource
 from gem5.simulate.exit_event import ExitEvent
 from gem5.simulate.simulator import Simulator
 
-from hierarchy import PrivateL1SharedL2CacheHierarchy
-
 import m5
 
-cache_hierarchy = PrivateL1SharedL2CacheHierarchy(
-    l1_size="32KiB",
-    l1_assoc=8,
-    l2_size="2MiB",
-    l2_assoc=16,
-)
+# FILL THIS IN
+# cache_hierarchy = ...
 
 memory = SingleChannelDDR4_2400(size="3GiB")
 
@@ -88,8 +82,8 @@ def on_work_begin():
     print("Work begin. Switching to detailed CPU")
     m5.stats.reset()
     processor.switch()
-    # print("Running for 10,000,000 instructions")
-    # simulator.schedule_max_insts(10_000_000)
+    print("Running for 10,000,000 instructions")
+    simulator.schedule_max_insts(10_000_000)
     yield False
 
 def on_work_end():

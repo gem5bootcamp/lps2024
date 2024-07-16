@@ -51,20 +51,12 @@ class SharedL2(AbstractNode):
     """A home node (HNF) with a shared cache"""
 
     def __init__(
-        self,
-        size: str,
-        assoc: int,
-        network: RubyNetwork,
-        cache_line_size: int,
+            # FILL THIS IN
     ):
         super().__init__(network, cache_line_size)
 
-        self.cache = RubyCache(
-            size=size,
-            assoc=assoc,
-            # Can choose any replacement policy
-            replacement_policy=RRIPRP(),
-        )
+        # FILL THIS IN
+
 
         # Only used for L1 controllers
         self.send_evictions = False
@@ -75,25 +67,8 @@ class SharedL2(AbstractNode):
         self.prefetcher = NULL
 
         # Set up home node that allows three hop protocols
-        self.is_HN = True
-        self.enable_DMT = True
-        self.enable_DCT = True
+        # FILL THIS IN
 
-        # "Owned state"
-        self.allow_SD = True
-
-        # MOESI / Mostly inclusive for shared / Exclusive for unique
-        self.alloc_on_seq_acc = False
-        self.alloc_on_seq_line_write = False
-        self.alloc_on_readshared = True
-        self.alloc_on_readunique = False
-        self.alloc_on_readonce = True
-        self.alloc_on_writeback = True
-        self.alloc_on_atomic = True
-        self.dealloc_on_unique = True
-        self.dealloc_on_shared = False
-        self.dealloc_backinv_unique = False
-        self.dealloc_backinv_shared = False
 
         # Some reasonable default TBE params
         self.number_of_TBEs = 32
@@ -107,19 +82,7 @@ class PrivateL1SharedL2CacheHierarchy(AbstractRubyCacheHierarchy):
     """A two level cache based on CHI
     """
 
-    def __init__(self, l1_size: str, l1_assoc: int, l2_size: str, l2_assoc: int):
-        """
-        :param l1_size: The size of the priavte I/D caches in the hierarchy.
-        :param l1_assoc: The associativity of each cache.
-        :param l2_size: The size of the shared L2 cache.
-        :param l2_assoc: The associativity of the shared L2 cache.
-        """
-        super().__init__()
-
-        self._l1_size = l1_size
-        self._l1_assoc = l1_assoc
-        self._l2_size = l2_size
-        self._l2_assoc = l2_assoc
+    # FILL THIS IN  Add the constructor here
 
     def incorporate_cache(self, board):
 
@@ -137,13 +100,7 @@ class PrivateL1SharedL2CacheHierarchy(AbstractRubyCacheHierarchy):
         self.ruby_system.network.number_of_virtual_networks = 4
 
         # Create a single centralized L2/Home node
-        self.l2cache = SharedL2(
-            size=self._l2_size,
-            assoc=self._l2_assoc,
-            network=self.ruby_system.network,
-            cache_line_size=board.get_cache_line_size()
-        )
-        self.l2cache.ruby_system = self.ruby_system
+        # FILL THIS IN
 
         # Create one core cluster with a split I/D cache for each core
         self.core_clusters = [

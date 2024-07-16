@@ -67,7 +67,7 @@ self.cache = RubyCache(
 )
 ```
 
-You can choose any replace policy from [`gem5/src/mem/cache/replacement_policies/ReplacementPolicies.py](../../gem5/src/mem/cache/replacement_policies/ReplacementPolicies.py).
+You can choose any replace policy from [`gem5/src/mem/cache/replacement_policies/ReplacementPolicies.py`](../../gem5/src/mem/cache/replacement_policies/ReplacementPolicies.py).
 
 ---
 
