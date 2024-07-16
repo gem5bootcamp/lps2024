@@ -3,9 +3,6 @@ marp: true
 paginate: true
 theme: gem5
 title: Running Things on gem5
-author: "Maryam Babaie"
-editor: "Jason Lowe-Power"
-
 
 ---
 
@@ -18,16 +15,18 @@ editor: "Jason Lowe-Power"
 ## OOO Action Item
 
 - Launch codespaces and run the following commands:
-`cd gem5`
-`scons build/X86/gem5.debug -j14`
+```bash
+cd gem5
+scons build/X86/gem5.debug -j$(nproc)
+```
 
 ---
 
 ## What we will cover
 
 - Intro to syscall emulation mode
-- The gem5-bridge utility and library
-- Cross compiling
+- The m5ops and workload annotation
+- Cross compiling workloads
 - Traffic generator
 
 ---
@@ -42,7 +41,7 @@ editor: "Jason Lowe-Power"
 - Building with Scons:
 
 ```bash
-scons build/{ISA}/gem5.{variant} -j (cpus)
+scons build/{ISA}/gem5.{variant} -j $(nproc)
 ```
 
 - Once compiled, gem5 can then be run using:
@@ -61,54 +60,70 @@ build/X86/gem5.fast --outdir=simple_out configs/learning_gem5/part1/simple.py --
 
 ## What is Syscall Emulation?​
 
-- Syscall Emulation (SE) mode does not model all the devices in a system.​
-  - It focuses on simulating the CPU and memory system.​
+- Syscall Emulation (SE) mode does not model all the devices in a system
+  - It focuses on simulating the CPU and memory system
 
-- SE mode is much easier to configure.​
-
-- However, SE only emulates Linux system calls, and only models user-mode code.​
+- However, SE only emulates Linux system calls, and only models user-mode code
 
 ---
 
 ## When to use/avoid Syscall Emulation?​
 
-- If you do not need to model the OS, and you want extra performance,​ then you should use SE mode.
+- If you do not need to model the OS (such as, translations), and you want faster simulation,​ then you should use SE mode
 
-- However, if you need high fidelity modeling of the system, or if OS interactions like page table walks are important, then you should use FS mode.​
+- However, if you need high fidelity modeling of the system, or if OS interactions like page table walks are important, then you should use the full-system mode. The FS mode will be introduced in [07-full-system](07-full-system.md).
 
 ---
 
 <!-- _class: start -->
 
-## The m5 Utility
+## The m5ops
 
 ---
 
-## The m5 Utility API​
+## The m5ops
 
-- “m5ops” are the special opcodes that can be used in m5 to issue special instructions.​
-  - Usage: checkpointing, exiting simulation, etc.​
-
-- The m5 utility is the API providing these functionalities/options.​
-
-- Options include:​
-  - exit (delay): Stop the simulation in delay nanoseconds.​
-  - resetstats (delay, period): Reset simulation statistics in delay nanoseconds; repeat this every period nanoseconds.​
-  - dumpstats (delay , period): Save simulation statistics to a file in delay nanoseconds; repeat this every period nanoseconds.​
-  - dumpresetstats (delay, period): same as dumpstats; resetstats;​
-- Full list of options can be found [here](https://www.gem5.org/documentation/general_docs/m5ops/).​
+- The **m5ops** provides different funcitonilties that can be used to communicate between ​the simulated workload and the simulator
+  - the commonly used functionailites, and more can be found in [the m5ops doucmentation](https://www.gem5.org/documentation/general_docs/m5ops/):
+    - exit [delay]: Stop the simulation in delay nanoseconds
+    - workbegin: Cause an exit event of type, "workbegin", that can be used to mark the begining of an ROI
+    - workend: Cause and exit event of type, "workend", that can be used to mark the ending of an ROI
+    - resetstats [delay[period]]: Reset simulation statistics in delay nanoseconds; repeat this every period nanoseconds
+    - dumpstats [delayp[period]]: Save simulation statistics to a file in delay nanoseconds; repeat this every period nanoseconds
+    - checkpoint [delay [period]]: Create a checkpoint in delay nanoseconds; repeat this every period nanoseconds
+    - switchcpu: Cause an exit event of type, “switch cpu,” allowing the Python to switch to a different CPU model if desired
 
 ---
 
-## How to use the m5 utility?​
+## More about m5ops
 
-- It is best to insert the option(s) directly in the source code of the application.​
+There are three versions of the m5ops:
 
-- **m5ops.h** header file has prototypes for all the functionalities/options must be included.​
+1. Instruction mode: it only works with native CPU models
 
-- The application should be linked with the appropriate **m5** & **libm5.a** files.​
-  - m5: The command line utility
-  - libm5.a: C library for the utility
+2. Address mode: it works with native CPU models and KVM CPU (only supports arm and X86)
+
+3. Semihosting: it works with native CPU models and Fast Model
+
+Different mode should be used depending on the CPU type and ISA.
+
+The address mode m5ops will be covered in [07-full-system](07-full-system.md) as gem5-bridge and [08-accelerating-simulation](08-accelerating-simulation.md) after introducing the KVM CPU.
+In this session, we will only cover the instruction mode.
+
+---
+
+## When to use m5ops
+
+There are two main ways of using the m5ops:
+
+1. annotate workloads
+2. gem5-bridge calls in disk image
+
+In this session, we will focus on learning how to use the m5ops to annotate workloads.
+
+---
+
+## How to use m5ops
 
 ---
 
