@@ -54,6 +54,7 @@ build/{ISA}/gem5.{variant} [gem5 options] {simulation script} [script options]
 ```
 
 - example:
+<<<<<<< HEAD
 
 ```bash
 build/X86/gem5.fast --outdir=simple_out configs/learning_gem5/part1/simple.py --l1i_size=32kB​
@@ -67,9 +68,15 @@ build/X86/gem5.fast --outdir=simple_out configs/learning_gem5/part1/simple.py --
 SE mode is a good choice when the experiment does not need to model the OS (such as translations), does not need a high fidelity model, and faster simulation speed is needed.
 
 However, if the experiment needs to model the OS interaction, or needs to model a system in high fidelity, then we should use the full-system (FS) mode. The FS mode will be covered in [07-full-system](07-full-system.md).
+=======
+>>>>>>> bb51e46 (modified a bit in the SE part)
 
+```bash
+build/X86/gem5.fast --outdir=simple_out configs/learning_gem5/part1/simple.py --l1i_size=32kB​
+```
 ---
 
+<<<<<<< HEAD
 <!-- _class: start -->
 
 <<<<<<< HEAD
@@ -145,16 +152,25 @@ So, first, we need to build the m5ops library.
 - If you do not need to model the OS (such as, translations), and you want faster simulation,​ then you should use SE mode
 
 - However, if you need high fidelity modeling of the system, or if OS interactions like page table walks are important, then you should use the full-system mode. The FS mode will be introduced in [07-full-system](07-full-system.md).
+=======
+## What is Syscall Emulation mode and when to use/avoid it?​
+
+**Syscall Emulation (SE)** mode does not model all the devices in a system. It focuses on simulating the CPU and memory system. It only emulates Linux system calls, and only models user-mode code.
+
+SE mode is a good choice when the experiment does not need to model the OS (such as translations), does not need a high fidelity model, and faster simulation speed is needed.
+
+However, if the experiment needs to model the OS interaction, or needs to model a system in high fidelity, then we should use the full-system (FS) mode. The FS mode will be covered in [07-full-system](07-full-system.md).
+>>>>>>> bb51e46 (modified a bit in the SE part)
 
 ---
 
 <!-- _class: start -->
 
-## The m5ops
+## m5ops
 
 ---
 
-## The m5ops
+## What is m5ops
 
 - The **m5ops** provides different funcitonilties that can be used to communicate between ​the simulated workload and the simulator
   - the commonly used functionailites, and more can be found in [the m5ops doucmentation](https://www.gem5.org/documentation/general_docs/m5ops/):
@@ -199,6 +215,63 @@ In this session, we will focus on learning how to use the m5ops to annotate work
 ## How to use m5ops
 >>>>>>> 8f1346e (modified up to 'How to use m4ops')
 
+m5ops provides a library of functions for different functionailities. All functions can be found in [gem5/include/gem5/m5ops.h](../../gem5/include/gem5/m5ops.h).
+The commonly used functions (they are matched with the commonly used functionailites above):
+
+<<<<<<< HEAD
+## Building the m5ops library
+
+The m5 utility is in [gem5/util/m5](../../gem5/util/m5) directory.​
+In order to build the m5ops library,
+
+1. cd into the ```gem5/util/m5``` directory
+2. run ```scons [{TARGET_ISA}.CROSS_COMPILE={TARGET_ISA CROSS COMPILER}] build/{TARGET_ISA}/out/m5​```
+3. the compiled library (`m5` is for command line utility, and `libm5.a` is a C library) will be at ```gem5/util/m5/build/{TARGET_ISA}/out```
+
+
+
+### Note
+
+- if the host system ISA does not match with the target ISA, then we will need to use the cross-compiler
+- `TARGET_ISA` has to be in lower case
+
+---
+
+## Hand-on Time!
+
+### Let's build a m5ops library for x86 and riscv
+
+```bash
+cd gem5/util/m5
+scons build/x86/out/m5
+scons riscv.CROSS_COMPILE=riscv64-unknown-linux-gnu- build/riscv/out/m5
+```
+<!-- example output -->
+
+---
+
+## Linking the m5ops library to C/C++ code​
+
+After building the m5ops library, we can link them to our workload by:​
+
+1. Include **gem5/m5ops.h** in the workload's source file(s)
+
+2. Add **gem5/include** to the compiler's include search path
+
+3. Add **gem5/util/m5/build/{TARGET_ISA}/out** to the linker search path
+
+=======
+-`void m5_exit(uint64_t ns_delay)`
+-`void m5_work_begin(uint64_t workid, uint64_t threadid)`
+-`void m5_work_end(uint64_t workid, uint64_t threadid)`
+-`void m5_reset_stats(uint64_t ns_delay, uint64_t ns_period)`
+-`void m5_dump_stats(uint64_t ns_delay, uint64_t ns_period)`
+-`void m5_checkpoint(uint64_t ns_delay, uint64_t ns_period)`
+-`void m5_switch_cpu(void)`
+
+In order to call these functions in the workload, we will need to link the m5ops library to the workload.
+So, first, we need to build the m5ops library.
+
 ---
 
 ## Building the m5ops library
@@ -242,6 +315,7 @@ After building the m5ops library, we can link them to our workload by:​
 
 3. Add **gem5/util/m5/build/{TARGET_ISA}/out** to the linker search path
 
+>>>>>>> bb51e46 (modified a bit in the SE part)
 4. Link against **libm5.a** with `-lm5`
 
 ---
