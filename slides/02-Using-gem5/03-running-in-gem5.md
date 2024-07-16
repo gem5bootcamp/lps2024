@@ -15,40 +15,6 @@ editor: "Jason Lowe-Power"
 
 ---
 
-<style>
-  /* from https://github.com/marp-team/marpit/issues/141 */
-  img[alt~="center"]{
-    display:block;
-    margin: 0 auto;
-  }
-
-  .section-start {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width:100%;
-  height: 100%;
-  /* background-color: black */
-  font-size: 4rem
-}
-  .center-image-div{
-    display:flex;
-    align-items: center;
-    justify-content:space-around;
-    width:100%;
-  }
-
-  .code-block-div{
-    display:flex;
-    flex-direction:row;
-    justify-content:space-around;
-  }
-
-</style>
-
-
-
 ## OOO Action Item
 
 - Launch codespaces and run the following commands:
@@ -66,7 +32,8 @@ editor: "Jason Lowe-Power"
 
 ---
 
-<div class=section-start> Intro to Syscall Emulation Mode </div>
+<!-- _class: start -->
+## Intro to Syscall Emulation Mode
 
 ---
 
@@ -74,14 +41,21 @@ editor: "Jason Lowe-Power"
 
 - Building with Scons:
 
-`scons build/{ISA}/gem5.{variant} -j (cpus)`
+```bash
+scons build/{ISA}/gem5.{variant} -j (cpus)
+```
 
 - Once compiled, gem5 can then be run using:
 
-`build/{ISA}/gem5.{variant} [gem5 options] {simulation script} [script options]`
+```bash
+build/{ISA}/gem5.{variant} [gem5 options] {simulation script} [script options]
+```
 
 - example:
-`build/X86/gem5.fast --outdir=simple_out configs/learning_gem5/part1/simple.py --l1i_size=32kB​`
+
+```bash
+build/X86/gem5.fast --outdir=simple_out configs/learning_gem5/part1/simple.py --l1i_size=32kB​
+```
 
 ---
 
@@ -104,8 +78,9 @@ editor: "Jason Lowe-Power"
 
 ---
 
-<div class=section-start> The m5 Utility </div>
-<!-- Is m5 called gem5-bridge nowadays? -->
+<!-- _class: start -->
+
+## The m5 Utility
 
 ---
 
@@ -148,10 +123,9 @@ editor: "Jason Lowe-Power"
 - Target ISA must be in lower case:​
   - x86​
   - arm
-  - thumb
   - sparc
   - arm64
-  - Riscv
+  - riscv
 
 - This will generate libm5.a and m5 binaries in the **util/m5/build/{TARGET_ISA}/out/** directory.​
 
@@ -162,7 +136,6 @@ editor: "Jason Lowe-Power"
 - **Note:** if you are using a x86 system for other ISAs, you need to have the cross-compiler​
 - Cross-compiler for each target ISA:​
   - arm : arm-linux-gnueabihf-gcc​
-  - thumb : arm-linux-gnueabihf-gcc​
   - sparc : sparc64-linux-gnu-gcc​
   - arm64 : aarch64-linux-gnu-gcc​
   - riscv : riscv64-linux-gnu-gcc​
@@ -187,8 +160,9 @@ editor: "Jason Lowe-Power"
 
 ## Example 1: print in std out​
 
-<div class=side-by-side-div>
-  <div style="flex:1">
+###
+
+<!-- _class: two-col -->
 
   ```c++
   #include <unistd.h>
@@ -203,24 +177,20 @@ editor: "Jason Lowe-Power"
   }
   ```
 
-  </div>
 <!-- The original has empty lines between each line in main.
 Removed to save space in slides -->
-  <div style="flex:1">
 
-  - Example 1 code: ​materials/using-gem5/03-running/example1/se_example.cpp
+###
 
-  - Config file:​ materials/using-gem5/03-running/simple.py
+- Example 1 code: ​materials/using-gem5/03-running/example1/se_example.cpp
 
-  **Commands**
+- Config file:​ materials/using-gem5/03-running/simple.py
+
+**Commands**
 
 - Compile the code:​ `gcc materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin​`
 - Run workload: `./exampleBin​`
 - Run gem5: `gem5/build/X86/gem5.debug materials/using-gem5/03-running/simple.py​`
-  </div>
-
-</div>
-
 
 ---
 
@@ -268,14 +238,12 @@ gcc materials/using-gem5/03-running/example1/se_example.cpp -o exampleBin​
 
 ## SE mode uses the host for many things.​
 
+<!-- _class: two-col -->
+
+###
+
 - SE mode treats a system call as one instruction for the guest.​
-<!-- Note to self: come back to this later to get text version of output message-->
-
-<div class=side-by-side-div>
-
-<!-- ![Example of code that causes a syscall center](03-running-in-gem5-imgs/slide-18-a.drawio.jpg) -->
-
-<div style="flex:1">
+<!-- Note to self: when trying to run the config script, I am only able to get "Error occurred!" as the printed output -->
 
 ```c++
 #include <unistd.h>
@@ -294,12 +262,7 @@ int main()
 
 ```
 
-</div>
-
-<!--
-![Output that shows that a syscall was performed center](03-running-in-gem5-imgs/slide-18-b.drawio.jpg) -->
-
-<div style="flex:1">
+###
 
 ```txt
 8401562000: system.cpu: A0 T0 : 0x7ffff7c8256b @_end+140737350460435. 1 :   JZ_I : limm   t2, 0x13   : IntAlu :  D=0x0000000000000013  flags=(IsInteger|IsMicroop|IsDelayedCommit)
@@ -312,23 +275,17 @@ Error Occurred!
 
 - Run gem5:
 `gem5/build/X86/gem5.debug  --debug-flags=ExecAll  materials/using-gem5/03-running/simple.py > debugOut.txt​`
-</div>
-
-</div>
-
 
 <!-- The c++ file appears to be 2024/materials/using-gem5/03-running/example1/se_example.cpp -->
 
 <!-- The debug file is really big. I got an "Error occurred!" message for this
 example as well
 -->
+
 ---
+<!-- _class: two-col -->
 
 ## Example 2: checking a directory​
-
-<div class=side-by-side-div>
-
-<div style="flex:1">
 
 ```c++
 #include<iostream>
@@ -357,8 +314,7 @@ int main()
 
 ```
 
-</div>
-<div style="flex:1">
+###
 
 - Example 2 code: ​materials/using-gem5/03-running/example2/dir_example.cpp
 
@@ -368,9 +324,6 @@ int main()
 
 - Compile the code:​ `g++ materials/using-gem5/03-running/example2/dir_example.cpp -o exampleBin​`
 - Run gem5:​ `gem5/build/X86/gem5.debug materials/using-gem5/03-running/simple.py​`
-
-</div>
-</div>
 
 <!-- Important note: 03-running/simple.py doesn't seem to work right out of the box anymore -->
 <!-- I modified two lines that had to do with ISAs and changed the path to the compiled C++ code  -->
@@ -383,12 +336,7 @@ int main()
 
 ## SE mode uses the host for many things.​ (cont.)
 
-- For things like creating/reading a file, it will create/read files on the host.​
-<!-- Insert images here. page 21 on old slides -->
-
-<div class=side-by-side-div>
-
-<div style="flex:1">
+<!-- _class: two-col -->
 
 ```c++
 //path: materials/using-gem5/03-running/example2/dir_example.cpp
@@ -417,9 +365,10 @@ int main()
 }
 ```
 
-</div>
+###
 
-<div style="flex:1">
+- For things like creating/reading a file, it will create/read files on the host.​
+<!-- Insert images here. page 21 on old slides -->
 
 ```txt
 src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
@@ -429,10 +378,6 @@ src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
 Error Occurred!
 Exiting @ tick 149336343000 because exiting with last active thread context
 ```
-
-</div>
-
-</div>
 
 ---
 
@@ -450,7 +395,9 @@ Exiting @ tick 149336343000 because exiting with last active thread context
 
 ---
 
-<div class=section-start> Cross-compiling </div>
+<!-- _class: start -->
+
+## Cross-compiling
 
 ---
 
@@ -464,13 +411,11 @@ Exiting @ tick 149336343000 because exiting with last active thread context
 
 ## Example: Cross-compiling​
 
+<!-- _class: two-col -->
+
+###
+
 - Host = X86  Target: ARM64​
-<!-- Insert code or image here. old slides slide 25 -->
-<!-- ![Cross compiling width:90% bg right](03-running-in-gem5-imgs/slide-25.drawio.jpg) -->
-
-<div class=side-by-side-div>
-
-<div style="flex:1">
 
 ```c++
 #include <unistd.h>
@@ -488,9 +433,7 @@ int main()
 }
 ```
 
-</div>
-
-<div style="flex:1">
+###
 
 1. Build m5 utility for arm64​
 `cd gem5/util/m5​`
@@ -501,14 +444,12 @@ int main()
 
 3. Run gem5
 `gem5/build/ARM/gem5.debug materials/using-gem5/03-running/simple.py​`
-</div>
-<div style="width:50%">
 
+###
 - Example 2 code: ​materials/using-gem5/03-running/example2/dir_example.cpp
 
 - Config file:​ materials/using-gem5/03-running/simple.py
-</div>
-</div>
+
 
 **Commands**
 
@@ -517,36 +458,9 @@ int main()
 
 ---
 
-## SE mode uses the host for many things.​ (cont.)
+<!-- _class: start -->
 
-- For things like creating/reading a file, it will create/read files on the host.​
-<!-- Insert images here. page 21 on old slides -->
-
-<div class=center-image-div>
-
-![Code sample](03-running-in-gem5-imgs/slide-21-a.drawio.jpg)
-
-![SE mode creating files on host](03-running-in-gem5-imgs/slide-21-b.drawio.jpg)
-
-</div>
-
----
-
-## SE mode does NOT implement many things!​
-
-- Filesystem​
-- Most of systemcalls
-- I/O devices
-- Interrupts
-- TLB misses
-- Page table walks
-- Context switches
-- multiple threads
-  - You may have a multithreaded execution, but there's no context switches & no spin locks​
-
----
-
-<div class=section-start> Cross-compiling </div>
+## Cross-compiling
 
 ---
 
@@ -562,9 +476,7 @@ int main()
 
 - Host = X86  Target: ARM64​
 <!-- Insert code or image here. old slides slide 25 -->
-<!-- ![Cross compiling width:90% bg right](03-running-in-gem5-imgs/slide-25.drawio.jpg) -->
 
-<div>
 
 1. Build m5 utility for arm64​
 `cd gem5/util/m5​`
@@ -576,13 +488,11 @@ int main()
 3. Run gem5
 `gem5-arm materials/using-gem5/03-running/simple.py​`
 
-</div>
-
 ---
 
 ## Example: Cross-compiling (Dynamic)​
 <!-- Insert code example here. From page 26 of old slides -->
-<!-- ![Cross compiling width:90% bg right](03-running-in-gem5-imgs/slide-25.drawio.jpg) -->
+
 1. Build m5 utility for ARM, as shown before.​
 2. Cross-compile the program with m5 utility​
 
@@ -613,7 +523,8 @@ system.redirect_paths = [RedirectPath(app_path="/lib", host_paths=["/usr/aarch64
 
 ---
 
-<div class=section-start> Traffic Generator in gem5 </div>
+<!-- _class: start -->
+## Traffic Generator in gem5
 
 ---
 
