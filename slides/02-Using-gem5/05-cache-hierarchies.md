@@ -30,14 +30,12 @@ scons build/NULL_MESI_Two_Level/gem5.opt --default=NULL PROTOCOL=MESI_Two_Level 
 2. **Ruby**: Models cache coherence in detail
 
 ###
-![Placement of the Cache Hierarchy in gem5](05-cache-hierarchies/CPU_CacheHierarchy_MemCtrl.drawio.png)
+![Placement of the Cache Hierarchy in gem5](05-cache-hierarchies/CPU_CacheHierarchy_MemCtrl.svg)
 
 
 ---
 
 ## Outline
-
-<div style="text-align: left; margin-top: 60px;">
 
 * Background on cache coherency
 * Simple Cache
@@ -46,7 +44,7 @@ scons build/NULL_MESI_Two_Level/gem5.opt --default=NULL PROTOCOL=MESI_Two_Level 
 * Ruby cache
     * Ruby components
     * Example of MESI two level protocol
-</div>
+
 
 ---
 
@@ -54,11 +52,7 @@ scons build/NULL_MESI_Two_Level/gem5.opt --default=NULL PROTOCOL=MESI_Two_Level 
 
 A coherence problem can arise if multiple cores have access to multiple copies of a data (e.g., in multiple caches) and at least one access is a write
 
----
-
-## What is Coherency
-
-A coherence problem can arise if multiple cores have access to multiple copies of a data (e.g., in multiple caches) and at least one access is a write
+![Cores and Coherency across caches](05-cache-hierarchies/cache_line_1.svg)
 
 ---
 
@@ -66,16 +60,39 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 A coherence problem can arise if multiple cores have access to multiple copies of a data (e.g., in multiple caches) and at least one access is a write
 
+![Cores and Coherency across caches with write request](05-cache-hierarchies/cache_line_2.svg)
+
 ---
+
+## What is Coherency
+
+A coherence problem can arise if multiple cores have access to multiple copies of a data (e.g., in multiple caches) and at least one access is a write
+
+![Cores and Coherency across caches with write request](05-cache-hierarchies/cache_line_2.svg)
+
+* Coherency protocols
+    1. Snooping
+    2. Directory
+
+---
+
+<!-- _class: twoCol -->
 
 ## Snoop Protocol
 
 * Each processor snoops the bus to verify whther it has a copy of a requested cache line
 * Before a processor writes data, other processor cache copies must be invalidated
 * The coherence requests typically travel on an ordered broadcast network such as a bus
-* This technique does not scale since it requires an all-to-all broadcast
+
+- **This technique does not scale since it requires an all-to-all broadcast**
+
+###
+
+![w:600px](05-cache-hierarchies/snoop_protocol.drawio.svg)
 
 ---
+
+<!-- _class: twoCol -->
 
 ## Directory Protocol
 
@@ -84,6 +101,10 @@ A coherence problem can arise if multiple cores have access to multiple copies o
     * Home node where the memory location of an address resides
     * Remote node has a copy of a cache block whether exclusive or shared (interact with CPU cache)
 * A general interconnection network allows processor to communicate
+
+###
+
+![w:590px](05-cache-hierarchies/directory_protocol.drawio.svg)
 
 ---
 
@@ -98,6 +119,8 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 ---
 
 ## Classic Cache: Coherence protocol (Snooping)
+
+![w:1100px](05-cache-hierarchies/crossbar.drawio.svg)
 
 ---
 
@@ -120,6 +143,8 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 ---
 
 ## Example of system with simple cache
+
+![Example of a system with simple cache and crossbars](05-cache-hierarchies/Example_system.drawio.svg)
 
 ---
 
