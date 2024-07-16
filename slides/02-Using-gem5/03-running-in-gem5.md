@@ -3,10 +3,7 @@ marp: true
 paginate: true
 theme: gem5
 title: Running Things on gem5
-<<<<<<< HEAD
 
-=======
->>>>>>> 8f1346e (modified up to 'How to use m4ops')
 ---
 
 <!-- _class: title -->
