@@ -84,7 +84,6 @@ In this session, we will focus on learning how to use the m5ops to annotate work
 ---
 
 ## How to use m5ops
->>>>>>> 8f1346e (modified up to 'How to use m4ops')
 
 m5ops provides a library of functions for different functionailities. All functions can be found in [gem5/include/gem5/m5ops.h](../../gem5/include/gem5/m5ops.h).
 The commonly used functions (they are matched with the commonly used functionailites above):
@@ -143,7 +142,6 @@ After building the m5ops library, we can link them to our workload by:​
 
 3. Add **gem5/util/m5/build/{TARGET_ISA}/out** to the linker search path
 
->>>>>>> bb51e46 (modified a bit in the SE part)
 4. Link against **libm5.a** with `-lm5`
 
 ---
