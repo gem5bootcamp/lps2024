@@ -43,7 +43,7 @@ import m5.debug
 
 Usage:
 
-gem5 -re 03-run-SE.py
+gem5 -re 03-run-x86-SE.py
 
 '''
 
