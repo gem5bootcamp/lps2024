@@ -50,12 +50,12 @@ import argparse
 
 Usage:
 
-gem5 05-run-riscv-SE.py --workload-type=[static|dynamic]
+gem5 05-run-arm-SE.py --workload-type=[static|dynamic]
 
 Suggested usage:
 
-gem5 -re --outdire=[static|dynamic] \
-            05-run-riscv-SE.py --workload-type=[static|dynamic]
+gem5 -re --outdir=[static|dynamic] \
+            05-run-arm-SE.py --workload-type=[static|dynamic]
 
 '''
 

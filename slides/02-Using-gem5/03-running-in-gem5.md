@@ -45,29 +45,29 @@ However, if the experiment needs to model the OS interaction, or needs to model 
 
 ## What is m5ops
 
-- The **m5ops** provides different funcitonilties that can be used to communicate between ​the simulated workload and the simulator
-  - the commonly used functionailites, and more can be found in [the m5ops doucmentation](https://www.gem5.org/documentation/general_docs/m5ops/):
-    - exit [delay]: Stop the simulation in delay nanoseconds
-    - workbegin: Cause an exit event of type, "workbegin", that can be used to mark the begining of an ROI
-    - workend: Cause and exit event of type, "workend", that can be used to mark the ending of an ROI
-    - resetstats [delay[period]]: Reset simulation statistics in delay nanoseconds; repeat this every period nanoseconds
-    - dumpstats [delayp[period]]: Save simulation statistics to a file in delay nanoseconds; repeat this every period nanoseconds
-    - checkpoint [delay [period]]: Create a checkpoint in delay nanoseconds; repeat this every period nanoseconds
-    - switchcpu: Cause an exit event of type, “switch cpu,” allowing the Python to switch to a different CPU model if desired
+- The **m5ops** (short for m5 opcodes) provide different functionalities that can be used to communicate between ​the simulated workload and the simulator.
+- The commonly used functionalities are below. More can be found in [the m5ops documentation](https://www.gem5.org/documentation/general_docs/m5ops/):
+  - exit [delay]: Stop the simulation in delay nanoseconds
+  - workbegin: Cause an exit event of type "workbegin" that can be used to mark the begining of an ROI
+  - workend: Cause and exit event of type "workend" that can be used to mark the ending of an ROI
+  - resetstats [delay[period]]: Reset simulation statistics in delay nanoseconds; repeat this every period nanoseconds
+  - dumpstats [delay[period]]: Save simulation statistics to a file in delay nanoseconds; repeat this every period nanoseconds
+  - checkpoint [delay [period]]: Create a checkpoint in delay nanoseconds; repeat this every period nanoseconds
+  - switchcpu: Cause an exit event of type, “switch cpu,” allowing the Python to switch to a different CPU model if desired
 
 ---
 
 ## More about m5ops
 
-There are three versions of the m5ops:
+There are three versions of m5ops:
 
 1. Instruction mode: it only works with native CPU models
-2. Address mode: it works with native CPU models and KVM CPU (only supports arm and X86)
+2. Address mode: it works with native CPU models and KVM CPU (only supports Arm and X86)
 3. Semihosting: it works with native CPU models and Fast Model
 
-Different mode should be used depending on the CPU type and ISA.
+Different modes should be used depending on the CPU type and ISA.
 
-The address mode m5ops will be covered in [07-full-system](07-full-system.md) as gem5-bridge and [08-accelerating-simulation](08-accelerating-simulation.md) after introducing the KVM CPU.
+The address mode m5ops will be covered in [07-full-system](07-full-system.md) as gem5-bridge and [08-accelerating-simulation](08-accelerating-simulation.md) after the KVM CPU is introduced.
 **In this session, we will only cover the instruction mode.**
 
 ---
@@ -76,8 +76,8 @@ The address mode m5ops will be covered in [07-full-system](07-full-system.md) as
 
 There are two main ways of using the m5ops:
 
-1. annotate workloads
-2. gem5-bridge calls in disk image
+1. Annotating workloads
+2. Making gem5-bridge calls in disk images
 
 In this session, we will focus on learning how to use the m5ops to annotate workloads.
 
@@ -85,7 +85,7 @@ In this session, we will focus on learning how to use the m5ops to annotate work
 
 ## How to use m5ops
 
-m5ops provides a library of functions for different functionailities. All functions can be found in [gem5/include/gem5/m5ops.h](../../gem5/include/gem5/m5ops.h).
+m5ops provides a library of functions for different functionalities. All functions can be found in [gem5/include/gem5/m5ops.h](../../gem5/include/gem5/m5ops.h).
 The commonly used functions (they are matched with the commonly used functionailites above):
 
 -`void m5_exit(uint64_t ns_delay)`
@@ -97,7 +97,7 @@ The commonly used functions (they are matched with the commonly used functionail
 -`void m5_switch_cpu(void)`
 
 In order to call these functions in the workload, we will need to link the m5ops library to the workload.
-So, first, we need to build the m5ops library.
+So first, we need to build the m5ops library.
 
 ---
 
@@ -106,28 +106,29 @@ So, first, we need to build the m5ops library.
 The m5 utility is in [gem5/util/m5](../../gem5/util/m5) directory.​
 In order to build the m5ops library,
 
-1. cd into the ```gem5/util/m5``` directory
+1. `cd` into the ```gem5/util/m5``` directory
 2. run ```scons [{TARGET_ISA}.CROSS_COMPILE={TARGET_ISA CROSS COMPILER}] build/{TARGET_ISA}/out/m5​```
 3. the compiled library (`m5` is for command line utility, and `libm5.a` is a C library) will be at ```gem5/util/m5/build/{TARGET_ISA}/out```
 
 
 
-### Note
+### Notes
 
-- if the host system ISA does not match with the target ISA, then we will need to use the cross-compiler
-- `TARGET_ISA` has to be in lower case
+- If the host system ISA does not match with the target ISA, then we will need to use the cross-compiler.
+- `TARGET_ISA` has to be in lower case.
 
 ---
 
-## Hand-on Time!
+## Hands-on Time!
 
 ### 01-build-m5ops-library
+
 ### Let's build the m5ops library for x86 and arm64
 
 ```bash
 cd gem5/util/m5
 scons build/x86/out/m5
-scons arm64.CROSS_COMPILE=aarch64-unknown-linux-gnu- build/arm64/out/m5
+scons arm64.CROSS_COMPILE=aarch64-linux-gnu- build/arm64/out/m5
 ```
 
 <!-- example output -->
@@ -148,7 +149,7 @@ After building the m5ops library, we can link them to our workload by:​
 
 ---
 
-## Hand-on Time!
+## Hands-on Time!
 
 ### 02-annotate-this
 ### Let's annotate the workload with m5_work_begin and m5_work_end
@@ -157,7 +158,7 @@ In `materials/02-Using-gem5/03-running-in-gem5/02-annotate-this`, there is a wor
 
 The workload mainly does two things:
 
-Write a string to the standard out
+Write a string to the standard out,
 ```cpp
 write(1, "This will be output to standard out\n", 36);
 ```
@@ -187,16 +188,16 @@ std::cout<<std::endl;
 
 ## 02-annotate-this
 
-### our goal in this exercise
+### Our goal in this exercise
 
 Mark ```write(1, "This will be output to standard out\n", 36);``` as our region of interest so we can see the execution trace of the syscall.
 
-### how do we do that
+### How do we do that?
 
-1. include the m5ops header file with ```#include <gem5/m5ops.h>```
-2. call ```m5_work_begin(0, 0);``` right before ```write(1, "This will be output to standard out\n", 36);```.
-3. call ```m5_work_end(0, 0);``` right after ```write(1, "This will be output to standard out\n", 36);```
-4. compile the workload with the following requirments
+1. Include the m5ops header file with ```#include <gem5/m5ops.h>```
+2. Call ```m5_work_begin(0, 0);``` right before ```write(1, "This will be output to standard out\n", 36);```.
+3. Call ```m5_work_end(0, 0);``` right after ```write(1, "This will be output to standard out\n", 36);```
+4. Compile the workload with the following requirments
     1. Add **gem5/include** to the compiler's include search path
     2. Add **gem5/util/m5/build/x86/out** to the linker search path
     3. Link against **libm5.a** using `-lm5`
@@ -211,25 +212,78 @@ $(GXX) -o 02-annotate-this 02-annotate-this.cpp -I$(GEM5_PATH)/include -L$(GEM5_
 ```
 If you are having any troubles, the completed version is under ```materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/complete```.
 
-If the workload is successfully compiled, we can try to run it with
+If the workload is successfully compiled, we can try to run it with `./02-annotate-this`.
+<!-- I think ./02-annotate-this is what should go above. It was previously blank.-->
 However, we will see the following error:
+
 ```bash
 Illegal instruction (core dumped)
 ```
+
 This is because the host does not recognize the instruction version of m5ops.
 This is also the reason why we will need to use the address version of m5ops if we use the KVM CPU for our simulation.
 
 ---
 
-## Hand-on Time!
+## Hands-on Time!
 
 ### 03-run-x86-SE
+
 ### Let's write a handler to handle the m5 exit events
 
-What I want to do in this exercies:
-1. Have pepole run ```gem5 -re 03-run-x86-SE.py``` without any modification and show them what is the default handler for workbegin and workend in stdlib.
+<!-- What I want to do in this exercies:
+1. Have people run ```gem5 -re 03-run-x86-SE.py``` without any modification and show them what is the default handler for workbegin and workend in stdlib.
 2. Have people to add a workbegin handler and a workend handler that uses debug.flags["ExecAll] to enable and disable debug flag to see the execution trace of the syscall.
-3. Point out that SE mode do not time the syscall and it can read/write the host directory
+3. Point out that SE mode do not time the syscall and it can read/write the host directory -->
+
+First, let's see what the default behavior is. Go to the folder `materials/02-Using-gem5/03-running-in-gem5/03-run-x86-SE` and run `03-run-x86-SE.py` with the following command:
+
+```gem5 -re 03-run-x86-SE.py```
+
+After running the simulation, you should see a directory called `m5out` in `materials/02-Using-gem5/03-running-in-gem5/03-run-x86-SE`. Open the file `simerr.txt` in `m5out`. You should see two lines that look like this:
+
+```text
+warn: No behavior was set by the user for work begin. Default behavior is resetting the stats and continuing.
+```
+
+```text
+warn: No behavior was set by the user for work end. Default behavior is dumping the stats and continuing.
+```
+
+---
+<!-- _class: two-col -->
+## 03-run-x86-SE
+
+Next, let's add custom workbegin and workend handlers. To do this, add the following into `03-run-x86-SE.py`:
+
+```python
+def workbegin_handler():
+    print("Workbegin handler")
+    m5.debug.flags["ExecAll"].enable()
+    yield False
+```
+
+```python
+def workend_handler():
+    m5.debug.flags["ExecAll"].disable()
+    yield False
+```
+
+###
+
+Also, add the following to the `Simulator(...)` function call in `03-run-x86-SE.py`:
+
+```python
+  on_exit_event= {
+      ExitEvent.WORKBEGIN: workbegin_handler(),
+      ExitEvent.WORKEND: workend_handler()
+}
+```
+
+**Notes:**
+
+- Note that SE mode is able to read and write files on the host machine. This can be seen by looking at `m5out/simout.txt`, where a list of files and folders on the host is printed.
+- SE mode does not time syscalls. <!-- Is there something in the output that I can put here to show this? -->
 
 ---
 
@@ -247,26 +301,87 @@ What I want to do in this exercies:
 
 ---
 
-## Hand-on Time!
+## Hands-on Time!
 
 ### 04-cross-compile-workload
-### Let's cross compile the workload to arm64 statically and dynmaically
 
+### Let's cross compile the workload to arm64 statically and dynamically
+<!--
 What I want to do in this execerise:
+
 1. have people to cross compile the workload statically and dynamically by modifying the Makefile
-2. point out the cross compiler and "-static"
+2. point out the cross compiler and "-static" -->
+
+For static compilation, add the following command to the Makefile in `materials/02-Using-gem5/03-running-in-gem5/04-cross-compile-workload`:
+
+```make
+$(GXX) -o 04-cross-compile-this-static 04-cross-compile-this.cpp -static -I$(GEM5_PATH)/include -L$(GEM5_PATH)/util/m5/build/$(ISA)/out -lm5
+```
+
+For dynamic compilation, add the following command:
+
+```make
+$(GXX) -o 04-cross-compile-this-dynamic 04-cross-compile-this.cpp -I$(GEM5_PATH)/include -L$(GEM5_PATH)/util/m5/build/$(ISA)/out -lm5
+```
+
+Next, run `make` in the same directory as the Makefile.
 
 ---
 
-## Hand-on Time!
+## 04-cross-compile-workload
+
+### Notes:
+
+Note that we are using `arm64` as the ISA and `aarch64-linux-gnu-g++` for the cross compiler. This is in contrast to exercise 2, where the ISA was `x86` and the compiler was `g++`.
+
+Also note that the the static compilation command has the flag `-static`, while the dynamic command has no additional flags.
+
+---
+
+## Hands-on Time!
 
 ### 05-run-arm-SE
+
 ### Let's run the compiled arm64 workloads and see what happens
 
-What I want to do in this execerise:
+<!-- What I want to do in this execerise:
 1. first let people run the static one, and let them know this is arm
 2. then let people run the dynamic one which will lead to errors
-3. show people how to redirect lib
+3. show people how to redirect lib -->
+
+First, let's run the statically compiled workload. `cd` into the directory `materials/02-Using-gem5/03-running-in-gem5/05-run-arm-SE` and run `05-run-arm-SE.py` using the following command:
+
+```bash
+gem5 -re --outdir=static 05-run-arm-SE.py --workload-type=static
+```
+<!-- Not sure what to say for "and let them know this is arm" -->
+
+Next, let's run the dynamically compiled workload with the following command:
+
+```bash
+gem5 -re --outdir=dynamic 05-run-arm-SE.py --workload-type=dynamic
+```
+
+---
+
+## 05-run-arm-SE
+
+You will see the following error output in `dynamic/simout.txt` from running the dynamically compiled workload:
+
+```text
+src/base/loader/image_file_data.cc:105: fatal: fatal condition fd < 0 occurred: Failed to open file /lib/ld-linux-aarch64.so.1.
+This error typically occurs when the file path specified is incorrect.
+Memory Usage: 217652 KBytes
+```
+
+To use the dynamically compiled workload, we will have to redirect the library path. We can do this by adding the following to the configuration script, under `print("Time to redirect the library path")`:
+
+```python
+    setInterpDir("/usr/aarch64-linux-gnu/")
+    board.redirect_paths = [RedirectPath(app_path=f"/lib",
+                                host_paths=[f"/usr/aarch64-linux-gnu/lib"])]
+
+```
 
 ---
 
@@ -312,7 +427,7 @@ What I want to do in this execerise:
 
 ---
 
-## Hand-on Time!
+## Hands-on Time!
 
 ### 06-traffic-gen
 ### Let's run an example on how to use the traffic generator
@@ -320,6 +435,7 @@ What I want to do in this execerise:
 ---
 
 ## Desserts
+<!-- In this context, what does Desserts mean? -->
 
 ### SE mode does NOT implement many things!​
 
