@@ -153,12 +153,83 @@ After building the m5ops library, we can link them to our workload by:​
 ### 02-annotate-this
 ### Let's annotate the workload with m5_work_begin and m5_work_end
 
+In `materials/02-Using-gem5/03-running-in-gem5/02-annotate-this`, there is a workload source file [02-annotate-this.cpp](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/02-annotate-this.cpp) and a [Makefile](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/Makefile).
+
+The workload mainly does two things:
+
+Write a string to the standard out
+```cpp
+write(1, "This will be output to standard out\n", 36);
+```
+---
+
+## 02-annotate-this
+
+and output all the files and folders names in the current directory
+```cpp
+struct dirent *d;
+DIR *dr;
+dr = opendir(".");
+if (dr!=NULL) {
+    std::cout<<"List of Files & Folders:\n";
+    for (d=readdir(dr); d!=NULL; d=readdir(dr)) {
+        std::cout<<d->d_name<< ", ";
+    }
+    closedir(dr);
+}
+else {
+    std::cout<<"\nError Occurred!";
+}
+std::cout<<std::endl;
+```
+
+---
+
+## 02-annotate-this
+
+### our goal in this exercise
+
+Mark ```write(1, "This will be output to standard out\n", 36);``` as our region of interest so we can see the execution trace of the syscall.
+
+### how do we do that
+
+1. include the m5ops header file with ```#include <gem5/m5ops.h>```
+2. call ```m5_work_begin(0, 0);``` right before ```write(1, "This will be output to standard out\n", 36);```.
+3. call ```m5_work_end(0, 0);``` right after ```write(1, "This will be output to standard out\n", 36);```
+4. compile the workload with the following requirments
+    1. Add **gem5/include** to the compiler's include search path
+    2. Add **gem5/util/m5/build/x86/out** to the linker search path
+    3. Link against **libm5.a** using `-lm5`
+
+---
+
+## 02-annotate-this
+
+For step 4, we can modifiy the [Makefile](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/Makefile) to have it run
+```Makefile
+$(GXX) -o 02-annotate-this 02-annotate-this.cpp -I$(GEM5_PATH)/include -L$(GEM5_PATH)/util/m5/build/$(ISA)/out -lm5
+```
+If you are having any troubles, the completed version is under ```materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/complete```.
+
+If the workload is successfully compiled, we can try to run it with
+However, we will see the following error:
+```bash
+Illegal instruction (core dumped)
+```
+This is because the host does not recognize the instruction version of m5ops.
+This is also the reason why we will need to use the address version of m5ops if we use the KVM CPU for our simulation.
+
 ---
 
 ## Hand-on Time!
 
 ### 03-run-x86-SE
 ### Let's write a handler to handle the m5 exit events
+
+What I want to do in this exercies:
+1. Have pepole run ```gem5 -re 03-run-x86-SE.py``` without any modification and show them what is the default handler for workbegin and workend in stdlib.
+2. Have people to add a workbegin handler and a workend handler that uses debug.flags["ExecAll] to enable and disable debug flag to see the execution trace of the syscall.
+3. Point out that SE mode do not time the syscall and it can read/write the host directory
 
 ---
 
@@ -181,12 +252,21 @@ After building the m5ops library, we can link them to our workload by:​
 ### 04-cross-compile-workload
 ### Let's cross compile the workload to arm64 statically and dynmaically
 
+What I want to do in this execerise:
+1. have people to cross compile the workload statically and dynamically by modifying the Makefile
+2. point out the cross compiler and "-static"
+
 ---
 
 ## Hand-on Time!
 
 ### 05-run-arm-SE
 ### Let's run the compiled arm64 workloads and see what happens
+
+What I want to do in this execerise:
+1. first let people run the static one, and let them know this is arm
+2. then let people run the dynamic one which will lead to errors
+3. show people how to redirect lib
 
 ---
 
