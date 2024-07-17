@@ -52,8 +52,9 @@ system.mem_ctrl.dram.device_size = '512MB'
 
 ## Insert CommMonitor here
 
-system.mem_ctrl.port = system.membus.mem_side_ports # need to remove this then add CommMonitor
-
+system.comm_monitor = CommMonitor()
+system.comm_monitor.cpu_side_port = system.membus.mem_side_ports
+system.comm_monitor.mem_side_port = system.mem_ctrl.port
 
 ##
 

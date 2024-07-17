@@ -41,6 +41,7 @@ from gem5.components.boards.test_board import TestBoard
 from gem5.components.memory.dram_interfaces.hbm import HBM_2000_4H_1x64
 from gem5.components.memory.hbm import HighBandwidthMemory
 from gem5.components.memory.simple import SingleChannelSimpleMemory
+from gem5.components.memory.single_channel import SingleChannelDDR4_2400
 
 from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
@@ -80,7 +81,7 @@ args.read_percentage = 50
 
 # Insert the desired memory here
 # Available memory can be found in src/python/gem5/components/memory/
-memory = SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")
+memory = SingleChannelDDR4_2400()
 
 generator = generator_factory(
     args.generator_class, args.read_percentage, memory.get_size()
