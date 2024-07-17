@@ -1,6 +1,6 @@
 {
     "name": "gem5 Development Container",
-    "image": "ghcr.io/gem5/devcontainer:v24-0",
+    "image": "ghcr.io/gem5/devcontainer:bootcamp-2024",
     "hostRequirements": {
         "cpus": 1,
         "memory": "8gb",
