@@ -253,6 +253,8 @@ After building the m5ops library, we can link them to our workload by:​
 - multiple threads
   - You may have a multithreaded execution, but there's no context switches & no spin locks​
 
+---
+
 ## More desserts
 
 ### m5ops can be used to communicate between simulated workload and the simulator
