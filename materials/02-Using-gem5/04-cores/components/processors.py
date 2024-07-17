@@ -45,7 +45,7 @@ from m5.objects.BranchPredictor import (
 class O3CPUCore(RiscvO3CPU):
     def __init__(self, width, rob_size, num_int_regs, num_fp_regs):
         """
-        :param width: sets the width of fetch, decode, raname, issue, wb, and
+        :param width: sets the width of fetch, decode, rename, issue, wb, and
         commit stages.
         :param rob_size: determine the number of entries in the reorder buffer.
         :param num_int_regs: determines the size of the integer register file.
@@ -131,7 +131,7 @@ class O3CPU(BaseCPUProcessor):
 
 # UPDATE FOR STEP 1
 # Configure with width=10, rob_size=40, num_int_regs=50, num_fp_regs=50
-class big(O3CPU):
+class Big(O3CPU):
     def __init__(self):
         super().__init__(
             width=0,
@@ -142,7 +142,7 @@ class big(O3CPU):
 
 # UPDATE FOR STEP 1
 # Configure with width=2, rob_size=30, num_int_regs=40, num_fp_regs=40
-class LITTLE(O3CPU):
+class Little(O3CPU):
     def __init__(self):
         super().__init__(
             width=0,
