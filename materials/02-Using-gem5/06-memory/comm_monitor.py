@@ -1,10 +1,21 @@
+"""
+This script is used for running a traffic generator connected to a memory
+device to exhibit how to use CommMonitors
+
+Currently this script connects tohe processor to the memory directly.
+A CommMonitor needs to be inserted between the processor and the memory
+controller.
+
+This script can be run with the following command:
+$ gem5/build/NULL/gem5.opt /workspaces/2024/materials/02-Using-gem5/\
+06-memory/comm_monitor.py
+"""
 # import the m5 (gem5) library created when gem5 is built
 import m5
 # import all of the SimObjects
 from m5.objects import *
 from m5.util.convert import *
 
-import argparse
 import math
 
 
@@ -52,9 +63,8 @@ system.mem_ctrl.dram.device_size = '512MB'
 
 ## Insert CommMonitor here
 
-system.comm_monitor = CommMonitor()
-system.comm_monitor.cpu_side_port = system.membus.mem_side_ports
-system.comm_monitor.mem_side_port = system.mem_ctrl.port
+system.mem_ctrl.port = system.membus.mem_side_ports # need to remove to add CommMonitor
+
 
 ##
 

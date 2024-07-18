@@ -1,8 +1,12 @@
 """
 This script correlates with the slides on MemCtrl() and MemCtrlInterface().
+
+This script creates a memory controller and memory interface and
+connects them to the memory bus.
+
 to run this script, use the following command:
-$ gem5/build/NULL/gem5.opt /workspaces/2024/materials/using-gem5/ \
-    06-memory-models/completed/blank_memory.py
+$ gem5/build/NULL/gem5.opt /workspaces/2024/materials/02-Using-gem5/\
+06-memory/completed/blank_memory.py
 
 
 """

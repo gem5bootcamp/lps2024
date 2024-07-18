@@ -1,3 +1,17 @@
+"""
+This script correlates with the slides on MemCtrl() and MemCtrlInterface().
+
+This script currently has no memory system.
+
+Add a memory controller and memory interface to the system.
+Connect the memory controller to the memory bus.
+
+to run this script, use the following command:
+$ gem5/build/NULL/gem5.opt /workspaces/2024/materials/02-Using-gem5/\
+06-memory/blank_memory.py
+
+
+"""
 # import the m5 (gem5) library created when gem5 is built
 import m5
 # import all of the SimObjects
