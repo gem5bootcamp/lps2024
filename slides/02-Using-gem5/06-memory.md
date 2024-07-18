@@ -168,7 +168,7 @@ for i, mem_ctrl in enumerate(system.mem_ctrls):
 
 ## Memory Controller/Interface Example
 
-- Open up ```materials/using-gem5/06-memory-models/blank_memory.py```
+- Open up ```materials/02-Using-gem5/06-memory/blank_memory.py```
 - Look for the comment ``` # insert memory controller and interface here```
 - Copy and paste any of the code blocks from the 4 slides above or the one below
 ```python
@@ -190,7 +190,7 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 
 ## Memory Controller/Interface Example
 
- - Run with ```/gem5/build/NULL/gem5.opt materials/using-gem5/06-memory-models/blank_memory.py```
+ - Run with ```/gem5/build/NULL/gem5.opt materials/02-Using-gem5/06-memory/blank_memory.py```
 
 ```python
 # memory controller parameters
@@ -225,7 +225,7 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 
 ## Running an example with the standard library
 
-- Open ```materials/using-gem5/06-memory-models/std_lib_mem.py```
+- Open ```materials/02-Using-gem5/06-memory/std_lib_mem.py```
 - Look at the line:
 ```memory = SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")```
 - This shows how we can use SimpleMemory
@@ -297,7 +297,7 @@ def SingleChannelLPDDR2_S4_1066_1x32(
 ### Let's simulate:
 
 <!-- >    > gem5-x86 –outdir=results/simple materials/extra-topics/02-monitor-and-trace/simple.py -->
-Run ```/gem5/build/NULL/gem5.opt  materials/using-gem5/06-memory-models/blank_memory.py```
+Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
 
 ---
 
@@ -324,7 +324,7 @@ system.comm_monitor = CommMonitor()
 system.comm_monitor.cpu_side_port = system.membus.mem_side_ports
 system.comm_monitor.mem_side_port = system.mem_ctrl.port
 ```
-Run ```/gem5/build/NULL/gem5.opt  materials/using-gem5/06-memory-models/blank_memory.py```
+Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
 
 ---
 

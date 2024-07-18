@@ -1,5 +1,5 @@
 """
-This script correlates with the slides on MemCtrl() and MemCtrlInterface().
+This script correlates with the slides on MemCtrl() and MemInterface().
 
 This script currently has no memory system.
 
