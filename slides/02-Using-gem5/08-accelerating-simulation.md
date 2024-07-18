@@ -63,24 +63,126 @@ In this section, we will cover how to accelerate gem5 simulations using fast-for
 ### Things to be aware of when using KVM to fast forward
 
 - **the guest ISA (the ISA that is simulating) must matches the host ISA**
-- **the m5 (gem5-bridge) annotation must be address version**
+- **the m5ops annotation must be address version**
 
 ---
 
-## Address version m5 (gem5-bridge) annotation
+## Address version m5ops annotation
 
-The m5 (gem5-bridge) annotation we did in [03-running-in-gem5](03-running-in-gem5.md) will not work with KVM because the host does not recognize the m5 (gem5-bridge) instructions.
-The following error message will appear:
-> illegal instruction (core dumped)
+The instruction version of the m5ops annotation we did in [03-running-in-gem5](03-running-in-gem5.md) will not work with KVM because the host does not recognize the m5ops instructions.
+As shown in that session, the following error message will appear:
+```console
+illegal instruction (core dumped)
+```
 
-<!-- put an example here -->
+In order to use the address version of the m5ops, we need to open `/dev/mem` during the process and setup a "magic" address range for triggering the gem5 operations.
 
 ### Note
 
-"magic" instruction for
+"magic" address for
 
 X86 is `0XFFFF0000`
 arm64 is `0x10010000`
+
+---
+
+## Hands-on Time!
+
+### 01-annotate-this
+
+Materials are under `materials/02-Using-gem5/08-accelerating-simulation/01-annotate-this`.
+[01-annotate-this.cpp](../../materials/02-Using-gem5/08-accelerating-simulation/01-annotate-this/01-annotate-this.cpp) is the same workload we used in [03-running-in-gem5](03-running-in-gem5.md), but this time, we need to use the address version of m5ops to annotate it.
+
+We first need to get the functions we need from the m5ops library.
+```cpp
+// Include the gem5 m5ops header file
+#include <gem5/m5ops.h>
+//
+// Include the gem5 m5_mmap header file
+#include <m5_mmap.h>
+//
+```
+---
+
+## 01-annotate-this
+
+Then, we will need to input the "magic" address depending on the ISA.
+Note that the default "magic" address is `0xFFFF0000`, which is the X86's "magic" address.
+Therefore, if we do not do this step for this example, the address version of m5ops will still work, but it will not work if we are on an Arm machine.
+```cpp
+// Use the m5op_addr to input the "magic" address
+    m5op_addr = 0XFFFF0000;
+//
+```
+Next, we need to open /dev/mem/ and setup the address range for the m5ops.
+Note that this step requires the process to have permission to access /dev/mem.
+```cpp
+// Use the map_m5_mem to map the "magic" address range to /dev/mem
+    map_m5_mem();
+//
+```
+
+---
+
+## 01-annotate-this
+
+Just like we did in [03-running-in-gem5](03-running-in-gem5.md), we want to use `m5_work_begin` and `m5_work_end` to mark the ROI. For address version m5ops, we need to add `_addr` behind the original function name.
+Therefore, in here, we need to call `m5_work_begin_addr` and `m5_work_end_addr`.
+```cpp
+// Use the gem5 m5ops to annotate the start of the ROI
+    m5_work_begin_addr(0, 0);
+//
+    write(1, "This will be output to standard out\n", 36);
+// Use the gem5 m5ops to annotate the end of the ROI
+    m5_work_end_addr(0, 0);
+//
+```
+Lastly, we need to unmap the address range after everything is done.
+```cpp
+// Use unmap_m5_mem to unmap the "magic" address range
+    unmap_m5_mem();
+//
+
+```
+---
+
+## 01-annotate-this
+
+For the complier command, beside
+
+1. Include **gem5/m5ops.h** in the workload's source file(s)
+2. Add **gem5/include** to the compiler's include search path
+3. Add **gem5/util/m5/build/{TARGET_ISA}/out** to the linker search path
+4. Link against **libm5.a** with `-lm5`
+
+We also need to
+
+1. Add **gem5/util/m5/src** to the compiler's include search path\
+2. Add `-no-pie` to not to make a position independent executable
+
+For our [Makefile](../../materials/02-Using-gem5/08-accelerating-simulation/01-annotate-this/Makefile), we can have the following compiler command:
+```Makefile
+$(GXX) -o 01-annotate-this 01-annotate-this.cpp -no-pie \
+  -I$(GEM5_PATH)/include \
+  -L$(GEM5_PATH)/util/m5/build/$(ISA)/out \
+  -I$(GEM5_PATH)/util/m5/src -lm5
+
+```
+
+---
+
+## 01-annotate-this
+
+Now, let's try running the compiled workload:
+```bash
+./01-annotate-this
+```
+We should now see without any errors
+```console
+This will be output to standard out
+List of Files & Folders:
+., 01-annotate-this.cpp, .., Makefile, 01-annotate-this,
+```
 
 ---
 
