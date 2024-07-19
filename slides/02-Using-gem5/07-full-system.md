@@ -36,15 +36,17 @@ title: Full system simulation in gem5
 ## Basics of Booting Up a Real System in gem5
 
 - **Overview**: gem5 can simulate the process of booting up a real system, providing insights into the behavior of the hardware and software during startup.
-- **Steps Involved**:
-  1. **Setting Up the Simulation Environment**:
-     - Choose the ISA (e.g., x86, ARM).
-     - Configure the system components (CPU, memory, caches).
-  2. **Getting the correct resources such as kernel, bootloader, diskimages, etc.**
-  3. **Configuring the Boot Parameters**:
-     - Set kernel command line parameters, if necessary.
-  4. **Running the Simulation**:
-     - Start the simulation and monitor the boot process.
+
+### Steps Involved
+
+1. **Setting Up the Simulation Environment**:
+    - Choose the ISA (e.g., x86, ARM).
+    - Configure the system components (CPU, memory, caches).
+2. **Getting the correct resources such as kernel, bootloader, diskimages, etc.**
+3. **Configuring the Boot Parameters**:
+    - Set kernel command line parameters, if necessary.
+4. **Running the Simulation**:
+    - Start the simulation and monitor the boot process.
 
 ---
 
@@ -81,18 +83,13 @@ title: Full system simulation in gem5
   - First, we need to create an empty diskimage in qemu with the command: `qemu-img create -f raw ubuntu-22.04.2.raw 5G`
   - Then we use qemu to boot the diskimage:
 
-    ```<bash>
-    qemu-system-x86_64 \
-    -m 2G \
-    -cdrom ubuntu-22.04.2-live-server-amd64.iso \
-    -boot d \
-    -drive file=ubuntu-22.04.2.raw,format=raw \
-    -enable-kvm \
-    -cpu host \
-    -smp 2 \
-    -net nic \
-    -net user,hostfwd=tcp::2222-:22
-    ```
+```bash
+qemu-system-x86_64 -m 2G \
+      -cdrom ubuntu-22.04.2-live-server-amd64.iso \
+      -boot d -drive file=ubuntu-22.04.2.raw,format=raw \
+      -enable-kvm -cpu host -smp 2 -net nic \
+      -net user,hostfwd=tcp::2222-:22
+```
 
 - After installing ubuntu, we can use ssh to get the user-data file
 
@@ -117,13 +114,13 @@ These files are used to install ubuntu
 
 ---
 
-### Important parts of the packer script (Conti.)
+## Important parts of the packer script (Conti.)
 
 - shell provisioner: This allows us to run bash scripts that can run the post installation commands.
 
 ---
 
-### Lets use the base ubuntu image to create a diskimage with the gapbs benchmark
+## Lets use the base ubuntu image to create a diskimage with the gapbs benchmark
 
 - Updates to the packer file
   - The general structure of the packer file would be the same but with a few key changes:
@@ -140,10 +137,10 @@ These files are used to install ubuntu
 
 - For this post installation script we need to get the dependencies and build the gapbs benchmarks
 
-```<bash>
-    git clone https://github.com/darchr/gapbs.git
-    cd gapbs
-    make
+```bash
+git clone https://github.com/darchr/gapbs.git
+cd gapbs
+make
 ```
 
 - Lets run the packer script and use this diskimage in gem5!
