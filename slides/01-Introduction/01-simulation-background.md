@@ -4,6 +4,7 @@ paginate: true
 theme: gem5
 title: Computer Architecture Simulation
 math: mathjax
+author: Jason Lowe-Power
 ---
 
 <!-- _class: title -->
@@ -14,9 +15,11 @@ math: mathjax
 
 ## Outline
 
-- What is gem5 and a bit of history
-- My perspective on architecture simulation
-- gem5's software architecture
+### What is gem5 and a bit of history
+
+### My perspective on architecture simulation
+
+### gem5's software architecture
 
 ---
 
@@ -60,7 +63,7 @@ math: mathjax
 
 Lowe-Power et al. The gem5 Simulator: Version 20.0+. ArXiv Preprint ArXiv:2007.03152, 2021. https://doi.org/10.48550/arXiv.2007.03152
 
-Nathan Binkert, Bradford Beckmann, Gabriel Black, Steven K. Reinhardt, Ali Saidi, Arkaprava Basu, Joel Hestness, Derek R. Hower, Tushar Krishna, Somayeh Sardashti, Rathijit Sen, Korey Sewell, Muhammad Shoaib, Nilay Vaish, Mark D. Hill, and David A. Wood. 2011. The gem5 simulator. SIGARCH Comput. Archit. News 39, 2 (August 2011), 1-7. DOI=http://dx.doi.org/10.1145/2024716.2024718
+Nathan Binkert, Bradford Beckmann, Gabriel Black, Steven K. Reinhardt, Ali Saidi, Arkaprava Basu, Joel Hestness, Derek R. Hower, Tushar Krishna, Somayeh Sardashti, Rathijit Sen, Korey Sewell, Muhammad Shoaib, Nilay Vaish, Mark D. Hill, and David A. Wood. 2011. The gem5 simulator. SIGARCH Comput. Archit. News 39, 2 (August 2011), 1-7. DOI=<http://dx.doi.org/10.1145/2024716.2024718>
 
 ---
 
@@ -72,7 +75,7 @@ Nathan Binkert, Bradford Beckmann, Gabriel Black, Steven K. Reinhardt, Ali Saidi
 
 ## gem5's goals
 
-![bg left the computer architecture stack](./01-simulation-background-imgs/arch-stack.png)
+![the computer architecture stack](./01-simulation-background-imgs/arch-stack.png)
 
 ![bg right agile hardware methodology](./01-simulation-background-imgs/agile-hardware.png)
 
@@ -370,4 +373,3 @@ At each timestep, gem5:
 3. New events are scheduled
 
 ---
-
