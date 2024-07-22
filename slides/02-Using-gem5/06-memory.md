@@ -9,15 +9,13 @@ title: Modeling DRAM in gem5
 
 ## Modeling DRAM in gem5
 
-Description Goes Here
-
 ---
 
 <!-- _class: center-image -->
 
 ## Memory System
 
-### gem5's Memory system consists of two main components
+### gem5's memory system consists of two main components
 
 1. Memory Controller
 
@@ -230,7 +228,7 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 ```memory = SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")```
 - This shows how we can use SimpleMemory
 
-- Run with gem5/build/NULL/gem5.opt
+- Run with `gem5/build/NULL/gem5.opt`
 
 
 ---
@@ -354,7 +352,7 @@ Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor
 
 ### Using address interleaving in gem5
 
-- We can AddrRange constructors to define a selector function
+- We can use AddrRange constructors to define a selector function
     - `src/base/addr_range.hh`
 
 - Example: standard library's multi-channel memory
