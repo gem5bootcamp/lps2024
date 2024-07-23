@@ -1,0 +1,28 @@
+{
+    "category": "disk-image",
+    "id": "x86-ubuntu-24.04-gapbs-img",
+    "description": "",
+    "architecture": "X86",
+    "size": 5242880000,
+    "tags": [
+        "x86",
+        "fullsystem"
+    ],
+    "is_zipped": true,
+    "md5sum": "",
+    "source": "src/x86-ubuntu",
+    "url": "file://",
+    "root_partition": "1",
+    "code_examples": [],
+    "license": "",
+    "author": [
+        "Harshil Patel"
+    ],
+    "source_url": "",
+    "resource_version": "1.0.0",
+    "gem5_versions": [
+        "24.0"
+    ],
+    "example_usage": "obtain_resource(resource_id=\"x86-ubuntu-24.04-gapbs-img\")",
+    "is_tar_archive": false
+}

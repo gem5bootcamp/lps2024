@@ -44,3 +44,8 @@ board = SimpleBoard(
     cache_hierarchy=caches,
     clk_freq="3GHz",
 )
+
+# Add binary to the board
+
+simulator = Simulator(board=board)
+simulator.run()
