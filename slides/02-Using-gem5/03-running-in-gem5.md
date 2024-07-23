@@ -31,9 +31,39 @@ title: Running Things on gem5
 
 **Syscall Emulation (SE)** mode does not model all the devices in a system. It focuses on simulating the CPU and memory system. It only emulates Linux system calls, and only models user-mode code.
 
-SE mode is a good choice when the experiment does not need to model the OS (such as translations), does not need a high fidelity model, and faster simulation speed is needed.
+SE mode is a good choice when the experiment does not need to model the OS (such as page table walks), does not need a high fidelity model (emulation is ok), and faster simulation speed is needed.
 
 However, if the experiment needs to model the OS interaction, or needs to model a system in high fidelity, then we should use the full-system (FS) mode. The FS mode will be covered in [07-full-system](07-full-system.md).
+
+---
+
+## Example
+
+### 00-SE-hello-world
+
+Under 'materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world', there is a small example of an SE simulation.
+[00-SE-hello-world.py](../../materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world/00-SE-hello-world.py) will run [00-SE-hello-world](../../materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world/00-SE-hello-world.c) binary with a simply X86 configuration.
+This binary does a print of the string `Hello, Worlds!`.
+If we use the debug flag `SyscallAll` with it, we will able to see what syscalls are simulated.
+We can do it with the following command:
+
+```bash
+gem5 -re --debug-flags=SyscallAll 00-SE-hello-world.py
+```
+
+---
+
+## 00-SE-hello-world
+
+Then in the [simout.txt](../../materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world/m5out/simout.txt), we should see:
+```bash
+280945000: board.processor.cores.core: T0 : syscall Calling write(1, 21152, 14)...
+Hello, World!
+280945000: board.processor.cores.core: T0 : syscall Returned 14.
+```
+
+On the left, it is the timestamp for the simulation.
+As the timestamp suggests, **SE simulation DOES NOT record record the time for the syscall**.
 
 ---
 
@@ -54,6 +84,23 @@ However, if the experiment needs to model the OS interaction, or needs to model 
   - dumpstats [delay[period]]: Save simulation statistics to a file in delay nanoseconds; repeat this every period nanoseconds
   - checkpoint [delay [period]]: Create a checkpoint in delay nanoseconds; repeat this every period nanoseconds
   - switchcpu: Cause an exit event of type, “switch cpu,” allowing the Python to switch to a different CPU model if desired
+
+---
+
+## IMPORTANT
+
+- **_Not all of the ops do what they say automatically_**
+- Most of these just only exit the simulation (sometimes)
+- The commonly used functionalities are below. More can be found in [the m5ops documentation](https://www.gem5.org/documentation/general_docs/m5ops/):
+  - exit: Actually exits
+  - workbegin: Only exits, if configured in `System`
+  - workend: Only exits, if configured in `System`
+  - resetstats: Resets the stats
+  - dumpstats: Dumps the stats
+  - checkpoint: Only exits
+  - switchcpu: Only exits
+- See [`gem5/src/sim/pseudo_inst.cc`](../../gem5/src/sim/pseudo_inst.cc) for details
+- Standard library improves on (some of) this confusion
 
 ---
 
@@ -88,13 +135,13 @@ In this session, we will focus on learning how to use the m5ops to annotate work
 m5ops provides a library of functions for different functionalities. All functions can be found in [gem5/include/gem5/m5ops.h](../../gem5/include/gem5/m5ops.h).
 The commonly used functions (they are matched with the commonly used functionailites above):
 
--`void m5_exit(uint64_t ns_delay)`
--`void m5_work_begin(uint64_t workid, uint64_t threadid)`
--`void m5_work_end(uint64_t workid, uint64_t threadid)`
--`void m5_reset_stats(uint64_t ns_delay, uint64_t ns_period)`
--`void m5_dump_stats(uint64_t ns_delay, uint64_t ns_period)`
--`void m5_checkpoint(uint64_t ns_delay, uint64_t ns_period)`
--`void m5_switch_cpu(void)`
+- `void m5_exit(uint64_t ns_delay)`
+- `void m5_work_begin(uint64_t workid, uint64_t threadid)`
+- `void m5_work_end(uint64_t workid, uint64_t threadid)`
+- `void m5_reset_stats(uint64_t ns_delay, uint64_t ns_period)`
+- `void m5_dump_stats(uint64_t ns_delay, uint64_t ns_period)`
+- `void m5_checkpoint(uint64_t ns_delay, uint64_t ns_period)`
+- `void m5_switch_cpu(void)`
 
 In order to call these functions in the workload, we will need to link the m5ops library to the workload.
 So first, we need to build the m5ops library.
@@ -126,12 +173,10 @@ In order to build the m5ops library,
 ### Let's build the m5ops library for x86 and arm64
 
 ```bash
-cd gem5/util/m5
+cd /workspaces/2024/gem5/util/m5
 scons build/x86/out/m5
 scons arm64.CROSS_COMPILE=aarch64-linux-gnu- build/arm64/out/m5
 ```
-
-<!-- example output -->
 
 ---
 
@@ -139,19 +184,21 @@ scons arm64.CROSS_COMPILE=aarch64-linux-gnu- build/arm64/out/m5
 
 After building the m5ops library, we can link them to our workload by:​
 
-1. Include **gem5/m5ops.h** in the workload's source file(s)
+1. Include **gem5/m5ops.h** in the workload's source file(s) (`<gem5/m5ops.h>`)
 
-2. Add **gem5/include** to the compiler's include search path
+2. Add **gem5/include** to the compiler's include search path (`-Igem5/include`)
 
 3. Add **gem5/util/m5/build/{TARGET_ISA}/out** to the linker search path
+(`-Lgem5/util/m5/build/{TARGET_ISA}/out`)
 
-4. Link against **libm5.a** with `-lm5`
+4. Link against **libm5.a** with (`-lm5`)
 
 ---
 
 ## Hands-on Time!
 
 ### 02-annotate-this
+
 ### Let's annotate the workload with m5_work_begin and m5_work_end
 
 In `materials/02-Using-gem5/03-running-in-gem5/02-annotate-this`, there is a workload source file [02-annotate-this.cpp](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/02-annotate-this.cpp) and a [Makefile](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/Makefile).
@@ -159,9 +206,11 @@ In `materials/02-Using-gem5/03-running-in-gem5/02-annotate-this`, there is a wor
 The workload mainly does two things:
 
 Write a string to the standard out,
+
 ```cpp
 write(1, "This will be output to standard out\n", 36);
 ```
+
 ---
 
 ## 02-annotate-this
@@ -200,7 +249,7 @@ Mark ```write(1, "This will be output to standard out\n", 36);``` as our region 
 4. Compile the workload with the following requirments
     1. Add **gem5/include** to the compiler's include search path
     2. Add **gem5/util/m5/build/x86/out** to the linker search path
-    3. Link against **libm5.a** using `-lm5`
+    3. Link against **libm5.a**
 
 ---
 
@@ -208,11 +257,24 @@ Mark ```write(1, "This will be output to standard out\n", 36);``` as our region 
 
 For step 4, we can modifiy the [Makefile](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/Makefile) to have it run
 ```Makefile
-$(GXX) -o 02-annotate-this 02-annotate-this.cpp -I$(GEM5_PATH)/include -L$(GEM5_PATH)/util/m5/build/$(ISA)/out -lm5
+$(GXX) -o 02-annotate-this 02-annotate-this.cpp \
+  -I$(GEM5_PATH)/include \
+  -L$(GEM5_PATH)/util/m5/build/$(ISA)/out \
+  -lm5
 ```
-If you are having any troubles, the completed version is under ```materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/complete```.
 
-If the workload is successfully compiled, we can try to run it with `./02-annotate-this`.
+If you are having any troubles, the completed version of everything is under ```materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/complete```.
+
+---
+
+## 02-annotate-this
+
+If the workload is successfully compiled, we can try to run it with
+
+```bash
+./02-annotate-this
+```
+
 <!-- I think ./02-annotate-this is what should go above. It was previously blank.-->
 However, we will see the following error:
 
@@ -236,22 +298,25 @@ This is also the reason why we will need to use the address version of m5ops if 
 2. Have people to add a workbegin handler and a workend handler that uses debug.flags["ExecAll] to enable and disable debug flag to see the execution trace of the syscall.
 3. Point out that SE mode do not time the syscall and it can read/write the host directory -->
 
-First, let's see what the default behavior is. Go to the folder `materials/02-Using-gem5/03-running-in-gem5/03-run-x86-SE` and run `03-run-x86-SE.py` with the following command:
+First, let's see what the default behavior is. Go to the folder `materials/02-Using-gem5/03-running-in-gem5/03-run-x86-SE` and run [03-run-x86-SE.py](../../materials/02-Using-gem5/03-running-in-gem5/03-run-x86-SE/03-run-x86-SE.py) with the following command:
 
-```gem5 -re 03-run-x86-SE.py```
+```bash
+gem5 -re 03-run-x86-SE.py
+```
 
 After running the simulation, you should see a directory called `m5out` in `materials/02-Using-gem5/03-running-in-gem5/03-run-x86-SE`. Open the file `simerr.txt` in `m5out`. You should see two lines that look like this:
 
-```text
+```bash
 warn: No behavior was set by the user for work begin. Default behavior is resetting the stats and continuing.
 ```
 
-```text
+```bash
 warn: No behavior was set by the user for work end. Default behavior is dumping the stats and continuing.
 ```
 
 ---
 <!-- _class: two-col -->
+
 ## 03-run-x86-SE
 
 Next, let's add custom workbegin and workend handlers. To do this, add the following into `03-run-x86-SE.py`:
@@ -377,9 +442,9 @@ Memory Usage: 217652 KBytes
 To use the dynamically compiled workload, we will have to redirect the library path. We can do this by adding the following to the configuration script, under `print("Time to redirect the library path")`:
 
 ```python
-    setInterpDir("/usr/aarch64-linux-gnu/")
-    board.redirect_paths = [RedirectPath(app_path=f"/lib",
-                                host_paths=[f"/usr/aarch64-linux-gnu/lib"])]
+setInterpDir("/usr/aarch64-linux-gnu/")
+board.redirect_paths = [RedirectPath(app_path=f"/lib",
+                        host_paths=[f"/usr/aarch64-linux-gnu/lib"])]
 
 ```
 
