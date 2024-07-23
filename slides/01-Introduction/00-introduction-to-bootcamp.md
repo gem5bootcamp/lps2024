@@ -70,7 +70,7 @@ author: Jason Lowe-Power
     - Garnet/network-on-chip
     - CHI protocol
   - [Modeling memory in gem5](../02-Using-gem5/06-memory.md) <!-- 1 hours (Noah / William (Maryam)) -->
-    - Memory models in gem5 ()
+    - Memory models in gem5
     - Using the memory models
     - Testing memory with traffic generators
     - Comm Monitor
