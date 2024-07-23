@@ -3,6 +3,7 @@ marp: true
 paginate: true
 theme: gem5
 title: Getting Started with gem5
+author: [Jason Lowe-Power, Bobby R. Bruce]
 ---
 
 <!-- _class: title -->
