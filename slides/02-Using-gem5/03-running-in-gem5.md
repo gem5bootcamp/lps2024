@@ -495,12 +495,12 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 ## Hands-on Time!
 
 ### 06-traffic-gen
+
 ### Let's run an example on how to use the traffic generator
 
 ---
 
-## Desserts
-<!-- In this context, what does Desserts mean? -->
+## Summery
 
 ### SE mode does NOT implement many things!​
 
@@ -516,7 +516,7 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 
 ---
 
-## More desserts
+## More summaries
 
 ### m5ops can be used to communicate between simulated workload and the simulator
 
