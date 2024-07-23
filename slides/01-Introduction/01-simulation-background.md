@@ -108,6 +108,8 @@ Code of conduct (see repo)
 
 ### _I want to see the community grow!_
 
+![A community of worker bees improving low-level computer hardware bg right](./01-simulation-background-imgs/gem5-community.jpg)
+
 ---
 
 <!-- _class: start -->
