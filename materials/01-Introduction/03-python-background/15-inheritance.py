@@ -19,10 +19,15 @@ This script the concept of class inheritance in Python.
 # Elephant.
 
 class Animal:
-    def __init__(self, weight, height, name):
-        self.weight = weight
-        self.height = height
+    # def __init__(self, weight, height, name):
+    #     self.weight = weight
+    #     self.height = height
+    #     self.name = name
+
+    def __init__(self, name, age):
         self.name = name
+        self.age = age
+
 
     def eat(self, food):
         print(f"{self.name} is eating {food}")
@@ -51,7 +56,7 @@ class Elephant(Animal):
 def print_animal(animal):
     print(f"Name: {animal.name}")
     print(f"Age: {animal.age}")
-    animal.speak()
+    animal.sleep()
 
 # We can pass an Elephant object to the print_animal function
 dog = Animal("Dog", 10)
