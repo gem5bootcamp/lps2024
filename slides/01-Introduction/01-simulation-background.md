@@ -376,4 +376,102 @@ At each timestep, gem5:
 2. The event is executed
 3. New events are scheduled
 
+![Example of discrete event simulation bg right:55% fit](./01-simulation-background-imgs/des-1.drawio.svg)
+
 ---
+
+<!-- _paginate: hold -->
+
+## gem5 architecture: Simulation
+
+gem5 is a **_discrete event simulator_**
+
+At each timestep, gem5:
+
+1. Event at the head is dequeued
+2. The event is executed
+3. New events are scheduled
+
+![Example of discrete event simulation bg right:55% fit](./01-simulation-background-imgs/des-2.drawio.svg)
+
+---
+
+<!-- _paginate: hold -->
+
+## gem5 architecture: Simulation
+
+gem5 is a **_discrete event simulator_**
+
+At each timestep, gem5:
+
+1. Event at the head is dequeued
+2. The event is executed
+3. New events are scheduled
+
+> ### All SimObjects can enqueue events onto the event queue
+
+![Example of discrete event simulation bg right:55% fit](./01-simulation-background-imgs/des-3.drawio.svg)
+
+---
+
+## Discrete event simulation example
+
+![Example of discrete event simulation fit](./01-simulation-background-imgs/des-example-1.drawio.svg)
+
+---
+
+<!-- _paginate: hold -->
+
+## Discrete event simulation example
+
+![Example of discrete event simulation fit](./01-simulation-background-imgs/des-example-2.drawio.svg)
+
+---
+
+<!-- _paginate: hold -->
+
+## Discrete event simulation example
+
+![Example of discrete event simulation fit](./01-simulation-background-imgs/des-example-3.drawio.svg)
+
+To model things that take time, schedule the _next_ event in the future (latency of current event).
+Can call functions instead of scheduling events, but they occur _in the same tick_.
+
+---
+
+## Discrete event simulation
+
+"Time" needs a unit
+In gem5, we use a unit called "Tick"
+
+Need to convert a simulation "tick" to user-understandable time
+E.g., seconds
+
+This is the global simulation tick rate
+Usually this is 1 ps per tick or $10^{12}$ ticks per second
+
+---
+
+## gem5's main abstractions: Memory
+
+### Memory requests
+
+- **Ports** allow you to send requests and receive responses
+- Ports are unidirectional (two types, request/response)
+- Anything* with a Request port can be connected to any Response port
+- More on this in [Ports and memory-based SimObjects](../03-Developing-gem5-models/04-ports.md)
+
+![CPU talking to caches with ports](./01-simulation-background-imgs/abstractions-1.drawio.svg)
+
+---
+
+## gem5's main abstractions: CPU
+
+### ISA vs CPU model
+
+- ISAs and CPU models are orthogonal.
+- Any ISA should work with any CPU model.
+- "Execution Context" is the interface.
+- More on this in [modeling cores](../03-Developing-gem5-models/05-modeling-cores.md)
+
+![ISA-CPU interactions and CPU talking to caches with ports](./01-simulation-background-imgs/abstractions-2.drawio.svg)
