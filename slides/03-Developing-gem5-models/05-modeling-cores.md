@@ -214,7 +214,7 @@ You can follow this call through to `Decoder:: decode` which can be found in [sr
 
 ---
 
-<!-- _class: small-code -->
+<!-- _class: code-60-percent -->
 
 ```cpp
 StaticInstPtr
@@ -506,6 +506,8 @@ decode QUADRANT default Unknown::unknown() {
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ### Generating code from the LW ISA definition
 
 You can compare side by side decoder.isa and decode-method.cc.inc to see how the ISA definition is used to generate the CPP decoder code.
@@ -598,6 +600,8 @@ StaticInstPtr RiscvISA::Decoder::decodeInst(RiscvISA::ExtMachInst machInst) {
 
 ---
 
+<!-- _class: code-50-percent -->
+
 ### The generated function to execute the LW instruction
 
 ```cpp
@@ -619,7 +623,6 @@ StaticInstPtr RiscvISA::Decoder::decodeInst(RiscvISA::ExtMachInst machInst) {
 If you go to the declaration of `Load` in "src/arch/riscv/isa/formats/mem.isa" you can figure out how this was constructed:
 
 ```txt
-
 def format Load(memacc_code, ea_code = {{EA = rvZext(Rs1 + offset);}},
         offset_code={{offset = sext<12>(IMM12);}},
         mem_flags=[], inst_flags=[]) {{
@@ -666,7 +669,9 @@ The generated is valid CPP code and can understood by trying to  understanding t
 
 Using breakpoints in GDB to trace the execution of an instruction in gem5 is a good way to understand how the generated code is used to decode and execute an instruction.
 
-___
+---
+
+<!-- _class: code-50-percent no-logo -->
 
 ## Exercise: Implement `ADD16` instruction
 
@@ -675,9 +680,7 @@ In this inxercise you're going to implement `ADD16` to the gem5 RISC-V ISA.
 The `ADD16` instruction is a 16-bit addition instruction that adds two 16-bit values and stores the result in a 16-bit register.
 
 Format:
-
 ```txt
-
 | 31 -- 25 | 24 -- 20 | 19 -- 15 | 14 -- 12 | 11 -- 7 |  6 -- 0  |
 |  0100000 |   rs2    |   rs1    |   000    |   rd    |  0110011 |
 |  funct7  |          |          |  funct3  |         |  opcode  |
@@ -703,5 +706,96 @@ The best advice when getting stuck is to find similar instructions and try figur
 Resources to get you started can be found [materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction](../../materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction/).
 Of note, this contains a binary with the ADD16 instruction compiled in, and a config file to run binary in an RISC-V system.
 This config will let you know if you have implemented the instruction correctly.
+
+---
+
+### Use the format to specify the decoder
+
+Let's work backwards and specify each bitfied in the instruction format.
+
+```txt
+| 31 -- 25 | 24 -- 20 | 19 -- 15 | 14 -- 12 | 11 -- 7 |  6 -- 0  |
+|  0100000 |   rs2    |   rs1    |   000    |   rd    |  0110011 |
+|  funct7  |          |          |  funct3  |         |  opcode  |
+```
+
+* quadrant: 0x3
+* opcode5: 0x1d
+* funct3: 0x0
+* funct7: 0x20
+
+---
+
+add16({{}}, IntAluOp);
+
+From this we can specify the decoder in the ISA definition:
+
+```txt
+decode QUADRANT default Unknown::unknown() {
+    0x3 : decode OPCODE5 {
+        0x1d: decode FUNCT3 {
+            format ROp {
+                0x0: decode FUNCT7 {
+                    0x20: // Add the ADD16 instruction here
+                }
+            }
+        }
+    }
+}
+```
+
+**Note**: The `ROp` format is used for register-register operations.
+I figured out which format to use for you butr you can find this in the ISA definition.
+
+---
+
+Next, let's add this to the RISC-V "decoder.isa" file.
+
+The important thing to note is they are already other insturctions defined in this file which share the same QUADRANT and OPCODE5 values. Ergo, we just need to insert:
+
+```txt
+        0x1d: decode FUNCT3 {
+            format ROp {
+                0x0: decode FUNCT7 {
+                    0x20:
+```
+
+in to the correct place.
+
+---
+
+Next let's add the instruction name:
+
+```txt
+                    0x20: add16({{
+
+                    }});
+```
+
+The space space between the curly braces is where the  instruction's behavior is declared.
+
+---
+
+Finally we add the code.
+This is just a matter of understanding the operations and doing the appropriate operations.
+In out case, we're mkeeping this as close to CPP as possible.
+
+```txt
+    0x20: add16({{
+            uint16_t Rd_16 = (uint16_t)(Rs1_ud) +
+                                    (uint16_t)(Rs2_ud);
+        uint16_t Rd_32 = (uint16_t)((Rs1_ud >> 16) +
+                                    (Rs2_ud >> 16));
+        uint16_t Rd_48 = (uint16_t)((Rs1_ud >> 32) +
+                                    (Rs2_ud >> 32));
+        uint16_t Rd_64 = (uint16_t)((Rs1_ud >> 48) +
+                                    (Rs2_ud >> 48));
+        uint64_t result = Rd_64;
+        result = result << 16 | Rd_48;
+        result = result << 16 | Rd_32;
+        result = result << 16 | Rd_16;
+        Rd = result;
+    }});
+```
 
 ---

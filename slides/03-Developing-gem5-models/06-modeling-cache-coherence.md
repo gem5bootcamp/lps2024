@@ -35,6 +35,8 @@ M5 + GEMS = gem5
 
 ---
 
+<!-- _class: center-image -->
+
 ## Cache Coherence Reminder
 
 Single-Writer Multiple-Reader (SWMR) invariant
@@ -44,6 +46,7 @@ Single-Writer Multiple-Reader (SWMR) invariant
 ---
 
 <!-- _paginate: hold -->
+<!-- _class: center-image -->
 
 ## Cache Coherence Reminder
 
@@ -53,11 +56,15 @@ Single-Writer Multiple-Reader (SWMR) invariant
 
 ---
 
+<!-- _class: center-image -->
+
 ## Ruby Architecture
 
 ![ruby architecture: classic ports on each side of a black box](06-modeling-cache-coherence-imgs/ruby-architecture.drawio.svg)
 
 ---
+
+<!-- _class: center-image -->
 
 ## Ruby Inside the Black Box
 
@@ -308,7 +315,7 @@ While we're waiting on the compilation, let's look at some of the details of the
 
 ---
 
-<!-- _class: "tooMuchCode" -->
+<!-- _class: code-60-percent -->
 
 ## Let's look at some code: In-port definition
 
@@ -649,6 +656,7 @@ Runs scons and python script
 
 ------
 
+<!-- _class: code-60-percent no-logo -->
 
 ## Fixing the error: Deadlock
 
@@ -680,6 +688,8 @@ build/ALL_MyMSI/gem5.opt --debug-flags=ProtocolTrace configs/learning_gem5/part3
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ## Fixing the error: What to do on a store
 
 - Fix the next error (what to do on a store??)
@@ -703,6 +713,8 @@ build/ALL_MyMSI/gem5.opt --debug-flags=ProtocolTrace configs/learning_gem5/part3
 Run scons and python script
 
 ---
+
+<!-- _class: code-60-percent -->
 
 ## Final error: What to do when there is sharing?
 
@@ -807,7 +819,7 @@ for ri in self.routers:
 
 ## Ports to Ruby to ports interface
 
-![bg right](06-modeling-cache-coherence-imgs/ruby-architecture.drawio.svg)
+![bg right width:600](06-modeling-cache-coherence-imgs/ruby-architecture.drawio.svg)
 
 Remember this picture?
 

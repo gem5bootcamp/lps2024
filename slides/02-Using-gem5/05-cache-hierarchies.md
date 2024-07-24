@@ -22,7 +22,7 @@ scons build/NULL_MESI_Two_Level/gem5.opt --default=NULL PROTOCOL=MESI_Two_Level 
 
 ---
 
-<!-- _class: twoCol -->
+<!-- _class: two-col -->
 
 ## Cache Hierarchy in gem5
 
@@ -76,7 +76,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 ---
 
-<!-- _class: twoCol -->
+<!-- _class: two-col -->
 
 ## Snoop Protocol
 
@@ -92,7 +92,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 ---
 
-<!-- _class: twoCol -->
+<!-- _class: two-col -->
 
 ## Directory Protocol
 
@@ -167,7 +167,7 @@ Parameters:
 
 ---
 
-<!-- _class: twoCol -->
+<!-- _class: two-col -->
 
 ## Ruby Cache
 
@@ -180,6 +180,8 @@ Parameters:
 ![w:600 System with Ruby Caches](05-cache-hierarchies/ruby_cache.drawio.svg)
 
 ---
+
+<!-- _class: no-logo center-image -->
 
 ## Ruby
 

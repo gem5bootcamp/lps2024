@@ -213,6 +213,8 @@ write(1, "This will be output to standard out\n", 36);
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ## 02-annotate-this
 
 and output all the files and folders names in the current directory
