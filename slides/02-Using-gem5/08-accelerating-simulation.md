@@ -85,19 +85,20 @@ In order to use the address version of the m5ops, we need to open `/dev/mem` dur
 
 **X86 is `0XFFFF0000`**
 
-You can config it in [src/python/gem5/components/boards/x86_board.py](../../gem5/src/python/gem5/components/boards/x86_board.py) with
-
-```python
-self.m5ops_base = 0xFFFF0000
-```
-
 **arm64 is `0x10010000`**
 
-You can config it in [src/dev/arm/RealView.py](../../gem5/src/dev/arm/RealView.py) with
+You can config these "magic" addresses by changing the `m5ops_base` address in the `System` SimObject. The source code is under [gem5/src/sim/System.py](../../gem5/src/sim/System.py).
+
+One high level example can be found under [gem5/src/python/gem5/components/boards/x86_board.py](../../gem5/src/python/gem5/components/boards/x86_board.py).
 
 ```python
-cur_sys.m5ops_base = 0x10010000
+@overrides(AbstractSystemBoard) <- it inherits (System, AbstractBoard)
+def _setup_board(self) -> None:
+    ...
+
+    self.m5ops_base = 0xFFFF0000
 ```
+
 ---
 
 ## Hands-on Time!
@@ -446,10 +447,19 @@ Now the `simSeconds` and `simTicks` are also meaningful, and as we expected, it 
 simSeconds                                   0.001000
 simTicks                                   1000000000
 ```
+---
+
+## Downsides of using KVM to fast-forward
+
+1. KVM fast-forwarding requires the actual hardware KVM thread, so it might constraints the amount of simulations we can run in parallel.
+2. We need to spend time in fast-forwarding for every run. If the fast-forward region is large, it can still be time-consuming.
+3. The simulated system has to have the same ISA as the host.
+
+We can walk around the above downsides by using the checkpoint feature in gem5.
 
 ---
 
-## Checkpointing
+## Checkpoint in gem5
 
 - Saves the architectural state of the system
 - Saves *some* microarchitectural state
@@ -458,13 +468,18 @@ simTicks                                   1000000000
   - the size of the memory has to be the same
   - the workload and its dependencies (i.e. the disk image) have to be the same
 
-<!-- example error if not the same -->
+1. It saves the architectural state of the system
+2. It saves *some* micro-architectural state
+3. With some limitations, a checkpoint that is taken with one system configuration can be restore with different system configurations.
+    1. the number of core in both systems have to be the same
+    2. the size of the memory in both systems have to be the same
+    3. the workload and its dependencies (i.e. the disk image) have to be the same
 
 ---
 
-## Hand-on Time!
+## Hands-on Time!
 
-### Let's take a checkpoint at the beginning of the ROI!
+### Let's combine KVM
 
 <!--  -->
 
