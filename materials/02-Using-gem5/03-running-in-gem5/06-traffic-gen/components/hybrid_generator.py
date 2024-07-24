@@ -24,10 +24,9 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from typing import (
-    List,
-    Union,
-)
+from typing import List, Union
+
+from math import log
 
 from gem5.utils.override import overrides
 from gem5.components.processors.abstract_generator import (
@@ -49,6 +48,8 @@ class HybridGenerator(AbstractGenerator):
         rd_perc: int = 100,
         data_limit: int = 0,
     ) -> None:
+        if num_cores < 2:
+            raise ValueError("num_cores should be >= 2!")
         super().__init__(
             cores=self._create_cores(
                 num_cores=num_cores,
@@ -99,29 +100,46 @@ class HybridGenerator(AbstractGenerator):
         the same inputs as the constructor function.
         """
 
-        ranges = partition_range(min_addr, max_addr, num_cores)
+
+        def biggest_power_of_two_smaller_than(num_cores: int):
+            """
+            Returns the largest power of two that is smaller than num_cores
+            """
+            if (num_cores & (num_cores - 1) == 0):
+                return num_cores//2
+            else:
+                return 2 ** int(log(num_cores, 2))
+
 
         core_list = []
 
-        for i in range(num_cores):
-            if i % 2 == 0:
-                core_list.append(LinearGeneratorCore(
+        num_linear_cores = biggest_power_of_two_smaller_than(num_cores)
+        num_random_cores = num_cores - num_linear_cores
+
+        ranges = partition_range(min_addr, max_addr, num_linear_cores)
+        print(ranges)
+
+        for i in range(num_linear_cores):
+            core_list.append(LinearGeneratorCore(
+                duration=duration,
+                rate=rate,
+                block_size=block_size,
+                min_addr=ranges[i][0],
+                max_addr=ranges[i][1],
+                rd_perc=rd_perc,
+                data_limit=data_limit,)
+            )
+
+        for i in range(num_random_cores):
+            core_list.append(RandomGeneratorCore(
                 duration=duration,
                 rate=rate,
                 block_size=block_size,
                 min_addr=min_addr,
                 max_addr=max_addr,
                 rd_perc=rd_perc,
-                data_limit=data_limit,))
-            else:
-                core_list.append(RandomGeneratorCore(
-                duration=duration,
-                rate=rate,
-                block_size=block_size,
-                min_addr=min_addr,
-                max_addr=max_addr,
-                rd_perc=rd_perc,
-                data_limit=data_limit,))
+                data_limit=data_limit,)
+            )
 
         return core_list
 
