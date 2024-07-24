@@ -72,7 +72,7 @@ In this case, you cannot have a description of the image, unfortunately.
 
 ## Improvement to make
 
-- [ ] Fix `[bg left]` `[bg right]` in the slides so that the gem5 logo at the bottom doesn't move
+- [x] Fix `[bg left]` `[bg right]` in the slides so that the gem5 logo at the bottom doesn't move
 - [ ] Extend marp to support [asciinema](https://github.com/asciinema/asciinema-player/releases/tag/v3.8.0)
   - We could [embed an SVG](https://docs.asciinema.org/manual/server/embedding/#preview-image-link).
 - [ ] Can we possibly make it so that there's a button to copy the code examples?
@@ -98,7 +98,6 @@ In this case, you cannot have a description of the image, unfortunately.
   - 01: stdlib: (Bobby) :heavy_exclamation_mark:
     - Slides
       - Most slides are not done
-      - Bobby will make a skeleton :exclamation:
       - Jason will improve/finish :exclamation:
     - Materials
       - Need to be created :exclamation:
@@ -162,7 +161,6 @@ In this case, you cannot have a description of the image, unfortunately.
 - 03 Developing
   - 01: Sim Objects:  (Mahyar)
     - Slides
-      - Ready to be merged :exclamation:
       - Need to have extra slides added :exclamation:
       - Needs an editing pass :exclamation:
     - Materials :white_check_mark:
@@ -187,7 +185,7 @@ In this case, you cannot have a description of the image, unfortunately.
       - Need to be tested :exclamation:
   - 05: Modeling cores: (Bobby)
     - Slides
-      - (Today) Needs step by step for adding instruction :heavy_exclamation_mark:
+      - Needs improvement on instruction steps :heavy_exclamation_mark:
       - Needs an editing pass :exclamation:
     - Materials
       - (Today) Harshil to be tested :exclamation:
@@ -195,8 +193,16 @@ In this case, you cannot have a description of the image, unfortunately.
     - Slides
       - Needs an editing pass :exclamation:
     - Materials :white_check_mark:
-  - 07: CHI: NOT DONE (Jason) *****
-  - 08: Modeling networks: NOT DONE (Jason) *****
+  - 07: CHI: (Jason) :heavy_exclamation_mark:
+    - Slides
+      - Need to be finished
+    - Materials
+      - Need to be tested
+  - 08: Modeling networks (Jason) :heavy_exclamation_mark:
+    - Slides
+      - Not started :heavy_exclamation_mark:
+    - Materials
+      - Not started :heavy_exclamation_mark:
   - 09: Extending gem5: (Zhantong) :heavy_exclamation_mark:
     - Slides
       - Not written :heavy_exclamation_mark:
@@ -205,10 +211,17 @@ In this case, you cannot have a description of the image, unfortunately.
       - Need to be written :heavy_exclamation_mark:
       - Someone needs to go through and test :exclamation:
 - 04 GPU
-- 05 Other simulators
+- 05 Other simulators :heavy_exclamation_mark:
   - NOT DONE AT ALL
 - 06 Contributing
-  - 01: Contributing: Good (Bobby)
-  - 02: Testing: Good (Bobby)
+  - 01: Contributing: (Bobby)
+    - Slides
+      - Needs an editing pass :exclamation:
+    - Materials :white_check_mark:
+  - 02: Testing (Bobby)
+    - Slides
+      - Needs an editing pass :exclamation:
+    - Materials
+      - Need to be tested :exclamation:
 
-JASON: FIGURE OUT LAPTOP SETUP!
+JASON: FIGURE OUT LAPTOP SETUP! :heavy_exclamation_mark:
