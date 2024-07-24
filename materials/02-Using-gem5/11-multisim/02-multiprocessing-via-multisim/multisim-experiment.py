@@ -23,6 +23,11 @@ from gem5.simulate.simulator import Simulator
 
 import gem5.utils.multisim as multisim
 
+# Add set_num_processes here
+
+# Replace cache hierarchy + add for loops here. After adding the cache
+# hierarchy, make sure to indent everything below as well (the components,
+# setting the workload, and adding the MultiSim simulator).
 cache_hierarchy = PrivateL1CacheHierarchy(
     l1d_size="TODO",
     l1i_size="TODO",
@@ -43,4 +48,4 @@ board.set_se_binary_workload(
     obtain_resource("x86-matrix-multiply")
 )
 
-## Add the simulator to multisim here.
+# Add the simulator to multisim here.

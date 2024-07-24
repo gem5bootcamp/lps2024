@@ -22,8 +22,8 @@ import gem5.utils.multisim as multisim
 
 multisim.set_num_processes(2)
 
-for data_cache_size in ["8kb","16KB"]:
-    for instruction_cache_size in ["8kb","16KB"]:
+for data_cache_size in ["8kB","16kB"]:
+    for instruction_cache_size in ["8kB","16kB"]:
 
         cache_hierarchy = PrivateL1CacheHierarchy(
             l1d_size=data_cache_size,

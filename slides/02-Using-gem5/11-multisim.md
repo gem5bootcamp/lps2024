@@ -16,7 +16,8 @@ Multiprocessing support for gem5 simulations.
 ## The problem
 
 The gem5 simulator is single-threaded.
-This is baked into the core design and is unlikely to change due to the high cost of coverting the entire codebase.
+
+This is baked into the core design and is unlikely to change due to the high cost of converting the entire codebase.
 
 **Therefore, we cannot "speed up" your work with more cores and threads**.
 
@@ -26,10 +27,10 @@ This is baked into the core design and is unlikely to change due to the high cos
 
 The gem5 simulator is used for experimentation.
 
-Experimentation involves  explore how variables of interest change the behavior of a system when all other variables are held constant. As such, experimentation using the gem5 simulator requirement mutliple runs of the simulator.
+Experimentation involves exploring how variables of interest change the behavior of a system when all other variables are held constant. As such, experimentation using the gem5 simulator requires multiple runs of the simulator.
 **Multiple instances of gem5 can be run in parallel**.
 
-_If not a singlular gem5 process utilizing multiple threads, why not mulitple gem5 processes, each single threaded?_
+_If not a singular gem5 process utilizing multiple threads, why not multiple gem5 processes, each single threaded?_
 
 ((This is really handy for us as we don't need to worry about the complexities of multi-threading: memory consistency, etc.))
 
@@ -61,8 +62,7 @@ Writing a script to run multiple gem5 processes:
 This script outlines the simulations to run.
 The parent gem5 process (the process directly spawned by the user) spawns gem5 child processes, each capable of running these simulations.
 
-Via the Python `multiprocessing` module, the parent gem5 process manages the simulations, which are "jobs", and the child gem5 processes are "workers" - queueing up jobs for the workers to execute.
-
+Via the Python `multiprocessing` module, the parent gem5 process queues up simulations ("jobs"), for child gem5 processes ("workers") to execute.
 
 ---
 
@@ -103,6 +103,7 @@ multisim.set_num_processes(2)
 
 If this is not set gem5 will default to consume all available threads.
 We **strongly** recommend setting this value to avoid overconsuming your system's resources.
+Put this line near the top of your configuration script.
 
 ---
 
@@ -116,7 +117,8 @@ for data_cache_size in ["8kB","16kB"]:
             l1i_size=instruction_cache_size,
         )
 ```
-<!-- A comment on where to put this + to indent the other components might be good -->
+
+Replace the cache hierarchy in [multisim-experiment.py](/materials/02-Using-gem5/11-multisim/02-multiprocessing-via-multisim/multisim-experiment.py) with this  and indent the code after the cache hierarchy so all of it is within the inner for loop (`for instruction_cache_size ...`).
 
 ---
 
@@ -145,6 +147,7 @@ The `id` parameter is used to identify the simulation. Setting this is strongly 
 A completed example can be found at [/materials/02-Using-gem5/11-multisim/completed/02-multiprocessing-via-multisim/multisim-experiment.py](/materials/02-Using-gem5/11-multisim/completed/02-multiprocessing-via-multisim/multisim-experiment.py).
 
 ```shell
+cd /workspaces/2024/materials/02-Using-gem5/11-multisim/completed/02-multiprocessing-via-multisim
 gem5 -m gem5.utils.multisim multisim-experiment.py
 ```
 
