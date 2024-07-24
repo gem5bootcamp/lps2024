@@ -85,14 +85,9 @@ board = X86Board(
 board.set_workload(obtain_resource("npb-ep-a"))
 
 # Setup workbegin handler to reset stats and switch to TIMING CPU
+def workbegin_handler():
 
 #
-
-def workend_handler():
-    print("Dump stats at the end of the ROI!")
-    m5.stats.dump()
-    yield True
-
 
 simulator = Simulator(
     board=board,

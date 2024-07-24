@@ -200,7 +200,7 @@ List of Files & Folders:
 
 ---
 
-## Hand-on Time!
+## Hands-on Time!
 
 ### 02-kvm-time
 
@@ -257,14 +257,14 @@ processor = SimpleSwitchableProcessor(
 
 ---
 
-### 02-kvm-time
+## 02-kvm-time
 
 Then, we will need to setup the workbegin handler to
 
 1. Dump the stats at the end of the KVM fast-forwarding
 2. Switch from the KVM CPU to the TIMING CPU
 3. Reset stats
-4. Schedule an exit event after running for 1000,000,000 Ticks
+4. Schedule an exit event after running for 1,000,000,000 Ticks
 5. Fall back to simulation
 
 ---
@@ -291,7 +291,7 @@ def workbegin_handler():
 
 ---
 
-### 02-kvm-time
+## 02-kvm-time
 
 Now, let's register the exit event handlers
 
@@ -308,7 +308,7 @@ simulator = Simulator(
 
 ---
 
-### 02-kvm-time
+## 02-kvm-time
 
 If we run it with
 
@@ -440,7 +440,7 @@ board.processor.switch0.core.commitStats0.numInsts      1621739
 board.processor.switch1.core.commitStats0.numInsts      1091463
 ```
 
-Now the `simSeconds` and `simTicks`  are also meaningful, and as we expected, it should be 0.001 and 1000,000,000, since we scheduled the exit event to exit after 1000,000,000 Ticks.
+Now the `simSeconds` and `simTicks` are also meaningful, and as we expected, it should be 0.001 and 1,000,000,000, since we scheduled the exit event to exit after 1000,000,000 Ticks.
 
 ```bash
 simSeconds                                   0.001000
