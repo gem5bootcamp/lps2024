@@ -26,7 +26,6 @@ section {
     font-size: 1.6rem;
     font-family: sans-serif;
     line-height: 2rem;
-    color: black;
     padding: 70px;
     background-color: var(--gem5-background);
     background-image: url("../themes/gem5Long.png");
@@ -438,4 +437,3 @@ code.hljs {
 .hljs-strong {
     font-weight: bold;
 }
-
