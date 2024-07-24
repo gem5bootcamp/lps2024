@@ -48,3 +48,10 @@ A _board_ which provides interfaces for the _components_ to connect to be added.
 ```python
 from gem5.components import *
 ```
+
+The "slides-to-translate" directory contains slides that cover stdlib topics from my HPCA tutorial.
+These need translated and in some cases expanded upon to for the Bootcamp.
+If the slide references materials, these are available in the "slides-to-translate/materials" directory.
+Compelted materials can be found in the "slides-to-translate/materials-completed" directory.
+
+
