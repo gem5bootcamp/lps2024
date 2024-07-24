@@ -100,29 +100,20 @@ def workbegin_handler():
     print("Switching from KVM to TIMING CPU")
     processor.switch()
 
+    simulator.set_max_ticks(1000_000_000)
+
     print("Resetting stats at the start of ROI!")
     m5.stats.reset()
-
-    print("Setup a MAX_INSTS exit event at 100,000 insts")
-    for core in processor.get_cores():
-        core._set_inst_stop_any_thread(100_000, True)
 
     yield False
 #
 
-def workend_handler():
-    print("Dump stats at the end of the ROI!")
-    m5.stats.dump()
-    yield True
-
-
 simulator = Simulator(
     board=board,
 # Setup the exit event handlers
-    on_exit_event={
+    on_exit_event= {
         ExitEvent.WORKBEGIN: workbegin_handler(),
-        ExitEvent.MAX_INSTS: workend_handler(),
-    },
+    }
 #
 )
 

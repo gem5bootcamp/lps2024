@@ -261,10 +261,10 @@ processor = SimpleSwitchableProcessor(
 
 Then, we will need to setup the workbegin handler to
 
-1. Dump the stats for the KVM fast-forwarding portion\
+1. Dump the stats at the end of the KVM fast-forwarding
 2. Switch from the KVM CPU to the TIMING CPU
 3. Reset stats
-4. Schedule an exit event when any thread executes 100,000 instructions
+4. Schedule an exit event after running for 1000,000,000 Ticks
 5. Fall back to simulation
 
 ---
@@ -280,12 +280,10 @@ def workbegin_handler():
     print("Switching from KVM to TIMING CPU")
     processor.switch()
 
+    simulator.set_max_ticks(1000_000_000)
+
     print("Resetting stats at the start of ROI!")
     m5.stats.reset()
-
-    print("Setup a MAX_INSTS exit event at 100,000 insts")
-    for core in processor.get_cores():
-        core._set_inst_stop_any_thread(100_000, True)
 
     yield False
 #
@@ -301,10 +299,9 @@ Now, let's register the exit event handlers
 simulator = Simulator(
     board=board,
 # Setup the exit event handlers
-    on_exit_event={
+    on_exit_event= {
         ExitEvent.WORKBEGIN: workbegin_handler(),
-        ExitEvent.MAX_INSTS: workend_handler(),
-    },
+    }
 #
 )
 ```
@@ -393,33 +390,13 @@ Dump the current stats
 Switching from KVM to TIMING CPU
 switching cpus
 Resetting stats at the start of ROI!
-Setup a MAX_INSTS exit event at 100,000 insts
-```
-
----
-
-After any threads executed 100,000 instructions, an exit event `ExitEvent.MAX_INSTS` is triggered.
-Since we register our `workend_handler` to handel the `ExitEvent.MAX_INSTS`, it will dump the stats with TIMING CPU simulation stats.
-
-```python
-def workend_handler():
-    print("Dump stats at the end of the ROI!")
-    m5.stats.dump()
-    yield True
-```
-
-We should also able to see the print in the `simout,txt` file.
-
-```bash
-Dump stats at the end of the ROI!
-Simulation Done
-
 ```
 
 ---
 
 ## 02-kvm-time
 
+Because we schedule an exit event that will be triggered after running for 1000,000,000 Ticks, it will exit the simulation before the `work_begin_addr` is called so we can look at the stats faster just for the tutorial.
 Let's look at the stats now.
 It should be in the `stats.txt` file under the `m5out` folder.
 
@@ -430,9 +407,45 @@ and
 `---------- End Simulation Statistics   ----------`
 indicate different stats dumps.
 
+---
+
+## 02-kvm-time
+
 Let's look at the first stats dump.
 
+We can find the stats for the KVM CPU with the keyword `start0.core` and `start1.core` since we are using 2 cores.
+If we search for ```board.processor.start0.core.commitStats0.numOps``` and `board.processor.start1.core.commitStats0.numOps` in the stats file,
+we should get the following results
 
+```bash
+board.processor.start0.core.commitStats0.numOps            0
+board.processor.start1.core.commitStats0.numOps            0
+```
+
+It indicates that the KVM CPU did not simulate any operations, so any stats that are produced by the KVM CPU should be ignored, including the `simSeconds` and `simTicks`.
+Importantly, it also indicates that the KVM fast-forwarding does not warm up the micro-architectural components, such as caches, so we should consider having a period of warmup simulation before measuring the actual detailed simulation for warming up the micro-architectural components.
+
+---
+
+## 02-kvm-time
+
+Let's look at the second stats dump.
+
+We can find the stats for the TIMING CPU with the keyword `switch0.core` and `switch1.core`.
+
+For example, if we search for ```board.processor.switch0.core.commitStats0.numInsts``` and ```board.processor.switch1.core.commitStats0.numInsts```, we will find the total committed instructions for the TIMING CPUs
+
+```bash
+board.processor.switch0.core.commitStats0.numInsts      1621739
+board.processor.switch1.core.commitStats0.numInsts      1091463
+```
+
+Now the `simSeconds` and `simTicks`  are also meaningful, and as we expected, it should be 0.001 and 1000,000,000, since we scheduled the exit event to exit after 1000,000,000 Ticks.
+
+```bash
+simSeconds                                   0.001000
+simTicks                                   1000000000
+```
 
 ---
 
