@@ -705,3 +705,94 @@ Of note, this contains a binary with the ADD16 instruction compiled in, and a co
 This config will let you know if you have implemented the instruction correctly.
 
 ---
+
+### Use the format to specify the decoder
+
+Let's work backwards and specify each bitfied in the instruction format.
+
+```txt
+| 31 -- 25 | 24 -- 20 | 19 -- 15 | 14 -- 12 | 11 -- 7 |  6 -- 0  |
+|  0100000 |   rs2    |   rs1    |   000    |   rd    |  0110011 |
+|  funct7  |          |          |  funct3  |         |  opcode  |
+```
+
+* quadrant: 0x3
+* opcode5: 0x1d
+* funct3: 0x0
+* funct7: 0x20
+
+---
+
+add16({{}}, IntAluOp);
+
+From this we can specify the decoder in the ISA definition:
+
+```txt
+decode QUADRANT default Unknown::unknown() {
+    0x3 : decode OPCODE5 {
+        0x1d: decode FUNCT3 {
+            format ROp {
+                0x0: decode FUNCT7 {
+                    0x20: // Add the ADD16 instruction here
+                }
+            }
+        }
+    }
+}
+```
+
+**Note**: The `ROp` format is used for register-register operations.
+I figured out which format to use for you butr you can find this in the ISA definition.
+
+---
+
+Next, let's add this to the RISC-V "decoder.isa" file.
+
+The important thing to note is they are already other insturctions defined in this file which share the same QUADRANT and OPCODE5 values. Ergo, we just need to insert:
+
+```txt
+        0x1d: decode FUNCT3 {
+            format ROp {
+                0x0: decode FUNCT7 {
+                    0x20:
+```
+
+in to the correct place.
+
+---
+
+Next let's add the instruction name:
+
+```txt
+                    0x20: add16({{
+
+                    }});
+```
+
+The space space between the curly braces is where the  instruction's behavior is declared.
+
+---
+
+Finally we add the code.
+This is just a matter of understanding the operations and doing the appropriate operations.
+In out case, we're mkeeping this as close to CPP as possible.
+
+```txt
+    0x20: add16({{
+            uint16_t Rd_16 = (uint16_t)(Rs1_ud) +
+                                    (uint16_t)(Rs2_ud);
+        uint16_t Rd_32 = (uint16_t)((Rs1_ud >> 16) +
+                                    (Rs2_ud >> 16));
+        uint16_t Rd_48 = (uint16_t)((Rs1_ud >> 32) +
+                                    (Rs2_ud >> 32));
+        uint16_t Rd_64 = (uint16_t)((Rs1_ud >> 48) +
+                                    (Rs2_ud >> 48));
+        uint64_t result = Rd_64;
+        result = result << 16 | Rd_48;
+        result = result << 16 | Rd_32;
+        result = result << 16 | Rd_16;
+        Rd = result;
+    }});
+```
+
+---
