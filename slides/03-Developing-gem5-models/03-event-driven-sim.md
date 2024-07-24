@@ -31,7 +31,7 @@ Jason's event driven slides.
 ```
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Event-Driven Simulation: Abstract Thoughts
 
@@ -77,7 +77,7 @@ Continued on next slide.
 6- This process continue until the program we're simulating is finished.
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Event-Driven Simulation in gem5
 
@@ -102,7 +102,7 @@ Let's look at `src/sim/eventq.hh`. In there you will see a declaration for class
 ```
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## A Hypothetical Example for Event
 
@@ -133,7 +133,7 @@ class CPU: public ClockedObject
 In this example every time, an instance of `FetchEvent` occurs (`cpu_0::nextFetch` and not `CPU::nextFetch`), the simulator will call `processFetch` from the `CPU` instance that owns the event.
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## EventFunctionWrapper
 
@@ -161,7 +161,7 @@ In addition to class `Event`, you can find the declaration for `EventFunctionWra
 For `EventFunctionWrapper` the function `process` is defined as a call to `callback` which is passed as an argument to the constructor of `EventFunctionWrapper`. Additionally, we wil need to give each object a name through the constructor.
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Detour: m5.simulate: SimObject::startup
 
@@ -192,7 +192,7 @@ By calling `m5.simulate`, gem5 will call function `startup` from every `SimObjec
 `startup` is where we schedule the initial `events` that trigger a simulation (`CPU::nextFetch` in our hypothetical scenario).
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## nextHelloEvent
 
@@ -213,7 +213,7 @@ Now, we need declare a member of type `EventFunctionWrapper` which we will call 
 ```
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## nextHelloEvent: Header File
 
@@ -246,7 +246,7 @@ class HelloSimObject: public SimObject
 ```
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## nextHelloEvent: HelloSimObject: Constructor
 
@@ -271,7 +271,7 @@ HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
 ```
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## nextHelloEvent Callback: processNextHelloEvent
 
@@ -299,7 +299,7 @@ class HelloSimObject: public SimObject
 ```
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## nextHelloEvent Callback: processNextHelloEvent cont.
 
@@ -336,7 +336,7 @@ HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
 ```
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## nextHelloEvent Callback: processNextHelloEvent: Finally!
 
@@ -361,7 +361,7 @@ Deeper look into the code, we do the following every time `nextHelloEvent` occur
 - Check if we have remaining prints to do, if so, we will schedule `nextHelloEvent` 500 into the future. **NOTE**: `curTick` is a function that returns the current simulator time in `Ticks`
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## HelloSimObject::startup: Header File
 
@@ -408,7 +408,7 @@ HelloSimObject::startup()
 ```
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Current Versions: Python Scripts
 
@@ -441,7 +441,7 @@ class HelloSimObject(SimObject):
 ```
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Current Versions: Header File
 
@@ -477,7 +477,7 @@ class HelloSimObject: public SimObject
 ```
 
 ---
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Current Versions: Source File
 
