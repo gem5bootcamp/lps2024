@@ -85,8 +85,8 @@ gem5 mysim.py
 At its innermost level, Python has 4 primitive data types.
 All other data types are built on top of these.
 
-- Integers (ints).
-- Floating point numbers (floats).
+- Integers (int).
+- Floating point numbers (float).
 - Strings (str).
 - Booleans (bool).
 
@@ -144,7 +144,7 @@ x = 1.5
 #### Basic Float Operations
 
 ```python
-# Like integers floats can be set using arithmetic operations.
+# Like integers, floats can be set using arithmetic operations.
 
 # Set variable `y`` to `10.5 + 5.5`.`
 y = 10.5 + 5.5
