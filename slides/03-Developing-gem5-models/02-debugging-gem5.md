@@ -133,7 +133,7 @@ scons build/NULL/gem5.opt -j$(nproc)
 And here is a snippet of the contents of `build/NULL/debug/HelloExampleFlag.hh`.
 
 ```cpp
-// Saili put definition of HelloExampleFlag here.
+// Saili put declaration of HelloExampleFlag here.
 ```
 
 ---
