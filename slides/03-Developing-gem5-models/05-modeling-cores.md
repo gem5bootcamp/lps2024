@@ -28,7 +28,7 @@ An ISA defines:
 
 ---
 
-### ISA's gem5 can simulate
+## ISA's gem5 can simulate
 
 * ARM
 * RISC-V
@@ -54,10 +54,9 @@ As a high level summary, this independence is achieved by having a seperate "dec
 
 It doesn't funciton or have the same responsibilities as a decoder in a real CPU.
 
-
 ---
 
-### ISA-CPU Independence Diagram
+## ISA-CPU Independence Diagram
 
 ![45% bg](05-modeling-cores-img/isa-independence.png)
 
@@ -82,10 +81,10 @@ It contains information on
 
 ---
 
-### DynamicInst
+## DynamicInst
 
 `DynamicInst` objects contains the information that is specific to a particular instance of an instruction.
-They are derived from `StaticInst` objects.
+They are constructed from information in the `StaticInst` objects.
 
 They contains information on:
 
@@ -93,16 +92,16 @@ They contains information on:
 * Instruction result
 * Thread number
 * CPU
-* Renamed register indeices
+* Renamed register indices
 * Provides the `ExecContext` interface
 
 ---
 
-#### ExecContext
+## ExecContext
 
 The `ExecContext` interface provides methods in which a instruction may interface with a CPU model in a standardized way.
 
-Both `StaticInst` and `DynamicInst` objects implement the `ExecContext` interface.
+`DynamicInst` objects implement the `ExecContext` interface.
 
 ---
 
@@ -129,26 +128,25 @@ This is just the constructor for the `Add` class. It created the `StaticInst`
 object that represents the `Add` instruction.
 
 ```shell
-(gdb) b Add::Add
+(gdb) break Add::Add
 ```
 
-Then add breakpoints to the `Add::execute` funciton.
+Then add breakpoints to the `Add::execute` function.
 This is function called to execute the `Add` instruction.
 
 ```shell
-(gdb) b Add::execute
+(gdb) break Add::execute
 ```
 
 Start execution of gem5:
 
 ```shell
-(gdb) run \
-    materials/03-Developing-gem5-models/05-modeling-cores/01-inst-trace.py
+(gdb) run 01-inst-trace.py
 ```
 
 ---
 
-### RISC-V `Add::Add` Backtrace
+## RISC-V `Add::Add` Backtrace
 
 You should have reached the first breakpoint in the `Add::Add` function:
 
@@ -192,7 +190,7 @@ The functions at indexes > 6 are gem5's internal functions called prior to the i
 4 {PC} in gem5:: BaseSimpleCPU:: preExecute ()
 ```
 
-The `preExecute` is a function called before the instruction is executed. It is used to perform any necessary setup..
+The `preExecute` is a function called in the CPU model before the instruction is executed. It is used to perform any necessary setup..
 
 You can go to ["src/cpu/simple/base.cc"](https://github.com/gem5/gem5/blob/v24.0/src/cpu/simple/base.cc#L328) in the gem5 repo to see the `BaseSimpleCPU`'s `preExecute` function.
 
@@ -216,6 +214,8 @@ You can follow this call through to `Decoder:: decode` which can be found in [sr
 
 ---
 
+<!-- _class: small-code -->
+
 ```cpp
 StaticInstPtr
 Decoder::decode(PCStateBase &_next_pc)
@@ -233,12 +233,6 @@ Decoder::decode(PCStateBase &_next_pc)
         next_pc.npc(next_pc.instAddr() + sizeof(machInst));
         next_pc.compressed(false);
     }
-```
-
----
-
-
-```cpp
     emi.vl      = next_pc.vl();
     emi.vtype8  = next_pc.vtype() & 0xff;
     emi.vill    = next_pc.vtype().vill;
@@ -273,7 +267,9 @@ Decoder::decode(ExtMachInst mach_inst, Addr addr)
 
 ---
 
-This functionmostly serves as a simple wrapper to call the `Decoder::decodeInst` function plus setting the size and allowing for some debug information.
+## Decode function
+
+This function mostly serves as a simple wrapper to call the `Decoder::decodeInst` function plus setting the size and allowing for some debug information.
 
 The `decodeInst` function is the next function on the backtrace but it's _generated_.
 
@@ -293,7 +289,7 @@ case 0xc:
         case 0x0:
             switch (BS) {
             case 0x0:
-                // ROp::add(['\n                            Rd = rvSext(Rs1_sd + Rs2_sd);\n                        '],{})
+                // ROp::add(['\n   Rd = rvSext(Rs1_sd + Rs2_sd);\n   '],{})
                     return new Add(machInst);
                 break;
 ```
@@ -303,7 +299,7 @@ It is just a giant map.
 
 ---
 
-### RISC-V `Add::Execute` Backtrace
+## RISC-V `Add::Execute` Backtrace
 
 Let's continue  in GDB to reach the next breakpoint:
 
@@ -363,10 +359,11 @@ The latter two functions are used for memory instructions such as Timed memory a
 
 ---
 
-## The Inst-CPU control flow
+## The Inst-CPU control flow (for SimpleCPU)
 
 ![75% bg](05-modeling-cores-img/instruction-execution-flow.svg)
-___
+
+---
 
 ## The gem5 ISA Parser
 
@@ -385,11 +382,9 @@ The gem5 build system then compiles thes generated files into the gem5 binary.
 
 ---
 
-### The important high-level ideas
+## The important high-level ideas
 
-![30% bg](05-modeling-cores-img/isa-definition-translation.svg)
-
----
+![bg right fit](05-modeling-cores-img/isa-definition-translation.svg)
 
 The problem with the ISA definition is it's very indirect and you can get lost in trying to understand the little details of how the CPP code is generated.
 
@@ -399,13 +394,13 @@ The painfull truth is that to extend or add to an ISA most developers will `grep
 
 ---
 
-### Let's try to understand one RISC-V instruction
+## Let's try to understand one RISC-V instruction
 
 In the following we are going to look at the `LW` instruction in the RISC-V and how it is specified, decoded, and executed in gem5.
 
 ---
 
-#### The RISC-V instruction formats
+## The RISC-V instruction formats
 
 To understand the RISC-V ISA, and how the gem5 RISC-V decoder works, we need to understand the base instruction formats.
 The base instruction formats are the R, I, S, B, U, and J types which use thye following formats:
@@ -423,7 +418,7 @@ The base instruction formats are the R, I, S, B, U, and J types which use thye f
 
 ---
 
-#### RISC-V's "Load word" (LW) instruction
+## RISC-V's "Load word" (LW) instruction
 
 Load Word (instruction: `LW`) is an I-type instruction which loads a 32-bit value from memory into a register.
 It is defined by the folowing format:
@@ -441,7 +436,7 @@ It loads the value of source register  `rs1` into the destination register `rd +
 
 ---
 
-#### RISC-V's LW Instruction Breakdown
+## RISC-V's LW Instruction Breakdown
 
 Consider the following instruction:
 
@@ -467,7 +462,7 @@ Ergo `opcode` = (`OPCODE5` << 2 )+ `QUAD`.
 
 ---
 
-#### Understanding the decoding of LW
+## Understanding the decoding of LW
 
 What the ISA definition does is define how the instruction is decoded is broken down and how the "parts" (bitfields) of the instruction are used to decode the instruction.
 
@@ -482,7 +477,6 @@ def bitfield RVTYPE rv_type;
 def bitfield QUADRANT <1:0>;
 def bitfield OPCODE5 <6:2>;
 ```
-
 
 This defines the bitfields, like those decribed on the previous slide.
 THe decoder uses these bitfirelds to decode the instruction.
@@ -708,6 +702,6 @@ The best advice when getting stuck is to find similar instructions and try figur
 
 Resources to get you started can be found [materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction](../../materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction/).
 Of note, this contains a binary with the ADD16 instruction compiled in, and a config file to run binary in an RISC-V system.
-This config will let youn know if you have implemented the instruction correctly.
+This config will let you know if you have implemented the instruction correctly.
 
 ---
