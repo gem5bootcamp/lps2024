@@ -270,7 +270,11 @@ def SingleChannelLPDDR2_S4_1066_1x32(
 ) -> AbstractMemorySystem:
     return ChanneledMemory(LPDDR2_S4_1066_1x32, 1, 64, size=size)
 ```
-- then recompile and you now have a new usable ChanneledMemory
+- then we import this new class to our script with
+```python
+from gem5.components.memory.single_channel import SingleChannelLPDDR2_S4_1066_1x32
+```
+- then recompile
 
 ---
 
