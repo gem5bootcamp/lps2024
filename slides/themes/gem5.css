@@ -184,6 +184,15 @@ section.center-image img {
 }
 
 /****************************************************/
+/* For altering logo position/appearance */
+section.logo-left {
+    background-position-x: 21%;
+}
+section.no-logo {
+    background-image: none;
+}
+
+/****************************************************/
 /* For title cards at the beginning of a section, e.g. Intro to ..., etc.
    Has a blue gradient. From Erin and Mysore
 */

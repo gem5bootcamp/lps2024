@@ -671,7 +671,7 @@ Using breakpoints in GDB to trace the execution of an instruction in gem5 is a g
 
 ---
 
-<!-- _class: code-50-percent -->
+<!-- _class: code-50-percent no-logo -->
 
 ## Exercise: Implement `ADD16` instruction
 

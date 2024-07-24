@@ -67,6 +67,8 @@ Nathan Binkert, Bradford Beckmann, Gabriel Black, Steven K. Reinhardt, Ali Saidi
 
 ---
 
+<!-- _class: no-logo -->
+
 ## gem5-20+: A new era in computer architecture simulation
 
 ![gem5-20+](./01-simulation-background-imgs/gem5-20plus.drawio.png)
@@ -93,6 +95,8 @@ Nathan Binkert, Bradford Beckmann, Gabriel Black, Steven K. Reinhardt, Ali Saidi
 ### We're close… just a lot of rough edges! You can help!
 
 ---
+
+<!-- _class: logo-left -->
 
 ## The gem5 community
 
