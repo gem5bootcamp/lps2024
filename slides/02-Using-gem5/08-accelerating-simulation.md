@@ -77,13 +77,27 @@ illegal instruction (core dumped)
 
 In order to use the address version of the m5ops, we need to open `/dev/mem` during the process and setup a "magic" address range for triggering the gem5 operations.
 
-### Note
+---
+
+## Note
 
 "magic" address for
 
-X86 is `0XFFFF0000`
-arm64 is `0x10010000`
+**X86 is `0XFFFF0000`**
 
+You can config it in [src/python/gem5/components/boards/x86_board.py](../../gem5/src/python/gem5/components/boards/x86_board.py) with
+
+```python
+self.m5ops_base = 0xFFFF0000
+```
+
+**arm64 is `0x10010000`**
+
+You can config it in [src/dev/arm/RealView.py](../../gem5/src/dev/arm/RealView.py) with
+
+```python
+cur_sys.m5ops_base = 0x10010000
+```
 ---
 
 ## Hands-on Time!
@@ -188,16 +202,237 @@ List of Files & Folders:
 
 ## Hand-on Time!
 
+### 02-kvm-time
+
 ### Let's use KVM to fast forward to the ROI
 
-1. Setup a switchable processor to switch from the KVM CPU to O3 CPU after reaching
-<!-- the example have them fill in the processor -->
-2. Setup exit event handler to switch the cpu type when m5 workbegin is encountered
-<!-- the example have them fill in the handler -->
-<!-- also show them the default handler they might able to use -->
-3. Let's boot it up!
+Let's run the CLASS A ep benchmark in the NPB benchmark suite.
+gem5 resource provides us a workload called `npb-ep-a` that can run it with a simply command of
 
-<!-- give example here -->
+```python
+board.set_workload(obtain_resource("npb-ep-a"))
+```
+
+so we don't need to worry about building the disk image, workload, and annotate it for now.
+
+In this workload, there will be a `m5_work_begin_addr` call after ep's initialization and a `m5_work_end_addr` call after the ep's ROI finishes.
+
+You can find the details about the workload in the [gem5 resource website](https://resources.gem5.org/).
+For example, for ep, here is the [source file](https://github.com/gem5/gem5-resources/blob/stable/src/npb/disk-image/npb/npb-hooks/NPB/NPB3.4-OMP/EP/ep.f90#L125) with m5 addr version annotation.
+
+---
+
+## 02-kvm-time
+
+All materials can be found in `materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time`.
+We will be editing [materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time/02-kvm-time.py](../../materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time/02-kvm-time.py)
+
+### Goal
+
+1. Use KVM to fast-forward the simulation until the ROI begin
+2. When reaching the ROI begin, switch the CPU from KVM CPU to TIMING CPU
+3. Dump the stats so we can look at it later
+4. Reset the stats before collecting meaningful stats
+5. Schedule an exit event so the simulation can stop earlier for us to look at the detailed stats
+6. Start detailed simulation
+7. Look at the stats
+
+---
+
+## 02-kvm-time
+
+First, we will need to setup a switchable processor that allows us to start with the KVM CPU then switch to the detailed timing CPU later.
+
+```python
+# Here we setup the processor. The SimpleSwitchableProcessor allows for
+# switching between different CPU types during simulation, such as KVM to Timing
+processor = SimpleSwitchableProcessor(
+    starting_core_type=CPUTypes.KVM,
+    switch_core_type=CPUTypes.TIMING,
+    isa=ISA.X86,
+    num_cores=2,
+)
+#
+```
+
+---
+
+### 02-kvm-time
+
+Then, we will need to setup the workbegin handler to
+
+1. Dump the stats for the KVM fast-forwarding portion\
+2. Switch from the KVM CPU to the TIMING CPU
+3. Reset stats
+4. Schedule an exit event when any thread executes 100,000 instructions
+5. Fall back to simulation
+
+---
+
+```python
+# Setup workbegin handler to reset stats and switch to TIMING CPU
+def workbegin_handler():
+    print("Done booting Linux")
+
+    print("Dump the current stats")
+    m5.stats.dump()
+
+    print("Switching from KVM to TIMING CPU")
+    processor.switch()
+
+    print("Resetting stats at the start of ROI!")
+    m5.stats.reset()
+
+    print("Setup a MAX_INSTS exit event at 100,000 insts")
+    for core in processor.get_cores():
+        core._set_inst_stop_any_thread(100_000, True)
+
+    yield False
+#
+```
+
+---
+
+### 02-kvm-time
+
+Now, let's register the exit event handlers
+
+```python
+simulator = Simulator(
+    board=board,
+# Setup the exit event handlers
+    on_exit_event={
+        ExitEvent.WORKBEGIN: workbegin_handler(),
+        ExitEvent.MAX_INSTS: workend_handler(),
+    },
+#
+)
+```
+
+---
+
+### 02-kvm-time
+
+If we run it with
+
+```bash
+gem5 -re 02-kvm-time.py
+```
+We will see the following error on our terminal
+
+```bash
+Aborted (core dumped)
+```
+
+If we open the `simerr.txt`, we will see the following error
+
+```bash
+src/sim/simulate.cc:199: info: Entering event queue @ 0.  Starting simulation...
+src/cpu/kvm/perfevent.cc:191: panic: PerfKvmCounter::attach failed (2)
+Memory Usage: 3539020 KBytes
+src/cpu/kvm/perfevent.ccProgram aborted at tick 0
+:191: panic: PerfKvmCounter::attach failed (2)
+Memory Usage: 3539020 KBytes
+```
+
+---
+
+## 02-kvm-time
+
+This happens to some kernels due to permission issues.
+When this happens, we can avoid the error by disabling the use of perf in the KVM CPU.
+
+```python
+# Here we tell the KVM CPU (the starting CPU) not to use perf.
+for proc in processor.start:
+    proc.core.usePerf = False
+#
+```
+
+Now, let's run it again
+
+```bash
+gem5 -re 02-kvm-time.py
+```
+
+---
+
+## 02-kvm-time
+
+It might take a minutes to boot up the kernel and fast-forward to the ROI begin.
+
+We can see what is happening in the terminal with the file `board.pc.com_1.device` under the `m5out` directory.
+
+If we see the following log
+
+```bash
+ NAS Parallel Benchmarks (NPB3.3-OMP) - EP Benchmark
+
+ Number of random numbers generated:       536870912
+ Number of available threads:                      2
+
+ -------------------- ROI BEGIN --------------------
+```
+
+It indicates that we reached the ROI begin.
+
+---
+
+## 02-kvm-time
+
+If we look at the `simout.txt`, we will see that it runs our `workbegin_handler` and switched the CPU from the KVM CPU to the TIMING CPU.
+
+```bash
+info: Using default config
+Running the simulation
+Using KVM cpu
+Global frequency set at 1000000000000 ticks per second
+      0: board.pc.south_bridge.cmos.rtc: Real-time clock set to Sun Jan  1 00:00:00 2012
+Done booting Linux
+Dump the current stats
+Switching from KVM to TIMING CPU
+switching cpus
+Resetting stats at the start of ROI!
+Setup a MAX_INSTS exit event at 100,000 insts
+```
+
+---
+
+After any threads executed 100,000 instructions, an exit event `ExitEvent.MAX_INSTS` is triggered.
+Since we register our `workend_handler` to handel the `ExitEvent.MAX_INSTS`, it will dump the stats with TIMING CPU simulation stats.
+
+```python
+def workend_handler():
+    print("Dump stats at the end of the ROI!")
+    m5.stats.dump()
+    yield True
+```
+
+We should also able to see the print in the `simout,txt` file.
+
+```bash
+Dump stats at the end of the ROI!
+Simulation Done
+
+```
+
+---
+
+## 02-kvm-time
+
+Let's look at the stats now.
+It should be in the `stats.txt` file under the `m5out` folder.
+
+There are two stats dump, one from the end of the KVM fast-forwarding, and the other from the end of the detailed simulation after simulating 100,000 instructions in any thread.
+
+`---------- Begin Simulation Statistics ----------`
+and
+`---------- End Simulation Statistics   ----------`
+indicate different stats dumps.
+
+Let's look at the first stats dump.
+
+
 
 ---
 

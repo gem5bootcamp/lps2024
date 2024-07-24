@@ -28,7 +28,7 @@
 
 Usage:
 ------
-
+gem5 -re 02-kvm-time.py
 
 """
 
@@ -68,17 +68,11 @@ memory = DualChannelDDR4_2400(size="3GB")
 
 # Here we setup the processor. The SimpleSwitchableProcessor allows for
 # switching between different CPU types during simulation, such as KVM to Timing
-processor = SimpleSwitchableProcessor(
-    starting_core_type=CPUTypes.KVM,
-    switch_core_type=CPUTypes.TIMING,
-    isa=ISA.X86,
-    num_cores=2,
-)
+
 #
 
 # Here we tell the KVM CPU (the starting CPU) not to use perf.
-for proc in processor.start:
-    proc.core.usePerf = False
+
 #
 
 board = X86Board(
@@ -91,17 +85,10 @@ board = X86Board(
 board.set_workload(obtain_resource("npb-ep-a"))
 
 # Setup workbegin handler to reset stats and switch to TIMING CPU
-def handle_workbegin():
-    print("Done booting Linux")
-    print("Resetting stats at the start of ROI!")
 
-    m5.stats.reset()
-    print("Switching from KVM to TIMING CPU")
-    processor.switch()
-    yield False
 #
 
-def handle_workend():
+def workend_handler():
     print("Dump stats at the end of the ROI!")
     m5.stats.dump()
     yield True
@@ -110,10 +97,7 @@ def handle_workend():
 simulator = Simulator(
     board=board,
 # Setup the exit event handlers
-    on_exit_event={
-        ExitEvent.WORKBEGIN: handle_workbegin(),
-        ExitEvent.WORKEND: handle_workend(),
-    },
+
 #
 )
 
