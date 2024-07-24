@@ -85,7 +85,7 @@ board = X86Board(
 board.set_workload(obtain_resource("npb-ep-a"))
 
 # Setup workbegin handler to reset stats and switch to TIMING CPU
-def workbegin_handler():
+
 
 #
 
