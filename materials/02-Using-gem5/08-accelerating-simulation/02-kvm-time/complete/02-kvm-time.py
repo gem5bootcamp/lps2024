@@ -32,9 +32,6 @@ gem5 -re 02-kvm-time.py
 
 """
 
-# started at 15:43 took 3 minutes to setup and download results
-#
-
 from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
     PrivateL1CacheHierarchy
 )

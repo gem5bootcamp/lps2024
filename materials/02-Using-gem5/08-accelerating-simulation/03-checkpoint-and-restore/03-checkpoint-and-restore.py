@@ -28,7 +28,7 @@
 
 Usage:
 ------
-gem5 -re 02-kvm-time.py
+gem5 -re 03-checkpoint-and-restore.py
 
 """
 
@@ -39,9 +39,7 @@ from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import 
 from gem5.components.boards.x86_board import X86Board
 from gem5.components.memory import DualChannelDDR4_2400
 from gem5.components.processors.cpu_types import CPUTypes
-from gem5.components.processors.simple_switchable_processor import (
-    SimpleSwitchableProcessor,
-)
+from gem5.components.processors.simple_processor import SimpleProcessor
 from gem5.isas import ISA
 from gem5.resources.resource import obtain_resource
 from gem5.simulate.simulator import (
@@ -64,13 +62,17 @@ cache_hierarchy = PrivateL1CacheHierarchy(
 
 memory = DualChannelDDR4_2400(size="3GB")
 
-# Here we setup the processor. The SimpleSwitchableProcessor allows for
-# switching between different CPU types during simulation, such as KVM to Timing
-
+# Here we setup a simple processor with the KVM CPU
+processor = SimpleProcessor(
+    cpu_type=CPUTypes.KVM,
+    isa=ISA.X86,
+    num_cores=2,
+)
 #
 
 # Here we tell the KVM CPU (the starting CPU) not to use perf.
-
+for proc in processor.start:
+    proc.core.usePerf = False
 #
 
 board = X86Board(
@@ -83,14 +85,21 @@ board = X86Board(
 board.set_workload(obtain_resource("npb-ep-a"))
 
 # Setup workbegin handler to reset stats and switch to TIMING CPU
+def workbegin_handler():
+    print("Done booting Linux")
 
+    print("Take a checkpoint")
+    simulator.take_checkpoint("03-cpt")
 
+    yield True
 #
 
 simulator = Simulator(
     board=board,
 # Setup the exit event handlers
-
+    on_exit_event= {
+        ExitEvent.WORKBEGIN: workbegin_handler(),
+    }
 #
 )
 
