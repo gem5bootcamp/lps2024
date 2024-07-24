@@ -31,7 +31,9 @@ title: Debugging and Debug Flags
 
 ## DebugFlags
 
-`DebugFlags` facilitate debug printing. Debug printing is useful for debugging models in gem5 and logging.
+`DebugFlags` help with debug printing. Debug printing is useful for debugging models in gem5 and logging.
+
+<!-- logging what? -->
 
 Each `DebugFlag` enables printing certain statements within the gem5 code base. Run the following commands to see all the available `DebugFlags` in gem5.
 
@@ -40,12 +42,13 @@ cd gem5
 ./build/NULL/gem5.opt --debug-help
 ```
 
-You should see an output like below.
+This command will show you a list of all the `DebugFlags`. You can choose to use a specific `DebugFlag`, like `Activity`, or you can choose a class of `DebugFlags`, like `Registers`, which will enable the following `DebugFlags`: `IntRegs`, `FloatRegs`, `VecRegs`, `VecPredRegs`, `MatRegs`, `CCRegs`, `MiscRegs`.
 
-```cpp
-// record with asciinema Saili or whoever this slide deck is assigned to.
-// add some prose on what the output shows.
-```
+In the following slide, you will see the expected output.
+
+---
+
+[![asciicast](https://asciinema.org/a/QYXO2Amv573jfLXvz3xYteP7Y.svg)](https://asciinema.org/a/QYXO2Amv573jfLXvz3xYteP7Y)
 
 ---
 <!-- _class: too-much-code -->
