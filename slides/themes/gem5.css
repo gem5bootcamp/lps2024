@@ -186,7 +186,8 @@ section.center-image img {
 /* For adding a border to images */
 section.border-image img {
     border: 1px solid var(--gem5-dark);
-  
+}
+
 /* For altering logo position/appearance */
 section.logo-left {
     background-position-x: 21%;
