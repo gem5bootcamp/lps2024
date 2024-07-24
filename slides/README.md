@@ -50,6 +50,7 @@ Here are some of the available layouts:
 - `title`: Title slide
 - `two-col`: Two columns. To split the slide into two columns, use `###` (heading 3) to create a new column.
 - `center-image`: Centers images horizontally
+- `code-XX-percent`: Reduces font-size in code blocks. Valid values for `XX` are any of `[50, 60, 70, 80]`.
 
 ## Adding diagrams
 

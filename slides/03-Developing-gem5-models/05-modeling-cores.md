@@ -214,7 +214,7 @@ You can follow this call through to `Decoder:: decode` which can be found in [sr
 
 ---
 
-<!-- _class: small-code -->
+<!-- _class: code-60-percent -->
 
 ```cpp
 StaticInstPtr
@@ -506,6 +506,8 @@ decode QUADRANT default Unknown::unknown() {
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ### Generating code from the LW ISA definition
 
 You can compare side by side decoder.isa and decode-method.cc.inc to see how the ISA definition is used to generate the CPP decoder code.
@@ -598,6 +600,8 @@ StaticInstPtr RiscvISA::Decoder::decodeInst(RiscvISA::ExtMachInst machInst) {
 
 ---
 
+<!-- _class: code-50-percent -->
+
 ### The generated function to execute the LW instruction
 
 ```cpp
@@ -619,7 +623,6 @@ StaticInstPtr RiscvISA::Decoder::decodeInst(RiscvISA::ExtMachInst machInst) {
 If you go to the declaration of `Load` in "src/arch/riscv/isa/formats/mem.isa" you can figure out how this was constructed:
 
 ```txt
-
 def format Load(memacc_code, ea_code = {{EA = rvZext(Rs1 + offset);}},
         offset_code={{offset = sext<12>(IMM12);}},
         mem_flags=[], inst_flags=[]) {{
@@ -666,7 +669,9 @@ The generated is valid CPP code and can understood by trying to  understanding t
 
 Using breakpoints in GDB to trace the execution of an instruction in gem5 is a good way to understand how the generated code is used to decode and execute an instruction.
 
-___
+---
+
+<!-- _class: code-50-percent -->
 
 ## Exercise: Implement `ADD16` instruction
 
@@ -675,9 +680,7 @@ In this inxercise you're going to implement `ADD16` to the gem5 RISC-V ISA.
 The `ADD16` instruction is a 16-bit addition instruction that adds two 16-bit values and stores the result in a 16-bit register.
 
 Format:
-
 ```txt
-
 | 31 -- 25 | 24 -- 20 | 19 -- 15 | 14 -- 12 | 11 -- 7 |  6 -- 0  |
 |  0100000 |   rs2    |   rs1    |   000    |   rd    |  0110011 |
 |  funct7  |          |          |  funct3  |         |  opcode  |

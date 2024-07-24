@@ -16,6 +16,9 @@
     --gem5-background: #F6F8FA;
     --gem5-light: #c8eaf3;
     --gem5-dark: #00627a;
+
+    --code-line-height: 2rem;
+    --code-font-size: 1.4rem;
 }
 
 section {
@@ -239,25 +242,49 @@ section.outline h3 {
 }
 
 /****************************************************/
+/* For reducing size of code blocks */
+section.code-50-percent pre {
+    line-height: calc(var(--code-line-height) * 0.33);
+}
+section.code-50-percent pre code {
+    font-size: calc(var(--code-font-size) * 0.5);
+}
+
+section.code-60-percent pre {
+    line-height: calc(var(--code-line-height) * 0.48);
+}
+section.code-60-percent pre code {
+    font-size: calc(var(--code-font-size) * 0.6);
+}
+
+section.code-70-percent pre {
+    line-height: calc(var(--code-line-height) * 0.65);
+}
+section.code-70-percent pre code {
+    font-size: calc(var(--code-font-size) * 0.7);
+}
+
+section.code-80-percent pre {
+    line-height: calc(var(--code-line-height) * 0.8);
+}
+section.code-80-percent pre code {
+    font-size: calc(var(--code-font-size) * 0.8);
+}
+
+/****************************************************/
 /* For code block */
 
 pre {
     padding: 10px;
     border-radius: 5px;
+    line-height: var(--code-line-height);
     background-color: #ffffff;
 }
 
 code {
     font-family: "Roboto Mono", monospace;
-    font-size: 1.4rem;
+    font-size: var(--code-font-size);
     background-color: #ffffff;
-}
-
-/****************************************************/
-/* For centering images */
-section.center-image img {
-    display: block;
-    margin: auto;
 }
 
 /*!
