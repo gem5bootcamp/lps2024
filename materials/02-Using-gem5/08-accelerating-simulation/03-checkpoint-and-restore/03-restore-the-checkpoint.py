@@ -81,7 +81,7 @@ board.set_workload(obtain_resource("npb-ep-a"))
 simulator = Simulator(
     board=board,
 # Pass in the checkpoint path
-    checkpoint_path="/workspaces/2024/materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-cpt"
+
 #
 )
 

@@ -50,21 +50,15 @@ requires(
 )
 
 # Let's setup a NoCache cache hierarchy
-from gem5.components.cachehierarchies.classic.no_cache import NoCache
-cache_hierarchy = NoCache()
+
 #
 
 # Let's setup a SingleChannelDDR4_2400 memory with 3GB size
-from gem5.components.memory.single_channel import SingleChannelDDR4_2400
-memory = SingleChannelDDR4_2400(size="3GB")
+
 #
 
 # Here we setup a simple processor with the KVM CPU
-processor = SimpleProcessor(
-    cpu_type=CPUTypes.KVM,
-    isa=ISA.X86,
-    num_cores=2,
-)
+
 #
 
 for proc in processor.get_cores():
@@ -80,13 +74,7 @@ board = X86Board(
 board.set_workload(obtain_resource("npb-ep-a"))
 
 # Setup workbegin handler to reset stats and switch to TIMING CPU
-def workbegin_handler():
-    print("Done booting Linux")
 
-    print("Take a checkpoint")
-    simulator.save_checkpoint("03-cpt")
-
-    yield True
 #
 
 simulator = Simulator(
