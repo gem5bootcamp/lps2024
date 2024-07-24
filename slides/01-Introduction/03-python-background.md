@@ -969,7 +969,7 @@ The code for the following example can also be found at [materials/01-Introducti
 from m5.objects import Cache
 from abc import ABC
 
-class L1Cache(Cache, ABC):
+class L1Cache(type(Cache), type(ABC)):
     """Simple L1 Cache with default values"""
 
     def __init__(self):
