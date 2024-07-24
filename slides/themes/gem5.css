@@ -253,6 +253,13 @@ code {
     background-color: #ffffff;
 }
 
+/****************************************************/
+/* For centering images */
+section.center-image img {
+    display: block;
+    margin: auto;
+}
+
 /*!
   Theme: Default
   Description: Original highlight.js style
