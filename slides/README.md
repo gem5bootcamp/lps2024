@@ -73,3 +73,138 @@ In this case, you cannot have a description of the image, unfortunately.
 - [ ] Extend marp to support [asciinema](https://github.com/asciinema/asciinema-player/releases/tag/v3.8.0)
   - We could [embed an SVG](https://docs.asciinema.org/manual/server/embedding/#preview-image-link).
 - [ ] Can we possibly make it so that there's a button to copy the code examples?
+
+## To do for bootcamp 2024
+
+- 01 Introduction
+  - 00: Introduction to bootcamp: (Jason)
+    - A few more little things about admin stuff, schedule, etc. :exclamation:
+  - 01: Simulation background: (Jason)
+    - Slides :white_check_mark:
+    - Materials :white_check_mark:
+  - 02: Getting started: (Jason)
+    - Slides
+      - Add something on using the repo :exclamation:
+    - Materials :white_check_mark:
+  - 03: Python background: (Bobby)
+    - Slides
+      - Erin: Needs an editing pass :exclamation:
+    - Materials
+      - Erin: Someone needs to go through and double test :exclamation:
+- 02 Using gem5
+  - 01: stdlib: (Bobby) :heavy_exclamation_mark:
+    - Slides
+      - Most slides are not done
+      - Bobby will make a skeleton :exclamation:
+      - Jason will improve/finish :exclamation:
+    - Materials
+      - Need to be created :exclamation:
+      - Need to be tested :exclamation:
+  - 02: gem5 resources: (Harshil)
+    - Slides
+      - Needs an editing pass :exclamation:
+    - Materials
+      - Noah to go through and test :exclamation:
+  - 03: running: (Zhantong)
+    - Slides
+      - (Today) Mysore/Saili working on adding some missing slides on traffic gen :exclamation:
+      - Mahyar to take editing pass :exclamation:
+    - Materials
+      - Mysore/Saili to make traffic gen :exclamation:
+      - Zhantong to test traffic gen :exclamation:
+  - 04: cores: (Jason)
+    - Slides :white_check_mark:
+    - Materials :white_check_mark:
+  - 05: cache hierarchy: (Jason) :heavy_exclamation_mark:
+    - Slides
+      - Need some small changes :exclamation:
+    - Materials :white_check_mark:
+  - 06: memory: Mostly done (William) **
+    - Slides
+      - Need some small changes :exclamation:
+      - Need an editing pass :exclamation:
+    - Materials
+      - Noah to retest comm monitor :exclamation:
+  - 07: Full system: Mostly done (Harshil)
+    - Slides
+      - Needs an editing pass :exclamation:
+    - Materials
+      - (Thurs) Mysore to go through and test :exclamation:
+  - 08: Acceleration: (Zhantong) :heavy_exclamation_mark:
+    - Slides
+      - (Today) Need to be merged/reviewed :exclamation:
+      - Need an editing pass :exclamation:
+    - Materials
+      - Need to be written :heavy_exclamation_mark:
+      - Someone needs to go through and test :exclamation:
+  - 09: Sampling: (Zhantong) :heavy_exclamation_mark:
+    - Slides
+      - (Today) Need to be merged/reviewed :exclamation:
+      - Need an editing pass :exclamation:
+    - Materials
+      - Need to be written :heavy_exclamation_mark:
+      - Someone needs to go through and test :exclamation:
+  - 10: Modeling power: (Jason) :heavy_exclamation_mark:
+    - Slides
+      - Need to be started :heavy_exclamation_mark:
+    - Materials
+      - Need to be written :heavy_exclamation_mark:
+      - Someone needs to go through and test :exclamation:
+  - 11: Multisim: Someone needs to go through (Bobby)
+    - Slides
+      - Need an editing pass :exclamation:
+    - Materials
+      - Erin to go through and test :exclamation:
+- 03 Developing
+  - 01: Sim Objects:  (Mahyar)
+    - Slides
+      - Ready to be merged :exclamation:
+      - Need to have extra slides added :exclamation:
+      - Needs an editing pass :exclamation:
+    - Materials :white_check_mark:
+  - 02: Debugging:  (Mahyar)
+    - Slides
+      - Mysore working on this :exclamation:
+      - Needs an editing pass
+    - Materials
+      - Mysore working on testing :exclamation:
+  - 03: Events:  (Mahyar)
+    - Slides
+      - Needs more stuff in the slides :heavy_exclamation_mark:
+      - Needs an editing pass
+    - Materials
+      - Need to be tested :exclamation:
+  - 04: Ports: (Mahyar)
+    - Slides
+      - (Today) Not done yet :heavy_exclamation_mark:
+      - Needs editing pass :exclamation:
+    - Materials
+      - Being created :heavy_exclamation_mark:
+      - Need to be tested :exclamation:
+  - 05: Modeling cores: (Bobby)
+    - Slides
+      - (Today) Needs step by step for adding instruction :heavy_exclamation_mark:
+      - Needs an editing pass :exclamation:
+    - Materials
+      - (Today) Harshil to be tested :exclamation:
+  - 06: Modeling cache coherence:
+    - Slides
+      - Minor changes from Saili (Just merge)
+    - Materials :white_check_mark:
+  - 07: CHI: NOT DONE (Jason) *****
+  - 08: Modeling networks: NOT DONE (Jason) *****
+  - 09: Extending gem5: (Zhantong) :heavy_exclamation_mark:
+    - Slides
+      - Not written :heavy_exclamation_mark:
+      - Needs an editing pass :exclamation:
+    - Materials
+      - Need to be written :heavy_exclamation_mark:
+      - Someone needs to go through and test :exclamation:
+- 04 GPU
+- 05 Other simulators
+  - NOT DONE AT ALL
+- 06 Contributing
+  - 01: Contributing: Good (Bobby)
+  - 02: Testing: Good (Bobby)
+
+JASON: FIGURE OUT LAPTOP SETUP!
