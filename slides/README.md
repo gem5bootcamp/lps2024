@@ -118,6 +118,7 @@ In this case, you cannot have a description of the image, unfortunately.
   - 05: cache hierarchy: (Jason) :heavy_exclamation_mark:
     - Slides
       - Need some small changes :exclamation:
+      - Need an editing pass :exclamation:
     - Materials :white_check_mark:
   - 06: memory: Mostly done (William) **
     - Slides
@@ -189,7 +190,7 @@ In this case, you cannot have a description of the image, unfortunately.
       - (Today) Harshil to be tested :exclamation:
   - 06: Modeling cache coherence:
     - Slides
-      - Minor changes from Saili (Just merge)
+      - Needs an editing pass :exclamation:
     - Materials :white_check_mark:
   - 07: CHI: NOT DONE (Jason) *****
   - 08: Modeling networks: NOT DONE (Jason) *****
