@@ -42,15 +42,11 @@ class Animal:
 # class `Animal` with the properties set to the values provided as arguments.
 # Here we create two objects of the class `Animal` with the properties set to
 # the values provided as arguments.
-# dog = Animal(100, 5, "Dog")
-# cat = Animal(200, 6, "Cat")
 dog = Animal("Dog", 5)
 cat = Animal("Cat", 6)
 
 # We can access the properties of the object using the `.` operator.
 print(f"Name of animal: {dog.name}")
-# print(f"Height of animal: {dog.height}")
-# print(f"Weight of animal: {dog.weight}")
 print(f"Age of animal: {dog.age}")
 
 # We can call the methods of the object using the `.` operator.

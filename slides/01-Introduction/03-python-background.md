@@ -50,7 +50,7 @@ All the arguments after the Python configuration script are passed to the Python
 gem5 --outdir=mydir my-simulation.py --num-cores 4
 ```
 
-The synax is `gem5 {parameters to gem5} {gem5 python config script} {script parameters}`.
+The syntax is `gem5 {parameters to gem5} {gem5 python config script} {script parameters}`.
 
 While the gem5 configuration script is mostly Python, it has some special features and limitations.
 We will cover these in this session.
@@ -191,7 +191,7 @@ print(y)
 ```python
 # We use the "f-string" syntax to insert the value strings inside other
 # strings. The contents between the curly braces are evaluated as Python.
-# In the follwoing we concatinate x with " GoodBye " and the value of x + y
+# In the following we concatenate x with " GoodBye " and the value of x + y
 # ("Hello World! GoodBye!"). This z will be set to
 # "Hello World! GoodBye Hello World! Goodbye!"
 z = f"{x} GoodBye {x + y}"
@@ -217,7 +217,7 @@ print(f"Value of x: {x}")
 ```python
 # Bools can be set using logical operations of literals or other bool
 # variables. These logical operations are `is` `and`, `or`, and `not` and are
-# used to comapre values.
+# used to compare values.
 
 # Set `y`` to True if  `x and True`.
 y = x and True
@@ -459,14 +459,14 @@ else:
 
 - Python doesn't use braces to define blocks of code. Instead it uses indentation.
 - The `print` statements are indented to show that they are part of the `if` block (for example, "The condition is True" `print` will only be execute if `condition` is `True`).
-- Make sure your intdentation is consistent. Python will throw an error if it is not.
+- Make sure your indentation is consistent. Python will throw an error if it is not.
 - In gem5 we use 4 spaces for indentation.
 
 ---
 
 ## Python `for`
 
-`for` interates through a colletion of items.
+`for` iterates through a collection of items.
 
 ```python
 for value in [1, 2, 3]:
@@ -609,7 +609,7 @@ gem5 utilizes Object Oriented Design (OOD) to model the components of a computer
 Classes allow you to create your own data types in Python. They are a way to bundle data and functionality together in a single unit. A class is a blueprint for an object. It defines the attributes and methods object instances of the class will have. For example, we can have class `Car` with attributes like `color`, `make`, `model`, and methods like `drive`, `stop`, `park`.
 When we create an object of the class `Car`, we can set the attributes of the car object like `color`,
 `make`, `model` and call the methods like `drive`, `stop`, `park`.
-Though each objecct of the class `Car` will have the same attributes and methods, the values of the attributes can be different for each object.
+Though each object of the class `Car` will have the same attributes and methods, the values of the attributes can be different for each object.
 
 ---
 
@@ -693,7 +693,7 @@ feed_animal(cat)
 (i.e., `Animal` in our example).
 - **Object**: An instance of a class.
 (i.e., `dog` and `cat` in our example).
-- **Member Variable**: A variable that is encapsulted within a specific object.
+- **Member Variable**: A variable that is encapsulated within a specific object.
 (i.e., `weight`, `height`, and `name` in our example).
 - **Member Function**: A function that is encapsulated within a specific object.
 (i.e., `eat` and `sleep` in our example).
@@ -708,7 +708,7 @@ feed_animal(cat)
 ### Inheritance
 
 Inheritance allows for a class to be defined in relation to another class.
-This other class is refered to as the base class, parent class, or super
+This other class is referred to as the base class, parent class, or super
 class, with the new class being the derived class, child class, or sub class.
 
 There are many instances where a new class is needed but shares many of the
@@ -804,7 +804,7 @@ class Elephant(Animal):
 
 ---
 
-A piece of code which expects an `Animal` can thefore execute completely different code depending on the type of the object passed to it.
+A piece of code which expects an `Animal` can therefore execute completely different code depending on the type of the object passed to it.
 
 ```python
 def feed_animal(animal):
@@ -814,7 +814,7 @@ feed_animal(dog)
 feed_animal(elephant)
 ```
 
-To return to everyday Object Oriended Design terminology, the `Animal` class is the base class and the `Elephant` class is the derived class.
+To return to everyday Object Oriented Design terminology, the `Animal` class is the base class and the `Elephant` class is the derived class.
 The derived class can override the methods of the base class.
 This means a function which expects a base class object can execute completely different code depending on the type of the object passed to it.
 
@@ -928,7 +928,7 @@ This can also be called the child class or sub class.
 
 ---
 
-- **Abtract class**: A class that is meant to be inherited from, but not instantiated directly.
+- **Abstract class**: A class that is meant to be inherited from, but not instantiated directly.
 (i.e., `Animal` in our example).
 - **Abstract Method**: A method that is declared in an abstract class, but not implemented.
 To be implemented by subclasses.
@@ -939,10 +939,10 @@ To be implemented by subclasses.
 ## SimObjects and Object Oriented Design
 
 A SimObject is an object in gem5 that represents a component of the simulated system.
-They are instiated from classes which inherit from the `SimObject` abstract class and encapsulate parameters for the simulated component (e.g, memory size), and the methods it uses to interact with other components in a standard way.
+They are instantiated from classes which inherit from the `SimObject` abstract class and encapsulate parameters for the simulated component (e.g, memory size), and the methods it uses to interact with other components in a standard way.
 
 As each of these shares a common base class, gem5 can handle them in consistent manner, despite simulating a wide variety of components.
-If a new component is neeeded then we simply create a child from an the most logical, existing component and extend it with the new functionality.
+If a new component is needed then we simply create a child from an the most logical, existing component and extend it with the new functionality.
 
 
 **Worth noting:** gem5 also has special parameters called "Ports" which are used to define communication channels between SimObjects.
@@ -950,7 +950,7 @@ More on this in future sessions.
 
 ---
 
-### A SimObject OO Design exmple
+### A SimObject OO Design example
 
 It's useful in gem5 to take a SimObject and extend it to add new functionality.
 gem5 should ideally be open **for extension but closed for modification**.
@@ -958,7 +958,7 @@ Modifying gem5 code directly can be difficult to maintain and can lead to
 merge conflicts when updating to new versions of gem5.
 
 
-The following shows an example of of spcializing a gem5 SimObject to create an abstract
+The following shows an example of of specializing a gem5 SimObject to create an abstract
 L1 cache. This is then used as a base class for L1 instruction cache.
 
 The code for the following example can also be found at [materials/01-Introduction/03-python-background/17-inheriting-from-a-simobject.py](/materials/01-Introduction/03-python-background/17-inheriting-from-a-simobject.py)
@@ -1058,7 +1058,7 @@ AttributeError: 'example' object has no attribute 'whatever'
 
 There are rules on what you can and cannot assign to a SimObject.
 
-SimObjects only allow parameter assignment in 3 clases:
+SimObjects only allow parameter assignment in 3 cases:
 
 1. The parameter exists in the list of parameters. Ergo you are setting the parameters (`simobject.param1 = 3`).
 2. The value you are setting is a SimObject and its variable name does not conflict with a SimObject parameter (`simobject.another_simobject = Cache()`).
@@ -1066,18 +1066,18 @@ SimObjects only allow parameter assignment in 3 clases:
 
 ---
 
-### SimObject Port asignments are special
+### SimObject Port assignments are special
 
 Ports are a special type of SimObject variable.
 They are used to connect SimObjects together.
 The syntax for setting a response and request port is `simobject1.{response_port} = simobject1.{request_port}` (or vice versa).
-This is not a traditional `=` assignment and isinstead calling a `connect` function on the port.
+This is not a traditional `=` assignment and is instead calling a `connect` function on the port.
 
 ---
 
 ### SimObject Vector parameters are immutable
 
-Vector parameters are vectors of parameter values of other SimoObjects.
+Vector parameters are vectors of parameter values of other SimObjects.
 They are a special type of SimObject parameter.
 They are used to store multiple values in a single parameter.
 However, unlike typical Python Lists once created, they cannot be changed.
@@ -1123,4 +1123,3 @@ simobject.var3 = 7 # This is not permitted
 ```
 
 In some cases this may not fail but the change in the SimObject configuration will not be reflected in the simulation.
-

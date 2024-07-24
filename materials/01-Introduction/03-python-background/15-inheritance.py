@@ -19,10 +19,6 @@ This script the concept of class inheritance in Python.
 # Elephant.
 
 class Animal:
-    # def __init__(self, weight, height, name):
-    #     self.weight = weight
-    #     self.height = height
-    #     self.name = name
 
     def __init__(self, name, age):
         self.name = name
