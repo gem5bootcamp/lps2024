@@ -11,16 +11,16 @@ math: mathjax
 
 ## Programming Event-Driven Simulation
 
-Here you'll learn how to actually model architecture!
+**IMPORTANT**: This slide deck builds on top of what has already been developed in [Introduction to SimObjects](01-sim-objects-intro.md) and [Debugging gem5](02-debugging-gem5.md).
 
 ---
 
-- Creating a simple callback event
-- Scheduling events
-- Modeling bandwidth and latency with events
-- Other SimObjects as parameters
-- GoodByeExampleFlag and CompoundFlag(GreetExampleFlag, HelloExampleFlag, GoodByeExampleFlag)
-- Hello/Goodbye example with buffer
+- Creating a simple callback event [done]
+- Scheduling events [done]
+- Modeling bandwidth and latency with events [will do with inspector gadget]
+- Other SimObjects as parameters [done]
+- GoodByeExampleFlag and CompoundFlag(GreetExampleFlag, HelloExampleFlag, GoodByeExampleFlag) [done]
+- Hello/Goodbye example with buffer [why?]
 
 ---
 
@@ -306,7 +306,7 @@ class HelloSimObject: public SimObject
 Now, let's update the constructor of `HelloSimObject` to initialize `remainingHellosToPrintByEvent` to `params.num_hellos`. Do this by adding the following line above the initialization line for `nextHelloEvent`.
 
 ```cpp
-    remainingHellosToPrintByEvent(params.num_hellos),
+    remainingHellosToPrintByEvent(params.num_hellos)
 ```
 
 Let's also make sure user passes a positive number as `num_hellos` by adding a `fatal_if` statement like below to the beginning of the body of `HelloSimObject::HelloSimObject`.
@@ -525,3 +525,23 @@ HelloSimObject::processNextHelloEvent()
 ```
 
 ---
+
+## Let's Compile and Simulate
+
+Run the following command in the base gem5 directory to rebuild gem5.
+
+```sh
+scons build/NULL/gem5.opt -j$(nproc)
+```
+
+Now, simulate your configuration by running the following command in the base gem5 directory.
+
+```sh
+./build/NULL/gem5.opt configs/bootcamp/hello-sim-object/second-hello-example.py
+```
+
+Below is a recording of what you should expect to see.
+
+```cpp
+//
+```
