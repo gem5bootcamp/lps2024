@@ -155,7 +155,7 @@ Check the "m5out" directory to see the segregated output files for each simulati
 
 ---
 
-## Execute single simulations from a multisim config
+## Execute single simulations from a MultiSim config
 
 You can also execute a single simulation from a MultiSim configuration script.
 To do so just pass the configuration script directly to gem5 (i.e., do not use `-m gem5.multisim multisim-experiment.py`).
