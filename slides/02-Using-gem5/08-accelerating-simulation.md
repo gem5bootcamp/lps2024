@@ -471,7 +471,7 @@ We can walk around the above downsides by using the checkpoint feature in gem5.
 1. It saves the architectural state of the system
 2. It saves *some* micro-architectural state
 3. With some limitations, a checkpoint that is taken with one system configuration can be restore with different system configurations.
-    1. the number of core in both systems have to be the same
+    1. the number of core in restoring have the be equal or more than the number of core used in checkpointing
     2. the size of the memory in both systems have to be the same
     3. the workload and its dependencies (i.e. the disk image) have to be the same
 
@@ -591,9 +591,116 @@ In this case, we might need to update it with the [gem5/util/cpt_upgrader.py](..
 
 ### Let's restore the checkpoint!
 
+We will be using the exact same system that we used in the 02-kvm-time to restore the checkpoint we just took.
 
+The restoring script is [materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-restore-the-checkpoint.py](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-restore-the-checkpoint.py).
+
+We can pass in the path to the checkpoint as a parameter to the `simulator` object.
+We can also pass in the path using the `board` object, more detail can be found in [here](https://github.com/gem5/gem5/blob/stable/src/python/gem5/components/boards/kernel_disk_workload.py#L142).
+
+For this example, we will pass in the path to the `simulator` object
+
+```python
+simulator = Simulator(
+    board=board,
+# Pass in the checkpoint path
+    checkpoint_path="/workspaces/2024/materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-cpt"
+#
+)
+```
+---
+
+## 03-checkpoint-and-restore
+
+Note that we set the simulation to be exited after 1,000,000,000 Ticks in the restoring script, but in actual scenario, we might want to stop at the end of the ROI.
+
+```python
+simulator.run(1_000_000_000)
+```
+
+Other than the `simulator` and the `processor` being a not-switchable SimpleProcessor, everything is the same as the script we used in [02-kvm-time](../../materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time/02-kvm-time.py).
+
+We can run this [restoring script](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-restore-the-checkpoint.py) with
+
+```bash
+gem5 -re --outdir=restore-m5-out 03-restore-the-checkpoint.py
+```
 
 ---
+
+## 03-checkpoint-and-restore
+
+After the simulation finished, we should see in [simerr.txt](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/restore-m5-out/simerr.txt)
+
+```bash
+src/sim/simulate.cc:199: info: Entering event queue @ 14788319800411.  Starting simulation...
+src/dev/x86/pc.cc:117: warn: Don't know what interrupt to clear for console.
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'verw_Mw_or_Rv' unimplemented
+```
+
+Unlike the simulation that starts from the beginning, the simulation that restores from a checkpoint will start at the Tick when the checkpoint was taken.
+
+If we search for `curTick` in the [m5.cpt](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-cpt/m5.cpt) file under the checkpoint folder, we will see the Tick when the checkpoint was taken. It might not be exact to the sample showing here because KVM brings variation to the Ticks, but the starting Tick in the restoring simulation should match with the `curTick` in the m5.cpt file.
+
+```bash
+curTick=14788319800411
+```
+---
+
+## 03-checkpoint-and-restore
+
+As mentioned in the beginning, there are some restrictions in what we can change between the checkpointing and restoring systems.
+
+1. the number of core in both systems have to be the same
+2. the size of the memory in both systems have to be the same
+3. the workload and its dependencies (i.e. the disk image) have to be the same
+
+For this example, our cache hierarchy, memory types, and CPU types are different between the checkpointing and restoring systems.
+
+---
+
+<!-- _class: two-col -->
+
+## 03-checkpoint-and-restore
+
+```python
+# checkpointing script
+cache_hierarchy = NoCache()
+memory = SingleChannelDDR4_2400(size="3GB")
+processor = SimpleProcessor(
+    cpu_type=CPUTypes.KVM,
+    isa=ISA.X86,
+    num_cores=2,
+)
+```
+
+```python
+# restoring script
+cache_hierarchy = PrivateL1CacheHierarchy(
+    l1d_size="32kB",
+    l1i_size="32kB"
+)
+memory = DualChannelDDR4_2400(size="3GB")
+processor = SimpleProcessor(
+    cpu_type=CPUTypes.TIMING,
+    isa=ISA.X86,
+    num_cores=2,
+)
+```
+
+These changes are all inside of the restriction, but if we change the memory size from `3GB` to `2GB`, we will see the following error (next page).
+
+---
+
+## 03-checkpoint-and-restore
+
+```bash
+src/mem/physical.cc:462: fatal: Memory range size has changed! Saw 2147483648, expected 1073741824
+Memory Usage: 1458916 KBytes
+```
+
+---
+
 
 ## Conclusion
 

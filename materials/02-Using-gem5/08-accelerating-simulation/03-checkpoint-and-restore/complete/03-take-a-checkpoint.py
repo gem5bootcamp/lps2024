@@ -56,7 +56,7 @@ cache_hierarchy = NoCache()
 
 # Let's setup a SingleChannelDDR4_2400 memory with 3GB size
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400
-memory = SingleChannelDDR4_2400(size="3GB")
+memory = SingleChannelDDR4_2400(size="2GB")
 #
 
 # Here we setup a simple processor with the KVM CPU

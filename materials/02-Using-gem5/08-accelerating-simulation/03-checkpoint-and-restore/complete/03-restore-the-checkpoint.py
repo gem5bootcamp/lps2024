@@ -60,7 +60,7 @@ cache_hierarchy = PrivateL1CacheHierarchy(
     l1i_size="32kB"
 )
 
-memory = DualChannelDDR4_2400(size="3GB")
+memory = DualChannelDDR4_2400(size="1GB")
 
 # Let's setup a simple processor with the TIMING CPU
 processor = SimpleProcessor(
@@ -79,11 +79,10 @@ board = X86Board(
 
 board.set_workload(obtain_resource("npb-ep-a"))
 
-
 simulator = Simulator(
     board=board,
 #
-    checkpoint_path="03-cpt"
+    checkpoint_path="/workspaces/2024/materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/complete/03-cpt"
 #
 )
 

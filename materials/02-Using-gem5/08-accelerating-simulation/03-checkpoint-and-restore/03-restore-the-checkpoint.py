@@ -62,13 +62,11 @@ cache_hierarchy = PrivateL1CacheHierarchy(
 
 memory = DualChannelDDR4_2400(size="3GB")
 
-# Let's setup a simple processor with the TIMING CPU
 processor = SimpleProcessor(
     cpu_type=CPUTypes.TIMING,
     isa=ISA.X86,
     num_cores=2,
 )
-#
 
 board = X86Board(
     clk_freq="3GHz",
@@ -82,8 +80,8 @@ board.set_workload(obtain_resource("npb-ep-a"))
 
 simulator = Simulator(
     board=board,
-#
-    checkpoint_path="03-cpt"
+# Pass in the checkpoint path
+    checkpoint_path="/workspaces/2024/materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-cpt"
 #
 )
 
