@@ -223,7 +223,7 @@ lets run the simulation and see the output
 
 ---
 
-<!-- _class: tooMuchCode -->
+<!-- _class: code-50-percent -->
 
 ## Lets create a JSON file for the binary resource
 
