@@ -479,9 +479,119 @@ We can walk around the above downsides by using the checkpoint feature in gem5.
 
 ## Hands-on Time!
 
-### Let's combine KVM
+### 03-checkpoint-and-restore
 
-<!--  -->
+### Let's take a checkpoint
+
+We will be using KVM to fast-forward to the ROI of ep like we did for the last example.
+However, this time we have a different goal, also we will have a way simpler system than the one we used.
+
+### Goal
+
+1. Use KVM to fast-forward the simulation until the ROI begin
+2. When reaching the ROI begin, take a checkpoint
+3. Exit the simulation
+
+---
+
+## 03-checkpoint-and-restore
+
+All materials can be found under `materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore`.
+We will first edit the [03-take-a-checkpoint.py](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-take-a-checkpoint.py) to take a checkpoint. We will be calling it as the checkpointing script.
+
+In the checkpointing script, let's first give the system the simplest cache hierarchy, which is no cache at all.
+
+```python
+# Let's setup a NoCache cache hierarchy
+from gem5.components.cachehierarchies.classic.no_cache import NoCache
+cache_hierarchy = NoCache()
+#
+```
+
+then, let's setup a simple single channel memory with 3GB
+
+```python
+# Let's setup a SingleChannelDDR4_2400 memory with 3GB size
+from gem5.components.memory.single_channel import SingleChannelDDR4_2400
+memory = SingleChannelDDR4_2400(size="3GB")
+#
+```
+
+---
+
+## 03-checkpoint-and-restore
+
+For the processor, since we will not switch to another CPU type, we can use the simple processor with KVM CPU
+```python
+# Here we setup a simple processor with the KVM CPU
+processor = SimpleProcessor(
+    cpu_type=CPUTypes.KVM,
+    isa=ISA.X86,
+    num_cores=2,
+)
+#
+```
+---
+
+## 03-checkpoint-and-restore
+
+For the workbegin handler, we want it to take a checkpoint then exit the simulation
+```python
+# Setup workbegin handler to reset stats and switch to TIMING CPU
+def workbegin_handler():
+    print("Done booting Linux")
+
+    print("Take a checkpoint")
+    simulator.save_checkpoint("03-cpt")
+
+    yield True
+#
+```
+In this example, it will save the gem5 checkpoint into the directory `./03-cpt`. You can config the path and the name using the `simulator.save_checkponit()` function.
+
+---
+
+## 03-checkpoint-and-restore
+
+Let's run this script with
+
+```bash
+gem5 -re --outdir=checkpointing-m5-out 03-take-a-checkpoint.py
+```
+
+After the simulation finished, we should see the following in the `simout.txt`
+
+```bash
+info: Using default config
+Running the simulation
+Using KVM cpu
+Global frequency set at 1000000000000 ticks per second
+      0: board.pc.south_bridge.cmos.rtc: Real-time clock set to Sun Jan  1 00:00:00 2012
+Done booting Linux
+Take a checkpoint
+Writing checkpoint
+Simulation Done
+```
+
+---
+
+## 03-checkpoint-and-restore
+
+We should also find the checkpoint saved as `materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-cpt`.
+If you're interested, you can look at the [m5.cpt](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/m5out/m5.cpt) inside the `03-cpt` directory to see what is being saved.
+
+It is possible for a gem5 checkpoint to be out-dated if the checkpoint is taken with an older version gem5 and being restored with a newer version of gem5.
+In this case, we might need to update it with the [gem5/util/cpt_upgrader.py](../../gem5/util/cpt_upgrader.py) of the newer version gem5.
+
+<!-- I feel like there is still something to add here -->
+
+---
+
+## 03-checkpoint-and-restore
+
+### Let's restore the checkpoint!
+
+
 
 ---
 
