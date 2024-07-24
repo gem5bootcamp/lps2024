@@ -2,12 +2,14 @@
 marp: true
 paginate: true
 theme: gem5
-title: Modeling DRAM in gem5
+title: Modeling Memory in gem5
 ---
 
 <!-- _class: title -->
 
-## Modeling DRAM in gem5
+## Modeling Memory in gem5
+
+DRAM and other memory devices, too!
 
 ---
 
@@ -82,7 +84,6 @@ system.mem_ctrl.dram = DDR4_2400_16x4()
 system.mem_ctrl.dram.range = AddrRange('512MB')
 system.mem_ctrl.dram.read_buffer_size = 32
 system.mem_ctrl.dram.write_buffer_size = 64
-system.mem_ctrl.dram.device_size = '512MB'
 
 system.mem_ctrl.port = system.membus.mem_side_ports
 ```
@@ -106,8 +107,6 @@ system.mem_ctrl.dram.read_buffer_size = 32
 system.mem_ctrl.dram.write_buffer_size = 64
 system.mem_ctrl.dram_2.read_buffer_size = 32
 system.mem_ctrl.dram_2.write_buffer_size = 64
-system.mem_ctrl.dram.device_size = '256MB'
-system.mem_ctrl.dram_2.device_size = '256MB'
 
 system.mem_ctrl.port = system.membus.mem_side_ports
 ```
@@ -130,8 +129,6 @@ system.mem_ctrl.dram.read_buffer_size = 32
 system.mem_ctrl.dram.write_buffer_size = 64
 system.mem_ctrl.nvm.read_buffer_size = 32
 system.mem_ctrl.nvm.write_buffer_size = 64
-system.mem_ctrl.dram.device_size = '256MB'
-system.mem_ctrl.nvm.device_size = '256MB'
 
 system.mem_ctrl.port = system.membus.mem_side_ports
 ```
@@ -155,7 +152,6 @@ for i, mem_ctrl in enumerate(system.mem_ctrls):
     mem_ctrl.dram = DDR4_2400_16x4(range=addr_ranges[i])
     mem_ctrl.dram.read_buffer_size = 32
     mem_ctrl.dram.write_buffer_size = 64
-    mem_ctrl.dram.device_size = '256MB'
 
     mem_ctrl.port = system.membus.mem_side_ports
 ```
@@ -179,7 +175,6 @@ system.mem_ctrl.dram = DDR4_2400_16x4()
 system.mem_ctrl.dram.range = AddrRange('512MB')
 system.mem_ctrl.dram.read_buffer_size = 32
 system.mem_ctrl.dram.write_buffer_size = 64
-system.mem_ctrl.dram.device_size = '512MB'
 
 system.mem_ctrl.port = system.membus.mem_side_ports
 ```
@@ -200,7 +195,6 @@ system.mem_ctrl.dram = DDR4_2400_16x4()
 system.mem_ctrl.dram.range = AddrRange('512MB')
 system.mem_ctrl.dram.read_buffer_size = 32
 system.mem_ctrl.dram.write_buffer_size = 64
-system.mem_ctrl.dram.device_size = '512MB'
 
 system.mem_ctrl.port = system.membus.mem_side_ports
 ```
@@ -208,16 +202,15 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 ---
 
 ## Memory in the standard library
+
 - Find memory in standard library at ```gem5/src/python/gem5/components/memory```
 - Standard library has two types of memory
     1. SimpleMemory
     2. ChanneledMemory
 - ```SimpleMemory()``` allows the user to not worry about timing parameters and instead, just give the desiredlatency. bandwidth, and latency variation
-
 - ```ChanneledMemory()``` encompasses a whole memory system (both the controller and the interface)
 - ChanneledMemory provides a simple way to use multiple memory channels
 - ChanneledMemory handles things like scheduling policy and interleaving for you
-
 
 ---
 
@@ -228,15 +221,15 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 ```memory = SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")```
 - This shows how we can use SimpleMemory
 
-- Run with `gem5/build/NULL/gem5.opt`
-
+Run with `gem5/build/NULL/gem5.opt`
 
 ---
 
 ## Running Channeled Memory
 
 - Open ```gem5/src/python/gem5/components/memory/single_channel.py```
-- We see DualChannel memories such as:
+- We see `SingleChannel` memories such as:
+
 ```python
 def SingleChannelDDR4_2400(
     size: Optional[str] = None,
@@ -246,44 +239,57 @@ def SingleChannelDDR4_2400(
     """
     return ChanneledMemory(DDR4_2400_8x8, 1, 64, size=size)
 ```
+
 - We see the DRAMInterface=DDR4_2400_8x8, the number of channels=1, interleaving_size=64, and the size.
+
 ---
 
 ## Running Channeled Memory
 
 - Lets go back to our script and replace the SingleChannelSimpleMemory with this!
-- Replace ```SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")```
+
+Replace
+
+```python
+SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")
+```
+
 with
-``` SingleChannelDDR4_2400() ```
+
+```python
+SingleChannelDDR4_2400()
+```
 
 ---
 
 ## Adding a new channeled memory
 
-- Open ```gem5/src/python/gem5/components/memory/single_channel.py```
-- If we wanted to add LPDDR2 as a new memory in the standard library, we first make sure theres a DRAM interface for it in the ```dram_interfaces``` directory
+- Open `materials/02-Using-gem5/06-memory/lpddr2.py`
+- If we wanted to add LPDDR2 as a new memory in the standard library, we first make sure theres a DRAM interface for it in the [`dram_interfaces` directory](../../gem5/...)
 - then we need to make sure we import it by adding ```from .dram_interfaces.lpddr2 import LPDDR2_S4_1066_1x32``` to the top of single_channel.py
      Then add the following to the body of single_channel.py
+
 ```python
 def SingleChannelLPDDR2_S4_1066_1x32(
     size: Optional[str] = None,
 ) -> AbstractMemorySystem:
     return ChanneledMemory(LPDDR2_S4_1066_1x32, 1, 64, size=size)
 ```
-- then we import this new class to our script with
+
+then we import this new class to our script with
+
 ```python
-from gem5.components.memory.single_channel import SingleChannelLPDDR2_S4_1066_1x32
+from lpddr2 import SingleChannelLPDDR2_S4_1066_1x32
 ```
-- then recompile
+
+then recompile
 
 ---
 
 ## CommMonitor
 
 - SimObject monitoring communication happening between two ports
-
 - Does not have any effect on timing
-
 - `gem5/src/mem/CommMonitor.py`
 
 ---
@@ -370,10 +376,12 @@ Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor
 
 Constructor 1:
 
-    AddrRange(Addr _start,
-              Addr _end,
-              const std::vector<Addr> &_masks,
-              uint8_t _intlv_match)
+```cpp
+AddrRange(Addr _start,
+          Addr _end,
+          const std::vector<Addr> &_masks,
+          uint8_t _intlv_match)
+```
 
 `_masks`: an array of masks, where bit `k` of selector is the XOR of all bits specified by `masks[k]`
 
@@ -385,13 +393,17 @@ Constructor 1:
 
 Constructor 2 (legacy):
 
-    AddrRange(Addr _start,
-              Addr _end,
-              uint8_t _intlv_high_bit,
-              uint8_t _xor_high_bit,
-              uint8_t _intlv_bits,
-              uint8_t _intlv_match)
+```cpp
+AddrRange(Addr _start,
+          Addr _end,
+          uint8_t _intlv_high_bit,
+          uint8_t _xor_high_bit,
+          uint8_t _intlv_bits,
+          uint8_t _intlv_match)
+```
 
 Selector defined as two ranges:
 
-    addr[_intlv_high_bit:_intlv_low_bit] XOR addr[_xor_high_bit:_xor_low_bit]
+```code
+addr[_intlv_high_bit:_intlv_low_bit] XOR addr[_xor_high_bit:_xor_low_bit]
+```
