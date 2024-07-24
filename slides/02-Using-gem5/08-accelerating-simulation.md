@@ -651,7 +651,7 @@ curTick=14788319800411
 
 As mentioned in the beginning, there are some restrictions in what we can change between the checkpointing and restoring systems.
 
-1. the number of core in both systems have to be the same
+1. the number of core in restoring have the be equal or more than the number of core used in checkpointing
 2. the size of the memory in both systems have to be the same
 3. the workload and its dependencies (i.e. the disk image) have to be the same
 
@@ -662,17 +662,6 @@ For this example, our cache hierarchy, memory types, and CPU types are different
 <!-- _class: two-col -->
 
 ## 03-checkpoint-and-restore
-
-```python
-# checkpointing script
-cache_hierarchy = NoCache()
-memory = SingleChannelDDR4_2400(size="3GB")
-processor = SimpleProcessor(
-    cpu_type=CPUTypes.KVM,
-    isa=ISA.X86,
-    num_cores=2,
-)
-```
 
 ```python
 # restoring script
@@ -687,27 +676,37 @@ processor = SimpleProcessor(
     num_cores=2,
 )
 ```
-
-These changes are all inside of the restriction, but if we change the memory size from `3GB` to `2GB`, we will see the following error (next page).
+```python
+# checkpointing script
+cache_hierarchy = NoCache()
+memory = SingleChannelDDR4_2400(size="3GB")
+processor = SimpleProcessor(
+    cpu_type=CPUTypes.KVM,
+    isa=ISA.X86,
+    num_cores=2,
+)
+```
 
 ---
 
 ## 03-checkpoint-and-restore
 
+These changes are all inside of the restriction, but if we change the memory size from `3GB` to `2GB`, we will see the following error (next page).
+
 ```bash
-src/mem/physical.cc:462: fatal: Memory range size has changed! Saw 2147483648, expected 1073741824
-Memory Usage: 1458916 KBytes
+src/mem/physical.cc:462: fatal: Memory range size has changed! Saw 3221225472, expected 2147483648
+Memory Usage: 2507496 KBytes
 ```
 
 ---
 
+## Summary
 
-## Conclusion
 
 
 ---
 
 ## What if the ROI is large
 
-
+We now know how to skip the "unimportant" part of the simulation, but what if the important part of the simulation is too too large?
 

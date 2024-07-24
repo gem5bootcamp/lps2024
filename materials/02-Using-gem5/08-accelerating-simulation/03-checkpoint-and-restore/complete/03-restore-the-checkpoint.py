@@ -60,7 +60,7 @@ cache_hierarchy = PrivateL1CacheHierarchy(
     l1i_size="32kB"
 )
 
-memory = DualChannelDDR4_2400(size="1GB")
+memory = DualChannelDDR4_2400(size="2GB")
 
 # Let's setup a simple processor with the TIMING CPU
 processor = SimpleProcessor(
