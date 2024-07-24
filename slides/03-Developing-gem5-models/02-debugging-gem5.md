@@ -43,7 +43,7 @@ cd gem5
 You should see an output like below.
 
 ```cpp
-// record with asciinema Mysore or whoever this slide deck is assigned to.
+// record with asciinema Saili or whoever this slide deck is assigned to.
 // add some prose on what the output shows.
 ```
 
@@ -133,7 +133,7 @@ scons build/NULL/gem5.opt -j$(nproc)
 And here is a snippet of the contents of `build/NULL/debug/HelloExampleFlag.hh`.
 
 ```cpp
-// Mysore put definition of HelloExampleFlag here.
+// Saili put definition of HelloExampleFlag here.
 ```
 
 ---
@@ -149,7 +149,7 @@ Now, our `HelloExampleFlag` should be listed whenever we print debug help from g
 Below shows the expected output.
 
 ```cpp
-// Mysore of whoever is assigned please record with asciinema
+// Saili of whoever is assigned please record with asciinema
 // add prose that the DebugFlag is added.
 ```
 
@@ -186,10 +186,6 @@ print(f"Exited simulation because: {exit_event.getCause()}.")
 
 Alternatively you can pass `--debug-flags=[comma-separated list of DebugFlags]` to your gem5 binary when running your configuration script. As an example, below is a shell command that you can use to enable `HelloExampleFlag` (like always, run it in the base gem5 directory).
 
-<!-- Not sure what this note means -->
-
-**NOTE**: Make sure to pass it before passing the configuration script to gem5.
-
 ```sh
 ./build/NULL/gem5.opt --debug-flags=HelloExampleFlag configs/bootcamp/hello-sim-object/second-hello-example.py
 ```
@@ -199,7 +195,7 @@ Alternatively you can pass `--debug-flags=[comma-separated list of DebugFlags]` 
 ## Simulate: With and Without HelloExampleFlag
 
 ```cpp
-// Mysore of whoever is assigned please record with asciinema
+// Saili of whoever is assigned please record with asciinema
 // add prose on how to enable a DebugFlag and compare and contrast two outputs.
 ```
 <!-- record with asciinema -->
@@ -229,7 +225,7 @@ You should use `panic`, and `panic_if` to catch developer mistakes. We will see 
 ### Other Debugging Facilities in gem5
 
 ```cpp
-// Mysore or whoever this is assigned to do a little bit of research on other debug printing in gem5.
+// Saili or whoever this is assigned to do a little bit of research on other debug printing in gem5.
 // src/base/trace.hh
 // https://www.gem5.org/documentation/learning_gem5/part2/debugging/
 ```
