@@ -471,7 +471,7 @@ We can walk around the above downsides by using the checkpoint feature in gem5.
 1. It saves the architectural state of the system
 2. It saves *some* micro-architectural state
 3. With some limitations, a checkpoint that is taken with one system configuration can be restore with different system configurations.
-    1. the number of core in restoring have the be equal or more than the number of core used in checkpointing
+    1. the number of core in both systems have to be the same
     2. the size of the memory in both systems have to be the same
     3. the workload and its dependencies (i.e. the disk image) have to be the same
 
@@ -651,7 +651,7 @@ curTick=14788319800411
 
 As mentioned in the beginning, there are some restrictions in what we can change between the checkpointing and restoring systems.
 
-1. the number of core in restoring have the be equal or more than the number of core used in checkpointing
+1. the number of core in both systems have to be the same (the restoring simulation will not have error if they are not the same, but it does not guarantee correctness)
 2. the size of the memory in both systems have to be the same
 3. the workload and its dependencies (i.e. the disk image) have to be the same
 
@@ -676,6 +676,7 @@ processor = SimpleProcessor(
     num_cores=2,
 )
 ```
+
 ```python
 # checkpointing script
 cache_hierarchy = NoCache()
@@ -698,11 +699,45 @@ src/mem/physical.cc:462: fatal: Memory range size has changed! Saw 3221225472, e
 Memory Usage: 2507496 KBytes
 ```
 
+### Side Note
+
+With this checkpoint, we no longer require the host to have a matching ISA with the simulated system to get to the ep's ROI begin.
+
+### Important Side Note
+
+When taking checkpoints with a system that has ruby cache, we can only use the MOESI hammer protocol.
+
 ---
+<!-- _class: two-col -->
 
 ## Summary
 
+### KVM
 
+Advantage:
+
+- Fast-forward in nearly host's native speed
+- Flexible to simulation system changes
+- Flexible to workload and software changes
+
+Downsides:
+
+- None-deterministic
+- Host must match guest's ISA
+- No RISC-V support
+
+### Checkpointing
+
+Advantages:
+
+- Create once, run many times
+- Almost all devices/components supported
+
+Downsides:
+
+- Cannot change workload and software at all between checkpointing and restoring
+- Have restrictions on simulation system changes between checkpointing and restoring scripts
+- Require disk space
 
 ---
 
@@ -710,3 +745,4 @@ Memory Usage: 2507496 KBytes
 
 We now know how to skip the "unimportant" part of the simulation, but what if the important part of the simulation is too too large?
 
+<!-- reserve space for some image  -->
