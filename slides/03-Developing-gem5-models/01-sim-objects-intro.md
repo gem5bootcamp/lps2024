@@ -255,7 +255,7 @@ Speaker Notes
 - Finalizing header file
  -->
 
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## SimObject Header File: First Few Lines
 
@@ -317,7 +317,7 @@ Speaker Notes
 - Creating and writing source file
  -->
 
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## SimObject Source File: All the Code
 
@@ -581,7 +581,7 @@ Speaker Notes
     - Ports
  -->
 
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Detour: m5.instantiate: SimObject Constructors and Connecting Ports
 
@@ -606,7 +606,7 @@ Speaker Notes
  -->
 
 
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Detour: m5.instantiate: SimObject::init
 
@@ -639,7 +639,7 @@ Speaker Notes
     - initState and loadState
  -->
 
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Detour: m5.instantiate: SimObject::initState, SimObject::loadState
 
@@ -717,7 +717,7 @@ Speaker Notes
 - parameter classes/how to add a parameter
 -->
 
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Let's Talk About Params: Model vs Params
 
@@ -773,7 +773,7 @@ Speaker Notes
 - Recompile
 -->
 
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Using num_hellos
 
@@ -806,7 +806,7 @@ Speaker Notes
 - Auto-generated param header file
 -->
 
-<!-- _class: two-col small-code -->
+<!-- _class: two-col too-much-code -->
 
 ## params/HelloSimObject.hh
 
@@ -852,7 +852,7 @@ Speaker Notes
 - Adding param num_hellos
 -->
 
-<!-- _class: small-code -->
+<!-- _class: too-much-code -->
 
 ## Configuration Script: Second Hello Example
 
