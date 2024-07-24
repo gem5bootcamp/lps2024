@@ -187,6 +187,24 @@ author: Jason Lowe-Power
 
 ---
 
+## Coding examples
+
+```python
+print("Hello, world!")
+print("You'll be seeing a lot of Python code")
+print("The slides will be a reference, but we'll be doing a lot of live coding!")
+```
+
+<!-- Can we make this a asciinema? -->
+
+```console
+Hello, world!
+You'll be seeing a lot of Python code
+The slides will be a reference, but we'll be doing a lot of live coding!
+```
+
+---
+
 ## Other admin things
 
 ---
