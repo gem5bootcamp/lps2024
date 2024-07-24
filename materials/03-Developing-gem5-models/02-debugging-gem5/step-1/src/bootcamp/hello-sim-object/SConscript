@@ -1,0 +1,7 @@
+Import("*")
+
+SimObject("HelloSimObject.py", sim_objects=["HelloSimObject"])
+
+Source("hello_sim_object.cc")
+
+DebugFlag("HelloExampleFlag")
