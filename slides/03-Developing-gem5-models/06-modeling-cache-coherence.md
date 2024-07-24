@@ -35,6 +35,8 @@ M5 + GEMS = gem5
 
 ---
 
+<!-- _class: center-image -->
+
 ## Cache Coherence Reminder
 
 Single-Writer Multiple-Reader (SWMR) invariant
@@ -44,6 +46,7 @@ Single-Writer Multiple-Reader (SWMR) invariant
 ---
 
 <!-- _paginate: hold -->
+<!-- _class: center-image -->
 
 ## Cache Coherence Reminder
 
@@ -53,11 +56,15 @@ Single-Writer Multiple-Reader (SWMR) invariant
 
 ---
 
+<!-- _class: center-image -->
+
 ## Ruby Architecture
 
 ![ruby architecture: classic ports on each side of a black box](06-modeling-cache-coherence-imgs/ruby-architecture.drawio.svg)
 
 ---
+
+<!-- _class: center-image -->
 
 ## Ruby Inside the Black Box
 
@@ -649,7 +656,7 @@ Runs scons and python script
 
 ------
 
-<!-- _class: code-60-percent -->
+<!-- _class: code-60-percent no-logo -->
 
 ## Fixing the error: Deadlock
 
@@ -812,7 +819,7 @@ for ri in self.routers:
 
 ## Ports to Ruby to ports interface
 
-![bg right](06-modeling-cache-coherence-imgs/ruby-architecture.drawio.svg)
+![bg right width:600](06-modeling-cache-coherence-imgs/ruby-architecture.drawio.svg)
 
 Remember this picture?
 
