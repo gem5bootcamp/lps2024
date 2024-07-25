@@ -90,10 +90,8 @@ In this case, you cannot have a description of the image, unfortunately.
       - Add something on using the repo :exclamation:
     - Materials :white_check_mark:
   - 03: Python background: (Bobby)
-    - Slides
-      - Erin: Needs an editing pass :exclamation:
-    - Materials
-      - Erin: Someone needs to go through and double test :exclamation:
+    - Slides :white_check_mark:
+    - Materials :white_check_mark:
 - 02 Using gem5
   - 01: stdlib: (Bobby) :heavy_exclamation_mark:
     - Slides
@@ -152,10 +150,8 @@ In this case, you cannot have a description of the image, unfortunately.
       - Need to be written :heavy_exclamation_mark:
       - Someone needs to go through and test :exclamation:
   - 11: Multisim: Someone needs to go through (Bobby)
-    - Slides
-      - Need an editing pass :exclamation:
-    - Materials
-      - Erin to go through and test :exclamation:
+    - Slides :white_check_mark:
+    - Materials :white_check_mark:
 - 03 Developing
   - 01: Sim Objects:  (Mahyar)
     - Slides
