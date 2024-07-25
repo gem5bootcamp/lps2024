@@ -21,7 +21,7 @@ These tests exist in 4 main categories;
 
 1. **CPP Unit tests**: These are tests that run C++ code. In gem5, we use the Google Test framework.
 2. **Python Unit tests**: These are tests that run Python code. In gem5, we use the Python unittest framework.
-3. **TestLib Tests**: These are tests that run gem5 simulations, verify exist codes, and compare output to expected output ("testlib" is the name of the framework used to do this).
+3. **TestLib Tests**: These are tests that run gem5 simulations, verify exit codes, and compare output to expected output ("testlib" is the name of the framework used to do this).
 4. **Compilation Tests**: Tests which compile gem5 under different configurations with different compilers/environments.
 
 **Note:** There are some tests we run which don't fit into these categories, but these are the main ones.
@@ -30,12 +30,11 @@ These tests exist in 4 main categories;
 
 ## gem5 Test Schedule
 
-1. **CI Tests**: These tests are run on every pull request to gem5, and every update to any pull request.
-The CI tests consist of the CPP and Python unit tests and a subset of the TestLib tests and Compilation tests.
+1. **CI Tests**: These tests are run on every pull request to gem5, and every update to any pull request. The CI tests consist of the CPP and Python unit tests and a subset of the TestLib tests and Compilation tests.
 These are designed to run "quickly" (by gem5 standards), in under 4 hours.
 2. **Daily Tests**: These tests are run every day on the gem5 codebase.
-These tests consists of the larger Testlib tests.
-These tests typically take 12 hours or more to complete.
+These tests consist of the larger Testlib tests.
+They typically take 12 hours or more to complete.
 3.  **Weekly Tests**: These tests are run weekly on the gem5 codebase.
 These tests consist of the largest Testlib test suite and the Compilation tests.
 These tests typically take 1 to 2 days to complete.
@@ -71,7 +70,7 @@ The format is `GTest(<test_name>, <test_source>, <source_files>)`.
 
 You can run all unit tests with  `scons build/ALL/unittests.opt` command.
 
-To run a specific tests:
+To run a specific test:
 
 ```shell
 scons build/ALL/base/bitfield.test.opt
@@ -86,10 +85,10 @@ scons build/ALL/base/bitfield.test.opt
 
 More information on Python's unittest framework can be found at <https://docs.python.org/3/library/unittest.html>
 
-The tests is run with `gem5 tests/run_pytests.py` command.
+The tests are run with `gem5 tests/run_pyunit.py` command.
 In our case, any file in the "tests/pyunit" directory with the prefix "pyunit_" is considered a test by the test runner.
 
-Individual subdirectories in 'tests/pyunit" can be specified and run separately by passing those subdirectories as arguments to "tests/run_pytests.py". E.g.: `gem5 tests/run_pytests.py tests/pyunit/util`.
+Individual subdirectories in 'tests/pyunit" can be specified and run separately by passing those subdirectories as arguments to "tests/run_pytests.py". E.g.: `gem5 tests/run_pyunit.py --directory tests/pyunit/util`.
 
 ---
 
@@ -99,7 +98,7 @@ Compiler tests are run weekly on the gem5 codebase.
 
 These tests are specified directly in a GitHub Action workflow: [.github/workflows/compilers-tests.yaml](https://github.com/gem5/gem5/blob/v24.0/.github/workflows/compilers-tests.yaml)
 
-These tests use a series of docker images to test compilation of various gem5 conifgurations with different compilers.
+These tests use a series of Docker images to test compilation of various gem5 conifgurations with different compilers.
 
 ---
 
@@ -109,7 +108,7 @@ TestLib tests are the most important tests in gem5.
 These tests run gem5 simulations and verify the output of the simulation.
 The tests are written in Python and use the "testlib" framework to run the simulations and verify the output.
 
-The tests are run using the `./main.py` command in the "test" directory of the gem5 repository.
+The tests are run using the `./main.py` command in the `test` directory of the gem5 repository.
 
 It's useful to just focus on a subdirectory of tests when running tests:
 
@@ -124,13 +123,12 @@ The "quick" tests are the testlib tests run in the CI pipeline. To run the tests
 
 The `./main.py list` command can be used to list all the tests in a directory, which we'll demonstrate here:
 
-
 ```shell
 # List all the long tests in tests/gem5/memory: Those run in the Daily Tests.
 ./main.py list --length long gem5/memory
 
 # lists all the very long tests in tests/gem5/memory: Those run in the Weekly Tests.
-./main.py lists --length very-long gem5/memory
+./main.py list --length very-long gem5/memory
 ```
 
 ---
@@ -154,7 +152,6 @@ import re
 # Import the testlib framework. This is required.
 from testlib import *
 ```
-
 
 ```py
 # Here we define a regular expression to match the output of the simulation.
@@ -275,7 +272,7 @@ In this exercise we will do the following:
 3. Update this test with a verifier that checks the output of the simulation after the run is complete.
 4. Write a second test that does the same as the first test but with a different output message (inclusive of a verifier).
 
-After each step run the tests to verify the changes.:
+After each step run the tests to verify the changes:
 `./main.py run gem5/01-testing-example`
 
 ---
@@ -284,8 +281,13 @@ After each step run the tests to verify the changes.:
 
 - Adding `-vvv` to the end of the test command will give you more information about the test, particularly if an error occurs.
 - Look at the other tests in "tests/gem5" for examples of how to write tests.
-- You can pre-build the ARM/gem5.opt build.
-`scons build/ARM/gem5.opt -j`nproc` then, when running `./main.py run gem5/02-testing` add the `--skip-build` flag to skip the build step.
+- You can pre-build the ARM/gem5.opt build using
+
+```bash
+scons build/ARM/gem5.opt -j$(nproc)
+```
+
+Then, when running `./main.py run gem5/02-testing`, add the `--skip-build` flag to skip the build step.
 
 ---
 
