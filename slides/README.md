@@ -88,6 +88,7 @@ In this case, you cannot have a description of the image, unfortunately.
   - 02: Getting started: (Jason)
     - Slides
       - Add something on using the repo :exclamation:
+      - Add something about gem5 versions :exclamation:
     - Materials :white_check_mark:
   - 03: Python background: (Bobby)
     - Slides :white_check_mark:
@@ -122,10 +123,8 @@ In this case, you cannot have a description of the image, unfortunately.
     - Materials :white_check_mark:
   - 06: memory: Mostly done (William) **
     - Slides
-      - Need some small changes :exclamation:
       - Need an editing pass :exclamation:
-    - Materials
-      - Noah to retest comm monitor :exclamation:
+    - Materials :white_check_mark:
   - 07: Full system: Mostly done (Harshil)
     - Slides
       - Needs an editing pass :exclamation:
@@ -134,8 +133,7 @@ In this case, you cannot have a description of the image, unfortunately.
   - 08: Acceleration: (Zhantong)
     - Slides
       - Need an editing pass :exclamation:
-    - Materials
-      - Erin to go through and test :exclamation:
+    - Materials :white_check_mark:
   - 09: Sampling: (Zhantong) :heavy_exclamation_mark:
     - Slides
       - (Today) Need to be merged/reviewed :exclamation:
@@ -179,10 +177,11 @@ In this case, you cannot have a description of the image, unfortunately.
       - Need to be tested :exclamation:
   - 05: Modeling cores: (Bobby)
     - Slides
-      - Needs improvement on instruction steps :heavy_exclamation_mark:
+      - (Harshil) Needs improvement on instruction steps :heavy_exclamation_mark:
       - Needs an editing pass :exclamation:
     - Materials
-      - (Today) Harshil to be tested :exclamation:
+      - Harshil updating :exclamation:
+      - Harshil to be tested :exclamation:
   - 06: Modeling cache coherence:
     - Slides
       - Needs an editing pass :exclamation:
@@ -211,9 +210,7 @@ In this case, you cannot have a description of the image, unfortunately.
       - Needs an editing pass :exclamation:
     - Materials :white_check_mark:
   - 02: Testing (Bobby)
-    - Slides
-      - Needs an editing pass :exclamation:
-    - Materials
-      - Need to be tested :exclamation:
+    - Slides :white_check_mark:
+    - Materials :white_check_mark:
 
 JASON: FIGURE OUT LAPTOP SETUP! :heavy_exclamation_mark:
