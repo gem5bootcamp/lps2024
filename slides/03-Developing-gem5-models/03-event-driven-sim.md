@@ -106,7 +106,7 @@ Let's look at `src/sim/eventq.hh`. In there you will see a declaration for class
 
 ## A Hypothetical Example for Event
 
-Let's now see how class `Event` would be used in a `ClockedObject` that models a CPU.
+Let's now see how class `Event` would be used in a `SimObject` that models a CPU. **CAUTION**: This is a hypothetical example and not at all what is already implemented in gem5.
 
 ```cpp
 class CPU: public ClockedObject
@@ -346,7 +346,7 @@ Now, we are ready to define `HelloSimObject::processNextHelloEvent`. Let's add t
 void
 HelloSimObject::processNextHelloEvent()
 {
-    std::cout << "Hello from HelloSimObject::processNextHelloEvent!" << std::endl;
+    std::cout << "tick: " << curTick() << ", Hello from HelloSimObject::processNextHelloEvent!" << std::endl;
     remainingHellosToPrintByEvent--;
     if (remainingHellosToPrintByEvent > 0) {
         schedule(nextHelloEvent, curTick() + 500);
@@ -514,7 +514,7 @@ HelloSimObject::startup()
 void
 HelloSimObject::processNextHelloEvent()
 {
-    std::cout << "Hello from HelloSimObject::processNextHelloEvent!" << std::endl;
+    std::cout << "tick: " << curTick() << ", Hello from HelloSimObject::processNextHelloEvent!" << std::endl;
     remainingHellosToPrintByEvent--;
     if (remainingHellosToPrintByEvent > 0) {
         schedule(nextHelloEvent, curTick() + 500);
@@ -542,6 +542,455 @@ Now, simulate your configuration by running the following command in the base ge
 
 Below is a recording of what you should expect to see.
 
-```cpp
-//
+[![asciicast](https://asciinema.org/a/UiLAZT0Ryi75nkLQSs0AC0OWI.svg)](https://asciinema.org/a/UiLAZT0Ryi75nkLQSs0AC0OWI)
+
+---
+<!-- _class: start -->
+
+## End of Step 1
+
+---
+<!-- _class: start -->
+
+## Step 2: SimObjects as Parameters
+
+---
+
+## GoodByeSimObject
+
+In this step, we will learn about adding a `SimObject` as a Parameter. To do this, let's first build our second `SimObject` called `GoodByeSimObject`.
+
+As you remember, we need to declar the `GoodByeSimObject` in Python. Let's open `src/bootcamp/hello-sim-object/HelloSimObject.py` and add the following code to it.
+
+```python
+class GoodByeSimObject(SimObject):
+    type = "GoodByeSimObject"
+    cxx_header = "bootcamp/hello-sim-object/goodbye_sim_object.hh"
+    cxx_class = "gem5::GoodByeSimObject"
 ```
+
+Also let's register `GoodByeSimObject` by editing `SConscript`. Open `src/bootcamp/hello-sim-object/SConscript` and add `GoodByeSimObject` to the list of `SimObjects` in `HelloSimObject.py`. This is how the line show look like after the changes.
+
+```python
+SimObject("HelloSimObject.py", sim_objects=["HelloSimObject", "GoodByeSimObject"])
+```
+
+Let's add `goodbye_sim_object.cc` (which we will create later) as a source file. Do it by adding the following line to the `src/bootcamp/hello-sim-object/SConscript`.
+
+```python
+Source("goodbye_sim_object.cc")
+```
+
+---
+
+## GoodByeExampleFlag
+
+Let's also add `GoodByeExampleFlag` so that we can use to print debug in `GoodByeSimObject`. Do it by adding the following line to `src/bootcamp/hello-sim-object/SConscript`.
+
+```python
+DebugFlag("GoodByeExampleFlag")
+```
+
+### CompoundFlag
+
+In addition to `DebugFlags`, we can define `CompoundFlags` that enable a set of `DebugFlags` when they are enabled. Let's define a `CompoundFlag` called `GreetFlag` that will enable `HelloExampleFlag`, `GoodByeExampleFlag`. To do it, add the following line to `src/bootcamp/hello-sim-object/SConscript`.
+
+```python
+CompoundFlag("GreetFlag", ["HelloExampleFlag", "GoodByeExampleFlag"])
+```
+
+---
+
+## Current Version: HelloSimObject.py
+
+This is how `HelloSimObject.py` should look like after the changes.
+
+```python
+from m5.objects.SimObject import SimObject
+from m5.params import *
+
+class HelloSimObject(SimObject):
+    type = "HelloSimObject"
+    cxx_header = "bootcamp/hello-sim-object/hello_sim_object.hh"
+    cxx_class = "gem5::HelloSimObject"
+
+    num_hellos = Param.Int("Number of times to say Hello.")
+
+class GoodByeSimObject(SimObject):
+    type = "GoodByeSimObject"
+    cxx_header = "bootcamp/hello-sim-object/goodbye_sim_object.hh"
+    cxx_class = "gem5::GoodByeSimObject"
+```
+
+---
+
+## Current Version: SConscript
+
+This is how `SConscript` should look like after the changes.
+
+```python
+Import("*")
+
+SimObject("HelloSimObejct.py", sim_objects=["HelloSimObject", "GoodByeSimObject"])
+
+Source("hello_sim_object.cc")
+Source("goodbye_sim_object.cc")
+
+DebugFlag("HelloExampleFlag")
+DebugFlag("GoodByeExampleFlag")
+CompoundFlag("GreetFlag", ["HelloExampleFlag", "GoodByeExampleFlag"])
+```
+
+---
+<!-- _class: code-25-percent -->
+## GoodByeSimObject: Specification
+
+In our design, let's have `GoodByeSimObject` debug print a `GoodBye ...` statement. It will do it when `sayGoodBye` function is called which will schedule an `event` to say GoodBye.
+
+In the next slides you can find the completed version for `src/bootcamp/hello-sim-object/goodbye_sim_object.hh` and `bootcamp/hello-sim-object/goodbye_sim_object.cc`.
+
+**IMPORTANT**: I'm not going to go over the details of the files, look through this file thoroughly and make sure you understand what every line is supposed to do.
+
+---
+<!-- _class: code-60-percent -->
+
+## GoodByeSimObject: Header File
+
+```cpp
+#ifndef __BOOTCAMP_HELLO_SIM_OBJECT_GOODBYE_SIM_OBJECT_HH__
+#define __BOOTCAMP_HELLO_SIM_OBJECT_GOODBYE_SIM_OBJECT_HH__
+
+#include "params/GoodByeSimObject.hh"
+#include "sim/eventq.hh"
+#include "sim/sim_object.hh"
+
+namespace gem5
+{
+
+class GoodByeSimObject: public SimObject
+{
+  private:
+    EventFunctionWrapper nextGoodByeEvent;
+    void processNextGoodByeEvent();
+
+  public:
+    GoodByeSimObject(const GoodByeSimObject& params);
+
+    void sayGoodBye();
+};
+
+} // namespace gem5
+
+#endif // __BOOTCAMP_HELLO_SIM_OBJECT_GOODBYE_SIM_OBJECT_HH__
+```
+
+---
+
+## GoodByeSimObject: Source File
+
+```cpp
+#include "bootcamp/hello-sim-object/goodbye_sim_object.hh"
+
+#include "base/trace.hh"
+#include "debug/GoodByeExampleFlag.hh"
+
+namespace gem5
+{
+
+GoodByeSimObject::GoodByeSimObject(const GoodByeSimObjectParams& params):
+    SimObject(params),
+    nextGoodByeEvent([this]() { processNextGoodByeEvent(); }, name() + "nextGoodByeEvent" )
+{}
+
+void
+GoodByeSimObject::sayGoodBye() {
+    panic_if(nextGoodByeEvent.scheduled(), "GoodByeSimObject::sayGoodBye called while nextGoodByeEvent is scheduled!");
+    schedule(nextGoodByeEvent, curTick() + 500);
+}
+
+void
+GoodByeSimObject::processNextGoodByeEvent()
+{
+    DPRINTF(GoodByeExampleFlag, "%s: GoodBye from GoodByeSimObejct::processNextGoodByeEvent!\n", __func__);
+}
+
+} // namespace gem5
+```
+
+---
+
+## GoodByeSimObject as a Param
+
+In this step we will add a parameter to `HelloSimObject` that is of type `GoodByeSimObject`. To do this we will simply add the following line to the declaration of `HelloSimObject` in `src/bootcamp/hello-sim-object/HelloSimObject.py`.
+
+```python
+    goodbye_object = Param.GoodByeSimObject("GoodByeSimObject to say goodbye after done saying hello.")
+```
+
+This is how the declaration of `HelloSimObject` should look like after changes.
+
+```python
+class HelloSimObject(SimObject):
+    type = "HelloSimObject"
+    cxx_header = "bootcamp/hello-sim-object/hello_sim_object.hh"
+    cxx_class = "gem5::HelloSimObject"
+
+    num_hellos = Param.Int("Number of times to say Hello.")
+
+    goodbye_object = Param.GoodByeSimObject("GoodByeSimObject to say goodbye after done saying hello.")
+```
+
+---
+
+## HelloSimObject: Header File
+
+Adding `goodbye_object` parameter will add a new member to `HelloSimObjectParams` of `gem5::HelloSimObject*` type. We will see this in the future.
+
+We can use that parameter to initialize a pointer to an object of `GoodByeSimObject` which we will use to call `sayGoodBye`. when we run out of `Hello ...` statements to print.
+
+First, let's include the header file for `GoodByeSimObject` in `src/bootcamp/hello-sim-object/hello_sim_object.hh` by adding the following line. **REMEMBER**: Follow gem5's convention for including order.
+
+```cpp
+#include "bootcamp/hello-sim-object/goodbye_sim_object.hh
+```
+
+Now, let's add a new member to `HelloSimObject` that is a pointer to `GoodByeSimObject`. Add the following line to `src/bootcamp/hello-sim-object/hello_sim_object.hh`.
+
+```cpp
+  private:
+    GoodByeSimObject* goodByeObject;
+```
+
+---
+<!-- _class: code-60-percent -->
+
+## HelloSimObject: Source File
+
+Now let's initialize `goodByeObject` from the parameters by adding the following line to the initialization list in `HelloSimObject::HelloSimObject`.
+
+```cpp
+    goodByeObject(params.goodbye_object)
+```
+
+Now, let's add an `else` body to `if (remainingHellosToPrintByEvent > 0)` in `processNextHelloEvent` to call `sayGoodBye` from `goodByeObject`. Below is how `processNextHelloEvent` in `src/bootcamp/hello-sim-object/hello_sim_object.cc` should look like after the changes.
+
+```cpp
+void
+HelloSimObject::processNextHelloEvent()
+{
+    std::cout << "tick: " << curTick() << ", Hello from HelloSimObject::processNextHelloEvent!" << std::endl;
+    remainingHellosToPrintByEvent--;
+    if (remainingHellosToPrintByEvent > 0) {
+        schedule(nextHelloEvent, curTick() + 500);
+    } else {
+        goodByeObject->sayGoodBye();
+    }
+}
+```
+
+---
+<!-- _class: code-50-percent -->
+
+## Current Version: HelloSimObject: Header File
+
+This is how `src/bootcamp/hello-sim-object/hello_sim_object.hh` should look like after the changes.
+
+```cpp
+#ifndef __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
+#define __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
+
+#include "bootcamp/hello-sim-object/goodbye_sim_object.hh"
+#include "params/HelloSimObject.hh"
+#include "sim/eventq.hh"
+#include "sim/sim_object.hh"
+
+namespace gem5
+{
+
+class HelloSimObject: public SimObject
+{
+  private:
+    int remainingHellosToPrintByEvent;
+    GoodByeSimObject* goodByeObject;
+
+    EventFunctionWrapper nextHelloEvent;
+    void processNextHelloEvent();
+
+  public:
+    HelloSimObject(const HelloSimObjectParams& params);
+    virtual void startup() override;
+};
+
+} // namespace gem5
+
+#endif // __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
+```
+
+---
+<!-- _class: two-col -->
+
+## Current Version: HelloSimObject: Source File
+
+This is how `src/bootcamp/hello-sim-object/hello_sim_object.cc` should look like after the changes.
+
+```cpp
+#include "bootcamp/hello-sim-object/hello_sim_object.hh"
+
+#include <iostream>
+
+#include "base/trace.hh"
+#include "debug/HelloExampleFlag.hh"
+
+namespace gem5
+{
+
+HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
+    SimObject(params),
+    remainingHellosToPrintByEvent(params.num_hellos),
+    goodByeObject(params.goodbye_object),
+    nextHelloEvent([this](){ processNextHelloEvent(); }, name() + "nextHelloEvent")
+{
+    fatal_if(params.num_hellos <= 0, "num_hellos should be positive!");
+    for (int i = 0; i < params.num_hellos; i++) {
+        std::cout << "i: " << i << ", Hello from HelloSimObject's constructor!" << std::endl;
+    }
+    DPRINTF(HelloExampleFlag, "%s: Hello from HelloSimObject's constructor!\n", __func__);
+}
+```
+
+### Continued
+
+```cpp
+void
+HelloSimObject::startup()
+{
+    panic_if(curTick() != 0, "startup called at a tick other than 0");
+    panic_if(nextHelloEvent.scheduled(), "nextHelloEvent is scheduled before HelloSimObject::startup is called!");
+    schedule(nextHelloEvent, curTick() + 500);
+}
+
+void
+HelloSimObject::processNextHelloEvent()
+{
+    std::cout << "tick: " << curTick() << ", Hello from HelloSimObject::processNextHelloEvent!" << std::endl;
+    remainingHellosToPrintByEvent--;
+    if (remainingHellosToPrintByEvent > 0) {
+        schedule(nextHelloEvent, curTick() + 500);
+    } else {
+        goodByeObject->sayGoodBye();
+    }
+}
+
+} // namespace gem5
+```
+
+---
+<!-- _class: code-70-percent -->
+
+## Let's Build
+
+Run the following command in the base gem5 directory to rebuild gem5 after all the changes.
+
+```sh
+scons build/NULL/gem5.opt -j$(nproc)
+```
+
+After the compilation is done, look at `build/NULL/params/HelloSimObject.hh`. Notice that `gem5::GoodByeSimObject * goodbye_object` is added. Below is the declaration for `HelloSimObjectParams`.
+
+```cpp
+namespace gem5
+{
+struct HelloSimObjectParams
+    : public SimObjectParams
+{
+    gem5::HelloSimObject * create() const;
+    gem5::GoodByeSimObject * goodbye_object;
+    int num_hellos;
+};
+
+} // namespace gem5
+```
+
+---
+<!-- _class: code-50-percent -->
+
+## Configuration Script
+
+Let's create a new configuration script (`third-hello-example.py`) by copying `configs/bootcamp/hello-sim-object/second-hello-example.py`. Do it by running the following command in the base gem5 directory.
+
+```sh
+cp configs/bootcamp/hello-sim-object/second-hello-example.py configs/bootcamp/hello-sim-object/third-hello-example.py
+```
+
+Now, we need to give a value to `goodbye_object` parameter from `HelloSimObject`. We will create an object of `GoodByeSimObject` for this parameter.
+
+Let's start by importing `GoodByeSimObject`. Do it by simply adding `GoodByeSimObject` to `from m5.objects.HelloSimObject import HelloSimObject`. This is how the import statement should look like after the changes.
+
+```python
+from m5.objects.HelloSimObject import HelloSimObject, GoodByeSimObject
+```
+
+---
+<!-- _class: code-80-percent -->
+
+## Configuration Script cont.
+
+Now, let's add the following line to give a value to `goodbye_object` from `root.hello`.
+
+```python
+root.hello.goodbye_object = GoodByeObject()
+```
+
+This is how `configs/bootcamp/hello-sim-object/third-hello-example.py` should look like after the changes.
+
+```python
+import m5
+from m5.objects.Root import Root
+from m5.objects.HelloSimObject import HelloSimObject, GoodByeSimObject
+
+root = Root(full_system=False)
+root.hello = HelloSimObject(num_hellos=5)
+root.hello.goodbye_object = GoodByeSimObject()
+
+m5.instantiate()
+exit_event = m5.simulate()
+
+print(f"Exited simulation because: {exit_event.getCause()}.")
+```
+
+---
+<!-- _class: code-50-percent -->
+
+## Let's Simulate: Part 1
+
+Now let's simulate `third-hello-example.py` once with `GoodByeExampleFlag` and once with `GreetFlag` enabled and compare the outputs.
+
+Run the following command in the base gem5 directory to simulate `third-hello-example.py` with `GoodByeExampleFlag` enabled.
+
+```sh
+./build/NULL/gem5.opt --debug-flags=GoodByeExampleFlag configs/bootcamp/hello-sim-object/third-hello-example.py
+```
+
+Below is a recording of my terminal when I run the command above.
+
+[![asciicast](https://asciinema.org/a/9vTP6wE1Yu0ihlKjA4j7TxEMm.svg)](https://asciinema.org/a/9vTP6wE1Yu0ihlKjA4j7TxEMm)
+
+---
+<!-- _class: code-50-percent -->
+
+## Let's Simulate: Part 2
+
+Run the following command in the base gem5 directory to simulate `third-hello-example.py` with `GreetFlag` enabled.
+
+```sh
+./build/NULL/gem5.opt --debug-flags=GreetFlag configs/bootcamp/hello-sim-object/third-hello-example.py
+```
+
+Below is a recording of my terminal when I run the command above.
+
+[![asciicast](https://asciinema.org/a/2cz336gLt2ZZBysroLhVbqBHs.svg)](https://asciinema.org/a/2cz336gLt2ZZBysroLhVbqBHs)
+
+---
+<!-- _class: start -->
+
+## End of Step 2
