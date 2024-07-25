@@ -172,7 +172,7 @@ For the complier command, beside
 
 We also need to
 
-1. Add **gem5/util/m5/src** to the compiler's include search path\
+1. Add **gem5/util/m5/src** to the compiler's include search path
 2. Add `-no-pie` to not to make a position independent executable
 
 For our [Makefile](../../materials/02-Using-gem5/08-accelerating-simulation/01-annotate-this/Makefile), we can have the following compiler command:
@@ -454,8 +454,15 @@ simTicks                                   1000000000
 1. KVM fast-forwarding requires the actual hardware KVM thread, so it might constraints the amount of simulations we can run in parallel.
 2. We need to spend time in fast-forwarding for every run. If the fast-forward region is large, it can still be time-consuming.
 3. The simulated system has to have the same ISA as the host.
+4. It is not deterministic
 
 We can walk around the above downsides by using the checkpoint feature in gem5.
+
+---
+
+<!-- _class: start -->
+
+## Checkpoint in gem5
 
 ---
 
@@ -722,7 +729,7 @@ Advantage:
 
 Downsides:
 
-- None-deterministic
+- Non-deterministic
 - Host must match guest's ISA
 - No RISC-V support
 
