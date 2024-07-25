@@ -362,13 +362,13 @@ While useful, this does normally mean that there are many ways to do the same th
 For example, in the following snippets, `dict_1`, `dict_2`, and `dict_3` are all equivalent.
 
 ```python
-dict_1 = {1: "one", 2: "two"}
+dict_1 = {'key_one': "one", 'key_two': "two"}
 
-dict_2 = dict(one="one", two="two")
+dict_2 = dict(key_one="one", key_two="two")
 
 dict_3 = dict()
-dict_3[1] = "one"
-dict_3[2] = "two"
+dict_3['key_one'] = "one"
+dict_3['key_two'] = "two"
 ```
 
 Those of you new to Python may want to dedicate some time this evening to go through examples using Python's "built-in" functions.
