@@ -3,7 +3,7 @@
 #include <dirent.h>
 
 // Include the gem5 m5ops header file
-#include <gem5/m5ops.h>
+
 //
 
 // Include the gem5 m5_mmap header file

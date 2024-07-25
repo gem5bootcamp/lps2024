@@ -64,7 +64,7 @@ cache_hierarchy = PrivateL1CacheHierarchy(
 
 memory = DualChannelDDR4_2400(size="3GB")
 
-# Here we setup the processor. The SimpleSwitchableProcessor allows for
+# Here we set up the processor. The SimpleSwitchableProcessor allows for
 # switching between different CPU types during simulation, such as KVM to Timing
 
 #
@@ -82,14 +82,14 @@ board = X86Board(
 
 board.set_workload(obtain_resource("npb-ep-a"))
 
-# Setup workbegin handler to reset stats and switch to TIMING CPU
+# Set up workbegin handler to reset stats and switch to TIMING CPU
 
 
 #
 
 simulator = Simulator(
     board=board,
-# Setup the exit event handlers
+# Set up the exit event handlers
 
 #
 )
