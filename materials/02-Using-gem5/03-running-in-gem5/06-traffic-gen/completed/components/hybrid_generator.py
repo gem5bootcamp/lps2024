@@ -67,7 +67,7 @@ class HybridGenerator(AbstractGenerator):
         This class defines an external interface to create a list of linear and
         random generator cores that could replace the processing cores in a board.
 
-        :param num_cores: The number of linear/hybrid generator cores to create.
+        :param num_cores: The number of linear generator cores to create.
         :param duration: The number of ticks for the generator to generate
                          traffic.
         :param rate: The rate at which the synthetic data is read/written.

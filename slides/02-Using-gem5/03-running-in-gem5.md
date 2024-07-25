@@ -566,9 +566,233 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 
 ### Let's run an example on how to use the traffic generator
 
+We will be running the following file.
+[materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py)
+
+Steps:
+1. Run with a Linear Traffic Generator.
+2. Run with a Random Traffic Generator.
+3. Run with a Hybrid Traffic Generator.
+
 ---
 
-## Summery
+## 06-traffic-gen: Linear Traffic Generator
+
+First, we will use a Linear Traffic Generator to simulate linear (stream) traffic.
+
+### Simplified example
+
+If we wanted to access addresses 0x00 through 0x04, a linear access would mean accessing memory in the following order: 0x00, 0x01, 0x02, 0x03, 0x04.
+
+<!-- Add diagram -->
+
+### Run the following command to see a Linear Traffic Generator in action
+
+```sh
+gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py linear
+```
+
+We will see the expected output in the following slide.
+
+---
+
+## 06-traffic-gen: Linear Traffic Generator Results
+
+
+```
+   1490: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 0, size 64
+   1490: system.processor.cores.generator: Next event scheduled at 2980
+   2980: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 40, size 64
+   2980: system.processor.cores.generator: Next event scheduled at 4470
+   4470: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 80, size 64
+   4470: system.processor.cores.generator: Next event scheduled at 5960
+   ```
+
+Throughout this output, we see `r to addr --`. This means that the traffic generator is simulating an attempt to access memory address 0x--.
+
+<!-- Is the sentence above accurate? -->
+
+Above, we see `r to addr 0` in line 1, `r to addr 40` in line 3, and `r to addr 80` in line 5.
+
+This is because the Linear Traffic Generator  is simulating requests to access memory addresses 0x0000, 0x0040, 0x0080, 0x00c0.
+
+As you can see, the requests are very linear. Each new memory access is 0x0040 bytes above the previous one.
+
+---
+
+## 06-traffic-gen: Random Traffic Generator
+
+Next, we will use a Random Traffic Generator to simulate random traffic.
+
+### Simplified example
+
+If we wanted to access addresses 0x00 through 0x04, a random access would mean accessing memory in the following (or some other random) order: 0x01, 0x04, 0x02, 0x03, 0x00.
+
+<!-- Add diagram -->
+
+### Run the following command to see a Random Traffic Generator in action
+
+```sh
+gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py random
+```
+
+We will see the expected output in the following slide.
+
+---
+
+## 06-traffic-gen: Random Traffic Generator Results
+
+```
+   1490: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 2000, size 64
+   1490: system.processor.cores.generator: Next event scheduled at 2980
+   2980: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 240, size 64
+   2980: system.processor.cores.generator: Next event scheduled at 4470
+   4470: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 2000, size 64
+   4470: system.processor.cores.generator: Next event scheduled at 5960
+   5960: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 4280, size 64
+```
+
+
+Above, we see `r to addr 2000` in line 1, `r to addr 240` in line 3, `r to addr 2000` in line 5, and `r to addr 4280` in line 7.
+
+This is because the Random Traffic Generator  is simulating requests to access memory addresses 0x2000, 0x0240, 0x2000, 0x4280.
+
+In comparison to the Linear Traffic Generator, these requests are very random.
+
+---
+<!-- _class: two-col -->
+
+## 06-traffic-gen: Hybrid Traffic Generator
+
+Now, let's create a traffic generator that simulates linear and random memory acesses.
+
+Open the following file.
+[materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py)
+
+In the file above, there is a class called `HybridGenerator`.
+
+`HybridGenerator` inherits from another class called  `AbstractGenerator`, which must be initialized with certain parameters.
+
+Some of these parameters were defined above, but let's redefine them.
+
+```python
+class HybridGenerator(AbstractGenerator):
+    def __init__(
+        self,
+        num_cores: int = 1,
+        duration: str = "1ms",
+        rate: str = "100GB/s",
+        block_size: int = 64,
+        min_addr: int = 0,
+        max_addr: int = 32768,
+        rd_perc: int = 100,
+        data_limit: int = 0,
+    ) -> None:
+```
+
+---
+<!-- _class: two-col -->
+
+## 06-traffic-gen: Hybrid Traffic Generator Parameters
+
+- **num_cores**
+  - The number of cores in your system
+- **duration**
+  - Length of time to generate traffic
+- **rate**
+  - Rate at which to make memory access requests
+    - **Note**: This is *NOT* the rate at which memory will respond. This is just the rate at which requests will be made
+- **block_size**
+  - The number of bytes accessed with each read/write
+
+###
+
+```python
+class HybridGenerator(AbstractGenerator):
+    def __init__(
+        self,
+        num_cores: int = 1,
+        duration: str = "1ms",
+        rate: str = "100GB/s",
+        block_size: int = 64,
+        min_addr: int = 0,
+        max_addr: int = 32768,
+        rd_perc: int = 100,
+        data_limit: int = 0,
+    ) -> None:
+```
+
+---
+<!-- _class: two-col -->
+
+## 06-traffic-gen: Hybrid Traffic Generator Parameters Cont.
+
+- **min_addr**
+  - The lowest memory address for the generator to access via reads/writes
+- **max_addr**
+  - The highest memory address for the generator to access via reads/writes
+- **rd_perc**
+  - The percentage of accesses that should be reads
+- **data_limit**
+  - The maximum number of bytes that the generator can access (via reads/writes)
+    - **Note**: if `data_limit` is set to 0, there will be no data limit.
+
+###
+
+```python
+class HybridGenerator(AbstractGenerator):
+    def __init__(
+        self,
+        num_cores: int = 1,
+        duration: str = "1ms",
+        rate: str = "100GB/s",
+        block_size: int = 64,
+        min_addr: int = 0,
+        max_addr: int = 32768,
+        rd_perc: int = 100,
+        data_limit: int = 0,
+    ) -> None:
+```
+
+---
+<!-- _class: two-col -->
+
+## 06-traffic-gen: Hybrid Traffic Generator
+
+Our class, `HybridGenerator` extends `AbstractGenerator`, so when we initialize `HybridGenerator`, we will be initializing an `AbstractGenerator` with the parameters to the right.
+
+```python
+class HybridGenerator(AbstractGenerator):
+    def __init__(
+        self,
+        num_cores: int = 1,
+        duration: str = "1ms",
+        rate: str = "100GB/s",
+        block_size: int = 64,
+        min_addr: int = 0,
+        max_addr: int = 32768,
+        rd_perc: int = 100,
+        data_limit: int = 0,
+    ) -> None:
+        if num_cores < 2:
+            raise ValueError("num_cores should be >= 2!")
+        super().__init__(
+            cores=self._create_cores(
+                num_cores=num_cores,
+                duration=duration,
+                rate=rate,
+                block_size=block_size,
+                min_addr=min_addr,
+                max_addr=max_addr,
+                rd_perc=rd_perc,
+                data_limit=data_limit,
+            )
+        )
+```
+
+---
+
+## Summary
 
 ### SE mode does NOT implement many things!​
 
