@@ -31,7 +31,7 @@ Jason's event driven slides.
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-60-percent -->
 
 ## Event-Driven Simulation: Abstract Thoughts
 
@@ -77,7 +77,7 @@ Continued on next slide.
 6- This process continue until the program we're simulating is finished.
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-80-percent -->
 
 ## Event-Driven Simulation in gem5
 
@@ -102,7 +102,7 @@ Let's look at `src/sim/eventq.hh`. In there you will see a declaration for class
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## A Hypothetical Example for Event
 
@@ -133,7 +133,7 @@ class CPU: public ClockedObject
 In this example every time, an instance of `FetchEvent` occurs (`cpu_0::nextFetch` and not `CPU::nextFetch`), the simulator will call `processFetch` from the `CPU` instance that owns the event.
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## EventFunctionWrapper
 
@@ -161,7 +161,7 @@ In addition to class `Event`, you can find the declaration for `EventFunctionWra
 For `EventFunctionWrapper` the function `process` is defined as a call to `callback` which is passed as an argument to the constructor of `EventFunctionWrapper`. Additionally, we wil need to give each object a name through the constructor.
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## Detour: m5.simulate: SimObject::startup
 
@@ -192,7 +192,7 @@ By calling `m5.simulate`, gem5 will call function `startup` from every `SimObjec
 `startup` is where we schedule the initial `events` that trigger a simulation (`CPU::nextFetch` in our hypothetical scenario).
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-70-percent -->
 
 ## nextHelloEvent
 
@@ -213,7 +213,7 @@ Now, we need declare a member of type `EventFunctionWrapper` which we will call 
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## nextHelloEvent: Header File
 
@@ -246,7 +246,7 @@ class HelloSimObject: public SimObject
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-70-percent -->
 
 ## nextHelloEvent: HelloSimObject: Constructor
 
@@ -271,7 +271,7 @@ HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## nextHelloEvent Callback: processNextHelloEvent
 
@@ -299,7 +299,7 @@ class HelloSimObject: public SimObject
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-80-percent -->
 
 ## nextHelloEvent Callback: processNextHelloEvent cont.
 
@@ -336,7 +336,7 @@ HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## nextHelloEvent Callback: processNextHelloEvent: Finally!
 
@@ -361,7 +361,7 @@ Deeper look into the code, we do the following every time `nextHelloEvent` occur
 - Check if we have remaining prints to do, if so, we will schedule `nextHelloEvent` 500 into the future. **NOTE**: `curTick` is a function that returns the current simulator time in `Ticks`
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## HelloSimObject::startup: Header File
 
@@ -408,7 +408,7 @@ HelloSimObject::startup()
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## Current Versions: Python Scripts
 
@@ -441,7 +441,7 @@ class HelloSimObject(SimObject):
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## Current Versions: Header File
 
@@ -477,7 +477,7 @@ class HelloSimObject: public SimObject
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: two-col -->
 
 ## Current Versions: Source File
 
@@ -502,7 +502,11 @@ HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
     }
     DPRINTF(HelloExampleFlag, "%s: Hello from HelloSimObject's constructor!\n", __func__);
 }
+```
 
+### Continued
+
+```cpp
 void
 HelloSimObject::startup()
 {
@@ -555,12 +559,11 @@ Below is a recording of what you should expect to see.
 ## Step 2: SimObjects as Parameters
 
 ---
+<!-- _class: code-50-percent -->
 
 ## GoodByeSimObject
 
-In this step, we will learn about adding a `SimObject` as a Parameter. To do this, let's first build our second `SimObject` called `GoodByeSimObject`.
-
-As you remember, we need to declar the `GoodByeSimObject` in Python. Let's open `src/bootcamp/hello-sim-object/HelloSimObject.py` and add the following code to it.
+In this step, we will learn about adding a `SimObject` as a Parameter. To do this, let's first build our second `SimObject` called `GoodByeSimObject`. As you remember, we need to declare `GoodByeSimObject` in Python. Let's open `src/bootcamp/hello-sim-object/HelloSimObject.py` and add the following code to it.
 
 ```python
 class GoodByeSimObject(SimObject):
