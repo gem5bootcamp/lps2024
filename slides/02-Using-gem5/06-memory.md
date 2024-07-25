@@ -227,7 +227,7 @@ Run with `gem5/build/NULL/gem5.opt`
 
 ## Running Channeled Memory
 
-- Open ```gem5/src/python/gem5/components/memory/single_channel.py```
+- Open [```gem5/src/python/gem5/components/memory/single_channel.py```](../../gem5/src/python/gem5/components/memory/single_channel.py)
 - We see `SingleChannel` memories such as:
 
 ```python
@@ -264,7 +264,7 @@ SingleChannelDDR4_2400()
 
 ## Adding a new channeled memory
 
-- Open `materials/02-Using-gem5/06-memory/lpddr2.py`
+- Open [`materials/02-Using-gem5/06-memory/lpddr2.py`](../../materials/02-Using-gem5/06-memory/lpddr2.py)
 - If we wanted to add LPDDR2 as a new memory in the standard library, we first make sure there's a DRAM interface for it in the [`dram_interfaces` directory](../../gem5/src/python/gem5/components/memory/dram_interfaces/lpddr2.py)
 - then we need to make sure we import it by adding
 ```python
