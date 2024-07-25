@@ -113,6 +113,10 @@ Below is how `src/bootcamp/hello-sim-object/hello_sim_object.cc` looks like with
 #include "base/trace.hh"
 #include "debug/HelloExampleFlag.hh"
 
+
+namespace gem5
+{
+
 HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
     SimObject(params)
 {
@@ -121,6 +125,8 @@ HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
     }
     DPRINTF(HelloExampleFlag, "%s: Hello from HelloSimObject's constructor!\n", __func__);
 }
+
+} // namespace gem5
 ```
 
 ---
@@ -185,9 +191,7 @@ Now, our `HelloExampleFlag` should be listed whenever we print debug help from g
 
 Below shows the expected output.
 
-```cpp
-// asciinema
-```
+[![asciicast](https://asciinema.org/a/J0TmNzOj29N74la4qOxdBLV6H.svg)](https://asciinema.org/a/J0TmNzOj29N74la4qOxdBLV6H)
 
 ---
 <!-- _class: too-much-code -->
@@ -239,9 +243,7 @@ Run the following command to simulate `second-hello-example.py` without `DebugFl
 
 Below is a recording of my terminal when doing this.
 
-```sh
-# Mysore/Saili put asciinema here.
-```
+[![asciicast](https://asciinema.org/a/pKOaIXfzYQUXTsA7VSEvcMHQp.svg)](https://asciinema.org/a/pKOaIXfzYQUXTsA7VSEvcMHQp)
 
 ---
 
@@ -255,9 +257,7 @@ Run the following command to simulate `second-hello-example.py` with `HelloExamp
 
 Below is a recording of my terminal when doing this.
 
-```sh
-# Mysore/Saili put asciinema here.
-```
+[![asciicast](https://asciinema.org/a/4c7TuxpxfMNR9i89olMr3HITB.svg)](https://asciinema.org/a/4c7TuxpxfMNR9i89olMr3HITB)
 
 ---
 <!-- _class: too-much-code -->
