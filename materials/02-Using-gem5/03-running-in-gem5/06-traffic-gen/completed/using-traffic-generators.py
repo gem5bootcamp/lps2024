@@ -59,7 +59,7 @@ def getGenerator(generator_class):
         return HybridGenerator(
             duration="250us",
             rate="40GB/s",
-            num_cores=12,
+            num_cores=6,
         )
 
 def parseArgs():

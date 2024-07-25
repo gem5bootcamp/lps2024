@@ -109,6 +109,10 @@ class HybridGenerator(AbstractGenerator):
             else:
                 return 2 ** int(log(num_cores, 2))
 
+        """
+        Initializing variables
+        """
+        # (1)
         core_list = []
 
         num_linear_cores = biggest_power_of_two_smaller_than(num_cores)
@@ -122,8 +126,8 @@ class HybridGenerator(AbstractGenerator):
         is the smallest address for that section and max is the largest
         address for that section
         """
+        # (2)
         ranges = partition_range(min_addr, max_addr, num_linear_cores)
-        print(ranges)
 
         """
         The first n cores (where n is the largest power of 2 that is
@@ -131,9 +135,8 @@ class HybridGenerator(AbstractGenerator):
 
         Each Linear Generator Core gets a section of memory, and all
         Linear Generator Cores cover the range of min_addr to max_addr
-
-        ENTER CODE BELOW
         """
+        # (3)
         for i in range(num_linear_cores):
             core_list.append(LinearGeneratorCore(
                 duration=duration,
@@ -149,9 +152,8 @@ class HybridGenerator(AbstractGenerator):
         The remaining cores will be Random Generator Cores
 
         Each Random Generator Core covers the range of min_addr to max_addr
-
-        ENTER CODE BELOW
         """
+        # (4)
         for i in range(num_random_cores):
             core_list.append(RandomGeneratorCore(
                 duration=duration,
@@ -163,6 +165,10 @@ class HybridGenerator(AbstractGenerator):
                 data_limit=data_limit,)
             )
 
+        """
+        Return our list of cores
+        """
+        # (5)
         return core_list
 
 
