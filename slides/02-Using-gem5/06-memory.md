@@ -162,7 +162,7 @@ for i, mem_ctrl in enumerate(system.mem_ctrls):
 
 ## Memory Controller/Interface Example
 
-- Open up ```materials/02-Using-gem5/06-memory/blank_memory.py```
+- Open up [```materials/02-Using-gem5/06-memory/blank_memory.py```](../../materials/02-Using-gem5/06-memory/blank_memory.py)
 - Look for the comment ``` # insert memory controller and interface here```
 - Copy and paste any of the code blocks from the 4 slides above or the one below
 ```python
@@ -203,7 +203,7 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 
 ## Memory in the standard library
 
-- Find memory in standard library at ```gem5/src/python/gem5/components/memory```
+- Find memory in standard library at [```gem5/src/python/gem5/components/memory```](../../gem5/src/python/gem5/components/memory/memory.py)
 - Standard library has two types of memory
     1. SimpleMemory
     2. ChanneledMemory
@@ -216,7 +216,7 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 
 ## Running an example with the standard library
 
-- Open ```materials/02-Using-gem5/06-memory/std_lib_mem.py```
+- Open [```materials/02-Using-gem5/06-memory/std_lib_mem.py```](../../materials/02-Using-gem5/06-memory/std_lib_mem.py)
 - Look at the line:
 ```memory = SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")```
 - This shows how we can use SimpleMemory
@@ -338,14 +338,15 @@ Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor
 ---
 ## CommMonitor
 
-- Remove the line ```system.mem_ctrl.port = system.membus.mem_side_ports```
+- Remove the line ```system.l1cache.mem_side = system.membus.cpu_side_ports```
 - Add the following block under the comment ``` # Insert CommMonitor here```
 ```python
 system.comm_monitor = CommMonitor()
-system.comm_monitor.cpu_side_port = system.membus.mem_side_ports
-system.comm_monitor.mem_side_port = system.mem_ctrl.port
+system.comm_monitor.cpu_side_port = l1cache.mem_side
+system.comm_monitor.mem_side_port = system.membus.cpu_side_ports
 ```
 Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
+
 
 ---
 
@@ -376,10 +377,10 @@ Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor
 ### Using address interleaving in gem5
 
 - We can use AddrRange constructors to define a selector function
-    - `src/base/addr_range.hh`
+    - [`src/base/addr_range.hh`](../../gem5/src/base/addr_range.hh)
 
 - Example: standard library's multi-channel memory
-    - `gem5/src/python/gem5/components/memory/multi_channel.py`
+    - [`gem5/src/python/gem5/components/memory/multi_channel.py`](../../gem5/src/python/gem5/components/memory/multi_channel.py)
 
 ---
 
