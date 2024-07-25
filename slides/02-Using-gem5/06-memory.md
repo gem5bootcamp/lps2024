@@ -316,7 +316,7 @@ from lpddr2 import SingleChannelLPDDR2_S4_1066_1x32
 ### Let's simulate:
 
 <!-- >    > gem5-x86 –outdir=results/simple materials/extra-topics/02-monitor-and-trace/simple.py -->
-Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
+Run ```gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
 
 ---
 
@@ -340,10 +340,10 @@ Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor
 - Add the following block under the comment ``` # Insert CommMonitor here```
 ```python
 system.comm_monitor = CommMonitor()
-system.comm_monitor.cpu_side_port = l1cache.mem_side
+system.comm_monitor.cpu_side_port = system.l1cache.mem_side
 system.comm_monitor.mem_side_port = system.membus.cpu_side_ports
 ```
-Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
+Run ```gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
 
 
 ---
