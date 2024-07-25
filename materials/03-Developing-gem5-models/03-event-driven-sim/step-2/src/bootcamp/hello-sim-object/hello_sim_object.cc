@@ -11,6 +11,7 @@ namespace gem5
 HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
     SimObject(params),
     remainingHellosToPrintByEvent(params.num_hellos),
+    goodByeObject(params.goodbye_object),
     nextHelloEvent([this](){ processNextHelloEvent(); }, name() + "nextHelloEvent")
 {
     fatal_if(params.num_hellos <= 0, "num_hellos should be positive!");
@@ -35,6 +36,8 @@ HelloSimObject::processNextHelloEvent()
     remainingHellosToPrintByEvent--;
     if (remainingHellosToPrintByEvent > 0) {
         schedule(nextHelloEvent, curTick() + 500);
+    } else {
+        goodByeObject->sayGoodBye();
     }
 }
 
