@@ -1,6 +1,8 @@
 """
 A simple run script using a specialized CHI cache hierarchy.
 This script runs a simple test with a linear generator.
+
+> gem5 run-test.py
 """
 
 from hierarchy import PrivateL1SharedL2CacheHierarchy

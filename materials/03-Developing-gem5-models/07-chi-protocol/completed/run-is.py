@@ -5,6 +5,9 @@ in `hierarchy.py`. This script can be used to run either Arm SE mode or X86 FS
 mode. (You can change the comment.)
 
 Running IS-A in SE mode takes about 10 minutes
+
+To run this script, you can use the following command:
+> gem5 run-is.py
 """
 
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400

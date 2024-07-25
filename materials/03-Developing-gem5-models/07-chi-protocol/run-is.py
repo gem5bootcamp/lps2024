@@ -1,10 +1,12 @@
 """Run script for the IS-A benchmark.
 
-This script runs the IS-A benchmark on a gem5 simulator with a the CHI hierachy
-in `hierarchy.py`. This script can be used to run either Arm SE mode or X86 FS
-mode. (You can change the comment.)
+This script runs the IS-A benchmark on a gem5 simulator with a the CHI
+hierarchy in `hierarchy.py`. This script can be used to run either Arm SE mode
+or X86 FS mode. (You can change the comment.)
 
 Running IS-A takes about 10 minutes
+
+> gem5 run-is.py
 """
 
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400
