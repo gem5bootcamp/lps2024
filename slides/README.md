@@ -187,11 +187,9 @@ In this case, you cannot have a description of the image, unfortunately.
     - Slides
       - Needs an editing pass :exclamation:
     - Materials :white_check_mark:
-  - 07: CHI: (Jason) :heavy_exclamation_mark:
-    - Slides
-      - Need to be finished
-    - Materials
-      - Need to be tested
+  - 07: CHI: (Jason)
+    - Slides :white_check_mark:
+    - Materials :white_check_mark:
   - 08: Modeling networks (Jason) :heavy_exclamation_mark:
     - Slides
       - Not started :heavy_exclamation_mark:
