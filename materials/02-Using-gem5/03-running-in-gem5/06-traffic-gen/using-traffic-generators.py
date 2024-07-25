@@ -26,15 +26,19 @@
 
 import argparse
 
+from components.cache_hierarchy import CacheHierarchy
 from components.hybrid_generator import HybridGenerator
 
 import m5
 from m5.objects import Root
 
 from gem5.components.boards.test_board import TestBoard
-from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
-            PrivateL1CacheHierarchy,
-        )
+# from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
+#             PrivateL1CacheHierarchy,
+#         )
+from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarchy import (
+    PrivateL1SharedL2CacheHierarchy,
+)
 from gem5.components.memory import SingleChannelDDR3_1600
 from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
@@ -45,19 +49,23 @@ from gem5.components.processors.random_generator import RandomGenerator
 def getGenerator(generator_class, num_cores):
     if generator_class.lower() == "linear":
         return LinearGenerator(
-            duration="250us",
+            duration="1ms", #250us
             rate="40GB/s",
+            min_addr= 0,
+            max_addr= 131072,
             num_cores=num_cores, #1
         )
     elif generator_class.lower() == "random":
         return RandomGenerator(
-            duration="250us",
+            # duration="250us",
             rate="40GB/s",
+            min_addr= 0,
+            max_addr= 2097152,
             num_cores=num_cores, #1
         )
     elif generator_class.lower() == "hybrid":
         return HybridGenerator(
-            duration="250us",
+            # duration="250us",
             rate="40GB/s",
             num_cores=num_cores, #6
         )
@@ -87,7 +95,14 @@ def parseArgs():
 
 args = parseArgs()
 
-cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
+# cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
+# cache_hierarchy = PrivateL1SharedL2CacheHierarchy(
+#     l1d_size="32KiB",
+#     l1i_size="32KiB",
+#     l2_size="256KiB",
+# )
+
+cache_hierarchy = CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 

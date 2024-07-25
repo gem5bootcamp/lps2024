@@ -44,7 +44,7 @@ class HybridGenerator(AbstractGenerator):
         rate: str = "100GB/s",
         block_size: int = 64,
         min_addr: int = 0,
-        max_addr: int = 32768,
+        max_addr: int = 131072, #CHANGED 2097152 131072
         rd_perc: int = 100,
         data_limit: int = 0,
     ) -> None:

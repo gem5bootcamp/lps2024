@@ -39,15 +39,16 @@ from gem5.components.processors.random_generator import RandomGenerator
 # Run with the following command
     # gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py
 
-cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
+cache_hierarchy = PrivateL1CacheHierarchy(
+    l1d_size="32KiB",
+    l1i_size="32KiB",
+)
 
 memory = SingleChannelDDR3_1600()
 
-generator = LinearGenerator()
-
-# Uncomment the following line to run with
-# RandomGenerator instead of LinearGenerator
-# generator = RandomGenerator()
+generator = LinearGenerator(
+    num_cores=1
+)
 
 motherboard = TestBoard(
     clk_freq="3GHz",

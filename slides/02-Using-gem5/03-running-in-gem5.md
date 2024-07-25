@@ -558,6 +558,81 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 | request size | The number of bytes that are read/written by each request. ​|
 | read percentage​ | The percentage of reads among all the requests, the rest of requests are write requests.​ |
 
+
+---
+
+What is a traffic generator
+High level
+
+gem5 has these!!
+
+Explain params
+
+linear, random, striated are all pytrafficgen
+  Good for user experience (why we have them)
+These are kinda parameters
+
+(3 slides)
+
+Params are knobs to configure traffic
+Go into params
+
+THEN open one
+
+---
+
+## gem5: Traffic Generator Classes
+
+gem5's traffic generators are a set of classes that inherit from `AbstractGenerator`. They don't actually simulate any memory accesses. Instead, they create traffic generator cores. These traffic generator cores use a `SimObject` called `PyTrafficGen` to create synthetic traffic.
+
+In order to keep track of these cores, a traffic generator will give you a list of the cores that it has created. We can then use this list to replace the processor cores on whatever board you initialize.
+
+The function in the class that does all of this is usually called `_create_cores`
+
+---
+<!-- _class: two-col -->
+
+## Traffic Generator Classes have Configurable Parameters
+
+- **num_cores**
+  - The number of cores in your system
+- **duration**
+  - Length of time to generate traffic
+- **rate**
+  - Rate at which to request data from memory
+    - **Note**: This is *NOT* the rate at which memory will respond. This is just the rate at which requests will be made
+- **block_size**
+  - The number of bytes accessed with each read/write
+
+###
+
+- **min_addr**
+  - The lowest memory address for the generator to access (via reads/writes)
+- **max_addr**
+  - The highest memory address for the generator to access (via reads/writes)
+- **rd_perc**
+  - The percentage of accesses that should be reads
+- **data_limit**
+  - The maximum number of bytes that the generator can access (via reads/writes)
+    - **Note**: if `data_limit` is set to 0, there will be no data limit.
+
+###
+
+```python
+class HybridGenerator(AbstractGenerator):
+    def __init__(
+        self,
+        num_cores: int = 1,
+        duration: str = "1ms",
+        rate: str = "100GB/s",
+        block_size: int = 64,
+        min_addr: int = 0,
+        max_addr: int = 32768,
+        rd_perc: int = 100,
+        data_limit: int = 0,
+    ) -> None:
+```
+
 ---
 
 ## Hands-on Time!
@@ -566,8 +641,8 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 
 ### Let's run an example on how to use the traffic generator
 
-We will be running the following file.
-[materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py)
+Open the following file.
+[materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py)
 
 Steps:
 1. Run with a Linear Traffic Generator.
@@ -584,15 +659,78 @@ First, we will use a Linear Traffic Generator to simulate linear (stream) traffi
 
 If we wanted to access addresses 0x00 through 0x04, a linear access would mean accessing memory in the following order: 0x00, 0x01, 0x02, 0x03, 0x04.
 
-<!-- Add diagram -->
+---
+<!-- _class: two-col -->
+
+## 06-traffic-gen: Linear Traffic Generator: Looking at the Code
+
+Go to this section of the code on the right.
+
+Right now, we have set up a board with a Private L1 Cache Hierarchy, and a Single Channel memory system.
+
+In order to add a traffic generator, add the following lines of code under `memory = SingleChannelDDR3_1600()`, .
+
+```python
+generator = LinearGenerator(
+    num_cores=1
+)
+```
+
+###
+
+```python
+cache_hierarchy = PrivateL1CacheHierarchy(
+    l1d_size="32KiB",
+    l1i_size="32KiB",
+)
+
+memory = SingleChannelDDR3_1600()
+
+motherboard = TestBoard(
+    clk_freq="3GHz",
+    generator=generator,
+    memory=memory,
+    cache_hierarchy=cache_hierarchy,
+)
+```
+
+---
+<!-- _class: two-col code-70-percent -->
+
+## 06-traffic-gen: Linear Traffic Generator: Completed Code
+
+The completed code snippet should look like this.
+
+```python
+cache_hierarchy = PrivateL1CacheHierarchy(
+    l1d_size="32KiB",
+    l1i_size="32KiB",
+)
+
+memory = SingleChannelDDR3_1600()
+
+generator = LinearGenerator(
+    num_cores=1
+)
+
+motherboard = TestBoard(
+    clk_freq="3GHz",
+    generator=generator,
+    memory=memory,
+    cache_hierarchy=cache_hierarchy,
+)
+```
+---
+
+## 06-traffic-gen: Linear Traffic Generator: Running the Code
 
 ### Run the following command to see a Linear Traffic Generator in action
 
 ```sh
-gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py linear 1
+gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py
 ```
 
-We will see the expected output in the following slide.
+We will see some of the expected output in the following slide.
 
 ---
 
@@ -600,12 +738,12 @@ We will see the expected output in the following slide.
 
 
 ```
-   1490: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 0, size 64
-   1490: system.processor.cores.generator: Next event scheduled at 2980
-   2980: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 40, size 64
-   2980: system.processor.cores.generator: Next event scheduled at 4470
-   4470: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 80, size 64
-   4470: system.processor.cores.generator: Next event scheduled at 5960
+    596: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 0, size 64
+    596: system.processor.cores.generator: Next event scheduled at 1192
+   1192: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 40, size 64
+   1192: system.processor.cores.generator: Next event scheduled at 1788
+   1788: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 80, size 64
+   1788: system.processor.cores.generator: Next event scheduled at 2384
    ```
 
 Throughout this output, we see `r to addr --`. This means that the traffic generator is simulating a request to access memory address 0x--.
@@ -628,28 +766,104 @@ Next, we will use a Random Traffic Generator to simulate random traffic.
 
 If we wanted to access addresses 0x00 through 0x04, a random access would mean accessing memory in the following (or some other random) order: 0x01, 0x04, 0x02, 0x03, 0x00.
 
-<!-- Add diagram -->
+---
 
-### Run the following command to see a Random Traffic Generator in action
+<!-- _class: two-col code-70-percent -->
 
-```sh
-gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py random 1
+## 06-traffic-gen: Random Traffic Generator: Looking at the Code
+
+Let's practice using a Random Traffic Generator now.
+
+In the current code (as seen to the right), replace
+
+```python
+generator = LinearGenerator(
+    num_cores=1
+)
 ```
 
-We will see the expected output in the following slide.
+with
+
+```python
+generator = RandomGenerator(
+    num_cores=1
+)
+```
+
+###
+
+```python
+cache_hierarchy = PrivateL1CacheHierarchy(
+    l1d_size="32KiB",
+    l1i_size="32KiB",
+)
+
+memory = SingleChannelDDR3_1600()
+
+generator = LinearGenerator(
+    num_cores=1
+)
+
+motherboard = TestBoard(
+    clk_freq="3GHz",
+    generator=generator,
+    memory=memory,
+    cache_hierarchy=cache_hierarchy,
+)
+```
+
+---
+<!-- _class: two-col code-70-percent -->
+
+## 06-traffic-gen: Random Traffic Generator: Completed Code
+
+The completed code snippet should look like this.
+
+```python
+cache_hierarchy = PrivateL1CacheHierarchy(
+    l1d_size="32KiB",
+    l1i_size="32KiB",
+)
+
+memory = SingleChannelDDR3_1600()
+
+generator = RandomGenerator(
+    num_cores=1
+)
+
+motherboard = TestBoard(
+    clk_freq="3GHz",
+    generator=generator,
+    memory=memory,
+    cache_hierarchy=cache_hierarchy,
+)
+```
+---
+
+## 06-traffic-gen: Random Traffic Generator: Running the Code
+
+### Run the following command to see a Linear Traffic Generator in action
+
+
+```sh
+gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py
+```
+
+We will see some of the expected output in the following slide.
 
 ---
 
 ## 06-traffic-gen: Random Traffic Generator Results
 
 ```
-   1490: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 2000, size 64
-   1490: system.processor.cores.generator: Next event scheduled at 2980
-   2980: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 240, size 64
-   2980: system.processor.cores.generator: Next event scheduled at 4470
-   4470: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 2000, size 64
-   4470: system.processor.cores.generator: Next event scheduled at 5960
-   5960: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 4280, size 64
+    596: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 2000, size 64
+    596: system.processor.cores.generator: Next event scheduled at 1192
+   1192: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 240, size 64
+   1192: system.processor.cores.generator: Next event scheduled at 1788
+   1788: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 2000, size 64
+   1788: system.processor.cores.generator: Next event scheduled at 2384
+   2384: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 4280, size 64
+   2384: system.processor.cores.generator: Next event scheduled at 2980
 ```
 
 
@@ -1047,7 +1261,11 @@ return core_list
 
 Now, that we've created a function that returns a list of Linear and Random Traffic Generator Cores, let's run our program again!
 
-Use the following command to run the [code](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py).
+We will be using a new program that will connect the board for us based on some command line parameters.
+
+The first command line argument will be the traffic generator type and the second is the number of cores
+
+Here is the following command to run the [code](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py).
 
 ```sh
 gem5 --debug-flags=TrafficGen --debug-end=10000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py hybrid 6
@@ -1084,7 +1302,7 @@ Now, let's look at some benefits that this configuration may provide.
 Run the following command to see the miss rate for each core's l1 data cache.
 
 ```sh
-grep ReadReq.missRate::processor m5out/stats.txt
+grep l2cache.overallMissRate::processor m5out/stats.txt
 ```
 
 On the next slide, you'll see the expected output (with some text removed for readbility).
@@ -1094,41 +1312,64 @@ On the next slide, you'll see the expected output (with some text removed for re
 ## 06-traffic-gen: Hybrid Traffic Generator: Statistics Cont.
 
 ```sh
-system.cache_hierarchy.l1dcaches0.ReadReq.missRate::processor.cores0.generator     0.000875
-system.cache_hierarchy.l1dcaches1.ReadReq.missRate::processor.cores1.generator     0.000834
-system.cache_hierarchy.l1dcaches2.ReadReq.missRate::processor.cores2.generator     0.000881
-system.cache_hierarchy.l1dcaches3.ReadReq.missRate::processor.cores3.generator     0.000857
-system.cache_hierarchy.l1dcaches4.ReadReq.missRate::processor.cores4.generator     0.003299
-system.cache_hierarchy.l1dcaches5.ReadReq.missRate::processor.cores5.generator     0.003394
+system.cache_hierarchy.l2cache.overallMissRate::processor.cores0.generator     0.798450
+system.cache_hierarchy.l2cache.overallMissRate::processor.cores1.generator     0.789062
+system.cache_hierarchy.l2cache.overallMissRate::processor.cores2.generator     0.804688
+system.cache_hierarchy.l2cache.overallMissRate::processor.cores3.generator     0.812500
+system.cache_hierarchy.l2cache.overallMissRate::processor.cores4.generator     0.113281
+system.cache_hierarchy.l2cache.overallMissRate::processor.cores5.generator     0.130859
 ```
 
-Cores 0, 1, 2, and 3 (Linear Traffic Generator Cores) have a miss rate of around 0.000862 on average.
+Cores 0, 1, 2, and 3 (Linear Traffic Generator Cores) have a miss rate of around 0.801175 on average.
 
-Cores 4 and 5 (Random Traffic Generator Cores) have a miss rate of around 0.003347 on average.
+Cores 4 and 5 (Random Traffic Generator Cores) have a miss rate of around 0.12207 on average.
 
-<!-- Findings:
+---
 
-6 linear cores is better than 4 linear and 2 random
-(comparing avg miss rate for linear cores)
+## 06-traffic-gen: Comparing Hybrid and Linear Traffic Generators
 
-6 random is worse than 4 linear and 2 random
-(comparing avg miss rate for random cores)
+Right now, we have 4 Linear Traffic Generator Cores working with 2 Random Traffic Generator Cores.
 
-Run with avgOccs::processor.cores
-  Random cores take close to 100% of cache occupancy on avg but linear are closer to 25% on avg
-Run with ReadReq.missLatency::processor.cores
-  Random miss latency is muchhh higher
-Run with requestorReadBytes::processor.cores
-  Random reads more bytes from mem
-    Bc it doesn't have locality to rely on, so each mem access has to usually be a mem access
-    Can't just rely on good line size like linear does
+What happens to the l2 miss rate when we remove the Random Traffic Generator Cores?
 
-Linear is worse bc random is cluttering up cache?
-But each cache should be private
+Let's run the following to generate a statistics file for just 4 Linear Generator Cores.
 
-Try with MESI cache
+```sh
+gem5 --debug-flags=TrafficGen --debug-end=10000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py linear 4
+```
 
--->
+Now, use the following command to see the l2 miss rate when we remove the Random Traffic Generator Cores.
+
+```sh
+grep l2cache.overallMissRate::processor m5out/stats.txt
+```
+
+On the next slide, you'll see the expected output (with some text removed for readbility).
+
+---
+
+## 06-traffic-gen: Comparing Hybrid and Linear Traffic Generators Cont.
+
+```sh
+system.cache_hierarchy.l2cache.overallMissRate::processor.cores0.generator     0.992063
+system.cache_hierarchy.l2cache.overallMissRate::processor.cores1.generator     0.992063
+system.cache_hierarchy.l2cache.overallMissRate::processor.cores2.generator     0.992063
+system.cache_hierarchy.l2cache.overallMissRate::processor.cores3.generator            1
+```
+
+As you can see, the l2 miss rate without the Random Generator Cores is basically 100% for each core.
+
+Compared to the previous 80%, this is a huge jump.
+
+The two sets of data that we just looked at can be explained by the Random Traffic Generator Cores.
+
+The Random Traffic Generator Cores essentially "warm up" the l2 cache, so that when a Linear Traffic Generator Core tries to access the l2, there's a much higher percentage that the data it was looking for will be there.
+
+---
+
+## 06-traffic-gen: Comparing Hybrid and Linear Traffic Generators Cont.
+
+Having some Random Traffic Generator Cores can be beneficial because it warms up the l2 cache for the Linear Traffic Generator Cores.
 
 ---
 
