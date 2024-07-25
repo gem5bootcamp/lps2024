@@ -17,7 +17,6 @@ math: mathjax
 
 - Creating a simple callback event [done]
 - Scheduling events [done]
-- Modeling bandwidth and latency with events [will do with inspector gadget]
 - Other SimObjects as parameters [done]
 - GoodByeExampleFlag and CompoundFlag(GreetExampleFlag, HelloExampleFlag, GoodByeExampleFlag) [done]
 - Hello/Goodbye example with buffer [why?]
