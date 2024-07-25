@@ -133,13 +133,11 @@ In this case, you cannot have a description of the image, unfortunately.
       - Needs an editing pass :exclamation:
     - Materials
       - (Thurs) Mysore to go through and test :exclamation:
-  - 08: Acceleration: (Zhantong) :heavy_exclamation_mark:
+  - 08: Acceleration: (Zhantong)
     - Slides
-      - (Today) Need to be merged/reviewed :exclamation:
       - Need an editing pass :exclamation:
     - Materials
-      - Need to be written :heavy_exclamation_mark:
-      - Someone needs to go through and test :exclamation:
+      - Erin to go through and test :exclamation:
   - 09: Sampling: (Zhantong) :heavy_exclamation_mark:
     - Slides
       - (Today) Need to be merged/reviewed :exclamation:
