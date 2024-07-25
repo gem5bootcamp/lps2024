@@ -71,6 +71,7 @@ In this section, we will cover how to accelerate gem5 simulations using fast-for
 
 The instruction version of the m5ops annotation we did in [03-running-in-gem5](03-running-in-gem5.md) will not work with KVM because the host does not recognize the m5ops instructions.
 As shown in that session, the following error message will appear:
+
 ```console
 illegal instruction (core dumped)
 ```
@@ -109,6 +110,7 @@ Materials are under `materials/02-Using-gem5/08-accelerating-simulation/01-annot
 [01-annotate-this.cpp](../../materials/02-Using-gem5/08-accelerating-simulation/01-annotate-this/01-annotate-this.cpp) is the same workload we used in [03-running-in-gem5](03-running-in-gem5.md), but this time, we need to use the address version of m5ops to annotate it.
 
 We first need to get the functions we need from the m5ops library.
+
 ```cpp
 // Include the gem5 m5ops header file
 #include <gem5/m5ops.h>
@@ -117,20 +119,24 @@ We first need to get the functions we need from the m5ops library.
 #include <m5_mmap.h>
 //
 ```
+
 ---
 
 ## 01-annotate-this
 
 Then, we will need to input the "magic" address depending on the ISA.
-Note that the default "magic" address is `0xFFFF0000`, which is the X86's "magic" address.
+Note that the default "magic" address is `0xFFFF0000`, which is X86's "magic" address.
 Therefore, if we do not do this step for this example, the address version of m5ops will still work. However, it will not work if we are on an Arm machine.
+
 ```cpp
 // Use the m5op_addr to input the "magic" address
     m5op_addr = 0XFFFF0000;
 //
 ```
+
 Next, we need to open `/dev/mem/` and set up the address range for the m5ops.
 Note that this step requires the process to have permission to access `/dev/mem`.
+
 ```cpp
 // Use the map_m5_mem to map the "magic" address range to /dev/mem
     map_m5_mem();
@@ -143,6 +149,7 @@ Note that this step requires the process to have permission to access `/dev/mem`
 
 Just like we did in [03-running-in-gem5](03-running-in-gem5.md), we want to use `m5_work_begin` and `m5_work_end` to mark the ROI. For address version m5ops, we need to add `_addr` behind the original function name.
 Therefore, we need to call `m5_work_begin_addr` and `m5_work_end_addr`.
+
 ```cpp
 // Use the gem5 m5ops to annotate the start of the ROI
     m5_work_begin_addr(0, 0);
@@ -152,7 +159,9 @@ Therefore, we need to call `m5_work_begin_addr` and `m5_work_end_addr`.
     m5_work_end_addr(0, 0);
 //
 ```
+
 Lastly, we need to unmap the address range after everything is done.
+
 ```cpp
 // Use unmap_m5_mem to unmap the "magic" address range
     unmap_m5_mem();
@@ -176,6 +185,7 @@ We also need to
 2. Add `-no-pie` to not make a position independent executable
 
 For our [Makefile](../../materials/02-Using-gem5/08-accelerating-simulation/01-annotate-this/Makefile), we have the following compiler command:
+
 ```Makefile
 $(GXX) -o 01-annotate-this 01-annotate-this.cpp -no-pie \
   -I$(GEM5_PATH)/include \
@@ -188,19 +198,20 @@ $(GXX) -o 01-annotate-this 01-annotate-this.cpp -no-pie \
 ## 01-annotate-this
 
 Now, let's try running the compiled workload:
+
 ```bash
 ./01-annotate-this
 ```
+
 We should now see without any errors.
+
 ```console
 This will be output to standard out
 List of Files & Folders:
 ., 01-annotate-this.cpp, .., Makefile, 01-annotate-this,
 ```
 
-Since it runs on the host, we know that we can use it with KVM.
-
-<!-- Maybe a line like "Since it runs on the host, we know that we can use it with KVM." to link it back to KVM/ the goal? -->
+Since it runs on the host, we know that we can use it with X86 KVM.
 
 ---
 
@@ -318,6 +329,7 @@ If we run it with
 ```bash
 gem5 -re 02-kvm-time.py
 ```
+
 We will see the following error in our terminal
 
 ```bash
@@ -553,6 +565,7 @@ def workbegin_handler():
     yield True
 #
 ```
+
 In this example, it will save the gem5 checkpoint into the directory `./03-cpt`. You can config the path and the name using the `simulator.save_checkponit()` function.
 
 ---
@@ -614,19 +627,20 @@ simulator = Simulator(
 #
 )
 ```
+
 ---
 
 ## 03-checkpoint-and-restore
-
-Note that we set the simulation to be exited after 1,000,000,000 Ticks in the restoring script, but in actual scenario, we might want to stop at the end of the ROI.
-
-<!-- More instructions on how to stop at ROI? Just no args passed to simulator.run()? -Erin -->
 
 ```python
 simulator.run(1_000_000_000)
 ```
 
-Other than the `simulator` and the `processor` being a not-switchable SimpleProcessor, everything is the same as the script we used in [02-kvm-time](../../materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time/02-kvm-time.py).
+**Note**: We set the simulation to be exited after 1,000,000,000 Ticks in the restoring script, but in an actual scenario, we might want to stop at the end of the ROI.
+
+To do this, we would need to use `simulator.run()` with no arguments and a workend exit event handler. An example can be found at [gem5/configs/example/gem5_library/x86-npb-benchmarks.py](/gem5/configs/example/gem5_library/x86-npb-benchmarks.py).
+
+Other than the `simulator` and the `processor` being a non-switchable SimpleProcessor, everything is the same as the script we used in [02-kvm-time](../../materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time/02-kvm-time.py).
 
 We can run this [restoring script](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-restore-the-checkpoint.py) with
 
@@ -653,6 +667,7 @@ If we search for `curTick` in the [m5.cpt](../../materials/02-Using-gem5/08-acce
 ```bash
 curTick=14788319800411
 ```
+
 ---
 
 ## 03-checkpoint-and-restore
