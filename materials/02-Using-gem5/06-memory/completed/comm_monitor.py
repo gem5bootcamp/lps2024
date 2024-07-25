@@ -47,7 +47,11 @@ system.tgen = PyTrafficGen() # Create a traffic generator
 
 system.membus = SystemXBar(width = 64, max_routing_table_size = 16777216)
 
-system.tgen.port = system.membus.cpu_side_ports
+system.l1cache = SimpleCache()
+system.l1cache.size = '32kB'
+
+system.tgen.port = system.l1cache.cpu_side
+# system.l2cache.mem_side = system.membus.cpu_side_ports
 
 # memory controller parameters
 system.mem_ctrl = MemCtrl()
@@ -60,12 +64,12 @@ system.mem_ctrl.dram.read_buffer_size = 32
 system.mem_ctrl.dram.write_buffer_size = 64
 system.mem_ctrl.dram.device_size = '512MB'
 
+system.mem_ctrl.port = system.membus.mem_side_ports
 
 ## Insert CommMonitor here
-
 system.comm_monitor = CommMonitor()
-system.comm_monitor.cpu_side_port = system.membus.mem_side_ports
-system.comm_monitor.mem_side_port = system.mem_ctrl.port
+system.comm_monitor.cpu_side_port = system.l1cache.mem_side
+system.comm_monitor.mem_side_port = system.membus.cpu_side_ports
 
 ##
 

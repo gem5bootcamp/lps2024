@@ -162,7 +162,7 @@ for i, mem_ctrl in enumerate(system.mem_ctrls):
 
 ## Memory Controller/Interface Example
 
-- Open up ```materials/02-Using-gem5/06-memory/blank_memory.py```
+- Open up [```materials/02-Using-gem5/06-memory/blank_memory.py```](../../materials/02-Using-gem5/06-memory/blank_memory.py)
 - Look for the comment ``` # insert memory controller and interface here```
 - Copy and paste any of the code blocks from the 4 slides above or the one below
 ```python
@@ -203,7 +203,7 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 
 ## Memory in the standard library
 
-- Find memory in standard library at ```gem5/src/python/gem5/components/memory```
+- Find memory in standard library at [```gem5/src/python/gem5/components/memory```](../../gem5/src/python/gem5/components/memory/memory.py)
 - Standard library has two types of memory
     1. SimpleMemory
     2. ChanneledMemory
@@ -216,7 +216,7 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 
 ## Running an example with the standard library
 
-- Open ```materials/02-Using-gem5/06-memory/std_lib_mem.py```
+- Open [```materials/02-Using-gem5/06-memory/std_lib_mem.py```](../../materials/02-Using-gem5/06-memory/std_lib_mem.py)
 - Look at the line:
 ```memory = SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")```
 - This shows how we can use SimpleMemory
@@ -227,7 +227,7 @@ Run with `gem5/build/NULL/gem5.opt`
 
 ## Running Channeled Memory
 
-- Open ```gem5/src/python/gem5/components/memory/single_channel.py```
+- Open [```gem5/src/python/gem5/components/memory/single_channel.py```](../../gem5/src/python/gem5/components/memory/single_channel.py)
 - We see `SingleChannel` memories such as:
 
 ```python
@@ -264,10 +264,23 @@ SingleChannelDDR4_2400()
 
 ## Adding a new channeled memory
 
-- Open `materials/02-Using-gem5/06-memory/lpddr2.py`
-- If we wanted to add LPDDR2 as a new memory in the standard library, we first make sure theres a DRAM interface for it in the [`dram_interfaces` directory](../../gem5/...)
-- then we need to make sure we import it by adding ```from .dram_interfaces.lpddr2 import LPDDR2_S4_1066_1x32``` to the top of single_channel.py
-     Then add the following to the body of single_channel.py
+- Open [`materials/02-Using-gem5/06-memory/lpddr2.py`](../../materials/02-Using-gem5/06-memory/lpddr2.py)
+- If we wanted to add LPDDR2 as a new memory in the standard library, we first make sure there's a DRAM interface for it in the [`dram_interfaces` directory](../../gem5/src/python/gem5/components/memory/dram_interfaces/lpddr2.py)
+- then we need to make sure we import it by adding
+```python
+from typing import Optional
+
+from gem5.components.memory.abstract_memory_system import AbstractMemorySystem
+from gem5.components.memory.dram_interfaces.lpddr2 import LPDDR2_S4_1066_1x32
+from gem5.components.memory.memory import ChanneledMemory
+```
+to the top of lpddr2.py
+
+---
+
+## Adding a new channeled memory
+
+Then add the following to the body of lpddr2.py
 
 ```python
 def SingleChannelLPDDR2_S4_1066_1x32(
@@ -281,8 +294,6 @@ then we import this new class to our script with
 ```python
 from lpddr2 import SingleChannelLPDDR2_S4_1066_1x32
 ```
-
-then recompile
 
 ---
 
@@ -305,7 +316,7 @@ then recompile
 ### Let's simulate:
 
 <!-- >    > gem5-x86 –outdir=results/simple materials/extra-topics/02-monitor-and-trace/simple.py -->
-Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
+Run ```gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
 
 ---
 
@@ -325,14 +336,15 @@ Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor
 ---
 ## CommMonitor
 
-- Remove the line ```system.mem_ctrl.port = system.membus.mem_side_ports```
+- Remove the line ```system.l1cache.mem_side = system.membus.cpu_side_ports```
 - Add the following block under the comment ``` # Insert CommMonitor here```
 ```python
 system.comm_monitor = CommMonitor()
-system.comm_monitor.cpu_side_port = system.membus.mem_side_ports
-system.comm_monitor.mem_side_port = system.mem_ctrl.port
+system.comm_monitor.cpu_side_port = system.l1cache.mem_side
+system.comm_monitor.mem_side_port = system.membus.cpu_side_ports
 ```
-Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
+Run ```gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor.py```
+
 
 ---
 
@@ -363,10 +375,10 @@ Run ```/gem5/build/NULL/gem5.opt  materials/02-Using-gem5/06-memory/comm_monitor
 ### Using address interleaving in gem5
 
 - We can use AddrRange constructors to define a selector function
-    - `src/base/addr_range.hh`
+    - [`src/base/addr_range.hh`](../../gem5/src/base/addr_range.hh)
 
 - Example: standard library's multi-channel memory
-    - `gem5/src/python/gem5/components/memory/multi_channel.py`
+    - [`gem5/src/python/gem5/components/memory/multi_channel.py`](../../gem5/src/python/gem5/components/memory/multi_channel.py)
 
 ---
 

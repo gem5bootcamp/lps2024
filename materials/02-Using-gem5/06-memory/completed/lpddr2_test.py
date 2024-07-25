@@ -2,13 +2,13 @@
 This script is used for running a traffic generator connected to a memory
 device to exhibit mermory devices in the standard library.
 
-It is currently set up to run with a Single Channel Simple memory device.
+It is currently set up to run with a SingleChannelDDR4_2400 memory device.
 However this can be replaced wioth any other memory device in the standard
 library.
 
 This script can be run with the following command:
-gem5/build/NULL/gem5.opt /workspaces/2024/materials/02-Using-gem5/\
-06-memory/std_lib_mem.py
+$ gem5/build/NULL/gem5.opt /workspaces/2024/materials/02-Using-gem5/\
+06-memory/completed/lpddr2_test.py
 """
 
 import argparse
@@ -16,7 +16,12 @@ import argparse
 from m5.objects import MemorySize
 
 from gem5.components.boards.test_board import TestBoard
+from gem5.components.memory.dram_interfaces.hbm import HBM_2000_4H_1x64
+from gem5.components.memory.hbm import HighBandwidthMemory
 from gem5.components.memory.simple import SingleChannelSimpleMemory
+from gem5.components.memory.single_channel import SingleChannelDDR4_2400
+from lpddr2 import SingleChannelLPDDR20_S4_1066_1x32
+
 
 from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
@@ -56,7 +61,8 @@ args.read_percentage = 50
 
 # Insert the desired memory here
 # Available memory can be found in src/python/gem5/components/memory/
-memory = SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")
+# memory = SingleChannelDDR4_2400()
+memory = SingleChannelLPDDR20_S4_1066_1x32()
 
 generator = generator_factory(
     args.generator_class, args.read_percentage, memory.get_size()

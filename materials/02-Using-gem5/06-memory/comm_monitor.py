@@ -45,9 +45,16 @@ addr_range = system.mem_ranges[0]
 
 system.tgen = PyTrafficGen() # Create a traffic generator
 
+system.l1cache = SimpleCache()
+system.l1cache.size = '32kB'
+
+# system.l2cache = SimpleCache()
+# system.l2cache.size = '256kB'
+
 system.membus = SystemXBar(width = 64, max_routing_table_size = 16777216)
 
-system.tgen.port = system.membus.cpu_side_ports
+system.tgen.port = system.l1cache.cpu_side
+# system.l2cache.mem_side = system.membus.cpu_side_ports
 
 # memory controller parameters
 system.mem_ctrl = MemCtrl()
@@ -58,15 +65,14 @@ system.mem_ctrl.dram = DDR4_2400_16x4()
 system.mem_ctrl.dram.range = AddrRange('512MB')
 system.mem_ctrl.dram.read_buffer_size = 32
 system.mem_ctrl.dram.write_buffer_size = 64
-system.mem_ctrl.dram.device_size = '512MB'
-
 
 ## Insert CommMonitor here
-
-system.mem_ctrl.port = system.membus.mem_side_ports # need to remove to add CommMonitor
+system.l1cache.mem_side = system.membus.cpu_side_ports #= system.l2cache.cpu_side # need to remove to add CommMonitor
 
 
 ##
+system.mem_ctrl.port = system.membus.mem_side_ports
+
 
 root = Root(full_system = False, system = system)
 # instantiate all of the objects we've created above
