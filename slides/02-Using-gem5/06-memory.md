@@ -295,8 +295,6 @@ then we import this new class to our script with
 from lpddr2 import SingleChannelLPDDR2_S4_1066_1x32
 ```
 
-then recompile
-
 ---
 
 ## CommMonitor
