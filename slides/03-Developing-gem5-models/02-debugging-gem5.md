@@ -51,7 +51,7 @@ In the following slide, you will see the expected output.
 [![asciicast](https://asciinema.org/a/QYXO2Amv573jfLXvz3xYteP7Y.svg)](https://asciinema.org/a/QYXO2Amv573jfLXvz3xYteP7Y)
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-70-percent -->
 
 ## DebugFlags: HelloExampleFlag
 
@@ -66,7 +66,8 @@ DebugFlag("HelloExampleFlag")
 Adding this line will create a new **auto-generated** header file (with the same name as the `DebugFlag`) that defines the `DebugFlag` in C++.
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
+
 ## DebugFlags: Using HelloExampleFlag in Code
 
 One of the functions in gem5 that allows for debug printing is `DPRINTF`, which will let you print a formatted string if a certain `DebugFlag` is enabled (more on how to enable `DebugFlags` later). `DPRINTF` is defined in `src/base/trace.hh`. Make sure to include it every time you want to use `DPRINTF`.
@@ -87,7 +88,7 @@ Now let's add a simple `DPRINTF` statement inside the constructor of `HelloSimOb
 ```
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: two-col -->
 
 ## DebugFlags: How Files Look Like
 
@@ -104,6 +105,8 @@ DebugFlag("HelloExampleFlag")
 ```
 
 Below is how `src/bootcamp/hello-sim-object/hello_sim_object.cc` looks like with changes
+
+### Continued
 
 ```cpp
 #include "bootcamp/hello-sim-object/hello_sim_object.hh"
@@ -138,6 +141,11 @@ Now, let's recompile gem5 with the command below. After compilation is done, you
 ```sh
 scons build/NULL/gem5.opt -j$(nproc)
 ```
+
+Continued on the next slide.
+
+---
+<!-- _class: code-50-percent -->
 
 And here is a snippet of the contents of `build/NULL/debug/HelloExampleFlag.hh`.
 
@@ -194,7 +202,7 @@ Below shows the expected output.
 [![asciicast](https://asciinema.org/a/J0TmNzOj29N74la4qOxdBLV6H.svg)](https://asciinema.org/a/J0TmNzOj29N74la4qOxdBLV6H)
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: code-70-percent -->
 
 ## Enabling DebugFlags: Using Configuration Script
 
@@ -283,8 +291,8 @@ You should use `panic`, and `panic_if` to catch developer mistakes. We will see 
 
 ### Other Debugging Facilities in gem5
 
-- Most debug flags requires that there is a `name()` function in in the current scope (called from a `SimObject` member function).
-- Only use the debug flags if you are using `gem5.opt` or `gem5.debug`
+- Most `DebugFlags` require that there is a `name()` function in in the current scope (called from a `SimObject` member function).
+- Only use the `DebugFlags` if you are using `gem5.opt` or `gem5.debug`.
 
 ```cpp
 DPRINTF(Flag, __VA_ARGS__)
@@ -296,7 +304,7 @@ DPRINTF(Flag, __VA_ARGS__)
 DPRINTFR(Flag, __VA_ARGS__)
 ```
 - Outputs debug statements without printing a name
-- Useful for using debug statements in object that are not SimObjects that do not have a name() function.
+- Useful for using debug statements in object that are not `SimObjects` that do not have a `name()` function.
 
 -----
 ### Other Debugging Facilities in gem5
@@ -305,7 +313,7 @@ DPRINTFR(Flag, __VA_ARGS__)
 ```cpp
 DPRINTFS(Flag, SimObject, __VA_ARGS__)
 ```
-- Useful for debugging from private subclass of a SimObject that has a pointer to its owner
+- Useful for debugging from private subclass of a `SimObject` that has a pointer to its owner.
 
 ```cpp
 DPRINTFN(__VA_ARGS__)
@@ -317,7 +325,7 @@ DPRINTFNR(__VA_ARGS__)
 DDUMP(Flag, data, count)
 ```
 - Prints binary `data` of length `count` bytes.
-- Formatted in user-readable hex
+- Formatted in user-readable hex.
 
 Learn more at: https://www.gem5.org/documentation/learning_gem5/part2/debugging/
 
