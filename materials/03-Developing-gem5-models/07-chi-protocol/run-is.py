@@ -4,8 +4,12 @@ This script runs the IS-A benchmark on a gem5 simulator with a the CHI
 hierarchy in `hierarchy.py`. This script can be used to run either Arm SE mode
 or X86 FS mode. (You can change the comment.)
 
-Running IS-A takes about 10 minutes
+Running IS-A in SE mode takes about 5 minutes
+Running IS-A in FS mode takes much longer, so FS mode with x86 is set to run
+just 10 million instructions (on each thread for at total of about 40M). This
+takes about 5 minutes as well.
 
+To run this script, you can use the following command:
 > gem5 run-is.py
 """
 
@@ -84,7 +88,7 @@ def on_work_begin():
     print("Work begin. Switching to detailed CPU")
     m5.stats.reset()
     processor.switch()
-    print("Running for 10,000,000 instructions")
+    print("Running for 10,000,000 instructions (on one thread)")
     simulator.schedule_max_insts(10_000_000)
     yield False
 

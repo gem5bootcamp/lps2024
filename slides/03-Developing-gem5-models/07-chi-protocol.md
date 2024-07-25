@@ -201,3 +201,18 @@ cache_hierarchy = PrivateL1SharedL2CacheHierarchy(
     l2_assoc=16,
 )
 ```
+
+This takes about 5 minutes to run 10M instructions.
+
+---
+
+## Grab some stats
+
+Finally, let's grab some stats that seem interesting (we'll use these more in the next section).
+
+```text
+board.cache_hierarchy.ruby_system.m_missLatencyHistSeqr::mean   185.561335
+board.processor.switch0.core.commitStats0.ipc     0.149605
+```
+
+We have an average miss latency of 185 cycles (lots of L2 misses!) and an IPC of 0.15.

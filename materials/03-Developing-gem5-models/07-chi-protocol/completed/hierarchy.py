@@ -65,6 +65,8 @@ class SharedL2(AbstractNode):
             # Can choose any replacement policy
             replacement_policy=RRIPRP(),
         )
+        # Note: As of gem5 v24.0.0.0 the replacement policy in CHI is broken.
+        # See 
 
         # Only used for L1 controllers
         self.send_evictions = False
