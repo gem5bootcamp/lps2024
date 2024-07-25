@@ -265,9 +265,22 @@ SingleChannelDDR4_2400()
 ## Adding a new channeled memory
 
 - Open `materials/02-Using-gem5/06-memory/lpddr2.py`
-- If we wanted to add LPDDR2 as a new memory in the standard library, we first make sure theres a DRAM interface for it in the [`dram_interfaces` directory](../../gem5/...)
-- then we need to make sure we import it by adding ```from .dram_interfaces.lpddr2 import LPDDR2_S4_1066_1x32``` to the top of single_channel.py
-     Then add the following to the body of single_channel.py
+- If we wanted to add LPDDR2 as a new memory in the standard library, we first make sure there's a DRAM interface for it in the [`dram_interfaces` directory](../../gem5/src/python/gem5/components/memory/dram_interfaces/lpddr2.py)
+- then we need to make sure we import it by adding
+```python
+from typing import Optional
+
+from gem5.components.memory.abstract_memory_system import AbstractMemorySystem
+from gem5.components.memory.dram_interfaces.lpddr2 import LPDDR2_S4_1066_1x32
+from gem5.components.memory.memory import ChanneledMemory
+```
+to the top of lpddr2.py
+
+---
+
+## Adding a new channeled memory
+
+Then add the following to the body of lpddr2.py
 
 ```python
 def SingleChannelLPDDR2_S4_1066_1x32(

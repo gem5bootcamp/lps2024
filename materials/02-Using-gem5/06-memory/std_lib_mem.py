@@ -16,8 +16,6 @@ import argparse
 from m5.objects import MemorySize
 
 from gem5.components.boards.test_board import TestBoard
-from gem5.components.memory.dram_interfaces.hbm import HBM_2000_4H_1x64
-from gem5.components.memory.hbm import HighBandwidthMemory
 from gem5.components.memory.simple import SingleChannelSimpleMemory
 
 from gem5.components.processors.linear_generator import LinearGenerator

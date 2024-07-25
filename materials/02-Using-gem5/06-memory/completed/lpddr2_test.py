@@ -8,7 +8,7 @@ library.
 
 This script can be run with the following command:
 $ gem5/build/NULL/gem5.opt /workspaces/2024/materials/02-Using-gem5/\
-06-memory/completed/std_lib_mem.py
+06-memory/completed/lpddr2_test.py
 """
 
 import argparse
@@ -20,7 +20,7 @@ from gem5.components.memory.dram_interfaces.hbm import HBM_2000_4H_1x64
 from gem5.components.memory.hbm import HighBandwidthMemory
 from gem5.components.memory.simple import SingleChannelSimpleMemory
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400
-from ..lpddr2 import SingleChannelLPDDR2_S4_1066_1x32
+from lpddr2 import SingleChannelLPDDR20_S4_1066_1x32
 
 
 from gem5.components.processors.linear_generator import LinearGenerator
@@ -61,7 +61,8 @@ args.read_percentage = 50
 
 # Insert the desired memory here
 # Available memory can be found in src/python/gem5/components/memory/
-memory = SingleChannelDDR4_2400()
+# memory = SingleChannelDDR4_2400()
+memory = SingleChannelLPDDR20_S4_1066_1x32()
 
 generator = generator_factory(
     args.generator_class, args.read_percentage, memory.get_size()
