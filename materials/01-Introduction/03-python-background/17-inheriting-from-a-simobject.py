@@ -15,7 +15,7 @@ a gem5 SimObject for use in simulation.
 from m5.objects import Cache
 from abc import ABC
 
-class L1Cache(Cache, ABC):
+class L1Cache(type(Cache), type(ABC)):
     """Simple L1 Cache with default values"""
 
     # Here we set/override the default values for the cache.

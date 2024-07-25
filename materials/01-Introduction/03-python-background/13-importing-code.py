@@ -11,7 +11,7 @@ This script demonstrates hwo code can be imported from other Python files.
 # statement. The format we are using `from <moduel_name> import <function_name>`
 # Note a module is a file containing Python code.
 
-from .toimport.math_funcs import add, subtract, multiply, divide
+from toimport.math_funcs import add, subtract, multiply, divide
 
 # In the above import statement, we are importing the functions `add`, `subtract`,
 # `multiply`, and `divide` from the module `math_funcs` in the package `toimport`.
