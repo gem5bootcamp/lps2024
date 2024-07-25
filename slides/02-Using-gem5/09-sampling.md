@@ -52,7 +52,7 @@ Representative methodologies: SMARTS, FSA
 ### No matter how great a tool or a technique is, misusing it can be DANGEROUS
 
 Before using any of the sampling techiques, we need to make sure the sampling techique works for our experiments.
-For example, SimPoint is designed to work with single-threaded workloads only, so **if our experiments require multi-threaded workloads, we should not use SimPoint with them.**
+For example, SimPoint is designed to work with single-threaded workloads only, so **if our experiments require multi-threaded workloads, we should NOT use SimPoint with them.**
 
 ![width:500](09-sampling/misuse_tool.png)
 
