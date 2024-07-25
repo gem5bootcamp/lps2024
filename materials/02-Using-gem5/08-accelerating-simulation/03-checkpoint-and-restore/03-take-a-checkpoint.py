@@ -49,15 +49,15 @@ requires(
     kvm_required=True,
 )
 
-# Let's setup a NoCache cache hierarchy
+# Let's set up a NoCache cache hierarchy
 
 #
 
-# Let's setup a SingleChannelDDR4_2400 memory with 3GB size
+# Let's set up a SingleChannelDDR4_2400 memory with 3GB size
 
 #
 
-# Here we setup a simple processor with the KVM CPU
+# Here we set up a simple processor with the KVM CPU
 
 #
 
@@ -73,7 +73,7 @@ board = X86Board(
 
 board.set_workload(obtain_resource("npb-ep-a"))
 
-# Setup workbegin handler to reset stats and switch to TIMING CPU
+# Set up workbegin handler to reset stats and switch to TIMING CPU
 
 #
 
