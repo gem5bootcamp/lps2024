@@ -202,7 +202,25 @@ cache_hierarchy = PrivateL1SharedL2CacheHierarchy(
 )
 ```
 
-This takes about 5 minutes to run 10M instructions.
+---
+
+## Run the script
+
+```sh
+gem5 run-is.py
+```
+
+You should see the following output pretty quickly
+
+```text
+...
+Work begin. Switching to detailed CPU
+switching cpus
+...
+```
+
+This takes about 5 minutes to complete, but you can check the output while it's running with
+`tail -f m5out/board.pc.com_1.terminal`.
 
 ---
 
@@ -216,3 +234,13 @@ board.processor.switch0.core.commitStats0.ipc     0.149605
 ```
 
 We have an average miss latency of 185 cycles (lots of L2 misses!) and an IPC of 0.15.
+
+### Note: This example has not been debugged and may have FS issues
+
+---
+
+## Summary
+
+- We've created a simple two-level cache hierarchy using the CHI protocol
+- We've run a simple traffic generator and a full system simulation
+- We've seen how to set up the CHI protocol in gem5 with the standard library
