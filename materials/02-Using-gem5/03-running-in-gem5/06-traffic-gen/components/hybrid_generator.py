@@ -171,7 +171,6 @@ class HybridGenerator(AbstractGenerator):
         # (5)
         return core_list
 
-
     @overrides(AbstractGenerator)
     def start_traffic(self) -> None:
         for core in self.cores:

@@ -26,40 +26,42 @@
 
 import argparse
 
-from components.hybrid_generator import HybridGenerator
-
 import m5
 from m5.objects import Root
 
+from components.cache_hierarchy import CacheHierarchy
+from components.hybrid_generator import HybridGenerator
+
 from gem5.components.boards.test_board import TestBoard
-from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
-            PrivateL1CacheHierarchy,
-        )
+from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarchy import (
+    PrivateL1SharedL2CacheHierarchy,
+)
 from gem5.components.memory import SingleChannelDDR3_1600
 from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
 
 # Run with the following command
-    # gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py [generator_class]
+    # gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py [generator_class] [num_cores]
 
-def getGenerator(generator_class):
+def getGenerator(generator_class, num_cores):
     if generator_class.lower() == "linear":
         return LinearGenerator(
-            duration="250us",
             rate="40GB/s",
-            num_cores=1,
+            min_addr= 0,
+            max_addr= 131072,
+            num_cores=num_cores, #1
         )
     elif generator_class.lower() == "random":
         return RandomGenerator(
-            duration="250us",
             rate="40GB/s",
-            num_cores=1,
+            min_addr= 0,
+            max_addr= 131072,
+            num_cores=num_cores, #1
         )
     elif generator_class.lower() == "hybrid":
         return HybridGenerator(
-            duration="250us",
             rate="40GB/s",
-            num_cores=6,
+            num_cores=num_cores, #6
         )
 
 def parseArgs():
@@ -76,17 +78,22 @@ def parseArgs():
             "hybrid",
         ],
     )
+    parser.add_argument(
+        "num_cores",
+        type=int,
+        help="Number of cores to run generator with",
+    )
     args = parser.parse_args()
     return args
 
 
 args = parseArgs()
 
-cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
+cache_hierarchy = CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 
-generator = getGenerator(args.generator_class)
+generator = getGenerator(args.generator_class, args.num_cores)
 
 motherboard = TestBoard(
     clk_freq="3GHz",

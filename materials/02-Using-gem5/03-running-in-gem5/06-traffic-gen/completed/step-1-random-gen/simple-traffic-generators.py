@@ -24,76 +24,30 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import argparse
 
 import m5
 from m5.objects import Root
 
 from components.cache_hierarchy import CacheHierarchy
-from components.hybrid_generator import HybridGenerator
 
 from gem5.components.boards.test_board import TestBoard
-from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarchy import (
-    PrivateL1SharedL2CacheHierarchy,
-)
+from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
+            PrivateL1CacheHierarchy,
+        )
 from gem5.components.memory import SingleChannelDDR3_1600
 from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
 
 # Run with the following command
-    # gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py [generator_class] [num_cores]
-
-def getGenerator(generator_class, num_cores):
-    if generator_class.lower() == "linear":
-        return LinearGenerator(
-            rate="40GB/s",
-            min_addr= 0,
-            max_addr= 131072,
-            num_cores=num_cores, #1
-        )
-    elif generator_class.lower() == "random":
-        return RandomGenerator(
-            rate="40GB/s",
-            min_addr= 0,
-            max_addr= 131072,
-            num_cores=num_cores, #1
-        )
-    elif generator_class.lower() == "hybrid":
-        return HybridGenerator(
-            rate="40GB/s",
-            num_cores=num_cores, #6
-        )
-
-def parseArgs():
-    parser = argparse.ArgumentParser(
-        description="A program to test different types of traffic generators."
-        )
-    parser.add_argument(
-        "generator_class",
-        type=str.lower,
-        help="Which generator to run with",
-        choices=[
-            "linear",
-            "random",
-            "hybrid",
-        ],
-    )
-    parser.add_argument(
-        "num_cores",
-        type=int,
-        help="Number of cores to run generator with",
-    )
-    args = parser.parse_args()
-    return args
-
-
-args = parseArgs()
+    # gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py
 
 cache_hierarchy = CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 
-generator = getGenerator(args.generator_class, args.num_cores)
+generator = LinearGenerator(
+    num_cores=1
+)
 
 motherboard = TestBoard(
     clk_freq="3GHz",
