@@ -34,7 +34,15 @@ Jason's event driven slides.
 
 ## Event-Driven Simulation: Abstract Thoughts
 
-`Event-Driven` Simulation, is a method for simulation where the simulator reacts to the occurrence of `events`. Each type of `event` will have its own specific reaction. The reaction to an `event` is defined by a call to a specific function that is referred to as the `callback` function. The `callback` function might itself cause new `events` to occur. The new `events` could of the same type as the `event` that caused the call to the `callback` function or of different types.
+`Event-Driven Simulation` is a method for simulation where the simulator reacts to the occurrence of `events`. Each type of `event` will have its own specific reaction.
+
+The reaction to an `event` is defined by a call to a specific function that is referred to as the `callback` function.
+
+The `callback` function might itself cause new `events` to occur. The new `events` could of the same type as the `event` that caused the call to the `callback` function or of different types.
+
+---
+
+## Event-Driven Simulation: Abstract Thoughts (cont.)
 
 Let's look at an example to understand it better. Let's say that at time $t_0$ event $A$ occurs. The simulator will react by calling $A.callback$. Let's say below is the definition for $A.callback$.
 
@@ -47,33 +55,41 @@ def A::callback():
     schedule(B, current_time + delay)
 ```
 
-This way every time event $A$ occurs, event $B$ occurs 1000 units of time after which the simulator will react to by calling $B.callback$
+This way every time event $A$ occurs, event $B$ will occur 1000 units of time later. Then, the simulator will react by calling $B.callback$.
 
 ---
 
-## Event-Driven Simulation: Practical View
+## Event-Driven Simulation: Practical View (1/3)
 
 An event-driven simulator needs to facilitate the following:
 
-- Notion of time: The simulator needs to track the global time of the simulation and allow access to current time. It also needs to move the time forward.
-- Interface to `events`: The simulator needs to define the base interface for `events` in the simulator so that they can be define and raise (i.e. make occur/schedule) new `events`.
-  - The base interface of `event` should allow for tieing `events` to `callback` functions.
-
-Let's look at how this will look like if you were to write your hardware simulator.
-
-1- In the beginning ($t = 0$), the simulator will schedule an event that makes the CPU cores fetch an instruction, let's call that type of event `CPU::fetch`.
-2- When simulator reaches ($t = 0$), the simulator will react to all the `events` that are scheduled at that time. If we have 2 cores, this means that simulator needs to call `cpu_0::fetch::callback` and `cpu_1::fetch::callback`.
-
-Continued on next slide.
+- Notion of time: The simulator needs to track the global time of the simulation and allow access to the current time. It also needs to move the time forward.
+- Interface to `events`: The simulator needs to define the base interface for `events` in the simulator so that they can define and raise (i.e. make occur/schedule) new `events`. <!-- "they" is ambiguous here -->
+  - The base interface of `event` should allow for `events` to be tied to `callback` functions.
 
 ---
 
-## Event-Driven Simulation: Practical View cont.
+## Event-Driven Simulation: Practical View (2/3)
 
-3- `CPU::fetch::callback` will have to then find out what the next program counter is and send a request to the instruction cache to fetch the instruction. Therefore, it will schedule an event like `CPU::accessICache` in the future. To impose the latency of the fetch we will schedule `CPU::accessICache` in `current_time + fetch_delay`, e.g. `schedule(CPU::accessICache, currentTime() + fetch_delay)`. This will raise two `CPU::accessICache` events (e.g. `cpu_0::accessICache` and `cpu_1::accessICache`) `fetch_delay` into the future.
+Let's see how this will look if you were to write your own hardware simulator.
+
+1- In the beginning ($t = 0$), the simulator will schedule an event that makes the CPU cores fetch an instruction. Let's call that type of event `CPU::fetch`.
+
+2- When simulator reaches ($t = 0$), the simulator will react to all the `events` that are scheduled at that time. If we have 2 cores, this means that simulator needs to call `cpu_0::fetch::callback` and `cpu_1::fetch::callback`.
+
+3- `CPU::fetch::callback` will have to then find out what the next program counter is and send a request to the instruction cache to fetch the instruction. Therefore, it will schedule an event like `CPU::accessICache` in the future.
+
+To impose the latency of the fetch we will schedule `CPU::accessICache` in `current_time + fetch_delay`, i.e. `schedule(CPU::accessICache, currentTime() + fetch_delay)`. This will raise two `CPU::accessICache` events (e.g. `cpu_0::accessICache` and `cpu_1::accessICache`) after `fetch_delay` units of time in the future.
+
+---
+
+## Event-Driven Simulation: Practical View (3/3)
+
 4- When the simulator has finished reacting to all events that occured at $t = 0$, it will move time to the closest time that an event is scheduled to occur ($t = 0 + fetch\_delay$ in this case).
-5- At time $t= fetch\_delay$ the simulator will call `cpu_0::accessICache::callback` and `cpu_1::accessICache::callback` to react to both events. These events will probably access the instruction caches and then might schedule event to handle misses in the cache like `Cache::handleMiss`.
-6- This process continue until the program we're simulating is finished.
+
+5- At time $t= fetch\_delay$ the simulator will call `cpu_0::accessICache::callback` and `cpu_1::accessICache::callback` to react to both events. These events will probably access the instruction caches and then might schedule events to handle misses in the cache like `Cache::handleMiss`.
+
+6- This process will continue until the program we're simulating is finished.
 
 ---
 <!-- _class: code-80-percent -->
@@ -105,7 +121,7 @@ Let's look at [src/sim/eventq.hh](/workspaces/2024/gem5/src/sim/eventq.hh). In t
 
 ## A Hypothetical Example for Event
 
-Let's now see how class `Event` would be used in a `SimObject` that models a CPU. **CAUTION**: This is a hypothetical example and not at all what is already implemented in gem5.
+Let's now see how class `Event` would be used in a `SimObject` that models a CPU. **CAUTION**: This is a hypothetical example and is not at all what is already implemented in gem5.
 
 ```cpp
 class CPU: public ClockedObject
@@ -176,7 +192,7 @@ def simulate(*args, **kwargs):
         need_startup = False
 ```
 
-By calling `m5.simulate`, gem5 will call function `startup` from every `SimObject` in the system. Let's take a look at `startup` in header file for `SimObject` in [src/sim/sim_object.hh](/gem5/src/sim/sim_object.hh).
+By calling `m5.simulate`, gem5 will call the function `startup` from every `SimObject` in the system. Let's take a look at `startup` in header file for `SimObject` in [src/sim/sim_object.hh](/gem5/src/sim/sim_object.hh).
 
 ```cpp
     /**
@@ -193,7 +209,9 @@ By calling `m5.simulate`, gem5 will call function `startup` from every `SimObjec
 ---
 <!-- _class: code-70-percent -->
 
-## nextHelloEvent
+## Exercise: nextHelloEvent
+
+For the following exercise, the filepaths beginning with `src` are under the directory [materials/03-Developing-gem5-models/03-event-driven-sim/step-1](materials/03-Developing-gem5-models/03-event-driven-sim/step-1).
 
 Now, let's add an `event` to our `HelloSimObject` to print `Hello ...` periodically for a certain number of times (i.e. `num_hellos`). Let's add it to the header file for `HelloSimObject` in [src/bootcamp/hello-sim-object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh).
 
@@ -203,7 +221,16 @@ First, we need to include `sim/eventq.hh` so we can add a member of type `EventF
 #include "sim/eventq.hh
 ```
 
-Now, we need declare a member of type `EventFunctionWrapper` which we will call `nextHelloEvent`. To do this, add the following lines to your declaration of the `HelloSimObject` class. We also need to define a `std::function<void>()` (this mean a callable with return type `void` and no input arguments) as the `callback` function for `nextHelloEvent`.
+---
+
+## Exercise: nextHelloEvent
+
+Next, we need to declare a member of type `EventFunctionWrapper` which we will call `nextHelloEvent`.
+
+We also need to define a `std::function<void>()` as the `callback` function for `nextHelloEvent`.
+- `std::function<void>()` is a callable with return type `void` and no input arguments.
+
+To do this, add the following lines to your declaration of the `HelloSimObject` class.
 
 ```cpp
   private:
@@ -216,7 +243,7 @@ Now, we need declare a member of type `EventFunctionWrapper` which we will call 
 
 ## nextHelloEvent: Header File
 
-This is how your [hello_sim_object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh) should look like after all the changes.
+This is how your [hello_sim_object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh) should look after all the changes.
 
 ```cpp
 #ifndef __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
@@ -255,7 +282,7 @@ Now, let's change our definition of the constructor of `HelloSimObject` to initi
     nextHelloEvent([this](){ processNextHelloEvent(); }, name() + "nextHelloEvent")
 ```
 
-This is how `HelloSimObject::HelloSimObject` should look like after the changes.
+This is how `HelloSimObject::HelloSimObject` should look after the changes.
 
 ```cpp
 HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
@@ -281,7 +308,7 @@ Now, let's define `processNextHelloEvent` to print `Hello ...` `num_hellos` time
     int remainingHellosToPrintByEvent;
 ```
 
-This is how the declaration for `HelloSimObject` should look like after the changes.
+This is how the declaration for `HelloSimObject` should look after the changes.
 
 ```cpp
 class HelloSimObject: public SimObject
@@ -308,7 +335,7 @@ Now, let's update the constructor of `HelloSimObject` to initialize `remainingHe
     remainingHellosToPrintByEvent(params.num_hellos)
 ```
 
-Let's also make sure user passes a positive number as `num_hellos` by adding a `fatal_if` statement like below to the beginning of the body of `HelloSimObject::HelloSimObject`.
+Let's also make sure user passes a positive number for `num_hellos` by adding a `fatal_if` statement like below to the beginning of the body of `HelloSimObject::HelloSimObject`.
 
 ```cpp
     fatal_if(params.num_hellos <= 0, "num_hellos should be positive!");
@@ -318,7 +345,7 @@ Let's also make sure user passes a positive number as `num_hellos` by adding a `
 
 ## nextHelloEvent Callback: processNextHelloEvent: Almost There
 
-This is how `HelloSimObject::HelloSimObject` should look like after the changes.
+This is how `HelloSimObject::HelloSimObject` should look after the changes.
 
 ```cpp
 HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
@@ -339,7 +366,7 @@ HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
 
 ## nextHelloEvent Callback: processNextHelloEvent: Finally!
 
-Now, we are ready to define `HelloSimObject::processNextHelloEvent`. Let's add the following code to `src/bootcamp/hello-sim-object/hello_sim_object.cc`.
+Now we are ready to define `HelloSimObject::processNextHelloEvent`. Let's add the following code to `src/bootcamp/hello-sim-object/hello_sim_object.cc`.
 
 ```cpp
 void
@@ -353,25 +380,25 @@ HelloSimObject::processNextHelloEvent()
 }
 ```
 
-Deeper look into the code, we do the following every time `nextHelloEvent` occurs (i.e. `processNextHelloEvent` is called):
+Looking at the code, we do the following every time `nextHelloEvent` occurs (i.e. `processNextHelloEvent` is called):
 
 - Print `Hello ...`.
 - Decrement `remaingingHellosToPrintByEvent`.
-- Check if we have remaining prints to do, if so, we will schedule `nextHelloEvent` 500 into the future. **NOTE**: `curTick` is a function that returns the current simulator time in `Ticks`.
+- Check if we have remaining prints to do. If so, we will schedule `nextHelloEvent` 500 ticks into the future. **NOTE**: `curTick` is a function that returns the current simulator time in `Ticks`.
 
 ---
 <!-- _class: code-50-percent -->
 
 ## HelloSimObject::startup: Header File
 
-Let's add a declaration for `startup` in `HelloSimObject`. We will use `startup` to schedule the first occurrence of `nextHelloEvent`. Since `startup` is a `public` and `virtual` function that `HelloSimObject` inherits from `SimObject` we will add the following line to the `public` scope of `HelloSimObject`. We will add the `override` directive to tell the compiler that we intend to override the original definition from `SimObject`
+Let's add a declaration for `startup` in `HelloSimObject`. We will use `startup` to schedule the first occurrence of `nextHelloEvent`. Since `startup` is a `public` and `virtual` function that `HelloSimObject` inherits from `SimObject`, we will add the following line to the `public` scope of `HelloSimObject`. We will add the `override` directive to tell the compiler that we intend to override the original definition from `SimObject`.
 
 ```cpp
   public:
     virtual void startup() override;
 ```
 
-This is how the declaration for `HelloSimObject` should look like after the changes.
+This is how the declaration for `HelloSimObject` should look after the changes.
 
 ```cpp
 class HelloSimObject: public SimObject
@@ -392,7 +419,7 @@ class HelloSimObject: public SimObject
 
 ## HelloSimObject::startup: Source File
 
-Now let's just define `HelloSimObject::startup` to schedule `nextHelloEvent`. Since `startup` is called in the beginning of simulation (i.e. $t = 0\ Ticks$) and is **only called once**, let's put `panic_if` statements to assert them. Moreover, `nextHelloEvent` should not be scheduled at the time so let's assert that too.
+Now, let's define `HelloSimObject::startup` to schedule `nextHelloEvent`. Since `startup` is called in the beginning of simulation (i.e. $t = 0\ Ticks$) and is **only called once**, let's put `panic_if` statements to assert them. Moreover, `nextHelloEvent` should not be scheduled at the time so let's assert that too.
 
 Add the following code to `src/bootcamp/hello-sim-object/hello_sim_object.cc` to define `HelloSimObject::startup`.
 
@@ -562,7 +589,7 @@ Below is a recording of what you should expect to see.
 
 ## GoodByeSimObject
 
-In this step, we will learn about adding a `SimObject` as a Parameter. To do this, let's first build our second `SimObject` called `GoodByeSimObject`. As you remember, we need to declare `GoodByeSimObject` in Python. Let's open `src/bootcamp/hello-sim-object/HelloSimObject.py` and add the following code to it.
+In this step, we will learn about adding a `SimObject` as a parameter. To do this, let's first build our second `SimObject` called `GoodByeSimObject`. As you remember, we need to declare `GoodByeSimObject` in Python. Let's open `src/bootcamp/hello-sim-object/HelloSimObject.py` and add the following code to it.
 
 ```python
 class GoodByeSimObject(SimObject):
@@ -571,11 +598,15 @@ class GoodByeSimObject(SimObject):
     cxx_class = "gem5::GoodByeSimObject"
 ```
 
-Also let's register `GoodByeSimObject` by editing `SConscript`. Open `src/bootcamp/hello-sim-object/SConscript` and add `GoodByeSimObject` to the list of `SimObjects` in `HelloSimObject.py`. This is how the line show look like after the changes.
+Also, let's register `GoodByeSimObject` by editing `SConscript`. Open `src/bootcamp/hello-sim-object/SConscript` and add `GoodByeSimObject` to the list of `SimObjects` in `HelloSimObject.py`. This is how the line show look like after the changes.
 
 ```python
 SimObject("HelloSimObject.py", sim_objects=["HelloSimObject", "GoodByeSimObject"])
 ```
+
+---
+
+## GoodByeExampleFlag
 
 Let's add `goodbye_sim_object.cc` (which we will create later) as a source file. Do it by adding the following line to the `src/bootcamp/hello-sim-object/SConscript`.
 
@@ -583,15 +614,16 @@ Let's add `goodbye_sim_object.cc` (which we will create later) as a source file.
 Source("goodbye_sim_object.cc")
 ```
 
----
-
-## GoodByeExampleFlag
 
 Let's also add `GoodByeExampleFlag` so that we can use to print debug in `GoodByeSimObject`. Do it by adding the following line to `src/bootcamp/hello-sim-object/SConscript`.
 
 ```python
 DebugFlag("GoodByeExampleFlag")
 ```
+
+---
+
+## GoodByeExampleFlag (cont.)
 
 ### CompoundFlag
 
@@ -605,7 +637,7 @@ CompoundFlag("GreetFlag", ["HelloExampleFlag", "GoodByeExampleFlag"])
 
 ## Current Version: HelloSimObject.py
 
-This is how [HelloSimObject.py]() should look like after the changes.
+This is how [HelloSimObject.py](/materials/03-Developing-gem5-models/03-event-driven-sim/step-2/src/bootcamp/hello-sim-object/HelloSimObject.py) should look after the changes.
 
 ```python
 from m5.objects.SimObject import SimObject
@@ -647,9 +679,9 @@ CompoundFlag("GreetFlag", ["HelloExampleFlag", "GoodByeExampleFlag"])
 <!-- _class: code-25-percent -->
 ## GoodByeSimObject: Specification
 
-In our design, let's have `GoodByeSimObject` debug print a `GoodBye ...` statement. It will do it when `sayGoodBye` function is called which will schedule an `event` to say GoodBye.
+In our design, let's have `GoodByeSimObject` debug print a `GoodBye ...` statement. It will do it when the `sayGoodBye` function is called, which will schedule an `event` to say GoodBye.
 
-In the next slides you can find the completed version for `src/bootcamp/hello-sim-object/goodbye_sim_object.hh` and `bootcamp/hello-sim-object/goodbye_sim_object.cc`.
+In the next slides you can find the completed version for `src/bootcamp/hello-sim-object/goodbye_sim_object.hh` and `src/bootcamp/hello-sim-object/goodbye_sim_object.cc`.
 
 **IMPORTANT**: I'm not going to go over the details of the files, look through this file thoroughly and make sure you understand what every line is supposed to do.
 
