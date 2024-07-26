@@ -171,6 +171,13 @@ author: Jason Lowe-Power
 - Provide a reference for the future​
 - Give you material to take back and teach your colleagues
 
+### Other likely outcomes
+
+- You will be overwhelmed by the amount of information and how large gem5 is
+  - That's OK! You can take these materials with you and refer back to them
+- You will not understand everything
+  - That's OK! You can ask questions as we go
+
 ---
 
 ## How this is going to work
