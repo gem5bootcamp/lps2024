@@ -525,71 +525,35 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 
 ## Traffic Generator
 
-- A traffic generator module generates stimuli for the memory system.​
+- A **traffic generator** simulates traffic through the memory system in order to test performance for memory
+   - ex: uses reads/writes to/from memory
+- Used for creating test cases for caches, interconnects, and memory controllers, etc
 
-- Used for creating test cases for caches, interconnects, and memory controllers, etc.​
-
-![Traffic generator center](03-running-in-gem5-imgs/slide-29.drawio.png)
-
----
-
-## gem5’s Traffic Gen: PyTrafficGen​
-
-- PyTrafficGen is a traffic generator module (SimObject) located in: `gem5/src/cpu/testers/traffic_gen`
-
-- Used as a black box replacement for any generator of read/write requestor.​
-
-![PyTrafficGen center](03-running-in-gem5-imgs/slide-30.drawio.png)
-
----
-
-## PyTrafficGen: Params​
-
-- PyTrafficGen’s parameters allow you to control the characteristics of the generated traffic.​
-
-| Parameter | Definition |
-| :--------- | ---------- |
-| pattern | The pattern of generated addresses: linear/ random ​|
-| duration | The duration of generating requests in ticks (quantum of time in gem5).​ |
-| start address​ | The lower bound for addresses that the synthetic traffic will access.​ |
-| end address​ | The upper bound for addresses that the synthetic traffic will access.​ |
-| minimum period​ | The minimum timing difference between two consecutive requests in ticks. ​|
-| maximum period​ | The maximum timing difference between two consecutive requests in ticks. ​|
-| request size | The number of bytes that are read/written by each request. ​|
-| read percentage​ | The percentage of reads among all the requests, the rest of requests are write requests.​ |
+![Traffic generator center](03-running-in-gem5-imgs/t_gen_diagram.svg)
 
 
 ---
-
-What is a traffic generator
-High level
-
-gem5 has these!!
-
-Explain params
-
-linear, random, striated are all pytrafficgen
-  Good for user experience (why we have them)
-These are kinda parameters
-
-(3 slides)
-
-Params are knobs to configure traffic
-Go into params
-
-THEN open one
-
----
-
 ## gem5: Traffic Generator Classes
 
-gem5's traffic generators are a set of classes that inherit from `AbstractGenerator`. They don't actually simulate any memory accesses. Instead, they create traffic generator cores. These traffic generator cores use a `SimObject` called `PyTrafficGen` to create synthetic traffic.
+gem5's traffic generators are a set of classes that inherit from `AbstractGenerator`
+- They don't actually simulate any memory accesses
+- Instead, they create **traffic generator cores**.
+- These traffic generator cores use a `SimObject` called `PyTrafficGen` to create **synthetic traffic**.
 
-In order to keep track of these cores, a traffic generator will give you a list of the cores that it has created. We can then use this list to replace the processor cores on whatever board you initialize.
-
-The function in the class that does all of this is usually called `_create_cores`
+`create_cores` is called in each traffic generator
+- Provides a list of the cores it has created
+- List is used to replace the processor cores on whatever board is initialized
 
 ---
+## Our Focus
+- Generators in gem5 found in: `src/python/gem5/components/processors`
+- We will be focusing on `LinearGenerator` and `RandomGenerator` generators (and a surprise new one later!).
+    - They are more similar to each other than other generators when it comes to **parameters** and **outputs**
+
+
+![Different Generators](03-running-in-gem5-imgs/generator_inheritance.svg)
+
+----
 <!-- _class: two-col -->
 
 ## Traffic Generator Classes have Configurable Parameters
@@ -646,8 +610,7 @@ Open the following file.
 
 Steps:
 1. Run with a Linear Traffic Generator.
-2. Run with a Random Traffic Generator.
-3. Run with a Hybrid Traffic Generator.
+2. Run with a Hybrid Traffic Generator.
 
 ---
 
@@ -657,18 +620,25 @@ First, we will use a Linear Traffic Generator to simulate linear (stream) traffi
 
 ### An Example of Linear Traffic
 
-If we wanted to access addresses 0x00 through 0x04, a linear access would mean accessing memory in the following order: 0x00, 0x01, 0x02, 0x03, 0x04.
+If we wanted to access addresses 0x00 through 0x04, a linear access would mean accessing memory in the following order:
+- 0x00
+- 0x01
+- 0x02
+- 0x03
+- 0x04
 
 ---
 <!-- _class: two-col -->
 
 ## 06-traffic-gen: Linear Traffic Generator: Looking at the Code
 
+
 Go to this section of the code on the right.
 
 Right now, we have set up a board with a Private L1 Cache Hierarchy, and a Single Channel memory system.
 
-In order to add a traffic generator, add the following lines of code under `memory = SingleChannelDDR3_1600()`, .
+Add a traffic generator below
+`memory = SingleChannelDDR3_1600()`
 
 ```python
 generator = LinearGenerator(
