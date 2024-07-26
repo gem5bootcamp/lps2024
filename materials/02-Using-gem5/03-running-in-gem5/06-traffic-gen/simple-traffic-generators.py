@@ -29,7 +29,6 @@ import m5
 from m5.objects import Root
 
 from components.cache_hierarchy import CacheHierarchy
-from components.hybrid_generator import HybridGenerator
 
 from gem5.components.boards.test_board import TestBoard
 from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
@@ -46,9 +45,7 @@ cache_hierarchy = CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 
-generator = HybridGenerator(
-    num_cores=6
-)
+# Add generator here
 
 motherboard = TestBoard(
     clk_freq="3GHz",

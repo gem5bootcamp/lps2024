@@ -113,10 +113,7 @@ class HybridGenerator(AbstractGenerator):
         Initializing variables
         """
         # (1)
-        core_list = []
 
-        num_linear_cores = biggest_power_of_two_smaller_than(num_cores)
-        num_random_cores = num_cores - num_linear_cores
 
         """
         partition_range(): Partitions the range of min_addr to max_addr into
@@ -127,7 +124,7 @@ class HybridGenerator(AbstractGenerator):
         address for that section
         """
         # (2)
-        ranges = partition_range(min_addr, max_addr, num_linear_cores)
+
 
         """
         The first n cores (where n is the largest power of 2 that is
@@ -137,16 +134,7 @@ class HybridGenerator(AbstractGenerator):
         Linear Generator Cores cover the range of min_addr to max_addr
         """
         # (3)
-        for i in range(num_linear_cores):
-            core_list.append(LinearGeneratorCore(
-                duration=duration,
-                rate=rate,
-                block_size=block_size,
-                min_addr=ranges[i][0],
-                max_addr=ranges[i][1],
-                rd_perc=rd_perc,
-                data_limit=data_limit,)
-            )
+
 
         """
         The remaining cores will be Random Generator Cores
@@ -154,22 +142,13 @@ class HybridGenerator(AbstractGenerator):
         Each Random Generator Core covers the range of min_addr to max_addr
         """
         # (4)
-        for i in range(num_random_cores):
-            core_list.append(RandomGeneratorCore(
-                duration=duration,
-                rate=rate,
-                block_size=block_size,
-                min_addr=min_addr,
-                max_addr=max_addr,
-                rd_perc=rd_perc,
-                data_limit=data_limit,)
-            )
+
 
         """
         Return our list of cores
         """
         # (5)
-        return core_list
+
 
     @overrides(AbstractGenerator)
     def start_traffic(self) -> None:
