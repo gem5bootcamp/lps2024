@@ -49,7 +49,6 @@ from gem5.components.processors.random_generator import RandomGenerator
 def getGenerator(generator_class, num_cores):
     if generator_class.lower() == "linear":
         return LinearGenerator(
-            duration="1ms", #250us
             rate="40GB/s",
             min_addr= 0,
             max_addr= 131072,
@@ -57,15 +56,13 @@ def getGenerator(generator_class, num_cores):
         )
     elif generator_class.lower() == "random":
         return RandomGenerator(
-            # duration="250us",
             rate="40GB/s",
             min_addr= 0,
-            max_addr= 2097152,
+            max_addr= 131072,
             num_cores=num_cores, #1
         )
     elif generator_class.lower() == "hybrid":
         return HybridGenerator(
-            # duration="250us",
             rate="40GB/s",
             num_cores=num_cores, #6
         )
@@ -94,13 +91,6 @@ def parseArgs():
 
 
 args = parseArgs()
-
-# cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
-# cache_hierarchy = PrivateL1SharedL2CacheHierarchy(
-#     l1d_size="32KiB",
-#     l1i_size="32KiB",
-#     l2_size="256KiB",
-# )
 
 cache_hierarchy = CacheHierarchy()
 
