@@ -9,7 +9,7 @@
         "is_zipped": false,
         "md5sum": "2a0689d8a0168b3d5613b01dac22b9ec",
         "source": "",
-        "url": "file://./pattern",
+        "url": "file:///workspaces/2024/materials/02-Using-gem5/02-gem5-resources/pattern",
         "code_examples": [],
         "license": "",
         "author": [

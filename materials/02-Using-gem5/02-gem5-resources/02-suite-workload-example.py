@@ -27,3 +27,27 @@ from gem5.isas import ISA
 from gem5.resources.resource import obtain_resource
 
 from gem5.simulate.simulator import Simulator
+
+memory = SingleChannelDDR4_2400(size="2GB")
+
+caches = PrivateL1SharedL2CacheHierarchy(
+    l1d_size="32KiB",
+    l1d_assoc=8,
+    l1i_size="32KiB",
+    l1i_assoc=8,
+    l2_size="256KiB",
+    l2_assoc=16,
+)
+
+processor = SimpleProcessor(
+    cpu_type=CPUTypes.TIMING, num_cores=1, isa=ISA.X86
+)
+
+board = SimpleBoard(
+    processor=processor,
+    memory=memory,
+    cache_hierarchy=caches,
+    clk_freq="3GHz",
+)
+
+# Print all the available workloads in the suite

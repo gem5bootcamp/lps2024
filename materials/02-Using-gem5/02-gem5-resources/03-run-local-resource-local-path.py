@@ -30,7 +30,7 @@ board = SimpleBoard(
     cache_hierarchy=cache_hierarchy,
 )
 
-binary= BinaryResource("./pattern")
+# Add the binary to the board using `BinaryResource`
 
 board.set_se_binary_workload(binary)
 
