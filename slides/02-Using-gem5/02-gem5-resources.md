@@ -42,7 +42,7 @@ title: gem5 Resources
 - When an existing resource is updated the `id` remains the same but the `resource_version` is updated.
 - Each resource also has a field called `gem5_versions` which shows which releases of gem5 the resource is compatible with.
 
-![resource version fit bg right](./02-gem5-resouces/resource_website_version.png)
+![resource version fit bg right](./02-gem5-resouces-imgs/resource_website_version.png)
 
 ---
 
@@ -50,30 +50,31 @@ title: gem5 Resources
 
 To use the resources in gem5, we can use the `obtain_resource` function.
 
-Lets do an example to use the `x86-hello64-static` binary in an example.
+Let's do an example to use the `x86-hello64-static` binary in an example.
 
 Go to the [materials/02-Using-gem5/02-gem5-resources/01-hello-example.py](../../materials/02-Using-gem5/02-gem5-resources/01-hello-example.py)
 
-This file builds a basic board and we use the `x86-hello64-static` resource and run the simulation.
+This file builds a basic board and we will use the `x86-hello64-static` resource and run the simulation.
 
 ---
 
 ## Run the hello binary
 
-To get the binary we write the line
+To get the binary we write the line:
 
 ```python
 board.set_se_binary_workload(obtain_resource("x86-hello64-static"))
 ```
 
-Lets break down this code
+Let's break down this code
 
-- The part `obtain_resource("x86-hello64-static")` gets the binary from gem5 resources (go into detail about the parameters)
+- The part `obtain_resource("x86-hello64-static")` gets the binary from gem5 resources <!-- go into detail about the parameters -->
 - The part `board.set_se_binary_workload` tells the board to run the binary that it is given.
 
 Then we run the simulation
 
 ```bash
+cd materials/02-Using-gem5/02-gem5-resources
 gem5 01-hello-example.py
 ```
 
@@ -83,9 +84,9 @@ gem5 01-hello-example.py
 
 Workload is a package of one or more resources that can have pre-defined parameters.
 
-lets see the `x86-npb-is-size-s-run` workload.
+let's see the `x86-npb-is-size-s-run` workload.
 
-This workload runs the npb is benchmark in SE mode.
+This workload runs the NPB IS benchmark in SE mode.
 
 You can see the JSON of the workloads in the [raw](https://resources.gem5.org/resources/x86-npb-is-size-s-run/raw?database=gem5-resources&version=1.0.0) tab on the resources website.
 
@@ -95,23 +96,23 @@ You can see the JSON of the workloads in the [raw](https://resources.gem5.org/re
 
 ## Workloads (Conti.)
 
-Lets see the `x86-ubuntu-24.04-boot-with-systemd` workload, you can see the [raw](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-with-systemd/raw?database=gem5-resources&version=1.0.0) tab to see how the resource is made.
+Let's see the `x86-ubuntu-24.04-boot-with-systemd` workload, you can see the [raw](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-with-systemd/raw?database=gem5-resources&version=1.0.0) tab to see how the resource is made.
 
 - The `function` field has the name of the function that the workload calls.
 - The `resources` field contains the resources that the workload uses.
   - The key of the `resources` field like `kernel`, `disk_image`, etc are named the same as the parameter name in the `function` that the workload calls.
-- The `additional_params` fields contains values of non-resource parameters that we want the workload to have
-  - `kernel_args` parameter we are using in the above workload.
+- The `additional_params` fields contains values of non-resource parameters that we want the workload to have.
+  - We are using the `kernel_args` parameter in the above workload.
 
 ---
 
 ## Suites
 
-Suites are a collection of workloads, that can be run in parallel using multiprocessing (This will be shown later)
+Suites are a collection of workloads, that can be run in parallel using multiprocessing (this will be shown later).
 
 All workloads in the suite have something called `input_groups` that can be used to filter the suite.
 
-Lets do an example that used the suite. In this example we will:
+Let's do an example where we will:
 
 - Print all the workloads in the suite
 - Filter the suite with `input_groups`
@@ -119,33 +120,39 @@ Lets do an example that used the suite. In this example we will:
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ## Printing all the workloads in a suite
 
-The `SuiteResource` class act as a generator so we can iterate through the workloads.
+The `SuiteResource` class acts as a generator so we can iterate through the workloads.
 
-Lets print the `id` and `resource_version` of the workloads in the `x86-getting-started-benchmark-suite` suite.S
-Modify [02-suite-workload-example.py](../../materials/02-Using-gem5/02-gem5-resources/02-suite-workload-example.py)
+Let's print some worklaod information from  the `x86-getting-started-benchmark-suite` suite.
 
-Let's get the resource and iterate through the suite and print id and version of the workloads
+Let's modify [02-suite-workload-example.py](../../materials/02-Using-gem5/02-gem5-resources/02-suite-workload-example.py). Below, we get the resource and iterate through the suite, printing the `id` and `version` of each workload. Add this to the bottom of the script:
 
 ```python
 getting_started_suite = obtain_resource("x86-getting-started-benchmark-suite")
-
 for workload in getting_started_suite:
     print(f"Workload ID: {workload.get_id()}")
     print(f"workload version: {workload.get_resource_version()}")
     print("=========================================")
 ```
 
+Now run:
+
+```bash
+gem5 02-suite-workload-example.py
+```
+
 ---
 
 ## Filtering suites by `input_groups`
 
-Each workload in a suite has some `input_group` that we can filter it by.
+Each workload in a suite has one or more `input_groups` that we can filter by.
 
-Lets print all the unique input groups the suite has
+Let's print all the unique input groups in the suite.
 
-we can do this by using the `get_input_groups()` function
+We can do this by using the `get_input_groups()` function:
 
 ```python
 print("Input groups in the suite")
@@ -156,22 +163,21 @@ print(getting_started_suite.get_input_groups())
 
 ## Running a workload from the suite (single code block)
 
-Lets run the npb IS benchmark that is in the suite
+Let's run the NPB IS benchmark in this suite.
 
-We need to filter the suite so that we get the workload we want
+First, we need to filter the suite to get this workload. We can do this by filtering to get all workloads that have the input tag `"is"`.
 
-lets filter the suite to return a suite that contains all workloads that have the input tag `is`, we convert the returned object to a list and get the first workload in it.
+We convert the returned object to a list and get the first workload in it. This works because `"is"` is a unique tag that only one workload has, the NPB IS workload we're looking for.
 
-This works because `is` is a unique tag that only one workload has.
-
-lets print the id of our workload
-
-Lets run the workload with the board that we have.
+Let's print the `id` of our workload and then run it with the board we have:
 
 ```python
 npb_is_workload = list(getting_started_suite.with_input_group("is"))[0]
 print(f"Workload ID: {npb_is_workload.get_id()}")
 board.set_workload(npb_is_workload)
+
+simulator = Simulator(board=board)
+simulator.run()
 ```
 
 ---
@@ -179,10 +185,11 @@ board.set_workload(npb_is_workload)
 ## Local resources
 
 You can also use resources that you have created locally in gem5.
-You can create a local JSON file that you can use as a data source by setting the
 
-- GEM5_RESOURCE_JSON environment variable to point to the JSON, if you want to just use the resources in the JSON.
-- GEM5_RESOURCE_JSON_APPEND environment variable to point to the JSON, if you want to use local resources along with gem5 resources.
+You can create a local JSON file to use as a data source by setting the:
+
+- `GEM5_RESOURCE_JSON` environment variable to point to the JSON, if you want to just use the resources in the JSON.
+- `GEM5_RESOURCE_JSON_APPEND` environment variable to point to the JSON, if you want to use local resources along with gem5 resources.
 
 For more details on how to use local resources, read [local resources documentation](https://www.gem5.org/documentation/gem5-stdlib/using-local-resources)
 
@@ -192,44 +199,48 @@ For more details on how to use local resources, read [local resources documentat
 
 gem5 has two main ways to use local resources.
 
-- Directly create the resource object by passing the local path of the resource
+- Directly create the resource object by passing the local path of the resource.
   - `BinaryResource(local_path=/path/to/binary)`
-  - We can use this method when we are making new resources and want to quickly test the resource
+  - We can use this method when we are making new resources and want to quickly test the resource.
 - If we are going to use or share the resource that we created, it is better to create a JSON file and update the data source as mentioned in the above slide.
-  - with this method we can use `obtain_resource`
+  - With this method we can use `obtain_resource`.
   - This method makes the simulations more reproducible and consistent.
 
-Lets do an example that create a local binary and runs that binary on gem5.
+Let's do an example that creates a local binary and runs that binary on gem5.
 
 ---
 
-## Lets create a binary
+## Let's create a binary
 
-First lets write a [C program that prints a simple triangle pattern](../../materials/02-Using-gem5/02-gem5-resources/complete/03-local-resources/pattern.c).
+Let's use [this C program that prints a simple triangle pattern](../../materials/02-Using-gem5/02-gem5-resources/03-local-resources/pattern.c).
+
+Compile this program. This will be the binary that we will run in gem5.
 
 ```bash
-gcc -o pattern.c
+gcc -o pattern pattern.c
 ```
 
-Lets compile this program. This will be the binary that we will run in gem5.
+Now, let's use the local path method.
 
-First lets use the local path method [gem5 config](../../materials/02-Using-gem5/02-gem5-resources/complete/03-local-resources/run-local-resource-local-path.py)
+In [03-run-local-resource-local-path.py](../../materials/02-Using-gem5/02-gem5-resources/03-run-local-resource-local-path.py), create the binary resource object as follows:
 
-lets create the binary resource object
+```python
+binary = BinaryResource(local_path="./pattern")
+```
 
-- `BinaryResource(local_path="path")`
+Let's run the simulation and see the output
 
-lets run the simulation and see the output
+```bash
+gem5 03-run-local-resource-local-path.py
+```
 
 ---
 
 <!-- _class: code-50-percent -->
 
-## Lets create a JSON file for the binary resource
+## Let's create a JSON file for the binary resource
 
-The JSON for the binary would look like this:
-
-[JSON resource](../../materials/02-Using-gem5/02-gem5-resources/complete/03-local-resources/local_resources.json)
+The [JSON resource](../../materials/02-Using-gem5/02-gem5-resources/03-local-resources/local_resources.json) for the binary would look like this:
 
 ```json
 {
@@ -261,18 +272,20 @@ The JSON for the binary would look like this:
 
 ---
 
-## Lets get the resource and run the simulation
+## Let's get the resource and run the simulation
 
-We get the binary by using obtain resource
-`board.set_se_binary_workload(obtain_resource("x86-pattern-print"))
-`
+In [04-run-local-resource-json.py](../../materials/02-Using-gem5/02-gem5-resources/04-run-local-resource-json.py), we can get the binary by using obtain resource:
 
-lets run the simulation
-
-To run the simulation we use the normal run command but add
-
-```bash
-GEM5_RESOURCE_JSON_APPEND=../../materials/02-Using-gem5/02-gem5-resources/complete/03-local-resources/run-local-resource-json.py
+```python
+board.set_se_binary_workload(obtain_resource("x86-pattern-print"))
 ```
 
-before the `build/X86/gem5.opt`
+Let's run the simulation.
+
+We do this by defining `GEM5_RESOURCE_JSON_APPEND` with our JSON resource before the usual `gem5` command:
+
+```bash
+GEM5_RESOURCE_JSON_APPEND=local_resources.json gem5 04-run-local-resource-json.py
+```
+
+

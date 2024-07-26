@@ -30,7 +30,8 @@ board = SimpleBoard(
     cache_hierarchy=cache_hierarchy,
 )
 
-# Add the binary to the board
+# Add the binary to the board using `obtain_resource`
+binary = obtain_resource("x86-pattern-print")
 
 board.set_se_binary_workload(binary)
 
