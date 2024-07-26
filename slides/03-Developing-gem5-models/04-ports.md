@@ -317,8 +317,8 @@ class InspectorGadget(ClockedObject):
     mem_side_port = RequestPort("RequestPort to send received requests to memory side.")
 
     inspection_buffer_entries = Param.Int("Number of entries in the inspection buffer.")
-
 ```
+
 ---
 
 ## Updating SConscript
@@ -340,3 +340,129 @@ DebugFlag("InpsectorGadget")
 ```
 
 ---
+
+## InspectorGadget: C++ Files
+
+Now, let's go ahead and create a header and source file for `InspectorGadget` in `src/bootcamp/inspector-gadget`. Remember to make sure the path to your header file matches that of what you specified in `cxx_header` in `InspectorGadget.py` and the path for your source file matches that of what you specified in `SConscript`. Run the following commands in the base gem5 directory to create the files.
+
+```sh
+touch src/bootcamp/inspector-gadget/inspector_gadget.hh
+touch src/bootcamp/inspector-gadget/inspector_gadget.cc
+```
+
+Now, let's simply declare `InspectorGadget` as a class that inherits from `ClockedObject`. This means you have to import `sim/clocked_object.hh` instead of `sim/sim_object.hh`. Let's add everything that we have added in the Python to our class except for the `Ports`.
+
+---
+<!-- _class: code-60-percent -->
+
+## InspectorGadget: Header File
+
+```cpp
+#ifndef __BOOTCAMP_INSPECTOR_GADGET_INSPECTOR_GADGET_HH__
+#define __BOOTCAMP_INSPECTOR_GADGET_INSPECTOR_GADGET_HH__
+
+#include "params/InspectorGadget.hh"
+#include "sim/clocked_object.hh"
+
+namespace gem5
+{
+
+class InspectorGadget : public ClockedObject
+{
+  private:
+    int inspectionBufferEntries;
+
+  public:
+    InspectorGadget(const InspectorGadgetParams& params);
+};
+
+
+} // namespace gem5
+
+#endif // __BOOTCAMP_INSPECTOR_GADGET_INSPECTOR_GADGET_HH__
+```
+
+---
+
+## Extending Ports
+
+If you remember `RequestPort` and `ResponsePort` classes were abstract classes, i.e. they had `pure virtual` functions which means objects can not be instantiated from that class. Therefore, for us to use `Ports` we need to extend the classes and implement their `pure virtual` functions.
+
+Before anything, let's go ahead and import the header file that contains the declaration for `Port` classes. We also need to include `mem/packet.hh` since we will be dealing with `Packets` a lot (we're going to be moving them a lot). Do it by adding the following lines to `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+
+```cpp
+#include "mem/packet.hh"
+#include "mem/port.hh"
+```
+
+**REMEMBER** to follow the right include order based on gem5's convention.
+
+---
+<!-- _class: code-60-percent -->
+
+## Extending ResponsePort
+
+Now, let's get to extending `ResponsePort` class. Let's do it inside the scope of `InspectorGadget` to prevent using names used by other gem5 developers. Let's go ahead an create `CPUSidePort` class that inherits from `ResponsePort` in the `private` scope. To do this, add the following code to `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+
+```cpp
+  private:
+    class CPUSidePort: public ResponsePort
+    {
+      private:
+        InspectorGadget* owner;
+
+        bool needToSendRetry;
+
+      public:
+        CPUSidePort(InspectorGadget* owner, std::string& name):
+            ResponsePort(name), owner(owner), needToSendRetry(false)
+        {}
+
+        virtual AddrRangeList getAddrRanges() const override;
+
+        virtual bool recvTimingReq(PacketPtr pkt) override;
+        virtual Tick recvAtomic(PacketPtr pkt) override;
+        virtual void recvFunctional(PacketPtr pkt) override;
+        virtual void recvRespRetry() override;
+    };
+```
+
+---
+
+## Extending ResponsePort: Deeper Look
+
+Here is a deeper look into the declaration of `CPUSidePort`.
+
+1- We hold a pointer to the instance of `InspectorGadget` class that owns this instance of `CPUSidePort` class in `InspectorGadget* owner`. We do it to access the owner when we receive `requests`, i.e. when `recvTimingReq` is called.
+2- We track a boolean value that tells us if we need to send a `retry request`. This happens when we reject a `request` because we are busy; when we are not busy we check this before sending a `retry request`.
+3- In addition to all the functions that are used for moving packets, the class `ResponsePort` has another `pure virtual` function that will return an `AddrRangeList` which represent all the address ranges that the port can respond for. Note that in a system the memory addresses can be partitioned among ports. Class `RequestPort` has a function with the same name. However, it's not a `pure virtual` function and it will return `peer::getAddrRanges`.
+4- We will need to implement all the functions that relate to moving packets (all the functions that start with `recv`). We will use `owner` to implement most of the functionality of these functions within `InspectorGadget`.
+
+---
+<!-- _class: code-60-percent -->
+
+## Extending RequestPort
+
+We're going to follow a similar approach for extending `RequestPort`. Let's create class `MemSidePort` that inherits from `RequestPort`. Again we'll do it in the `private` scope of `InspectorGadget`. Do it by adding the following code to `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+
+```cpp
+  private:
+    class MemSidePort: public RequestPort
+    {
+      private:
+        InspectorGadget* owner;
+
+        PacketPtr blockedPacket;
+
+      public:
+        MemSidePort(InspectorGadget* owner, std::string& name):
+            RequestPort(name), owner(owner), blockedPacket(nullptr)
+        {}
+
+        bool blocked() const { return blockedPacket != nullptr; }
+        void sendPacket(PacketPtr pkt) override;
+
+        virtual bool recvTimingResp(PacketPtr pkt) override;
+        virtual void recvReqRetry() override;
+    };
+```
