@@ -91,7 +91,6 @@ def exit_event_handler():
     print("second exit event: In after boot")
     yield False
     print("third exit event: After run script")
-    yield False
     yield True
 
 simulator = Simulator(
@@ -211,8 +210,35 @@ The general structure of the packer file would be the same but with a few key ch
   - `diskimage = true` : This will let packer know that we are using a base diskimage and not an iso from which we will install ubuntu.
 - remove the `http_directory   = "http"` directory as we no longer need to use autoinstall.
 - Change the `iso_checksum` and `iso_urls` to that of our base image.
-- Update the file and shell provisioners: We dont need to transfer the files again as our base image already has them.
-- Boot command: As we are not installing ubuntu. We can write the commands to login and any other commands we need like setting up network or ssh.
+
+    Lets get the base ubuntu 24.04 image gen5 resources and unzip it.
+
+    ```bash
+    wget https://storage.googleapis.com/dist.gem5.org/dist/develop/images/x86/ubuntu-24-04/x86-ubuntu-24-04.gz
+    gzip -d x86-ubuntu-24-04.gz
+    ```
+
+---
+
+`iso_checksum` is the sha256sum of the iso file that we are using. To get he `sha256sum` run the following in the linux terminal.
+
+```bash
+sha256sum ./x86-ubuntu-24-04.gz
+```
+
+
+- Update the file and shell provisioners: Lets remove the file provisioners as we dont need to transfer the files again
+- Boot command: As we are not installing ubuntu. We can write the commands to login and any other commands we need like setting up network or ssh. Lets update the boot command to login and enable network.
+
+```hcl
+"<wait30>",
+"gem5<enter><wait>",
+"12345<enter><wait>",
+"sudo mv /etc/netplan/50-cloud-init.yaml.bak /etc/netplan/50-cloud-init.yaml<enter><wait>",
+"12345<enter><wait>",
+"sudo netplan apply<enter><wait>",
+"<wait>"
+```
 
 ---
 
