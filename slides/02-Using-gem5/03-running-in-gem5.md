@@ -522,38 +522,41 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 ## Traffic Generator in gem5
 
 ---
+<!-- _class: center-image -->
 
 ## Traffic Generator
 
-- A **traffic generator** simulates traffic through the memory system in order to test memory for performance
-   - ex: uses reads/writes to/from memory
-- Used for creating test cases for caches, interconnects, and memory controllers, etc
+A **traffic generator** generates synthetic memory traffic in order to test memory for performance. Examples includes creating a sequence of reads and write to/from memory.
 
 ![Traffic generator center](03-running-in-gem5-imgs/t_gen_diagram.svg)
 
-
 ---
+
 ## gem5: Traffic Generator Classes
 
-gem5's traffic generators are a set of classes that inherit from `AbstractGenerator`
+gem5's standard library has a collection of traffic generators. All the tarffic generator classes inherit from `AbstractGenerator`
+
 - The classes simulate any memory accesses by creating **traffic generator cores**.
 - These traffic generator cores use a `SimObject` called `PyTrafficGen` to create **synthetic traffic**.
 
 `_create_cores` is called in each traffic generator
+
 - Provides a list of the cores it has created
 - List is used to replace the processor cores on whatever board is initialized
+
 ---
 
 ## Our Focus
+
 - Generators in gem5 found in: `src/python/gem5/components/processors`
 - We will be focusing on `LinearGenerator` and `RandomGenerator` generators (and a surprise new one later!).
-    - They are essentially the same, but one performs linear memory accesses and one performs random memory accesses
-
+  - They are essentially the same, but one performs linear memory accesses and one performs random memory accesses
 
 ![Different Generators](03-running-in-gem5-imgs/generator_inheritance.svg)
 
-----
+---
 <!-- _class: two-col -->
+
 ## Traffic Generator Classes have Configurable Parameters
 
 - **num_cores**
