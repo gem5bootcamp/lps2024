@@ -34,7 +34,7 @@ from gem5.components.cachehierarchies.ruby.abstract_ruby_cache_hierarchy import 
 
 from gem5.isas import ISA
 
-from ring_garnet import Ring
+from ring import Ring
 
 from m5.objects import (
     AddrRange,
@@ -198,7 +198,7 @@ class PrivateL1SharedL2CacheHierarchy(AbstractRubyCacheHierarchy):
             dma_ctrls=(self.dma_controllers if board.has_dma_ports() else [])
         )
 
-        # self.ruby_system.network.setup_buffers()
+        self.ruby_system.network.setup_buffers()
 
         # Set up a proxy port for the system_port. Used for load binaries and
         # other functional-only things.

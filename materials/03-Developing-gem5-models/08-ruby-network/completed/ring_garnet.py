@@ -1,8 +1,10 @@
 """
-An example ring topology for the Ruby network.
+An example ring topology for the Ruby network using Garnet
 
 Note that this requires exactly four L1 caches, two L2 caches, and two memory
 controllers.
+
+NOTE: THIS does not work!!!
 """
 
 from m5.objects import (
@@ -14,14 +16,15 @@ from m5.objects import (
 )
 
 class MyRouter(GarnetRouter):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.latency = 3
 
 class Ring(GarnetNetwork):
     def __init__(self, ruby_system):
         super().__init__()
         self.ruby_system = ruby_system
+        self.ni_flit_size = 32
 
     def connectControllers(
         self, l1i_ctrls, l1d_ctrls, l2_ctrls, mem_ctrls, dma_ctrls
@@ -31,7 +34,7 @@ class Ring(GarnetNetwork):
         assert len(l2_ctrls) == 2
         assert len(mem_ctrls) == 2
 
-        self.l1_routers = [GarnetRouter(router_id=i) for i in range(4)]
+        self.l1_routers = [MyRouter(router_id=i) for i in range(4)]
         self.l1i_ext_links = [
             GarnetExtLink(link_id=i, ext_node=c, int_node=self.l1_routers[i])
             for i, c in enumerate(l1i_ctrls)
@@ -41,13 +44,13 @@ class Ring(GarnetNetwork):
             for i, c in enumerate(l1d_ctrls)
         ]
 
-        self.l2_routers = [GarnetRouter(router_id=4+i) for i in range(2)]
+        self.l2_routers = [MyRouter(router_id=4+i) for i in range(2)]
         self.l2_ext_links = [
             GarnetExtLink(link_id=8+i, ext_node=c, int_node=self.l2_routers[i])
             for i, c in enumerate(l2_ctrls)
         ]
 
-        self.mem_routers = [GarnetRouter(router_id=6+i) for i in range(2)]
+        self.mem_routers = [MyRouter(router_id=6+i) for i in range(2)]
         self.mem_ext_links = [
             GarnetExtLink(link_id=10+i, ext_node=c, int_node=self.mem_routers[i])
             for i, c in enumerate(mem_ctrls)

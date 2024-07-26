@@ -34,7 +34,7 @@ from gem5.components.cachehierarchies.ruby.abstract_ruby_cache_hierarchy import 
 
 from gem5.isas import ISA
 
-from gem5.components.cachehierarchies.ruby.topologies.simple_pt2pt import SimplePt2Pt
+from ring import Ring
 
 from m5.objects import (
     RRIPRP,
@@ -66,7 +66,7 @@ class SharedL2(AbstractNode):
             replacement_policy=RRIPRP(),
         )
         # Note: As of gem5 v24.0.0.0 the replacement policy in CHI is broken.
-        # See 
+        # See
 
         # Only used for L1 controllers
         self.send_evictions = False
@@ -168,23 +168,7 @@ class PrivateL1SharedL2CacheHierarchy(AbstractRubyCacheHierarchy):
         else:
             self.ruby_system.num_of_sequencers = len(self.core_clusters) * 2
 
-        # Connect the controllers within the network. Note that this function
-        # makes assumptions on the order of the controllers. If you want to
-        # use more complex topologies like mesh it would be a good idea to
-        # tightly couple the network with the cache hierarchy.
-        self.ruby_system.network.connectControllers(
-            list(
-                chain.from_iterable(  # Grab the controllers from each cluster
-                    [
-                        (cluster.dcache, cluster.icache)
-                        for cluster in self.core_clusters
-                    ]
-                )
-            )
-            + self.memory_controllers
-            + [self.l2cache]
-            + (self.dma_controllers if board.has_dma_ports() else [])
-        )
+        # FILL THIS IN
 
         self.ruby_system.network.setup_buffers()
 
