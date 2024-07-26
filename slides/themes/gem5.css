@@ -299,13 +299,15 @@ pre {
 code {
     font-family: "Roboto Mono", monospace;
     background-color: #ffffff;
-}
-
-/* Avoids setting font-size for <code> in headers */
-:not(h1, h2, h3, h4) code {
     font-size: var(--code-font-size);
 }
 
+/* Forces inherited height for code in headers */
+:is(h1, h2, h3, h4, h5, h6) code {
+    font-size: inherit !important;
+}
+
+/* Targets only inline code */
 :not(pre) > code {
     font-size: calc(var(--code-font-size) * 0.9);
     padding: 2px 6px;
@@ -313,8 +315,9 @@ code {
     border-radius: 5px;
 }
 
+/* Targets hyperlinks that contain code */
 a:has(code) {
-    /* Removes underlines from hyperlinks in code */
+    /* Removes underlines */
     text-decoration: none;
 }
 
