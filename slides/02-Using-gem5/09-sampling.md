@@ -587,15 +587,66 @@ Therefore, if we know how to do sampling with the SimPoint method, it should not
 
 ## LoopPoint and ElFies
 
+LoopPoint is similar to SimPoint with some key differences.
+LoopPoint uses the number of time a loop is executed to mark the regions instead of using instruction executed.Therefore, we need collect the loop execution information in the analysis stage beside the basic block execution information.
+Other than this, in terms of the process, it is really similar to SimPoint.
+We will not do a detailed example on LoopPoint, but there are example under the [configs/example/gem5_library/looppoints](https://github.com/gem5/gem5/tree/stable/configs/example/gem5_library/looppoints). We have the infrastructures ready for the LoopPoint checkpointing and running the LoopPoint in gem5 24.0. The LoopPoint analysis is tested and ready to be upstream in gem5 24.1.
 
+ElFies is a checkpointing method that creates checkpoint executables out of a large workload execution. It can be used with LoopPoint to create executables of the representative regions.
+Like LoopPoint, it uses the number of time a loop has been executed to mark the beginning and the end of the region of interest, so we need those information to execute ElFies in gem5.
+
+[link](https://looppoint.github.io/hpca2023/) for more information about LoopPoint and ElFies
 
 ---
 
-## ElFie
+## ElFies
+
+<!-- _class: code-60-percent -->
+
+gem5 does not produce ElFies, but we have support to run ElFies in SE mode.
+For all the weights and loop information, they should come with the ElFies workload.
+
+We can run ElFies with the [ElFieInfo class](https://github.com/gem5/gem5/blob/stable/src/python/gem5/resources/elfie.py#L36).
+
+Here is an example of how to use it
+
+```python
+board.set_se_binary_workload(
+    binary=obtain_resource("wrf-s.1_globalr13")
+)
+
+elfie = ELFieInfo(start = PcCountPair(int("0x100b643",0),1), end = PcCountPair(int("0x526730",0),297879) )
+
+elfie.setup_processor(
+    processor = processor
+)
+
+simulator = Simulator(
+    board=board,
+    on_exit_event={
+        ExitEvent.SIMPOINT_BEGIN : start_end_handler()
+    }
+)
+```
 
 ---
 
 ## ElFie example
+
+In the gem5 resource, we have some ElFies workload provided, for example, [wrf-s.1_globalr13](https://resources.gem5.org/resources/wrf-s.1_globalr13?version=1.0.0). It's marker (loop execution) information can be found in [elfie-info-wrf-s.1_globalr13](https://resources.gem5.org/resources/elfie-info-wrf-s.1_globalr13/raw?database=gem5-resources&version=1.0.0).
+
+We can setup the ElFies workload as a normal executable
+
+```python
+board.set_se_binary_workload(
+    binary=obtain_resource("wrf-s.1_globalr13")
+)
+```
+
+
+---
+
+
 
 ---
 
