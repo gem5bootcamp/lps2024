@@ -24,7 +24,10 @@ class Ring(GarnetNetwork):
     def __init__(self, ruby_system):
         super().__init__()
         self.ruby_system = ruby_system
-        self.ni_flit_size = 32
+        # There's definitely something wrong with something if I have to
+        # do this to get it to work.
+        self.ni_flit_size = 64
+        self.vcs_per_vnet = 16
 
     def connectControllers(
         self, l1i_ctrls, l1d_ctrls, l2_ctrls, mem_ctrls, dma_ctrls
