@@ -89,6 +89,7 @@ In this case, you cannot have a description of the image, unfortunately.
     - Slides
       - Add something on using the repo :exclamation:
       - Add something about gem5 versions :exclamation:
+      - Add something about the citations file :exclamation:
     - Materials :white_check_mark:
   - 03: Python background: (Bobby)
     - Slides :white_check_mark:
@@ -189,11 +190,9 @@ In this case, you cannot have a description of the image, unfortunately.
   - 07: CHI: (Jason)
     - Slides :white_check_mark:
     - Materials :white_check_mark:
-  - 08: Modeling networks (Jason) :heavy_exclamation_mark:
-    - Slides
-      - Not started :heavy_exclamation_mark:
-    - Materials
-      - Not started :heavy_exclamation_mark:
+  - 08: Modeling networks (Jason)
+    - Slides :white_check_mark:
+    - Materials :white_check_mark:
   - 09: Extending gem5: (Zhantong) :heavy_exclamation_mark:
     - Slides
       - Not written :heavy_exclamation_mark:
