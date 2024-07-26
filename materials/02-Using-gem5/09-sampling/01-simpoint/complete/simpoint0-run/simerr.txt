@@ -1,0 +1,17 @@
+warn: This SimPoint class has been deprecated in favor of `SimpointResource` and `SimpointDirectory` resource which may be found in `gem5.resources.resource`. Please utilize these. This SimPoint class will be removed in future releases of gem5.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (16384 Mbytes) does not match the address range assigned (2048 Mbytes)
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (16384 Mbytes) does not match the address range assigned (2048 Mbytes)
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+board.remote_gdb: Listening for connections on port 7002
+src/sim/process.cc:396: warn: Checkpoints for pipes, device drivers and sockets do not work.
+src/sim/simulate.cc:199: info: Entering event queue @ 0.  Starting simulation...
+src/sim/simulate.cc:199: info: Entering event queue @ 72927.  Starting simulation...
+warn: No behavior was set by the user for simpoint begin. Default behavior is resetting the stats and continuing.
+src/sim/simulate.cc:199: info: Entering event queue @ 72927.  Starting simulation...
+src/sim/mem_state.cc:448: info: Increasing stack size by one page.
+src/sim/syscall_emul.cc:74: warn: ignoring syscall set_robust_list(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall rseq(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall mprotect(...)
+src/sim/simulate.cc:199: info: Entering event queue @ 323523153.  Starting simulation...
