@@ -114,6 +114,14 @@ Note that LoopPoint's analysis support is not currently supported in gem5 24.0 b
 
 ---
 
+---
+
+<!-- _class: start -->
+
+## SimPoint in gem5
+
+---
+
 ## SimPoint
 
 As mentioned before, there are three steps in using SimPoint:
@@ -557,6 +565,27 @@ As the output suggests, the relative error between the predicted IPC and the act
 ---
 
 ## Summary in SimPoint
+
+Congratulation! We walked through the whole process of how to do sampling with the SimPoint method.
+
+Let's recap what we did:
+
+1. Analyze the program
+2. Checkpointing the representative regions
+3. Run the regions and predict the performance
+
+Here is a good news, this process is really similar for majority of the methods in targeted sampling.
+Therefore, if we know how to do sampling with the SimPoint method, it should not be hard for us to do others, such as LoopPoint, which enables multi-threaded workload sampling.
+
+---
+
+<!-- _class: start -->
+
+## LoopPoint and ElFies in gem5
+
+---
+
+## LoopPoint and ElFies
 
 
 
