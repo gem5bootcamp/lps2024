@@ -686,8 +686,6 @@ For this example, our cache hierarchies, memory types, and CPU types are differe
 
 ## 03-checkpoint-and-restore
 
-
-
 ```python
 # restoring script
 cache_hierarchy = PrivateL1CacheHierarchy(
