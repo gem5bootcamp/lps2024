@@ -86,10 +86,7 @@ In this case, you cannot have a description of the image, unfortunately.
     - Slides :white_check_mark:
     - Materials :white_check_mark:
   - 02: Getting started: (Jason)
-    - Slides
-      - Add something on using the repo :exclamation:
-      - Add something about gem5 versions :exclamation:
-      - Add something about the citations file :exclamation:
+    - Slides :white_check_mark:
     - Materials :white_check_mark:
   - 03: Python background: (Bobby)
     - Slides :white_check_mark:

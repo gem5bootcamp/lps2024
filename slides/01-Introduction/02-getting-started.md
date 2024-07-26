@@ -29,6 +29,11 @@ In this section, we will get familiar the tutorial's codespace environment and
 
 ## Typical Downloading
 
+gem5 is not your typical software project where you can easily download a binary.
+I.e., `apt install gem5` will not work.
+
+The main way gem5 is distributed is as source code that you have to build.
+
 ```sh
 > git clone https://github.com/gem5/gem5
 > cd gem5
@@ -39,6 +44,27 @@ In this section, we will get familiar the tutorial's codespace environment and
 > **develop**: The branch in which new features, improvements, etc. are added regularly for the next release.
 
 In this tutorial we’re going to use codespaces with a repo which includes some example materials. Though all the gem5 code is v24.0
+
+---
+
+## gem5 versions
+
+On the **stable** branch, there are _tags_ for each release.
+
+We release gem5 roughly 2-3 times per year.
+We don't have a strict schedule or feature or bug fix goal for releases.
+
+The releases are named for the year and number.
+
+E.g., the most recent gem5 release, v24.0, was the first release in 2024.
+
+The full version string is `v24.0.0.0`.
+The last two numbers are for
+
+- Minor releases (these happen rarely when a major bug is found).
+- Hotfix releases: These are for "small" bugs that are found after a release.
+
+See [CONTRIBUTING.md](../../gem5/CONTRIBUTING.md#Releases) for more information.
 
 ---
 
