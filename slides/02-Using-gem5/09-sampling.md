@@ -608,32 +608,22 @@ For all the weights and loop information, they should come with the ElFies workl
 
 We can run ElFies with the [ElFieInfo class](https://github.com/gem5/gem5/blob/stable/src/python/gem5/resources/elfie.py#L36).
 
-Here is an example of how to use it
+There is an example in [materials/02-Using-gem5/09-sampling/02-elfies/run-elfies.py](../../materials/02-Using-gem5/09-sampling/02-elfies/run-elfies.py)
 
-```python
-board.set_se_binary_workload(
-    binary=obtain_resource("wrf-s.1_globalr13")
-)
+We can run it with
 
-elfie = ELFieInfo(start = PcCountPair(int("0x100b643",0),1), end = PcCountPair(int("0x526730",0),297879) )
-
-elfie.setup_processor(
-    processor = processor
-)
-
-simulator = Simulator(
-    board=board,
-    on_exit_event={
-        ExitEvent.SIMPOINT_BEGIN : start_end_handler()
-    }
-)
+```bash
+gem5 -re run-elfies.py
 ```
+
+It is a 8-threaded experiments with detailed setting that might run for eight hundred million instructions so it will take sometime to finish, so we shouldn't expect to get the result in this section.
+We have a completed m5out under the `materials/02-Using-gem5/09-sampling/02-elfies/complete/m5out` if you are interested in looking at the output.
 
 ---
 
-## ElFie example
+## ElFies Example
 
-In the gem5 resource, we have some ElFies workload provided, for example, [wrf-s.1_globalr13](https://resources.gem5.org/resources/wrf-s.1_globalr13?version=1.0.0). It's marker (loop execution) information can be found in [elfie-info-wrf-s.1_globalr13](https://resources.gem5.org/resources/elfie-info-wrf-s.1_globalr13/raw?database=gem5-resources&version=1.0.0).
+In the gem5 resource, we have some ElFies workload provided, for example, [wrf-s.1_globalr13](https://resources.gem5.org/resources/wrf-s.1_globalr13?version=1.0.0). Its marker (loop execution) information can be found in [elfie-info-wrf-s.1_globalr13](https://resources.gem5.org/resources/elfie-info-wrf-s.1_globalr13/raw?database=gem5-resources&version=1.0.0).
 
 We can setup the ElFies workload as a normal executable
 
@@ -643,10 +633,48 @@ board.set_se_binary_workload(
 )
 ```
 
+Then, we can setup the beginning and end marker with
+
+```python
+from gem5.resources.elfie import ELFieInfo
+elfie = ELFieInfo(start = PcCountPair(int("0x100b643",0),1), end = PcCountPair(int("0x526730",0),297879) )
+elfie.setup_processor(
+    processor = processor
+)
+```
 
 ---
 
+## ElFies Example
+<!-- _class: code-50-percent -->
 
+After getting to the beginning and end markers, the simulator will raise an exit event `SIMPOINT_BEGIN`, but there is not a default exit event handler for it, so we will need to define ours.
+
+```python
+def start_end_handler():
+    # This is a generator to handle exit event produced by the
+    # start marker and end marker.
+    # When we reach the start marker, we reset the stats and
+    # continue the simulation.
+    print(f"reached {targets[0]}\n")
+    print("now reset stats\n")
+    m5.stats.reset()
+    print("fall back to simulation\n")
+    yield False
+    # When we reach the end marker, we dump the stats to the stats file
+    # and exit the simulation.
+    print(f"reached {targets[1]}\n")
+    print("now dump stats and exit simulation\n")
+    m5.stats.dump()
+    yield True
+
+simulator = Simulator(
+    board=board,
+    on_exit_event={
+        ExitEvent.SIMPOINT_BEGIN : start_end_handler()
+    }
+)
+```
 
 ---
 

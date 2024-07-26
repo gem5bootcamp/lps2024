@@ -42,6 +42,11 @@ import m5
 
 requires(isa_required = ISA.X86)
 
+'''
+Usage:
+    gem5 -re run-elfies.py
+'''
+
 cache_hierarchy = PrivateL1SharedL2CacheHierarchy(
     l1i_size="32KiB",
     l1i_assoc=8,
