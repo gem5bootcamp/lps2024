@@ -114,8 +114,6 @@ Note that LoopPoint's analysis support is not currently supported in gem5 24.0 b
 
 ---
 
----
-
 <!-- _class: start -->
 
 ## SimPoint in gem5
@@ -601,8 +599,6 @@ Like LoopPoint, it uses the number of time a loop has been executed to mark the 
 
 ## ElFies
 
-<!-- _class: code-60-percent -->
-
 gem5 does not produce ElFies, but we have support to run ElFies in SE mode.
 For all the weights and loop information, they should come with the ElFies workload.
 
@@ -610,13 +606,13 @@ We can run ElFies with the [ElFieInfo class](https://github.com/gem5/gem5/blob/s
 
 There is an example in [materials/02-Using-gem5/09-sampling/02-elfies/run-elfies.py](../../materials/02-Using-gem5/09-sampling/02-elfies/run-elfies.py)
 
-We can run it with
+We can run it with the following command but it is not suggested because it will take too long.
 
 ```bash
 gem5 -re run-elfies.py
 ```
 
-It is a 8-threaded experiments with detailed setting that might run for eight hundred million instructions so it will take sometime to finish, so we shouldn't expect to get the result in this section.
+It is a 8-threaded experiments with a detailed system that might run for eight hundred million instructions so it will take sometime to finish.
 We have a completed m5out under the `materials/02-Using-gem5/09-sampling/02-elfies/complete/m5out` if you are interested in looking at the output.
 
 ---
@@ -646,7 +642,7 @@ elfie.setup_processor(
 ---
 
 ## ElFies Example
-<!-- _class: code-50-percent -->
+<!-- _class: code-60-percent -->
 
 After getting to the beginning and end markers, the simulator will raise an exit event `SIMPOINT_BEGIN`, but there is not a default exit event handler for it, so we will need to define ours.
 
@@ -678,11 +674,37 @@ simulator = Simulator(
 
 ---
 
-## SMARTS
+## Summary in LoopPoint and ElFies
+
+After finish running all the ElFies for a macro-benchmark, we can use the weights the ElFies files provided to predict the overall performance like we did for the SimPoint example.
+
+Now we covered all the targeted sampling methods that are supported in gem5, let's move to Statistical sampling!
 
 ---
 
-## SMARTS example
+<!-- _class: start -->
+
+## Statistical Sampling in gem5
+
+---
+
+## SMARTS
+
+SMARTS is one of the statical sampling methods.
+
+It uses the statical model to predict the overall performance with randomly or periodically selected samples.
+We use the small samples distrubutted throughout the whole program execution to predict the average performance. We can also use the average performance to predict the overall performance, such as runtime.
+
+In gem5, we easily perform SMARTS with an exit event handler.
+
+---
+
+## Hands-On Time
+
+### 03-SMARTS
+
+
+
 
 ---
 
