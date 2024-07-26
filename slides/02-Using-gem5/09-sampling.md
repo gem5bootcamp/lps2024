@@ -281,6 +281,283 @@ The SimPoint tag number might not be continuous because it is the tag number for
 
 ---
 
+## SimPoint Checkpoint
+
+Now we have the representative regions and their weights, we will need to find a way to get to those SimPoints.
+
+As introduced in [08-accelerating-simulation](08-accelerating-simulation.md), there are two methods to get to the region of interest. With SimPoint, we usually use checkpointing.
+
+In order to do it easily in gem5, we will be using the [set_se_simpoint_worload](https://github.com/gem5/gem5/blob/stable/src/python/gem5/components/boards/se_binary_workload.py#L166C9-L166C33), the [SimPoint class](https://github.com/gem5/gem5/blob/stable/src/python/gem5/utils/simpoint.py#L41), and the [simpoints_save_checkpoint_generator](https://github.com/gem5/gem5/blob/stable/src/python/gem5/simulate/exit_event_generators.py#L146).
+
+---
+
+## Hands-On Time!
+
+## 01-simpoint
+
+All materials can be found under `materials/02-Using-gem5/09-sampling/01-simpoint`. The completed version is under `materials/02-Using-gem5/09-sampling/01-simpoint/complete`.
+We will still not modify and scripts.
+
+### Goal
+
+- Use the output file from the SimPoint3.2 tool to create checkpoints for all 3 SimPoints
+
+Because it might take some time to take the checkpoints, let's start taking checkpoints with the following commands
+
+```bash
+gem5 -re --outdir=simpoint-checkpoint-m5out simpoint-checkpiont.py
+```
+
+---
+
+## 01-simpoint
+
+Let's look at [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-checkpiont.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-checkpiont.py).
+
+There are three key parts
+
+```python
+# key 1: pass in the representative regions information
+from gem5.utils.simpoint import SimPoint
+simpoint_info = SimPoint(
+    simpoint_interval=1_000_000,
+    simpoint_file_path=Path("/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/results.simpts"),
+    weight_file_path=Path("/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/results.weights"),
+    warmup_interval=1_000_000
+)
+# key 2: pss in the SimPoint object to setup the workload
+board.set_se_simpoint_workload(
+    binary=BinaryResource(local_path=Path("/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/workload/simple_workload").as_posix()),
+    simpoint=simpoint_info
+)
+# key 3: register exit event handler to take the checkpoints
+simulator = Simulator(
+    board=board,
+    on_exit_event={
+        ExitEvent.SIMPOINT_BEGIN: simpoints_save_checkpoint_generator(dir, simpoint_info)
+    },
+)
+```
+
+---
+
+## 01-simpoint
+
+Let's zoom in to key 1.
+
+```python
+from gem5.utils.simpoint import SimPoint
+simpoint_info = SimPoint(
+    simpoint_interval=1_000_000,
+    simpoint_file_path=Path("/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/results.simpts"),
+    weight_file_path=Path("/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/results.weights"),
+    warmup_interval=1_000_000
+)
+```
+
+The name of the parameters for `simpoint_interval`, `simpoint_file_path`, and `weight_file_path` should speak for themselves, but `warmup_interval` is new to us in this section.
+As mentioned in [08-accelerating-simulation](08-accelerating-simulation.md), we should expect most of the micro-architectural states to be cold when restoring a checkpoint, therefore, we need to reserve a warm up period for our region of interest to warm up the micro-architectural states of the system.
+Therefore, we need to setup a `warmup_interval` value here, so when we restore the checkpoint, we can expect to have this length of simulation to warm up our micro-architectural states.
+
+---
+
+## 01-simpoint
+
+The SimPoint class can also detect how much space we have for the warm up period, if there is not enough space, it will automatically shrink the warm up period of that SimPoint to the space available. For example, we have a SimPoint that starts at the beginning of the program, then the warm up period for it should be 0 instruction.
+
+The SimPoint class also automatically sort the SimPoints based on when it starts in terms of instructions.
+
+It also provides getter functions that might be helpful, such as `get_weight_list()` that returns the list of the weights for each SimPoint.
+
+More can be found in the [SimPoint](https://github.com/gem5/gem5/blob/stable/src/python/gem5/utils/simpoint.py) class definition.
+
+---
+
+## 01-simpoint
+
+For key 2 and key 3, let's just trust them, because they are all relied on the information passed in from the `SimPoint` object.
+
+We can declare where why want to store the SimPoint checkpoints by passing in the destination path to the `simpoints_save_checkpoint_generator` as a parameter. For more details, we can find the generator in [src/python/gem5/simulate/exit_event_generators.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/simulate/exit_event_generators.py#L146).
+
+---
+
+## 01-simpoint
+
+After finish checkpointing, we should find all the SimPoint checkpoints under the `materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-checkpoint` because we pass in `simpoint-checkpoint` to the `simpoints_save_checkpoint_generator` as our directory to save the SimPoint checkpoints.
+
+There should be three checkpoint folders called `cpt.SimPoint0`, `cpt.SimPoint1`, and `cpt.SimPoint2`.
+
+We can now use them to run our SimPoints for the simple workload.
+
+---
+
+## Running SimPoint
+
+Now we have the representative SimPoint checkpoint, we can run them with the systems we want to measure and predict the overall performance of running the whole simple workload.
+
+SimPoint relies on the weights we got from the analysis stage to do the prediction.
+The weight is calculated with
+
+$$
+\text{Weight of cluster } i = \frac{\text{Number of regions in cluster } i}{\text{Total number of regions in the workload execution}}
+$$
+
+For example, if we want to calculate the predicted IPC, we should
+$$
+\text{Predicted IPC} = \sum_{i=1}^{n} (\text{Weight of cluster } i \times \text{IPC of cluster } i)
+$$
+
+---
+
+## 01-simpoint
+
+All materials can be found under `materials/02-Using-gem5/09-sampling/01-simpoint`. The completed version is under `materials/02-Using-gem5/09-sampling/01-simpoint/complete`.
+We will still not modify and scripts.
+
+Unlike the simple systems we used for SimPoint analysis and SimPoint checkpointing, we now need to use the systems we actual want to measure the performance of.
+We will be using [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py) to run our SimPoints.
+For our baseline, we are using [materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py), which run the whole simple workload with the detailed system.
+
+Let's start running the SimPoints first before explaining how it works due to time constraint.
+We provided a runscript to run all three in [materials/02-Using-gem5/09-sampling/01-simpoint/run-all-simpoint.sh](../../materials/02-Using-gem5/09-sampling/01-simpoint/run-all-simpoint.sh)
+
+```bash
+./run-all-simpoint.sh
+```
+
+---
+
+## 01-simpoint
+
+Let's look at [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py).
+It has a detailed system that matches the one that is used in our baseline [materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py).
+
+There are a few key that we want to look at. Let's start with the one we are familiar with
+
+```python
+# key 1:
+from gem5.utils.simpoint import SimPoint
+simpoint_info = SimPoint(
+    simpoint_interval=1_000_000,
+    simpoint_file_path=Path("/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/results.simpts"),
+    weight_file_path=Path("/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/results.weights"),
+    warmup_interval=1_000_000
+)
+# key 2:
+board.set_se_simpoint_workload(
+    binary=BinaryResource(local_path=Path("/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/workload/simple_workload").as_posix()),
+    simpoint=simpoint_info,
+    checkpoint=Path(f"simpoint-checkpoint/cpt.SimPoint{args.sid}")
+)
+```
+
+In here, we pass in the SimPoint information and use them to setup a workload that restore the checkpoint with our target SimPoint id.
+
+---
+
+## 01-simpoint
+
+<!-- _class: code-50-percent -->
+
+```python
+# key 3:
+def max_inst():
+    warmed_up = False
+    while True:
+        if warmed_up:
+            print("end of SimPoint interval")
+            yield True
+        else:
+            print("end of warmup, starting to simulate SimPoint")
+            warmed_up = True
+            # Schedule a MAX_INSTS exit event during the simulation
+            simulator.schedule_max_insts(
+                board.get_simpoint().get_simpoint_interval()
+            )
+            m5.stats.dump()
+            m5.stats.reset()
+            yield False
+
+simulator = Simulator(
+    board=board,
+    on_exit_event={ExitEvent.MAX_INSTS: max_inst()},
+)
+```
+
+Here is a exit event handler we defined for handling warm up period and detailed simulation period.
+It schedules an end for the SimPoint after the warm up period, and dump and reset the stats for detailed measurement.
+
+---
+
+## 01-simpoint
+
+<!-- _class: code-60-percent -->
+
+```python
+# key 4:
+warmup_interval = board.get_simpoint().get_warmup_list()[args.sid]
+if warmup_interval == 0:
+    warmup_interval = 1
+print(f"Starting Simulation with warmup interval {warmup_interval}")
+simulator.schedule_max_insts(warmup_interval)
+simulator.run()
+
+print("Simulation Done")
+print(f"Ran SimPoint {args.sid} with weight {board.get_simpoint().get_weight_list()[args.sid]}")
+```
+
+Before the starting the simulation, we need to setup an exit event to indicates the end of the warm up period.
+We use the `simulator.schedule_max_insts()` function to do so.
+We can use the `get_warmup_list()` from the `SimPoint` object to get the warm up period length for each SimPoint.
+Here is one limitation of the `simulator.schedule_max_insts()` function, if it gets a value `0`, there won't be any exit event scheduled, so if the warm up period length is `0`, we have to set it to `1`.
+
+---
+
+## 01-simpoint
+
+After setting up the above keys, the script is ready to run the SimPoint. Note that each simulation can only run one SimPoint.
+
+After the running the SimPoints, we should see the output folder `simpoint0-run`, `simpoint1-run`, and `simpoint2-run`.
+
+Also, we should have the baseline output in `full-detailed-run-m5out`.
+
+Let's try to use the SimPoints' performance to predict the overall IPC!
+
+We have a python script ready to do the prediction in [materials/02-Using-gem5/09-sampling/01-simpoint/predict_overall_ipc.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/predict_overall_ipc.py).
+
+We can run it with
+
+```python
+python3 predict_overall_ipc.py
+```
+
+---
+
+## 01-simpoint
+
+We should see something like this
+
+```bash
+predicted IPC: 1.2577933618669999
+actual IPC: 1.247741
+relative error: 0.8056449108428648%
+```
+
+The python script reads the IPC from our baseline.
+It also reads the detailed simulation period IPC from all our SimPoints' stats files.
+Then it performs the calculation with
+
+```python
+predicted_ipc = 0.0
+for i in range(num_simpoints):
+    predicted_ipc += simpoint_ipcs[i] * simpoint_weights[i]
+```
+As the output suggests, the relative error between the predicted IPC and the actual baseline IPC is around 0.81%.
+
+---
+
+## Summary in SimPoint
+
 
 
 ---
