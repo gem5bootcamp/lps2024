@@ -716,7 +716,7 @@ We will still not modify and scripts.
 We can run it with the following command
 
 ```bash
-gem5 -re --outdir=full-detailed-run-m5out full-detailed-run.py
+gem5 -re SMARTS.py
 ```
 This script will use SMARTS on the workload from 01-simpiont, so we can use the baseline performance from the [materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py) to validate our predicted performance using SMARTS.
 

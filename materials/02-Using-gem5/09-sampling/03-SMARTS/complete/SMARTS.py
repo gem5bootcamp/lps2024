@@ -28,7 +28,7 @@
 Usage
 -----
 
-gem5 -re --outdir=full-detailed-run-m5out full-detailed-run.py
+gem5 -re SMARTS.py
 
 """
 
