@@ -54,7 +54,7 @@ cache_hierarchy = PrivateL1SharedL2CacheHierarchy(
 memory = DualChannelDDR4_2400("3GB")
 
 processor = SimpleProcessor(
-    # This processor uses a simple timing CPU with 1 core
+    # This processor uses a simple timing CPU with 8 cores
     cpu_type=CPUTypes.TIMING, isa=ISA.X86,num_cores=8
 )
 
@@ -101,7 +101,6 @@ simulator = Simulator(
     }
 )
 
-# simulation starts here
 simulator.run()
 
 print("Simulation Done\n")

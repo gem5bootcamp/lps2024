@@ -76,12 +76,12 @@ They use the performance of the randomly distributed samples to predict the over
 
 ---
 
-## What should we know before we apply the techinuqes
+## What should we know before we apply the techniques
 
 <!-- warn people that different types of samplings guarentee different things -->
 ### No matter how great a tool or a technique is, misusing it can be DANGEROUS
 
-Before using any of the sampling techiques, we need to make sure the sampling techique works for our experiments.
+Before using any of the sampling techniques, we need to make sure the sampling technique works for our experiments.
 For example, SimPoint is designed to work with single-threaded workloads only, so **if our experiments require multi-threaded workloads, we should NOT use SimPoint with them.**
 <!-- _class: center-image -->
 ![width:500](09-sampling/misuse_tool.png)
@@ -383,7 +383,7 @@ More can be found in the [SimPoint](https://github.com/gem5/gem5/blob/stable/src
 
 For key 2 and key 3, let's just trust them, because they are all relied on the information passed in from the `SimPoint` object.
 
-We can declare where why want to store the SimPoint checkpoints by passing in the destination path to the `simpoints_save_checkpoint_generator` as a parameter. For more details, we can find the generator in [src/python/gem5/simulate/exit_event_generators.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/simulate/exit_event_generators.py#L146).
+We can declare where we want to store the SimPoint checkpoints by passing in the destination path to the `simpoints_save_checkpoint_generator` as a parameter. For more details, we can find the generator in [src/python/gem5/simulate/exit_event_generators.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/simulate/exit_event_generators.py#L146).
 
 ---
 
@@ -435,10 +435,8 @@ We provided a runscript to run all three in [materials/02-Using-gem5/09-sampling
 
 ## 01-simpoint
 
-Let's look at [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py).
-It has a detailed system that matches the one that is used in our baseline [materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py).
-
-There are a few key that we want to look at. Let's start with the one we are familiar with
+Let's look at [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py). It has a detailed system that matches the one that is used in our baseline [materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py).
+There are a few keys that we want to look at. Let's start with the one we are familiar with
 
 ```python
 # key 1:
@@ -490,7 +488,7 @@ simulator = Simulator(
 )
 ```
 
-Here is a exit event handler we defined for handling warm up period and detailed simulation period.
+Here is an exit event handler we defined for handling warm up period and detailed simulation period.
 It schedules an end for the SimPoint after the warm up period, and dump and reset the stats for detailed measurement.
 
 ---
@@ -588,12 +586,12 @@ Therefore, if we know how to do sampling with the SimPoint method, it should not
 LoopPoint is similar to SimPoint with some key differences.
 LoopPoint uses the number of time a loop is executed to mark the regions instead of using instruction executed.Therefore, we need collect the loop execution information in the analysis stage beside the basic block execution information.
 Other than this, in terms of the process, it is really similar to SimPoint.
-We will not do a detailed example on LoopPoint, but there are example under the [configs/example/gem5_library/looppoints](https://github.com/gem5/gem5/tree/stable/configs/example/gem5_library/looppoints). We have the infrastructures ready for the LoopPoint checkpointing and running the LoopPoint in gem5 24.0. The LoopPoint analysis is tested and ready to be upstream in gem5 24.1.
+We will not do a detailed example on LoopPoint, but there are example under the [configs/example/gem5_library/looppoints](https://github.com/gem5/gem5/tree/stable/configs/example/gem5_library/looppoints). We have the infrastructures ready for the LoopPoint checkpointing and running the LoopPoint in gem5 v24.0. The LoopPoint analysis is tested and ready to be upstream in gem5 v24.1.
 
 ElFies is a checkpointing method that creates checkpoint executables out of a large workload execution. It can be used with LoopPoint to create executables of the representative regions.
 Like LoopPoint, it uses the number of time a loop has been executed to mark the beginning and the end of the region of interest, so we need those information to execute ElFies in gem5.
 
-[link](https://looppoint.github.io/hpca2023/) for more information about LoopPoint and ElFies
+[Link](https://looppoint.github.io/hpca2023/) for more information about LoopPoint and ElFies
 
 ---
 
@@ -678,7 +676,7 @@ simulator = Simulator(
 
 After finish running all the ElFies for a macro-benchmark, we can use the weights the ElFies files provided to predict the overall performance like we did for the SimPoint example.
 
-Now we covered all the targeted sampling methods that are supported in gem5, let's move to Statistical sampling!
+Now we covered all the targeted sampling methods that are supported in gem5, let's dive in to Statistical Sampling!
 
 ---
 
@@ -693,9 +691,16 @@ Now we covered all the targeted sampling methods that are supported in gem5, let
 SMARTS is one of the statical sampling methods.
 
 It uses the statical model to predict the overall performance with randomly or periodically selected samples.
-We use the small samples distrubutted throughout the whole program execution to predict the average performance. We can also use the average performance to predict the overall performance, such as runtime.
+We use the small samples distributed throughout the whole program execution to predict the average performance. We can also use the average performance to predict the overall performance, such as runtime.
 
-In gem5, we easily perform SMARTS with an exit event handler.
+Before running the simulation, we need to decide a few statistical parameters
+
+- `n`: the number of the samples. It is a number of count.
+- `k`: the systematic sampling interval. It is a number of count.
+- `U`: the sampling unit size. It is a number of the instruction executed.
+- `W`: the length of the detailed warm up period. It is a number of the instruction executed.
+
+<!-- add a visualization here -->
 
 ---
 
@@ -703,9 +708,111 @@ In gem5, we easily perform SMARTS with an exit event handler.
 
 ### 03-SMARTS
 
+All materials can be found under `materials/02-Using-gem5/09-sampling/03-SMARTS`. The completed version is under `materials/02-Using-gem5/09-sampling/03-SMARTS/complete`.
+We will still not modify and scripts.
 
+[materials/02-Using-gem5/09-sampling/03-SMARTS/SMARTS.py](../../materials/02-Using-gem5/09-sampling/03-SMARTS/SMARTS.py) is an example of how to use exit event handler to perform SMARTS.
 
+We can run it with the following command
+
+```bash
+gem5 -re --outdir=full-detailed-run-m5out full-detailed-run.py
+```
+This script will use SMARTS on the workload from 01-simpiont, so we can use the baseline performance from the [materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py) to validate our predicted performance using SMARTS.
+
+---
+
+## 03-SMARTS
+
+Let's look at the `smarts_generator` with the statistical parameters.
+
+- `n`: the number of the samples. It is a number of count.
+- `k`: the systematic sampling interval. It is a number of count.
+- `U`: the sampling unit size. It is a number of the instruction executed.
+- `W`: the length of the detailed warm up period. It is a number of the instruction executed.
+
+Each interval instruction length is k*U.
+The warmup part starts at (k-1)*U-W
+The detailed simulation part starts at (k-1)*U
+
+This exit generator only works with SwitchableProcessor.
+When it reaches to the start of the detailed warmup part, it resets the stats; then it switches the core type and schedule for the end of the warmup part and the end of the interval. When it reaches to the end of the detailed warmup part, it resets the stats. When it reaches to the end of the detailed simulation, it dumps the stats; then it switches the core type and schedule for the start of the next detailed warmup part.
+
+---
+
+## 03-SMARTS
+
+In order to determine the `k` and `W`, we first need to determine what is our ideal n and ideal n.
+In the SMARTS paper, they define a large sample size as $n > 30$. For this exercise, let's set our ideal n as 50.
+After setting up the ideal n, we can use it with the instructions executed in the workload to determine the ideal k.
+Here is an example of how it can be done in python
+
+```python
+program_length = 9115640
+ideal_region_length = math.ceil(program_length/50)
+ideal_U = 1000
+ideal_k = math.ceil(ideal_region_length/ideal_U)
+ideal_W = 2 * ideal_U
+```
+With this parameters, we will have about 50 samples. Each sample has a gap (k-1)*U=182000 instructions from each other. Each sample has 1000 instructions in detailed measurement and 2000 instructions of warm up period.
+
+---
+
+## 03-SMARTS
+
+With these parameters, what the `smarts_generator` will
+
+<!-- do some visualization here -->
+
+---
+
+## 03-SMARTS
+
+Now we understand what the `smarts_generator` will do, let's look at the system we are using on the [materials/02-Using-gem5/09-sampling/03-SMARTS/SMARTS.py](../../materials/02-Using-gem5/09-sampling/03-SMARTS/SMARTS.py).
+It uses exactly the same system as the [materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py), except that it uses a `SimpleSwitchableProcessor` to switch between ATOMIC CPU and O3 CPU for fast-forwarding and detailed simulation.
+
+If the simulation is ran with
+
+```bash
+gem5 -re --outdir=full-detailed-run-m5out full-detailed-run.py
+```
+we can run the [materials/02-Using-gem5/09-sampling/03-SMARTS/predict_ipc.py](../../materials/02-Using-gem5/09-sampling/03-SMARTS/predict_ipc.py) with to predict the overall IPC and calculate the relative error with the baseline IPC
+
+```bash
+python3 predict_ipc.py
+```
+
+---
+
+## 03-SMARTS
+
+What [materials/02-Using-gem5/09-sampling/03-SMARTS/predict_ipc.py](../../materials/02-Using-gem5/09-sampling/03-SMARTS/predict_ipc.py) does is read the IPC from each sample and sum them up, then divided with the total number of samples to calculate the average IPC of the program.
+
+$\text{Average IPC} = \frac{\sum_{i=1}^{n} \text{IPC}_i}{n}$
+
+Here is what we expect to see
+
+```bash
+Number of samples: 50
+Predicted Overall IPC: 1.2563117400000001
+Actual Overall IPC: 1.247741
+Relative Error: 0.6869005667041583%
+```
+As the output suggests, the relative error between the predicted IPC and the actual baseline IPC is around 0.69%.
 
 ---
 
 ## Summary
+<!-- _class: center-image -->
+
+Now we experimented both targeted and statistical sampling in gem5, let's end it with the trade-offs.
+
+![width:1100](09-sampling/tradeoff-table.png)
+
+---
+
+## Question in Mind
+
+### When we run the SimPoints, we need to run a separate simulation for each SimPoint, what if we can do it all in one simulation?
+
+<!-- throw a hook to 11-multisim.md -->

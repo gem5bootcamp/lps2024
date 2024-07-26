@@ -84,7 +84,7 @@ def smarts_generator(
 ):
     """
     :param k: the systematic sampling interval. Each interval simulation k*U
-    instructions. The interval includes the fastforwarding part, detailed
+    instructions. The interval includes the fast-forwarding part, detailed
     warmup part, and the detail simulation part.
     :param U: sampling unit size. The instruction length in each unit.
     :param W: the length of the detailed warmup part.
@@ -94,14 +94,12 @@ def smarts_generator(
     The detailed simulation part starts at (k-1)*U
 
     This exit generator only works with SwitchableProcessor.
-    When it reaches to the start of the detailed warmup part, it dumps and
-    resets the stats; then it switchs the core type and schedule for the end
-    of the warmup part and the end of the interval.
-    When it reaches to the end of the detailed warmup part, it dumps and resets
-    the stats.
-    When it reaches to the end of the detailed simulation, it dumps and resets
-    the stats; then it switches the core type and schedule for the start of the
-    next detailed warmup part.
+    When it reaches to the start of the detailed warmup part, it resets the
+    stats; then it switches the core type and schedule for the end of the
+    warmup part and the end of the interval. When it reaches to the end of the
+    detailed warmup part, it resets the stats. When it reaches to the end of
+    the detailed simulation, it dumps the stats; then it switches the core type
+    and schedule for the start of the next detailed warmup part.
     """
     is_switchable = isinstance(processor, SimpleSwitchableProcessor)
     warmup_start = U * (k - 1) - W
