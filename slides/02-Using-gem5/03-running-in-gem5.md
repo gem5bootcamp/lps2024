@@ -530,26 +530,30 @@ A **traffic generator** generates synthetic memory traffic in order to test memo
 
 ![Traffic generator center](03-running-in-gem5-imgs/t_gen_diagram.svg)
 
+
+
+The range of memory addresses, step size in between addresses, and duration of requests sent to the memory is all customizable.
+
+
 ---
 
 ## gem5: Traffic Generator Classes
 
-gem5's standard library has a collection of traffic generators. All the tarffic generator classes inherit from `AbstractGenerator`
+gem5's standard library has a collection of traffic generators. All the traffic generator classes inherit from `AbstractGenerator`
 
 - The classes simulate any memory accesses by creating **traffic generator cores**.
-- These traffic generator cores use a `SimObject` called `PyTrafficGen` to create **synthetic traffic**.
-
-`_create_cores` is called in each traffic generator
-
-- Provides a list of the cores it has created
-- List is used to replace the processor cores on whatever board is initialized
+- All of the traffic generators and their cores are found in `src/python/gem5/components/processors`.
+- For most types of traffic generator, you will find that is a generator.py and a generator_core.py file.
+- The generator_core.py file will create **synthetic traffic** by using a `SimObject` called `PyTrafficGen`.
+- The generator.py file will create a list of generator cores that will replace the processing cores in a board.
 
 ---
+<!-- _class: center-image -->
 
 ## Our Focus
 
 - Generators in gem5 found in: `src/python/gem5/components/processors`
-- We will be focusing on `LinearGenerator` and `RandomGenerator` generators (and a surprise new one later!).
+- We will be focusing on `LinearGenerator` and `RandomGenerator` generators (and a new one later!).
   - They are essentially the same, but one performs linear memory accesses and one performs random memory accesses
 
 ![Different Generators](03-running-in-gem5-imgs/generator_inheritance.svg)
@@ -591,7 +595,7 @@ First, we will use a Linear Traffic Generator to simulate linear traffic.
 `min_addr`: 0, `max_addr`: 4, `block_size`: 1, `num_cores`: 1
 We want to access addresses 0 through 4 so a linear access would mean accessing memory in the following order.
 
-![Linear Generator Param](03-running-in-gem5-imgs/linear_gen_param.svg.svg)
+![Linear Generator Param](03-running-in-gem5-imgs/updating_linear_gen.svg)
 
 -----
 
@@ -605,7 +609,7 @@ Next, we will use a Random Traffic Generator to simulate random traffic.
 `min_addr`: 0, `max_addr`: 4, `block_size`: 1, `num_cores`: 1
 We want to access addresses 0 through 4 so a random access would mean accessing memory in any order. (In this example, we are showing the order: 1, 3, 2, 0).
 
-![Random Generator Param](03-running-in-gem5-imgs/random_gen_param.svg)
+![Random Generator Param](03-running-in-gem5-imgs/updating_random_gen.svg)
 
 
 
