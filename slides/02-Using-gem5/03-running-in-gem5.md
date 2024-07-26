@@ -518,6 +518,22 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 
 ---
 
+## Summary
+
+### SE mode does NOT implement many things!​
+
+- Filesystem​
+- Most of systemcalls
+- I/O devices
+- Interrupts
+- TLB misses
+- Page table walks
+- Context switches
+- multiple threads
+  - You may have a multithreaded execution, but there's no context switches & no spin locks​
+
+---
+
 <!-- _class: start -->
 ## Traffic Generator in gem5
 
@@ -539,9 +555,9 @@ The range of memory addresses, step size in between addresses, and duration of r
 
 ## gem5: Traffic Generator Classes
 
-gem5's standard library has a collection of traffic generators. All the traffic generator classes inherit from `AbstractGenerator`
+gem5's standard library has a collection of components for generating synthetic traffic. All such components inherit from `AbstractGenerator`.
 
-- The classes simulate any memory accesses by creating **traffic generator cores**.
+- The components simulate various accesses.
 - All of the traffic generators and their cores are found in `src/python/gem5/components/processors`.
 - For most types of traffic generator, you will find that is a generator.py and a generator_core.py file.
 - The generator_core.py file will create **synthetic traffic** by using a `SimObject` called `PyTrafficGen`.
@@ -561,7 +577,7 @@ gem5's standard library has a collection of traffic generators. All the traffic 
 ---
 <!-- _class: two-col -->
 
-## Traffic Generator Classes have Configurable Parameters
+## LinearGenerator/RandomGenerator/StridedGenerator: Knobs
 
 - **num_cores**
   - The number of cores in your system
@@ -685,12 +701,13 @@ motherboard = TestBoard(
     cache_hierarchy=cache_hierarchy,
 )
 ```
+
 ---
 <!-- _class: code-100-percent -->
+
 ## 06-traffic-gen: Linear Traffic Generator: Running the Code
 
 ### Run the following commands to see a Linear Traffic Generator in action
-
 
 ```sh
 cd ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/
@@ -705,8 +722,7 @@ We will see some of the expected output in the following slide.
 
 ## 06-traffic-gen: Linear Traffic Generator Results
 
-
-```
+```sh
     596: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 0, size 64
     596: system.processor.cores.generator: Next event scheduled at 1192
    1192: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 40, size 64
@@ -832,8 +848,6 @@ class HybridGenerator(AbstractGenerator):
 
 ## 06-traffic-gen: Designing a Hybrid Generator
 
-Earlier, we discussed that Traffic Generators don't generate synthetic traffic. They create a list of cores that call `PyTrafficGen()` to simulate traffic.
-
 Right now, our `HybridGenerator` class has a constructor but does not return any list of cores. (Note that generators just need to return a list of cores. They don't necessarily need a function to do this.) Therefore, we need to create this method.
 
 If you look at [hybrid_generator.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py), you'll see that a method called `_create_cores`. This is the method we will use to create our list of cores.
@@ -869,10 +883,6 @@ core_list = []
 num_linear_cores = biggest_power_of_two_smaller_than(num_cores)
 num_random_cores = num_cores - num_linear_cores
 ```
-
-As mentioned earlier, the number of Linear Generator Cores will be the biggest power of two that is smaller than the total number of cores.
-
-The cores that aren't Linear Generator Cores should be Random Generator Cores.
 
 ---
 
@@ -1240,25 +1250,8 @@ Finally, we saw some of the statistical differences between varying configuratio
 
 ---
 
-## Summary
-
-### SE mode does NOT implement many things!​
-
-- Filesystem​
-- Most of systemcalls
-- I/O devices
-- Interrupts
-- TLB misses
-- Page table walks
-- Context switches
-- multiple threads
-  - You may have a multithreaded execution, but there's no context switches & no spin locks​
-
----
-
 ## More summaries
 
 ### m5ops can be used to communicate between simulated workload and the simulator
 
 ### Traffic generator can abstract away the details of a data requestor such as CPU for generating test cases for memory systems
-
