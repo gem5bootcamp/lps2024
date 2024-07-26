@@ -103,10 +103,8 @@ In this case, you cannot have a description of the image, unfortunately.
       - Need to be created :exclamation:
       - Need to be tested :exclamation:
   - 02: gem5 resources: (Harshil)
-    - Slides
-      - Needs an editing pass :exclamation:
-    - Materials
-      - Noah to go through and test :exclamation:
+    - Slides :white_check_mark:
+    - Materials :white_check_mark:
   - 03: running: (Zhantong)
     - Slides
       - (Today) Mysore/Saili working on adding some missing slides on traffic gen :exclamation:
