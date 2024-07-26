@@ -127,7 +127,7 @@ class HybridGenerator(AbstractGenerator):
         address for that section
         """
         # (2)
-        ranges = partition_range(min_addr, max_addr, num_linear_cores)
+        addr_ranges = partition_range(min_addr, max_addr, num_linear_cores)
 
         """
         The first n cores (where n is the largest power of 2 that is
@@ -142,8 +142,8 @@ class HybridGenerator(AbstractGenerator):
                 duration=duration,
                 rate=rate,
                 block_size=block_size,
-                min_addr=ranges[i][0],
-                max_addr=ranges[i][1],
+                min_addr=addr_ranges[i][0],
+                max_addr=addr_ranges[i][1],
                 rd_perc=rd_perc,
                 data_limit=data_limit,)
             )

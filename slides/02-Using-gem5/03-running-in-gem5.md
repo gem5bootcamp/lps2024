@@ -878,10 +878,10 @@ If we want to give each Linear Traffic Generator Core an equal chunk of the give
 To do this, we need to add the following line to our code under the comment labeled `(2)`.
 
 ```python
-ranges = partition_range(min_addr, max_addr, num_linear_cores)
+addr_ranges = partition_range(min_addr, max_addr, num_linear_cores)
 ```
 
-`ranges` will be a `num_linear_cores`-long list of equal-length partitions from `min_addr` to `max_addr`.
+`addr_ranges` will be a `num_linear_cores`-long list of equal-length partitions from `min_addr` to `max_addr`.
 
 ---
 <!-- _class: two-col -->
@@ -900,8 +900,8 @@ for i in range(num_linear_cores):
                 duration=duration,
                 rate=rate,
                 block_size=block_size,
-                min_addr=ranges[i][0],
-                max_addr=ranges[i][1],
+                min_addr=addr_ranges[i][0],
+                max_addr=addr_ranges[i][1],
                 rd_perc=rd_perc,
                 data_limit=data_limit,)
             )
@@ -926,8 +926,8 @@ for i in range(num_linear_cores):
                 duration=duration,
                 rate=rate,
                 block_size=block_size,
-                min_addr=ranges[i][0],
-                max_addr=ranges[i][1],
+                min_addr=addr_ranges[i][0],
+                max_addr=addr_ranges[i][1],
                 rd_perc=rd_perc,
                 data_limit=data_limit,)
             )
@@ -940,12 +940,12 @@ for i in range(num_linear_cores):
 For example, if `HybridGeneratorCore` is initialized with `min_addr=0`, `max_addr=32768`, and `num_cores=16` (8 Linear Traffic Generator Cores), then
 
 ```sh
-ranges=
+addr_ranges=
   [(0, 4096), (4096, 8192), (8192, 12288), (12288, 16384),
   (16384, 20480), (20480, 24576), (24576, 28672), (28672, 32768)]
 ```
 
-For the i'th Linear Traffic Generator Core, we take the i'th entry in `ranges`. `min_addr` is the first value that entry, and `max_addr` is the second value in that entry.
+For the i'th Linear Traffic Generator Core, we take the i'th entry in `addr_ranges`. `min_addr` is the first value that entry, and `max_addr` is the second value in that entry.
 
 In our example, Linear Traffic Generator Core 0 gets initialized with `min_addr=0` and `max_addr=4096`, Linear Traffic Generator Core 2 gets initialized with `min_addr=4096` and `max_addr=8192`, etc.
 
