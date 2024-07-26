@@ -17,3 +17,8 @@ title: Developing SimObjects in gem5
 - Base utilities like bitsets
 - Random number generation
 - Signal ports?
+
+---
+
+## Probe points
+
