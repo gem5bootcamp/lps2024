@@ -1,0 +1,404 @@
+{
+    "sample-data": {
+        "0": {
+            "warmup-start-tick": 333,
+            "warmup-start-inst-count": 1,
+            "detail-start-tick": 5891103,
+            "detail-start-inst-count": 2000,
+            "detail-end-tick": 8702955,
+            "detail-end-inst-count": 1002
+        },
+        "1": {
+            "warmup-start-tick": 147948570,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 148484034,
+            "detail-start-inst-count": 3003,
+            "detail-end-tick": 148798719,
+            "detail-end-inst-count": 1000
+        },
+        "2": {
+            "warmup-start-tick": 295373331,
+            "warmup-start-inst-count": 180001,
+            "detail-start-tick": 295957413,
+            "detail-start-inst-count": 3003,
+            "detail-end-tick": 296216154,
+            "detail-end-inst-count": 999
+        },
+        "3": {
+            "warmup-start-tick": 442793097,
+            "warmup-start-inst-count": 179999,
+            "detail-start-tick": 443315241,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 443573982,
+            "detail-end-inst-count": 999
+        },
+        "4": {
+            "warmup-start-tick": 590150925,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 590673069,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 590931810,
+            "detail-end-inst-count": 999
+        },
+        "5": {
+            "warmup-start-tick": 737508753,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 738033228,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 738292302,
+            "detail-end-inst-count": 1000
+        },
+        "6": {
+            "warmup-start-tick": 884870244,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 885392388,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 885651129,
+            "detail-end-inst-count": 999
+        },
+        "7": {
+            "warmup-start-tick": 1032228072,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 1032750216,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 1033008957,
+            "detail-end-inst-count": 999
+        },
+        "8": {
+            "warmup-start-tick": 1179585900,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 1180110375,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 1180369449,
+            "detail-end-inst-count": 1000
+        },
+        "9": {
+            "warmup-start-tick": 1326947058,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 1327469202,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 1327727943,
+            "detail-end-inst-count": 999
+        },
+        "10": {
+            "warmup-start-tick": 1474304886,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 1474827030,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 1475085771,
+            "detail-end-inst-count": 999
+        },
+        "11": {
+            "warmup-start-tick": 1621662714,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 1622187189,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 1622446263,
+            "detail-end-inst-count": 1000
+        },
+        "12": {
+            "warmup-start-tick": 1769023872,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 1769546016,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 1769804757,
+            "detail-end-inst-count": 999
+        },
+        "13": {
+            "warmup-start-tick": 1916381700,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 1916903844,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 1917162585,
+            "detail-end-inst-count": 999
+        },
+        "14": {
+            "warmup-start-tick": 2063739528,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 2064264003,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 2064523077,
+            "detail-end-inst-count": 1000
+        },
+        "15": {
+            "warmup-start-tick": 2211101019,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 2211623163,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 2211881904,
+            "detail-end-inst-count": 999
+        },
+        "16": {
+            "warmup-start-tick": 2358458847,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 2358980991,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 2359239732,
+            "detail-end-inst-count": 999
+        },
+        "17": {
+            "warmup-start-tick": 2505816675,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 2506338819,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 2506600224,
+            "detail-end-inst-count": 998
+        },
+        "18": {
+            "warmup-start-tick": 2653178166,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 2653700310,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 2653959051,
+            "detail-end-inst-count": 999
+        },
+        "19": {
+            "warmup-start-tick": 2800535994,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 2801058138,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 2801316879,
+            "detail-end-inst-count": 999
+        },
+        "20": {
+            "warmup-start-tick": 2947893822,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 2948415966,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 2948677371,
+            "detail-end-inst-count": 998
+        },
+        "21": {
+            "warmup-start-tick": 3095254980,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 3095777124,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 3096035865,
+            "detail-end-inst-count": 999
+        },
+        "22": {
+            "warmup-start-tick": 3242612808,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 3243134952,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 3243393693,
+            "detail-end-inst-count": 999
+        },
+        "23": {
+            "warmup-start-tick": 3389970636,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 3390492780,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 3390754185,
+            "detail-end-inst-count": 998
+        },
+        "24": {
+            "warmup-start-tick": 3537328464,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 3537853605,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 3538112346,
+            "detail-end-inst-count": 999
+        },
+        "25": {
+            "warmup-start-tick": 3684689289,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 3685211433,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 3685470174,
+            "detail-end-inst-count": 999
+        },
+        "26": {
+            "warmup-start-tick": 3832047117,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 3832569261,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 3832828002,
+            "detail-end-inst-count": 999
+        },
+        "27": {
+            "warmup-start-tick": 3979404945,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 3979929420,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 3980188494,
+            "detail-end-inst-count": 1000
+        },
+        "28": {
+            "warmup-start-tick": 4126766103,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 4127288247,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 4127546988,
+            "detail-end-inst-count": 999
+        },
+        "29": {
+            "warmup-start-tick": 4274123931,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 4274646075,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 4274904816,
+            "detail-end-inst-count": 999
+        },
+        "30": {
+            "warmup-start-tick": 4421481759,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 4422006234,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 4422265308,
+            "detail-end-inst-count": 1000
+        },
+        "31": {
+            "warmup-start-tick": 4568842917,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 4569365061,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 4569623802,
+            "detail-end-inst-count": 999
+        },
+        "32": {
+            "warmup-start-tick": 4716200745,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 4716722889,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 4716981630,
+            "detail-end-inst-count": 999
+        },
+        "33": {
+            "warmup-start-tick": 4863558573,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 4864083048,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 4864342122,
+            "detail-end-inst-count": 1000
+        },
+        "34": {
+            "warmup-start-tick": 5010920064,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 5011442208,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 5011700949,
+            "detail-end-inst-count": 999
+        },
+        "35": {
+            "warmup-start-tick": 5158277892,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 5158800036,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 5159058777,
+            "detail-end-inst-count": 999
+        },
+        "36": {
+            "warmup-start-tick": 5305635720,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 5306160195,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 5306419269,
+            "detail-end-inst-count": 1000
+        },
+        "37": {
+            "warmup-start-tick": 5452997211,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 5453519355,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 5453778096,
+            "detail-end-inst-count": 999
+        },
+        "38": {
+            "warmup-start-tick": 5600355039,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 5600877183,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 5601135924,
+            "detail-end-inst-count": 999
+        },
+        "39": {
+            "warmup-start-tick": 5747712867,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 5748235011,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 5748496416,
+            "detail-end-inst-count": 998
+        },
+        "40": {
+            "warmup-start-tick": 5895074025,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 5895596169,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 5895854910,
+            "detail-end-inst-count": 999
+        },
+        "41": {
+            "warmup-start-tick": 6042431853,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 6042953997,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 6043212738,
+            "detail-end-inst-count": 999
+        },
+        "42": {
+            "warmup-start-tick": 6189789681,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 6190311825,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 6190573230,
+            "detail-end-inst-count": 998
+        },
+        "43": {
+            "warmup-start-tick": 6337150839,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 6337672983,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 6337931724,
+            "detail-end-inst-count": 999
+        },
+        "44": {
+            "warmup-start-tick": 6484508667,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 6485030811,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 6485289552,
+            "detail-end-inst-count": 999
+        },
+        "45": {
+            "warmup-start-tick": 6631866495,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 6632388639,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 6632647380,
+            "detail-end-inst-count": 999
+        },
+        "46": {
+            "warmup-start-tick": 6779224323,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 6779748798,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 6780007872,
+            "detail-end-inst-count": 1000
+        },
+        "47": {
+            "warmup-start-tick": 6926585481,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 6927107625,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 6927366366,
+            "detail-end-inst-count": 999
+        },
+        "48": {
+            "warmup-start-tick": 7073943309,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 7074465453,
+            "detail-start-inst-count": 3002,
+            "detail-end-tick": 7074724194,
+            "detail-end-inst-count": 999
+        },
+        "49": {
+            "warmup-start-tick": 7221301137,
+            "warmup-start-inst-count": 180000,
+            "detail-start-tick": 7221825612,
+            "detail-start-inst-count": 3000,
+            "detail-end-tick": 7222084686,
+            "detail-end-inst-count": 1000
+        }
+    }
+}

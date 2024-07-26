@@ -3,4 +3,4 @@ actual_ipc = 1.247741
 
 print(f"predicted IPC: {predicted_ipc}")
 print(f"actual IPC: {actual_ipc}")
-print(f"relative error: {abs(actual_ipc - predicted_ipc)/actual_ipc}")
+print(f"relative error: {(abs(actual_ipc - predicted_ipc)/actual_ipc)*100}%")
