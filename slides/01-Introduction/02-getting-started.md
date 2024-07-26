@@ -72,7 +72,29 @@ Again, note that this is the repo where the slides are.
 
 ---
 
+## Navigating the repository
+
+- **`gem5/`**
+  - The gem5 source code (v24.0). A sub-repository
+- **`gem5-resources/`**
+  - Source code for gem5's resources (workloads, disks, etc.). Also a sub-repository
+- **`slides/`**
+  - Markdown version of these slides. Used to build the website/slides.
+  - You can also preview the slides in vs code.
+- **`materials/`**
+  - Python scripts and other materials for the tutorial.
+  - Most of the live coding examples will be here.
+  - Completed examples are in the `completed` directories.
+- A few other things for the website, automatic building, vs code configurations, etc.
+
+Both the slides and materials are broken down into sections and lessons.
+We use numbering to keep them in order.
+
+---
+
 ## Building gem5
+
+> Don't do this right now!
 
 ```sh
 > scons build/ALL/gem5.opt
@@ -82,8 +104,19 @@ Again, note that this is the repo where the slides are.
 - If you're using codespaces, we have prebuilt binaries for you.
 - We'll talk more about the build system and options later.
 
-[![asciicast](https://asciinema.org/a/6rAd24brgGqb3Sj8Kmvy1msaG.svg)](https://asciinema.org/a/6rAd24brgGqb3Sj8Kmvy1msaG)
 <script src="https://asciinema.org/a/6rAd24brgGqb3Sj8Kmvy1msaG.js" id="asciicast-6rAd24brgGqb3Sj8Kmvy1msaG" async="true"></script>
+
+---
+
+## Time for a live coding example
+
+While we do this, feel free to follow along in the slides.
+
+The slides (found in `slides/01-Introduction/02-getting-started.md`) contain the code snippets we will be using. You can copy-paste from there if you get behind.
+
+Press the "Preview" button in VS Code to see a rendered version of the slides locally.
+
+![Where to press the preview button](02-getting-started-imgs/preview-button.drawio.png)
 
 ---
 
@@ -95,8 +128,12 @@ from gem5.resources.resource import obtain_resource
 from gem5.simulate.simulator import Simulator
 ```
 
-This template code is available in the [materials/](/materials/...) directory.
-Open the `materials/01-basic.py` file and start editing.
+This template code is available in the `materials/01-Introduction/02-getting-started/` directory.
+Open the [`basic.py`](../../materials/01-Introduction/02-getting-started/basic.py) file and start editing.
+
+Throughout this bootcamp we will be editing/extending files in the materials directory.
+
+Links to the code are available in the slides if you're using VS Code.
 
 ---
 
@@ -113,11 +150,11 @@ The X86DemoBoard has the following properties:
 - A MESI Two Level Cache Hierarchy, with 32kB data and instruction case and a 1MB L2 Cache.
 - Will be run as a Full-System simulation.
 
-Source is available: [src/python/gem5/prebuilt/demo/x86_demo_board.py](/src/python/gem5/prebuilt/demo/x86_demo_board.py).
+Source is available: [src/python/gem5/prebuilt/demo/x86_demo_board.py](../../gem5/src/python/gem5/prebuilt/demo/x86_demo_board.py).
 
 ---
 
-## Let't load some software
+## Let's load some software
 
 ```python
 board.set_workload(
@@ -167,8 +204,25 @@ sim.run(20_000_000_000) # 20 billion ticks or 20 ms
 To run it:
 
 ```sh
-> gem5 materials/01-basic.py
+> gem5 basic.py
 ```
+
+---
+
+## Results
+
+gem5 has a lot of output.
+It's both verbose on stdout, but also writes many files in `m5out/`.
+
+### gem5's output
+
+In `m5out/` you'll see:
+
+- `stats.txt`: The statistics from the simulation.
+- `board.pc.com_1.device`: The console output from the simulation.
+- `citations.bib`: Citations for the models and resources used.
+- `config.ini/json`: The configuration file used.
+- `config*.pdf/svg`: A visualization of the configuration for the system and the caches.
 
 ---
 
