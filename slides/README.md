@@ -107,38 +107,38 @@ In this case, you cannot have a description of the image, unfortunately.
     - Materials :white_check_mark:
   - 03: running: (Zhantong)
     - Slides
-      - (Today) Mysore/Saili working on adding some missing slides on traffic gen :exclamation:
-      - Mahyar to take editing pass :exclamation:
+      - Mysore/Saili working on adding some missing slides on traffic gen :white_check_mark:
+      - (WIP) Mahyar to take editing pass :exclamation:
     - Materials
-      - Mysore/Saili to make traffic gen :exclamation:
+      - Mysore/Saili to make traffic gen :white_check_mark:
       - Zhantong to test traffic gen :exclamation:
   - 04: cores: (Jason)
     - Slides :white_check_mark:
     - Materials :white_check_mark:
   - 05: cache hierarchy: (Jason) :heavy_exclamation_mark:
     - Slides
+      - Mahyar can potentially help.
       - Need some small changes :exclamation:
       - Need an editing pass :exclamation:
     - Materials :white_check_mark:
   - 06: memory: Mostly done (William) **
     - Slides
-      - Need an editing pass :exclamation:
+      - Need an editing pass :heavy_exclamation:
     - Materials :white_check_mark:
   - 07: Full system: Mostly done (Harshil)
     - Slides
-      - Needs an editing pass :exclamation:
+      - Needs an editing pass :white_checkmark:
+      - Needs a PR, almost done
     - Materials
-      - (Thurs) Mysore to go through and test :exclamation:
+      - Noah to go through and test :white_check_mark:
   - 08: Acceleration: (Zhantong)
-    - Slides
-      - Need an editing pass :exclamation:
+    - Slides :white_check_mark:
     - Materials :white_check_mark:
   - 09: Sampling: (Zhantong) :heavy_exclamation_mark:
     - Slides
       - (Today) Need to be merged/reviewed :exclamation:
       - Need an editing pass :exclamation:
     - Materials
-      - Need to be written :heavy_exclamation_mark:
       - Someone needs to go through and test :exclamation:
   - 10: Modeling power: (Jason) :heavy_exclamation_mark:
     - Slides
@@ -153,23 +153,22 @@ In this case, you cannot have a description of the image, unfortunately.
   - 01: Sim Objects:  (Mahyar)
     - Slides
       - Need to have extra slides added :exclamation:
-      - Needs an editing pass :exclamation:
+      - Needs an editing pass :white_check_mark:
     - Materials :white_check_mark:
   - 02: Debugging:  (Mahyar)
-    - Slides
-      - Mysore working on this :exclamation:
-      - Needs an editing pass
-    - Materials
-      - Mysore working on testing :exclamation:
+    - Slides :white_check_mark:
+    - Materials :white_check_mark:
   - 03: Events:  (Mahyar)
     - Slides
-      - Needs more stuff in the slides :heavy_exclamation_mark:
-      - Needs an editing pass
+      - Need to copy paste from Jason's slides
+      - Needs more stuff in the slides :white_check_mark:
+      - (WIP) Needs an editing pass :heavy_exclamation:
     - Materials
-      - Need to be tested :exclamation:
+      - Erin testing them
+      - Mahyar has tested them
   - 04: Ports: (Mahyar)
     - Slides
-      - (Today) Not done yet :heavy_exclamation_mark:
+      - (WIP) Not done yet :heavy_exclamation_mark:
       - Needs editing pass :exclamation:
     - Materials
       - Being created :heavy_exclamation_mark:
@@ -203,8 +202,7 @@ In this case, you cannot have a description of the image, unfortunately.
   - NOT DONE AT ALL
 - 06 Contributing
   - 01: Contributing: (Bobby)
-    - Slides
-      - Needs an editing pass :exclamation:
+    - Slides :white_check_mark:
     - Materials :white_check_mark:
   - 02: Testing (Bobby)
     - Slides :white_check_mark:
