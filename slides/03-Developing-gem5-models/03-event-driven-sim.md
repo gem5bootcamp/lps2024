@@ -438,7 +438,7 @@ HelloSimObject::startup()
 
 ## Current Versions: Python Scripts
 
-We are ready to compile gem5 to apply the changes. But before we compile, let's go over how every file should look like.
+We are ready to compile gem5 to apply the changes. But before we compile, let's go over how every file should look.
 
 - [src/bootcamp/hello-sim-object/SConscript](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/SConscript):
 
@@ -471,7 +471,7 @@ class HelloSimObject(SimObject):
 
 ## Current Versions: Header File
 
-- This is how [src/bootcamp/hello-sim-object/hello_sim_object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh) should look like.
+- This is how [src/bootcamp/hello-sim-object/hello_sim_object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh) should look.
 
 ```cpp
 #ifndef __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
@@ -507,7 +507,7 @@ class HelloSimObject: public SimObject
 
 ## Current Versions: Source File
 
-- This is how [src/bootcamp/hello-sim-object/hello_sim_object.cc](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.cc) should look like.
+- This is how [src/bootcamp/hello-sim-object/hello_sim_object.cc](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.cc) should look.
 
 ```cpp
 #include "bootcamp/hello-sim-object/hello_sim_object.hh"
@@ -598,7 +598,7 @@ class GoodByeSimObject(SimObject):
     cxx_class = "gem5::GoodByeSimObject"
 ```
 
-Also, let's register `GoodByeSimObject` by editing `SConscript`. Open `src/bootcamp/hello-sim-object/SConscript` and add `GoodByeSimObject` to the list of `SimObjects` in `HelloSimObject.py`. This is how the line show look like after the changes.
+Also, let's register `GoodByeSimObject` by editing `SConscript`. Open `src/bootcamp/hello-sim-object/SConscript` and add `GoodByeSimObject` to the list of `SimObjects` in `HelloSimObject.py`. This is how the line show look after the changes.
 
 ```python
 SimObject("HelloSimObject.py", sim_objects=["HelloSimObject", "GoodByeSimObject"])
@@ -637,6 +637,8 @@ CompoundFlag("GreetFlag", ["HelloExampleFlag", "GoodByeExampleFlag"])
 
 ## Current Version: HelloSimObject.py
 
+<!-- _class: code-80-percent -->
+
 This is how [HelloSimObject.py](/materials/03-Developing-gem5-models/03-event-driven-sim/step-2/src/bootcamp/hello-sim-object/HelloSimObject.py) should look after the changes.
 
 ```python
@@ -660,7 +662,7 @@ class GoodByeSimObject(SimObject):
 
 ## Current Version: SConscript
 
-This is how `SConscript` should look like after the changes.
+This is how `SConscript` should look after the changes.
 
 ```python
 Import("*")
@@ -722,6 +724,8 @@ class GoodByeSimObject: public SimObject
 
 ## GoodByeSimObject: Source File
 
+<!-- _class: code-60-percent -->
+
 ```cpp
 #include "bootcamp/hello-sim-object/goodbye_sim_object.hh"
 
@@ -761,7 +765,7 @@ In this step we will add a parameter to `HelloSimObject` that is of type `GoodBy
     goodbye_object = Param.GoodByeSimObject("GoodByeSimObject to say goodbye after done saying hello.")
 ```
 
-This is how the declaration of `HelloSimObject` should look like after changes.
+This is how the declaration of `HelloSimObject` should look after the changes.
 
 ```python
 class HelloSimObject(SimObject):
@@ -778,9 +782,11 @@ class HelloSimObject(SimObject):
 
 ## HelloSimObject: Header File
 
-Adding `goodbye_object` parameter will add a new member to `HelloSimObjectParams` of `gem5::HelloSimObject*` type. We will see this in the future.
+<!-- _class: code-70-percent -->
 
-We can use that parameter to initialize a pointer to an object of `GoodByeSimObject` which we will use to call `sayGoodBye`. when we run out of `Hello ...` statements to print.
+Adding the `goodbye_object` parameter will add a new member to `HelloSimObjectParams` of `gem5::HelloSimObject*` type. We will see this in the future.
+
+We can use that parameter to initialize a pointer to an object of `GoodByeSimObject` which we will use to call `sayGoodBye` when we run out of `Hello ...` statements to print.
 
 First, let's include the header file for `GoodByeSimObject` in `src/bootcamp/hello-sim-object/hello_sim_object.hh` by adding the following line. **REMEMBER**: Follow gem5's convention for including order.
 
@@ -806,7 +812,7 @@ Now let's initialize `goodByeObject` from the parameters by adding the following
     goodByeObject(params.goodbye_object)
 ```
 
-Now, let's add an `else` body to `if (remainingHellosToPrintByEvent > 0)` in `processNextHelloEvent` to call `sayGoodBye` from `goodByeObject`. Below is how `processNextHelloEvent` in `src/bootcamp/hello-sim-object/hello_sim_object.cc` should look like after the changes.
+Now, let's add an `else` body to `if (remainingHellosToPrintByEvent > 0)` in `processNextHelloEvent` to call `sayGoodBye` from `goodByeObject`. Below is how `processNextHelloEvent` in `src/bootcamp/hello-sim-object/hello_sim_object.cc` should look after the changes.
 
 ```cpp
 void
@@ -827,7 +833,7 @@ HelloSimObject::processNextHelloEvent()
 
 ## Current Version: HelloSimObject: Header File
 
-This is how `src/bootcamp/hello-sim-object/hello_sim_object.hh` should look like after the changes.
+This is how `src/bootcamp/hello-sim-object/hello_sim_object.hh` should look after the changes.
 
 ```cpp
 #ifndef __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
@@ -865,7 +871,7 @@ class HelloSimObject: public SimObject
 
 ## Current Version: HelloSimObject: Source File
 
-This is how `src/bootcamp/hello-sim-object/hello_sim_object.cc` should look like after the changes.
+This is how `src/bootcamp/hello-sim-object/hello_sim_object.cc` should look after the changes.
 
 ```cpp
 #include "bootcamp/hello-sim-object/hello_sim_object.hh"
@@ -946,7 +952,6 @@ struct HelloSimObjectParams
 ```
 
 ---
-<!-- _class: code-50-percent -->
 
 ## Configuration Script
 
@@ -958,14 +963,14 @@ cp configs/bootcamp/hello-sim-object/second-hello-example.py configs/bootcamp/he
 
 Now, we need to give a value to `goodbye_object` parameter from `HelloSimObject`. We will create an object of `GoodByeSimObject` for this parameter.
 
-Let's start by importing `GoodByeSimObject`. Do it by simply adding `GoodByeSimObject` to `from m5.objects.HelloSimObject import HelloSimObject`. This is how the import statement should look like after the changes.
+Let's start by importing `GoodByeSimObject`. Do it by simply adding `GoodByeSimObject` to `from m5.objects.HelloSimObject import HelloSimObject`. This is how the import statement should look after the changes.
 
 ```python
 from m5.objects.HelloSimObject import HelloSimObject, GoodByeSimObject
 ```
 
 ---
-<!-- _class: code-80-percent -->
+<!-- _class: code-70-percent -->
 
 ## Configuration Script cont.
 
@@ -975,7 +980,7 @@ Now, let's add the following line to give a value to `goodbye_object` from `root
 root.hello.goodbye_object = GoodByeObject()
 ```
 
-This is how `configs/bootcamp/hello-sim-object/third-hello-example.py` should look like after the changes.
+This is how `configs/bootcamp/hello-sim-object/third-hello-example.py` should look after the changes.
 
 ```python
 import m5
@@ -993,7 +998,6 @@ print(f"Exited simulation because: {exit_event.getCause()}.")
 ```
 
 ---
-<!-- _class: code-50-percent -->
 
 ## Let's Simulate: Part 1
 
@@ -1010,7 +1014,6 @@ Below is a recording of my terminal when I run the command above.
 [![asciicast](https://asciinema.org/a/9vTP6wE1Yu0ihlKjA4j7TxEMm.svg)](https://asciinema.org/a/9vTP6wE1Yu0ihlKjA4j7TxEMm)
 
 ---
-<!-- _class: code-50-percent -->
 
 ## Let's Simulate: Part 2
 
