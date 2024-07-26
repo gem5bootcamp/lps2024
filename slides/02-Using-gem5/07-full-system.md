@@ -52,23 +52,24 @@ It allows for detailed analysis and debugging of hardware and software interacti
     - Start the simulation and monitor the boot process.
 ---
 
-## Lets run a full system simulation in gem5
+## Let's run a full system simulation in gem5
 
 The incomplete code already has a board built.
 
-Lets run a full-system workload in gem5.
+Let's run a full-system workload in gem5.
 
 This workload is an Ubuntu 24.04 boot, it will throw three m5 exits at:
 
 - Kernel Booted
-- when after_boot.sh is run
-- After run script is run
+- When `after_boot.sh` runs
+- After run script runs
 
 ---
 
 ## Obtain the workload and set exit event
 
-To set the workload we do the following;
+To set the workload, we add the following to
+[materials/02-Using-gem5/07-full-system/x86-fs-kvm-run.py](../../materials/02-Using-gem5/07-full-system/x86-fs-kvm-run.py):
 
 ```python
 workload = obtain_resource("x86-ubuntu-24.04-boot-with-systemd", resource_version="1.0.0")
@@ -77,9 +78,11 @@ board.set_workload(workload)
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ## Obtain the workload and set exit event (conti.)
 
-Lets make the exit event handler and set it in our simulator's object
+Let's make the exit event handler and set it in our simulator's object
 
 ```python
 def exit_event_handler():
@@ -97,13 +100,14 @@ simulator = Simulator(
         ExitEvent.EXIT: exit_event_handler(),
     },
 )
+simulator.run()
 ```
 
 ---
 
 ## Creating disk images using packer and qemu
 
-To create a generic ubuntu diskimage that we can use in gem5, we will use
+To create a generic ubuntu diskimage that we can use in gem5, we will use:
 
 - packer: This will automate the diskimage creation process.
 - qemu: We will use qemu plugin in packer to actually create the diskimage.
@@ -111,9 +115,9 @@ To create a generic ubuntu diskimage that we can use in gem5, we will use
 
 gem5 resources already have code that can create the a generic ubuntu image using the above mentioned method.
 
-- Path on codespaces: `/workspaces/2024/gem5-resources/src/x86-ubuntu`
+- Path on codespaces: [`/workspaces/2024/gem5-resources/src/x86-ubuntu`](../../gem5-resources/src/x86-ubuntu)
 
-Lets go through the important parts of the creation process.
+Let's go through the important parts of the creation process.
 
 ---
 
@@ -131,7 +135,7 @@ We also need the user-data file that will tell ubuntu autoinstall how to install
 
 ## How to get our own user-data file
 
-To get user-data file from scratch, you need to install ubuntu on a machine.
+To get a user-data file from scratch, you need to install ubuntu on a machine.
 
 - Post-installation, we can retrieve the `autoinstall-user-data` from `/var/log/installer/autoinstall-user-data` after the system's first reboot.
 
@@ -160,7 +164,7 @@ After installing ubuntu, we can use ssh to get the user-data file
 
 ## Important parts of the packer script
 
-Lets go over the packer file
+Let's go over the packer file.
 
 - **bootcommand**:
 
@@ -180,7 +184,7 @@ Lets go over the packer file
 
 ## Important parts of the packer script (Conti.)
 
-- **qemu_args**: We need to provide packer with the qemu arguments we will be used to boot the image.
+- **qemu_args**: We need to provide packer with the qemu arguments we will be using to boot the image.
   - For example, the qemu command that the packer script will use will be:
 
   ```bash
@@ -191,13 +195,13 @@ Lets go over the packer file
   -machine type=pc,accel=kvm -netdev user,id=user.0,hostfwd=tcp::3873-:22
   ```
 
-- **File provisioners**: These commands allo use to move files from host machine to the qemu image
+- **File provisioners**: These commands allow us to move files from host machine to the qemu image.
 
 - **Shell provisioner**: This allows us to run bash scripts that can run the post installation commands.
 
 ---
 
-## Lets use the base ubuntu image to create a diskimage with the gapbs benchmark
+## Let's use the base ubuntu image to create a diskimage with the gapbs benchmark
 
 Update the [x86-ubuntu.pkr.hcl](../../materials/02-Using-gem5/07-full-system/x86-ubuntu-gapbs/x86-ubuntu.pkr.hcl) file
 
@@ -207,8 +211,8 @@ The general structure of the packer file would be the same but with a few key ch
   - `diskimage = true` : This will let packer know that we are using a base diskimage and not an iso from which we will install ubuntu.
 - remove the `http_directory   = "http"` directory as we no longer need to use autoinstall.
 - Change the `iso_checksum` and `iso_urls` to that of our base image.
-- Update the file and shell provisioners: We dont need to transfer the files again as our base image already has them
-- Boot command: As we are not installing ubuntu. We can write the commands to login and any other commands we need like setting up network or ssh
+- Update the file and shell provisioners: We dont need to transfer the files again as our base image already has them.
+- Boot command: As we are not installing ubuntu. We can write the commands to login and any other commands we need like setting up network or ssh.
 
 ---
 
@@ -224,32 +228,33 @@ cd gapbs
 make
 ```
 
-Lets run the packer script and use this diskimage in gem5!
+Let's run the packer script and use this diskimage in gem5!
 
 ```bash
-./build.sh
+cd materials/02-Using-gem5/07-full-system
+x86-ubuntu-gapbs/build.sh
 ```
 ---
 
-## Lets use our built diskimage in gem5
+## Let's use our built diskimage in gem5
 
-Lets add the md5sum and the path to our [local JSON ](../../materials/02-Using-gem5/07-full-system/completed/local-gapbs-resource.json)
+Let's add the md5sum and the path to our [local JSON ](../../materials/02-Using-gem5/07-full-system/completed/local-gapbs-resource.json)
 
-Lets run the [gem5 gapbs config](../../materials/02-Using-gem5/07-full-system/completed/x86-fs-gapbs-kvm-run.py)
+Let's run the [gem5 gapbs config](../../materials/02-Using-gem5/07-full-system/completed/x86-fs-gapbs-kvm-run.py)
 
 This script should run the bfs benchmark.
 
 ```bash
-GEM5_RESOURCE_JSON_APPEND=../../materials/02-Using-gem5/07-full-system/completed/local-gapbs-resource.json gem5 x86-fs-gapbs-kvm-run.py
+GEM5_RESOURCE_JSON_APPEND=./completed/local-gapbs-resource.json gem5 x86-fs-gapbs-kvm-run.py
 ```
 
 ---
 
-## Lets see how we can access the terminal using m5term
+## Let's see how we can access the terminal using m5term
 
-- We are going to run the same [gem5 gapbs config](../../materials/02-Using-gem5/07-full-system/completed/x86-fs-gapbs-kvm-run.py) but with a small change.
+- We are going to run the same [gem5 gapbs config](../../materials/02-Using-gem5/07-full-system/x86-fs-gapbs-kvm-run.py) but with a small change.
 
-Lets change the last `yield True` to `yield False` so that the simulation doesnt exit and we can access the simulation
+Let's change the last `yield True` to `yield False` so that the simulation doesnt exit and we can access the simulation
 
 ```python
 def exit_event_handler():
@@ -266,7 +271,7 @@ def exit_event_handler():
 
 ## Using m5term
 
-First lets make the `m5term` binary.
+First let's make the `m5term` binary.
 
 In [gem5/util/term](/../../gem5/util/term), run
 
@@ -276,7 +281,7 @@ make
 
 Now we have the `m5term` binary.
 
-Now lets connect to our simulation by using the `m5term` binary
+Now let's connect to our simulation by using the `m5term` binary
 
 ```bash
 m5term 3456
