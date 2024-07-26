@@ -525,7 +525,7 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 
 ## Traffic Generator
 
-- A **traffic generator** simulates traffic through the memory system in order to test performance for memory
+- A **traffic generator** simulates traffic through the memory system in order to test memory for performance
    - ex: uses reads/writes to/from memory
 - Used for creating test cases for caches, interconnects, and memory controllers, etc
 
@@ -536,27 +536,24 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 ## gem5: Traffic Generator Classes
 
 gem5's traffic generators are a set of classes that inherit from `AbstractGenerator`
-- They don't actually simulate any memory accesses
-- Instead, they create **traffic generator cores**.
+- The classes simulate any memory accesses by creating **traffic generator cores**.
 - These traffic generator cores use a `SimObject` called `PyTrafficGen` to create **synthetic traffic**.
 
 `_create_cores` is called in each traffic generator
 - Provides a list of the cores it has created
 - List is used to replace the processor cores on whatever board is initialized
-
 ---
+
 ## Our Focus
 - Generators in gem5 found in: `src/python/gem5/components/processors`
 - We will be focusing on `LinearGenerator` and `RandomGenerator` generators (and a surprise new one later!).
     - They are essentially the same, but one performs linear memory accesses and one performs random memory accesses
-    <!-- - They are more similar to each other than other generators when it comes to **parameters** and **outputs** -->
 
 
 ![Different Generators](03-running-in-gem5-imgs/generator_inheritance.svg)
 
 ----
 <!-- _class: two-col -->
-
 ## Traffic Generator Classes have Configurable Parameters
 
 - **num_cores**
@@ -583,6 +580,34 @@ gem5's traffic generators are a set of classes that inherit from `AbstractGenera
 
 ---
 
+## 06-traffic-gen: Linear Traffic Generator
+
+First, we will use a Linear Traffic Generator to simulate linear traffic.
+
+### An Example of Linear Traffic
+`min_addr`: 0, `max_addr`: 4, `block_size`: 1, `num_cores`: 1
+We want to access addresses 0 through 4 so a linear access would mean accessing memory in the following order.
+
+![Linear Generator Param](03-running-in-gem5-imgs/linear_gen_param.svg.svg)
+
+-----
+
+
+## 06-traffic-gen: Random Traffic Generator
+
+Next, we will use a Random Traffic Generator to simulate random traffic.
+
+### An Example of Random Traffic
+
+`min_addr`: 0, `max_addr`: 4, `block_size`: 1, `num_cores`: 1
+We want to access addresses 0 through 4 so a random access would mean accessing memory in any order. (In this example, we are showing the order: 1, 3, 2, 0).
+
+![Random Generator Param](03-running-in-gem5-imgs/random_gen_param.svg)
+
+
+
+---
+
 ## Hands-on Time!
 
 ### 06-traffic-gen
@@ -595,21 +620,6 @@ Open the following file.
 Steps:
 1. Run with a Linear Traffic Generator.
 2. Run with a Hybrid Traffic Generator.
-
----
-
-## 06-traffic-gen: Linear Traffic Generator
-
-First, we will use a Linear Traffic Generator to simulate linear (stream) traffic.
-
-### An Example of Linear Traffic
-
-If we wanted to access addresses 0x00 through 0x04, a linear access would mean accessing memory in the following order:
-- 0x00
-- 0x01
-- 0x02
-- 0x03
-- 0x04
 
 ---
 <!-- _class: two-col -->
@@ -669,13 +679,15 @@ motherboard = TestBoard(
 )
 ```
 ---
-
+<!-- _class: code-100-percent -->
 ## 06-traffic-gen: Linear Traffic Generator: Running the Code
 
 ### Run the following command to see a Linear Traffic Generator in action
 
+
 ```sh
-gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py
+gem5 --debug-flags=TrafficGen --debug-end=30000 \
+./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/\simple-traffic-generators.py
 ```
 
 We will see some of the expected output in the following slide.
@@ -703,120 +715,6 @@ Above, we see `r to addr 0` in line 1, `r to addr 40` in line 3, and `r to addr 
 This is because the Linear Traffic Generator  is simulating requests to access memory addresses 0x0000, 0x0040, 0x0080.
 
 As you can see, the simulated requests are very linear. Each new memory access is 0x0040 bytes above the previous one.
-
----
-
-## 06-traffic-gen: Random Traffic Generator
-
-Next, we will use a Random Traffic Generator to simulate random traffic.
-
-### An Example of Random Traffic
-
-If we wanted to access addresses 0x00 through 0x04, a random access would mean accessing memory in the following (or some other random) order: 0x01, 0x04, 0x02, 0x03, 0x00.
-
----
-
-<!-- _class: two-col code-70-percent -->
-
-## 06-traffic-gen: Random Traffic Generator: Looking at the Code
-
-Let's practice using a Random Traffic Generator now.
-
-In the current code (as seen to the right), replace
-
-```python
-generator = LinearGenerator(
-    num_cores=1
-)
-```
-
-with
-
-```python
-generator = RandomGenerator(
-    num_cores=1
-)
-```
-
-###
-
-```python
-cache_hierarchy = PrivateL1CacheHierarchy(
-    l1d_size="32KiB",
-    l1i_size="32KiB",
-)
-
-memory = SingleChannelDDR3_1600()
-
-generator = LinearGenerator(
-    num_cores=1
-)
-
-motherboard = TestBoard(
-    clk_freq="3GHz",
-    generator=generator,
-    memory=memory,
-    cache_hierarchy=cache_hierarchy,
-)
-```
-
----
-<!-- _class: two-col code-70-percent -->
-
-## 06-traffic-gen: Random Traffic Generator: Completed Code
-
-The completed code snippet should look like this.
-
-```python
-cache_hierarchy = CacheHierarchy()
-
-memory = SingleChannelDDR3_1600()
-
-generator = RandomGenerator(
-    num_cores=1
-)
-
-motherboard = TestBoard(
-    clk_freq="3GHz",
-    generator=generator,
-    memory=memory,
-    cache_hierarchy=cache_hierarchy,
-)
-```
----
-
-## 06-traffic-gen: Random Traffic Generator: Running the Code
-
-### Run the following command to see a Random Traffic Generator in action
-
-
-```sh
-gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py
-```
-
-We will see some of the expected output in the following slide.
-
----
-
-## 06-traffic-gen: Random Traffic Generator Results
-
-```
-    596: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 2000, size 64
-    596: system.processor.cores.generator: Next event scheduled at 1192
-   1192: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 240, size 64
-   1192: system.processor.cores.generator: Next event scheduled at 1788
-   1788: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 2000, size 64
-   1788: system.processor.cores.generator: Next event scheduled at 2384
-   2384: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 4280, size 64
-   2384: system.processor.cores.generator: Next event scheduled at 2980
-```
-
-
-Above, we see `r to addr 2000` in line 1, `r to addr 240` in line 3, `r to addr 2000` in line 5, and `r to addr 4280` in line 7.
-
-This is because the Random Traffic Generator  is simulating requests to access memory addresses 0x2000, 0x0240, 0x2000, 0x4280.
-
-In comparison to the Linear Traffic Generator, these simulated requests are very random.
 
 ---
 <!-- _class: two-col -->
