@@ -56,7 +56,7 @@ This way every time event $A$ occurs, event $B$ occurs 1000 units of time after 
 An event-driven simulator needs to facilitate the following:
 
 - Notion of time: The simulator needs to track the global time of the simulation and allow access to current time. It also needs to move the time forward.
-- Interface to `events`: The simulator needs to define the base interface for `events` in the simulator so that they can be defined and raise (i.e. make occur/schedule) new `events`.
+- Interface to `events`: The simulator needs to define the base interface for `events` in the simulator so that they can be define and raise (i.e. make occur/schedule) new `events`.
   - The base interface of `event` should allow for tieing `events` to `callback` functions.
 
 Let's look at how this will look like if you were to write your hardware simulator.
@@ -80,7 +80,7 @@ Continued on next slide.
 
 ## Event-Driven Simulation in gem5
 
-Let's look at `src/sim/eventq.hh`. In there you will see a declaration for class `Event` that has a function called `process` like below.
+Let's look at [src/sim/eventq.hh](/workspaces/2024/gem5/src/sim/eventq.hh). In there you will see a declaration for class `Event` that has a function called `process` like below.
 
 ```cpp
   public:
@@ -129,14 +129,14 @@ class CPU: public ClockedObject
 };
 ```
 
-In this example every time, an instance of `FetchEvent` occurs (`cpu_0::nextFetch` and not `CPU::nextFetch`), the simulator will call `processFetch` from the `CPU` instance that owns the event.
+In this example, every time an instance of `FetchEvent` occurs (`cpu_0::nextFetch` and not `CPU::nextFetch`), the simulator will call `processFetch` from the `CPU` instance that owns the event.
 
 ---
 <!-- _class: code-50-percent -->
 
 ## EventFunctionWrapper
 
-In addition to class `Event`, you can find the declaration for `EventFunctionWrapper` in `src/sim/eventq.hh`. This class wraps an `event` with a callable object that will be called when `Event::process` is called. The following lines from `src/sim/eventq.hh` are useful to look over.
+In addition to class `Event`, you can find the declaration for `EventFunctionWrapper` in [src/sim/eventq.hh](/gem5/src/sim/eventq.hh). This class wraps an `event` with a callable object that will be called when `Event::process` is called. The following lines from `src/sim/eventq.hh` are useful to look over.
 
 ```cpp
   public:
@@ -157,14 +157,14 @@ In addition to class `Event`, you can find the declaration for `EventFunctionWra
     void process() { callback(); }
 ```
 
-For `EventFunctionWrapper` the function `process` is defined as a call to `callback` which is passed as an argument to the constructor of `EventFunctionWrapper`. Additionally, we wil need to give each object a name through the constructor.
+For `EventFunctionWrapper` the function `process` is defined as a call to `callback` which is passed as an argument to the constructor of `EventFunctionWrapper`. Additionally, we will need to give each object a name through the constructor.
 
 ---
 <!-- _class: code-50-percent -->
 
 ## Detour: m5.simulate: SimObject::startup
 
-Below is a snippet of code from the definition of `m5.simulate` in `src/python/m5/simulate.py`:
+Below is a snippet of code from the definition of `m5.simulate` in [src/python/m5/simulate.py](/gem5/src/python/m5/simulate.py):
 
 ```python
 def simulate(*args, **kwargs):
@@ -176,7 +176,7 @@ def simulate(*args, **kwargs):
         need_startup = False
 ```
 
-By calling `m5.simulate`, gem5 will call function `startup` from every `SimObject` in the system. Let's take a look at `startup` in header file for `SimObject` in `src/sim/sim_object.hh`.
+By calling `m5.simulate`, gem5 will call function `startup` from every `SimObject` in the system. Let's take a look at `startup` in header file for `SimObject` in [src/sim/sim_object.hh](/gem5/src/sim/sim_object.hh).
 
 ```cpp
     /**
@@ -195,7 +195,7 @@ By calling `m5.simulate`, gem5 will call function `startup` from every `SimObjec
 
 ## nextHelloEvent
 
-Now, let's add an `event` to our `HelloSimObject` to print `Hello ...` periodically for a certain number of times (i.e. `num_hellos`). Let's add it to the header file for `HelloSimObject` in `src/bootcamp/hello-sim-object.hh`.
+Now, let's add an `event` to our `HelloSimObject` to print `Hello ...` periodically for a certain number of times (i.e. `num_hellos`). Let's add it to the header file for `HelloSimObject` in [src/bootcamp/hello-sim-object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh).
 
 First, we need to include `sim/eventq.hh` so we can add a member of type `EventFunctionWrapper`. Add the following line to do this. **REMEMBER**: Make sure to follow the right order of includes.
 
@@ -216,7 +216,7 @@ Now, we need declare a member of type `EventFunctionWrapper` which we will call 
 
 ## nextHelloEvent: Header File
 
-This is how your `hello_sim_object.hh` should look like after all the changes.
+This is how your [hello_sim_object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh) should look like after all the changes.
 
 ```cpp
 #ifndef __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
@@ -249,7 +249,7 @@ class HelloSimObject: public SimObject
 
 ## nextHelloEvent: HelloSimObject: Constructor
 
-Now, let's change our definition of the constructor of `HelloSimObject` to initialize `nextHelloEvent`. Let's add the following line to the initialization list in `HelloSimObject::HelloSimObject` which you can find in `src/bootcamp/hello-sim-object/hello_sim_object.cc`.
+Now, let's change our definition of the constructor of `HelloSimObject` to initialize `nextHelloEvent`. Let's add the following line to the initialization list in `HelloSimObject::HelloSimObject` which you can find in [src/bootcamp/hello-sim-object/hello_sim_object.cc](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.cc).
 
 ```cpp
     nextHelloEvent([this](){ processNextHelloEvent(); }, name() + "nextHelloEvent")
@@ -357,7 +357,7 @@ Deeper look into the code, we do the following every time `nextHelloEvent` occur
 
 - Print `Hello ...`.
 - Decrement `remaingingHellosToPrintByEvent`.
-- Check if we have remaining prints to do, if so, we will schedule `nextHelloEvent` 500 into the future. **NOTE**: `curTick` is a function that returns the current simulator time in `Ticks`
+- Check if we have remaining prints to do, if so, we will schedule `nextHelloEvent` 500 into the future. **NOTE**: `curTick` is a function that returns the current simulator time in `Ticks`.
 
 ---
 <!-- _class: code-50-percent -->
@@ -413,7 +413,7 @@ HelloSimObject::startup()
 
 We are ready to compile gem5 to apply the changes. But before we compile, let's go over how every file should look like.
 
-- `src/bootcamp/hello-sim-object/SConscript`:
+- [src/bootcamp/hello-sim-object/SConscript](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/SConscript):
 
 ```python
 Import("*")
@@ -425,7 +425,7 @@ Source("hello_sim_object.cc")
 DebugFlag("HelloExampleFlag")
 ```
 
-- `src/bootcamp/hello-sim-object/HelloSimObject.py`:
+- [src/bootcamp/hello-sim-object/HelloSimObject.py](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/HelloSimObject.py):
 
 ```python
 from m5.objects.SimObject import SimObject
@@ -436,7 +436,7 @@ class HelloSimObject(SimObject):
     cxx_header = "bootcamp/hello-sim-object/hello_sim_object.hh"
     cxx_class = "gem5::HelloSimObject"
 
-    num_hellos = Param.Int("Number times to say Hello.")
+    num_hellos = Param.Int("Number of times to say Hello.")
 ```
 
 ---
@@ -444,7 +444,7 @@ class HelloSimObject(SimObject):
 
 ## Current Versions: Header File
 
-- This is how `src/bootcamp/hello-sim-object/hello_sim_object.hh` should look like.
+- This is how [src/bootcamp/hello-sim-object/hello_sim_object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh) should look like.
 
 ```cpp
 #ifndef __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
@@ -480,7 +480,7 @@ class HelloSimObject: public SimObject
 
 ## Current Versions: Source File
 
-- This is how `src/bootcamp/hello-sim-object/hello_sim_object.cc` should look like.
+- This is how [src/bootcamp/hello-sim-object/hello_sim_object.cc](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.cc) should look like.
 
 ```cpp
 #include "bootcamp/hello-sim-object/hello_sim_object.hh"
@@ -605,7 +605,7 @@ CompoundFlag("GreetFlag", ["HelloExampleFlag", "GoodByeExampleFlag"])
 
 ## Current Version: HelloSimObject.py
 
-This is how `HelloSimObject.py` should look like after the changes.
+This is how [HelloSimObject.py]() should look like after the changes.
 
 ```python
 from m5.objects.SimObject import SimObject
