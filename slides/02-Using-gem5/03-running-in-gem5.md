@@ -724,9 +724,9 @@ As you can see, the simulated requests are very linear. Each new memory access i
 ---
 <!-- _class: two-col -->
 
-## 06-traffic-gen: Hybrid Traffic Generator
+## 06-traffic-gen: Hybrid Generator
 
-Now, let's create a traffic generator that simulates linear *and* random memory acesses.
+Now, let's create a traffic generator that simulates linear *and* random memory acesses at the same time.
 
 Open the following file.
 [materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py)
@@ -735,8 +735,7 @@ In the file above, there is a class called `HybridGenerator`.
 
 Like `LinearGenerator` and `RandomGenerator`, `HybridGenerator` inherits from a class called  `AbstractGenerator`.
 
-<!-- Draw inheritance diagram? -->
-
+###
 
 ```python
 class HybridGenerator(AbstractGenerator):
@@ -754,9 +753,41 @@ class HybridGenerator(AbstractGenerator):
 ```
 ---
 
+## 06-traffic-gen: Hybrid Generator: Choosing a Distribution of Cores
+
+The goal of our Hybrid Generator class is to have both linear and random traffic generation.
+
+To do that, we need Linear Generator Cores (to simulate linear traffic) and Random Generator Cores (to simulate random traffic).
+
+But how many of each type of core do we need?
+
+To determine the number of Linear Generator Cores, let's use the biggest power of two that is smaller than the given number of cores. The rest will be Random Generator Cores.
+
+As an example, if we set `num_cores` to be 12, we will have 8 Linear Generator Cores and 4 Random Generator Cores.
+
+Or, if we set `num_cores` to be 4, we will have 2 Linear Generator Cores and 2 Random Generator Cores.
+
+---
+
+## 06-traffic-gen: Hybrid Generator: Dividing Memory Address Range
+
+Next, we have to determine which core gets what chunk of the given memory address range (the range of `min_addr` to `max_addr`).
+
+Let's partition the given memory address range into equally sized sections so that each Linear Generator Core can be assigned a section.
+
+(For the Random Generator Cores, each will be able to access all of the given memory address range.)
+
+To partition, we will use the `partition_range()` function in [gem5/src/python/gem5/components/processors/abstract_generator.py](../../gem5/src/python/gem5/components/processors/abstract_generator.py).
+
+This function takes the range of `min_addr` to `max_addr` and partitions it into `num_partitions` equal-length pieces.
+
+For example, if `min_addr` = 0, `max_addr` = 9, and `num_partitions` = 3, then `partition_range` would return <0,3>, <3,6>, <6,9>.
+
+---
+
 <!-- _class: two-col code-60-percent -->
 
-## 06-traffic-gen: Hybrid Traffic Generator Constructor
+## 06-traffic-gen: Hybrid Generator Constructor
 
 When we initialize `HybridGenerator` (via `def __init__`), we will be initializing an `AbstractGenerator` (via `super() __init__`) with the values on the right.
 
@@ -795,35 +826,19 @@ class HybridGenerator(AbstractGenerator):
 
 ---
 
-## 06-traffic-gen: Designing a Hybrid Traffic Generator
+## 06-traffic-gen: Designing a Hybrid Generator
 
-Earlier, we discussed that Traffic Generators don't generate synthetic traffic. They create a list of cores that call `PyTrafficGen()` to simulate reads/stores.
+Earlier, we discussed that Traffic Generators don't generate synthetic traffic. They create a list of cores that call `PyTrafficGen()` to simulate traffic.
 
-Right now, our `HybridGenerator` class has a constructor but no complete method to make this list of cores. Therefore, we need to create this method.
+Right now, our `HybridGenerator` class has a constructor but does not return any list of cores. (Note that generators just need to return a list of cores. They don't necessarily need a function to do this.) Therefore, we need to create this method.
 
 If you look at [hybrid_generator.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py), you'll see that a method called `_create_cores`. This is the method we will use to create our list of cores.
 
 ---
 
-## 06-traffic-gen: Hybrid Traffic Generator: Choosing a Distribution of Cores
+## 06-traffic-gen: Hybrid Generator: Choosing a Distribution of Cores Cont.
 
-The goal of our Hybrid Traffic Generator class is to have both linear and random traffic generation.
-
-To do that, we need Linear Traffic Generator Cores (to simulate linear traffic) and Random Traffic Generator Cores (to simulate random traffic).
-
-But how many of each type of core do we need?
-
-To determine the number of Linear Traffic Generator Cores, let's use the biggest power of two that is smaller than the given number of cores. The rest will be Random Generator Cores.
-
-As an example, if we set `num_cores` to be 12, we will have 8 Linear Traffic Generator Cores and 4 Random Traffic Generator Cores.
-
-Or, if we set `num_cores` to be 4, we will have 2 Linear Traffic Generator Cores and 2 Random Traffic Generator Cores.
-
----
-
-## 06-traffic-gen: Hybrid Traffic Generator: Choosing a Distribution of Cores Cont.
-
-The following function finds the biggest power of two that is smaller than the given number of cores.
+The first lines you'll see in `_num_cores` are as follows. This function finds the biggest power of two that is smaller than the given number of cores.
 
 ```python
         def biggest_power_of_two_smaller_than(num_cores: int):
@@ -838,11 +853,11 @@ The following function finds the biggest power of two that is smaller than the g
 
 ---
 
-## 06-traffic-gen: Hybrid Traffic Generator: Initializing Variables
+## 06-traffic-gen: Hybrid Generator: Initializing Variables
 
 
 Now, let's start adding code to `_create_cores`.
-First, let's declare our list of cores and define the number of Linear/Random Traffic Generator Cores. Add the following lines under the comment labeled `(1)`.
+First, let's declare our list of cores and define the number of Linear/Random Generator Cores. Add the following lines under the comment labeled `(1)`.
 
 ```python
 core_list = []
@@ -851,31 +866,15 @@ num_linear_cores = biggest_power_of_two_smaller_than(num_cores)
 num_random_cores = num_cores - num_linear_cores
 ```
 
-As mentioned earlier, the number of Linear Traffic Generator Cores will be the biggest power of two that is smaller than the total number of cores.
+As mentioned earlier, the number of Linear Generator Cores will be the biggest power of two that is smaller than the total number of cores.
 
-The cores that aren't Linear Traffic Generator Cores should be Random Traffic Generator Cores.
-
----
-
-## 06-traffic-gen: Hybrid Traffic Generator: Dividing Memory Address Range
-
-Next, we have to determine which core gets what chunk of the given memory address range (the range of `min_addr` to `max_addr`).
-
-Let's partition the given memory address range into equally sized sections so that each Linear Traffic Generator Core can be assigned a section.
-
-(For the Random Traffic Generator Cores, each will be able to access all of the given memory address range.)
-
-To partition, we will use the `partition_range()` function in [gem5/src/python/gem5/components/processors/abstract_generator.py](../../gem5/src/python/gem5/components/processors/abstract_generator.py).
-
-This function takes the range of `min_addr` to `max_addr` and partitions it into `num_partitions` equal-length pieces.
-
-For example, if `min_addr` = 0, `max_addr` = 9, and `num_partitions` = 3, then `partition_range` would return <0,3>, <3,6>, <6,9>.
+The cores that aren't Linear Generator Cores should be Random Generator Cores.
 
 ---
 
-## 06-traffic-gen: Hybrid Traffic Generator: Dividing Memory Address Range Cont.
+## 06-traffic-gen: Hybrid Generator: Dividing Memory Address Range Cont.
 
-If we want to give each Linear Traffic Generator Core an equal chunk of the given memory address range, we need to partition the range of `min_addr` to `max_addr` into `num_linear_cores` pieces.
+If we want to give each Linear Generator Core an equal chunk of the given memory address range, we need to partition the range of `min_addr` to `max_addr` into `num_linear_cores` pieces.
 
 To do this, we need to add the following line to our code under the comment labeled `(2)`.
 
@@ -888,11 +887,11 @@ addr_ranges = partition_range(min_addr, max_addr, num_linear_cores)
 ---
 <!-- _class: two-col -->
 
-## 06-traffic-gen: Hybrid Traffic Generator: Creating a List of Cores: Linear Traffic Generator Core
+## 06-traffic-gen: Hybrid Generator: Creating a List of Cores: Linear Generator Core
 
 Next, let's start creating our list of cores.
 
-First, let's add all the Linear Traffic Generator Cores.
+First, let's add all the Linear Generator Cores.
 
 Add the lines on the right under the comment labeled `(3)`.
 
@@ -912,13 +911,13 @@ for i in range(num_linear_cores):
 ---
 <!-- _class: two-col -->
 
-## 06-traffic-gen: Hybrid Traffic Generator: Creating a List of Cores: Linear Traffic Generator Core Explained
+## 06-traffic-gen: Hybrid Generator: Creating a List of Cores: Linear Generator Core Explained
 
-In the for loop, we create `num_linear_cores` Linear Traffic Generator Cores and append each one to our `core_list`.
+In the for loop, we create `num_linear_cores` Linear Generator Cores and append each one to our `core_list`.
 
-Each Linear Traffic Generator Core parameter is initialized with the same values from the constructor, except for `min_addr` and `max_addr`.
+Each Linear Generator Core parameter is initialized with the same values from the constructor, except for `min_addr` and `max_addr`.
 
-We use these parameters to give each Linear Traffic Generator Core a partition of the range of `min_addr` to `max_addr`.
+We use these parameters to give each Linear Generator Core a partition of the range of `min_addr` to `max_addr`.
 
 ###
 
@@ -937,9 +936,9 @@ for i in range(num_linear_cores):
 
 ---
 
-## 06-traffic-gen: Hybrid Traffic Generator: Creating a List of Cores: Linear Traffic Generator Core Explained Cont.
+## 06-traffic-gen: Hybrid Generator: Creating a List of Cores: Linear Generator Core Explained Cont.
 
-For example, if `HybridGeneratorCore` is initialized with `min_addr=0`, `max_addr=32768`, and `num_cores=16` (8 Linear Traffic Generator Cores), then
+For example, if `HybridGeneratorCore` is initialized with `min_addr=0`, `max_addr=32768`, and `num_cores=16` (8 Linear Generator Cores), then
 
 ```sh
 addr_ranges=
@@ -947,16 +946,16 @@ addr_ranges=
   (16384, 20480), (20480, 24576), (24576, 28672), (28672, 32768)]
 ```
 
-For the i'th Linear Traffic Generator Core, we take the i'th entry in `addr_ranges`. `min_addr` is the first value that entry, and `max_addr` is the second value in that entry.
+For the i'th Linear Generator Core, we take the i'th entry in `addr_ranges`. `min_addr` is the first value that entry, and `max_addr` is the second value in that entry.
 
-In our example, Linear Traffic Generator Core 0 gets initialized with `min_addr=0` and `max_addr=4096`, Linear Traffic Generator Core 2 gets initialized with `min_addr=4096` and `max_addr=8192`, etc.
+In our example, Linear Generator Core 0 gets initialized with `min_addr=0` and `max_addr=4096`, Linear Generator Core 2 gets initialized with `min_addr=4096` and `max_addr=8192`, etc.
 
 ---
 <!-- _class: two-col -->
 
-## 06-traffic-gen: Hybrid Traffic Generator: Creating a List of Cores: Random Traffic Generator Core
+## 06-traffic-gen: Hybrid Generator: Creating a List of Cores: Random Generator Core
 
-Now that we've added the Linear Traffic Generator Cores, let's add all the Random Traffic Generator Cores.
+Now that we've added the Linear Generator Cores, let's add all the Random Generator Cores.
 
 Add the lines on the right under the comment labeled `(4)`.
 
@@ -978,13 +977,13 @@ for i in range(num_random_cores):
 ---
 <!-- _class: two-col -->
 
-## 06-traffic-gen: Hybrid Traffic Generator: Creating a List of Cores: Random Traffic Generator Core Explained
+## 06-traffic-gen: Hybrid Generator: Creating a List of Cores: Random Generator Core Explained
 
-Once again, in the for loop, we create `num_linear_cores` Random Traffic Generator Cores and append each one to our core_list.
+Once again, in the for loop, we create `num_linear_cores` Random Generator Cores and append each one to our core_list.
 
-Each Random Traffic Generator Core parameter is initialized with the same values from the constructor, including `min_addr` and `max_addr`.
+Each Random Generator Core parameter is initialized with the same values from the constructor, including `min_addr` and `max_addr`.
 
-`min_addr` and `max_addr` do not change because each Random Traffic Generator Core should be able to access the entire range of `min_addr` to `max_addr`.
+`min_addr` and `max_addr` do not change because each Random Generator Core should be able to access the entire range of `min_addr` to `max_addr`.
 
 ###
 
@@ -1003,7 +1002,7 @@ for i in range(num_random_cores):
 
 ---
 
-## 06-traffic-gen: Hybrid Traffic Generator: Returning and Configuring
+## 06-traffic-gen: Hybrid Generator: Returning and Configuring
 
 We're almost done with this file!
 
@@ -1027,11 +1026,11 @@ from components.hybrid_generator import HybridGenerator
 
 <!-- _class: two-col code-70-percent -->
 
-## 06-traffic-gen: Hybrid Traffic Generator: Configuring
+## 06-traffic-gen: Hybrid Generator: Configuring
 
-In this section of code to the right, you should currently have a Linear Traffic Generator.
+In this section of code to the right, you should currently have a Linear Generator.
 
-Let's replace it with a Hybrid Traffic Generator.
+Let's replace it with a Hybrid Generator.
 
 Replace the following lines
 
@@ -1071,7 +1070,7 @@ motherboard = TestBoard(
 ---
 <!-- _class: two-col code-70-percent -->
 
-## 06-traffic-gen: Hybrid Traffic Generator: Configuring Cont.
+## 06-traffic-gen: Hybrid Generator: Configuring Cont.
 
 This is what it should look like now.
 
@@ -1096,9 +1095,9 @@ motherboard = TestBoard(
 
 ---
 
-## 06-traffic-gen: Hybrid Traffic Generator: Running
+## 06-traffic-gen: Hybrid Generator: Running
 
-Now, that we've created a Hybrid Traffic Generator, let's run the program again!
+Now, that we've created a Hybrid Generator, let's run the program again!
 
 Make sure you're in the following directory.
 
@@ -1113,7 +1112,7 @@ simple-traffic-generators.py
 
 ---
 
-## 06-traffic-gen: Hybrid Traffic Generator: Output
+## 06-traffic-gen: Hybrid Generator: Output
 
 After running the command, you should see something like below.
 
@@ -1132,11 +1131,11 @@ After running the command, you should see something like below.
    1490: system.processor.cores0.generator: Next event scheduled at 2980
 ```
 
-As you can see, cores 0, 1, 2, and 3 are Linear Traffic Generator Cores, and cores 4 and 5 are Random Traffic Generator Cores.
+As you can see, cores 0, 1, 2, and 3 are Linear Generator Cores, and cores 4 and 5 are Random Generator Cores.
 
 ---
 
-## 06-traffic-gen: Hybrid Traffic Generator: Statistics
+## 06-traffic-gen: Hybrid Generator: Statistics
 
 Now, let's look at some benefits that this configuration may provide.
 
@@ -1150,7 +1149,7 @@ On the next slide, you'll see the expected output (with some text removed for re
 
 ---
 
-## 06-traffic-gen: Hybrid Traffic Generator: Statistics Cont.
+## 06-traffic-gen: Hybrid Generator: Statistics Cont.
 
 ```sh
 system.cache_hierarchy.l2cache.overallMissRate::processor.cores0.generator     0.015422
@@ -1161,27 +1160,27 @@ system.cache_hierarchy.l2cache.overallMissRate::processor.cores4.generator     0
 system.cache_hierarchy.l2cache.overallMissRate::processor.cores5.generator     0.000346
 ```
 
-Cores 0, 1, 2, and 3 (Linear Traffic Generator Cores) have a miss rate of around **0.015072** (~1.51%) on average.
+Cores 0, 1, 2, and 3 (Linear Generator Cores) have a miss rate of around **0.015072** (~1.51%) on average.
 
-Cores 4 and 5 (Random Traffic Generator Cores) have a miss rate of around **0.000348** (~0.03%) on average.
+Cores 4 and 5 (Random Generator Cores) have a miss rate of around **0.000348** (~0.03%) on average.
 
 ---
 
-## 06-traffic-gen: Comparing Hybrid and Linear Traffic Generators
+## 06-traffic-gen: Comparing Hybrid and Linear Generators
 
-Right now, we have 4 Linear Traffic Generator Cores working with 2 Random Traffic Generator Cores.
+Right now, we have 4 Linear Generator Cores working with 2 Random Generator Cores.
 
-What happens to the L2 miss rate when we remove the Random Traffic Generator Cores?
+What happens to the L2 miss rate when we remove the Random Generator Cores?
 
 Let's run the following [program](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py) to generate a statistics file for just 4 Linear Generator Cores.
 
 The program takes two command line arguments (traffic generator type and number of cores) to set up the traffic generator and configure the board for us.
 
-Let's test a board with only 4 Linear Traffic Generator Cores.
+Let's test a board with only 4 Linear Generator Cores.
 
 ---
 
-## 06-traffic-gen: Comparing Hybrid and Linear Traffic Generators Cont.
+## 06-traffic-gen: Comparing Hybrid and Linear Generators Cont.
 
 Make sure you're in the following directory.
 
@@ -1194,7 +1193,7 @@ gem5 --debug-flags=TrafficGen --debug-end=10000 \
 using-traffic-generators.py linear 4
 ```
 
-Now, use the following command to see the L2 miss rate when we remove the Random Traffic Generator Cores.
+Now, use the following command to see the L2 miss rate when we remove the Random Generator Cores.
 
 ```sh
 grep l2cache.overallMissRate::processor m5out/stats.txt
@@ -1204,7 +1203,7 @@ On the next slide, you'll see the expected output (with some text removed for re
 
 ---
 
-## 06-traffic-gen: Comparing Hybrid and Linear Traffic Generators Cont.
+## 06-traffic-gen: Comparing Hybrid and Linear Generators Cont.
 
 ```sh
 system.cache_hierarchy.l2cache.overallMissRate::processor.cores0.generator     0.047132
@@ -1215,19 +1214,19 @@ system.cache_hierarchy.l2cache.overallMissRate::processor.cores3.generator     0
 
 The average L2 miss rate without the Random Generator Cores is **0.04715625** (4.72%), which is much higher than 0.015072 (1.5%).
 
-The two sets of data that we just looked at can be explained by the Random Traffic Generator Cores.
+The two sets of data that we just looked at can be explained by the Random Generator Cores.
 
-The Random Traffic Generator Cores essentially act as "prefetchers" for the L2 cache.
+The Random Generator Cores essentially act as "prefetchers" for the L2 cache.
 
-Therefore, when a Linear Traffic Generator Core tries to access the L2, there's a much higher percentage that the data it was looking for will be there.
+Therefore, when a Linear Generator Core tries to access the L2, there's a much higher percentage that the data it was looking for will be there.
 
 ---
 
 ## 06-traffic-gen: Summary
 
-Overall, we discussed two diffent types  of traffic generators: **Linear** and **Random**.
+Overall, we discussed two diffent types of traffic generators: **Linear** and **Random**.
 
-Linear Traffic Generators simulate linear memory accesses, and Random Traffic Generators simulate random memory accesses.
+Linear Generators simulate linear memory accesses, and Random Generators simulate random memory accesses.
 
 We looked into how to configure a board that uses these traffic generators.
 
