@@ -28,7 +28,7 @@
 import m5
 from m5.objects import Root
 
-from components.cache_hierarchy import CacheHierarchy
+from components.cache_hierarchy import ModifiedPrivateL1SharedL2CacheHierarchy
 
 from gem5.components.boards.test_board import TestBoard
 from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
@@ -41,7 +41,7 @@ from gem5.components.processors.random_generator import RandomGenerator
 # Run with the following command
     # gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py
 
-cache_hierarchy = CacheHierarchy()
+cache_hierarchy = ModifiedPrivateL1SharedL2CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 

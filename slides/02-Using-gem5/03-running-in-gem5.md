@@ -646,7 +646,7 @@ generator = LinearGenerator(
 ###
 
 ```python
-cache_hierarchy = CacheHierarchy()
+cache_hierarchy = ModifiedPrivateL1SharedL2CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 
@@ -666,7 +666,7 @@ motherboard = TestBoard(
 The completed code snippet should look like this.
 
 ```python
-cache_hierarchy = CacheHierarchy()
+cache_hierarchy = ModifiedPrivateL1SharedL2CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 
@@ -1050,7 +1050,7 @@ generator = HybridGenerator(
 ###
 
 ```python
-cache_hierarchy = CacheHierarchy()
+cache_hierarchy = ModifiedPrivateL1SharedL2CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 
@@ -1076,7 +1076,7 @@ This is what it should look like now.
 ###
 
 ```python
-cache_hierarchy = CacheHierarchy()
+cache_hierarchy = ModifiedPrivateL1SharedL2CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 
