@@ -38,8 +38,9 @@ from gem5.components.memory import SingleChannelDDR3_1600
 from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
 
-# Run with the following command
-    # gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py
+# Run with the following commands
+    # cd ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/
+    # gem5 --debug-flags=TrafficGen --debug-end=30000 simple-traffic-generators.py
 
 cache_hierarchy = ModifiedPrivateL1SharedL2CacheHierarchy()
 

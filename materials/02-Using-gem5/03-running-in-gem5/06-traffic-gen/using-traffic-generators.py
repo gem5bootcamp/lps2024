@@ -41,7 +41,8 @@ from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
 
 # Run with the following command
-    # gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py [generator_class] [num_cores]
+    # cd materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/
+    # gem5 --debug-flags=TrafficGen --debug-end=30000 using-traffic-generators.py [generator_class] [num_cores]
 
 def getGenerator(generator_class, num_cores):
     if generator_class.lower() == "linear":

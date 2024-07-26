@@ -685,12 +685,14 @@ motherboard = TestBoard(
 <!-- _class: code-100-percent -->
 ## 06-traffic-gen: Linear Traffic Generator: Running the Code
 
-### Run the following command to see a Linear Traffic Generator in action
+### Run the following commands to see a Linear Traffic Generator in action
 
 
 ```sh
+cd ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/
+
 gem5 --debug-flags=TrafficGen --debug-end=30000 \
-./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/\simple-traffic-generators.py
+simple-traffic-generators.py
 ```
 
 We will see some of the expected output in the following slide.
@@ -1098,10 +1100,15 @@ motherboard = TestBoard(
 
 Now, that we've created a Hybrid Traffic Generator, let's run the program again!
 
-Run with the following command.
+Make sure you're in the following directory.
+
+**`materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/`**
+
+Now run with the following command.
 
 ```sh
-gem5 --debug-flags=TrafficGen --debug-end=30000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py
+gem5 --debug-flags=TrafficGen --debug-end=30000 \
+simple-traffic-generators.py
 ```
 
 ---
@@ -1170,15 +1177,22 @@ Let's run the following [program](../../materials/02-Using-gem5/03-running-in-ge
 
 The program takes two command line arguments (traffic generator type and number of cores) to set up the traffic generator and configure the board for us.
 
-Let's test a board with only 4 Linear Traffic Generator Cores using the following command.
-
-```sh
-gem5 --debug-flags=TrafficGen --debug-end=10000 ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py linear 4
-```
+Let's test a board with only 4 Linear Traffic Generator Cores.
 
 ---
 
 ## 06-traffic-gen: Comparing Hybrid and Linear Traffic Generators Cont.
+
+Make sure you're in the following directory.
+
+**`materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/`**.
+
+Now run with the following command.
+
+```sh
+gem5 --debug-flags=TrafficGen --debug-end=10000 \
+using-traffic-generators.py linear 4
+```
 
 Now, use the following command to see the L2 miss rate when we remove the Random Traffic Generator Cores.
 
