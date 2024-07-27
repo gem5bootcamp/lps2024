@@ -537,7 +537,7 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 <!-- _class: start -->
 ## Traffic Generator in gem5
 
----
+<!-- ---
 <!-- _class: center-image -->
 
 ## Testing Memory Performance
@@ -552,7 +552,7 @@ There are several types ways we can do this, such as:
 
 Today, we will be discussing **traffic generators** because -
 
-
+ -->
 
 ---
 <!-- _class: center-image -->
@@ -567,87 +567,67 @@ Some inputs for a traffic generator include:
 - range of memory addresses (min and maximum)
 - step size (or block size) to partition the range of memory addresses
 - duration that requests should be sent to memory.
----
 
-## gem5: Traffic Generator Classes
+---
+<!-- locked by Mahyar -->
+
+## gem5: stdlib Components for Synthetic Traffic Generation
 
 gem5's standard library has a collection of components for generating synthetic traffic. All such components inherit from `AbstractGenerator`, found in `src/python/gem5/components/processors`.
 
 - These components simulate memory accesses. They are intended to replace a processor in a system that you configure with gem5.
-- The generator core will create **synthetic traffic** by using a `SimObject` called `PyTrafficGen`, for more information you can look at `src/cpu/testers/traffic_gen`.
-- Each generator core (as specified in the generator core) will have a constructor that will define the parameters will have its own implementation of `_create_traffic`.
-- Let's take a look at the constructor and `_create_traffic` for an example generator.
+- Examples of these components include `LinearGenerator` and `RandomGenerator`.
+
+We will see how to use `LinearGenerator` and `RandomGenerator` to stimulate a memory subsystem. The memory subsystem that we are going to use is going to consist of a cache hierarchy with `private l1 caches and a shared l2 cache` with one channel of `DDR3` memory.
+
+In the next slides we will look at `LinearGenerator` and `RandomGenerator` at a high level. We'll see how to write a configuration script that uses them.
 
 ---
+<!-- _class: two-col code-70-percent -->
+##
 
-## gem5: Example Generator Functions
-<!-- _class: two-col code-50-percent  -->
+### LinearGenerator
 
-```cpp
-class LinearGeneratorCore(AbstractGeneratorCore):
+[Python Here](/gem5/src/python/gem5/components/processors/linear_generator.py)
+
+```python
+class LinearGenerator(AbstractGenerator):
     def __init__(
         self,
-        duration: str,
-        rate: str,
-        block_size: int,
-        min_addr: int,
-        max_addr: int,
-        rd_perc: int,
-        data_limit: int,
+        num_cores: int = 1,
+        duration: str = "1ms",
+        rate: str = "100GB/s",
+        block_size: int = 64,
+        min_addr: int = 0,
+        max_addr: int = 32768,
+        rd_perc: int = 100,
+        data_limit: int = 0,
     ) -> None:
-        super().__init__()
-
-        self.generator = PyTrafficGen()
-        self._duration = duration
-        self._rate = rate
-        self._block_size = block_size
-        self._min_addr = min_addr
-        self._max_addr = max_addr
-        self._rd_perc = rd_perc
-        self._data_limit = data_limit
 ```
 
-```cpp
-def _create_traffic(self) -> Iterator[BaseTrafficGen]:
-        """
-        A python generator that yields (creates) a linear traffic with the
-        specified params in the generator core and then yields (creates) an
-        exit traffic.
+### RandomGenerator
 
-        :rtype: Iterator[BaseTrafficGen]
-        """
-        duration = fromSeconds(toLatency(self._duration))
-        rate = toMemoryBandwidth(self._rate)
-        period = fromSeconds(self._block_size / rate)
-        min_period = period
-        max_period = period
-        yield self.generator.createLinear(
-            duration,
-            self._min_addr,
-            self._max_addr,
-            self._block_size,
-            min_period,
-            max_period,
-            self._rd_perc,
-            self._data_limit,
-        )
-        yield self.generator.createExit(0)
+[Python Here](/gem5/src/python/gem5/components/processors/random_generator.py)
+
+```python
+class RandomGenerator(AbstractGenerator):
+    def __init__(
+        self,
+        num_cores: int = 1,
+        duration: str = "1ms",
+        rate: str = "100GB/s",
+        block_size: int = 64,
+        min_addr: int = 0,
+        max_addr: int = 32768,
+        rd_perc: int = 100,
+        data_limit: int = 0,
+    ) -> None:
 ```
-
----
-<!-- _class: center-image -->
-
-## Our Focus: `LinearGenerator` and `AbstractGenerator`
-
-- We will be focusing on `LinearGenerator` and `RandomGenerator` generators (and a new one later!).
-  - They are essentially the same, but one performs linear memory accesses and one performs random memory accesses
-
-![Different Generators](03-running-in-gem5-imgs/generator_inheritance.svg)
 
 ---
 <!-- _class: two-col -->
 
-## LinearGenerator/RandomGenerator/StridedGenerator: Knobs
+## LinearGenerator/RandomGenerator: Knobs
 
 - **num_cores**
   - The number of cores in your system
@@ -655,7 +635,7 @@ def _create_traffic(self) -> Iterator[BaseTrafficGen]:
   - Length of time to generate traffic
 - **rate**
   - Rate at which to request data from memory
-    - **Note**: This is *NOT* the rate at which memory will respond. This is just the rate at which requests will be made
+    - **Note**: This is *NOT* the rate at which memory will respond. This is the **maximum** rate at which requests will be made
 - **block_size**
   - The number of bytes accessed with each read/write
 
@@ -672,34 +652,25 @@ def _create_traffic(self) -> Iterator[BaseTrafficGen]:
     - **Note**: if `data_limit` is set to 0, there will be no data limit.
 
 ---
+<!-- _class: two-col -->
 
-## 06-traffic-gen: Linear Traffic Generator
+## Traffic Patterns Visualized
 
-First, we will use a Linear Traffic Generator to simulate linear traffic.
+`min_addr`: 0, `max_addr`: 4, `block_size`: 1
 
-### An Example of Linear Traffic
-`min_addr`: 0, `max_addr`: 4, `block_size`: 1, `num_cores`: 1
-We want to access addresses 0 through 4 so a linear access would mean accessing memory in the following order.
+**Linear**: We want to access addresses 0 through 4 so a linear access would mean accessing memory in the following order.
 
-![Linear Generator Param](03-running-in-gem5-imgs/updating_linear_gen.svg)
+**Random**: We want to access addresses 0 through 4 so a random access would mean accessing memory in any order. (In this example, we are showing the order: 1, 3, 2, 0).
+
+###
+
+
+![linear traffic pattern](03-running-in-gem5-imgs/linear_traffic_pattern.drawio.svg)
+
+![random traffic pattern](03-running-in-gem5-imgs/random_traffic_pattern.drawio.svg)
+
 
 -----
-
-
-## 06-traffic-gen: Random Traffic Generator
-
-Next, we will use a Random Traffic Generator to simulate random traffic.
-
-### An Example of Random Traffic
-
-`min_addr`: 0, `max_addr`: 4, `block_size`: 1, `num_cores`: 1
-We want to access addresses 0 through 4 so a random access would mean accessing memory in any order. (In this example, we are showing the order: 1, 3, 2, 0).
-
-![Random Generator Param](03-running-in-gem5-imgs/updating_random_gen.svg)
-
-
-
----
 
 ## Hands-on Time!
 
@@ -812,8 +783,33 @@ This is because the Linear Traffic Generator  is simulating requests to access m
 As you can see, the simulated requests are very linear. Each new memory access is 0x0040 bytes above the previous one.
 
 ---
+<!-- _class: center-image -->
+
+## Our Focus: `LinearGenerator` and `AbstractGenerator`
+
+- We will be focusing on `LinearGenerator` and `RandomGenerator` generators (and a new one later!).
+  - They are essentially the same, but one performs linear memory accesses and one performs random memory accesses
+
+![Different Generators](03-running-in-gem5-imgs/generator_inheritance.drawio.svg)
+
+---
 <!-- _class: two-col -->
 
+### Detailed Look on Some Components
+
+- Looking at `AbstractGenerator.__init__`, you'll see that this class takes a list of `AbstractGeneratorCore` as the input. Example classes that inherit from `AbstractGenerator` are `LinearGenerator` and `RandomGenerator`.
+- We will look at classes that extend `AbstractGeneratorCore` that will will create **synthetic traffic** by using a `SimObject` called `PyTrafficGen`, for more information you can look at `src/cpu/testers/traffic_gen`.
+- Each `GeneratorCore` (as specified in the generator core) will have a constructor that will define the parameters will have its own implementation of `_create_traffic`.
+- Let's take a look at the constructor and `_create_traffic` for an example generator.
+
+###
+
+<!-- some code -->
+
+---
+<!-- _class: two-col -->
+
+<!-- Mysore start here -->
 ## 06-traffic-gen: HybridGenerator
 
 Now, let's create a traffic generator that simulates linear *and* random memory acesses at the same time.
