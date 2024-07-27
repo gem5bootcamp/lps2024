@@ -48,25 +48,4 @@ board = X86Board(
     cache_hierarchy=cache_hierarchy,
 )
 
-workload = obtain_resource("x86-ubuntu-24.04-gapbs-img", resource_version="1.0.0")
-
-board.set_workload(workload)
-def exit_event_handler():
-    print("first exit event: Kernel booted")
-    yield False
-    print("second exit event: In after boot")
-    yield False
-    print("third exit event: After run script")
-    yield True
-
-simulator = Simulator(
-    board=board,
-    on_exit_event={
-        # Here we want to override the default behavior for the first m5 exit
-        # exit event. Instead of exiting the simulator, we just want to
-        # switch the processor. The 2nd m5 exit after will revert to using
-        # default behavior where the simulator run will exit.
-        ExitEvent.EXIT: exit_event_handler(),
-    },
-)
-simulator.run()
+# Add code here
