@@ -26,12 +26,13 @@ function route(url, push=true) {
         window.history.pushState('', '', url);
     }
     /* Check for home page */
-    let home = document.querySelector('#home');
+    let home_page = document.querySelector('#home');
+    let slide_page = document.querySelector('#slideView')
     if (url === '' || url === '#') {
-        home.classList.remove('hidden');
+        home_page.classList.remove('hidden');
+        slide_page.classList.add('hidden');
         return;
     }
-    home.classList.add('hidden');
     /* Set iframe src */
     let full_url = slide_url_base + url.substring(1) + slide_url_ext;
     document.querySelector('#slideFrame').src = full_url;
@@ -46,10 +47,14 @@ function route(url, push=true) {
     }
     if (slide_id < 0) {
         /* Slide not found, just bring up splash page to hide the mess */
-        home.classList.remove('hidden');
+        home_page.classList.remove('hidden');
+        slide_page.classList.add('hidden');
     } else {
-        home.classList.add('hidden');
+        home_page.classList.add('hidden');
+        slide_page.classList.remove('hidden');
     }
+    /* Set slide name */
+    document.querySelector('#slideName').textContent = url.substring(1);
     /* Configure buttons */
     let prev = document.querySelector('#prevSlide');
     let next = document.querySelector('#nextSlide');
