@@ -11,17 +11,6 @@ title: Modeling CPU cores in gem5
 
 ---
 
-## Let's Compile gem5
-
-Before we start, run the following commands to compile gem5.
-
-```sh
-cd gem5
-scons build/RISCV/gem5.opt -j$(nproc)
-```
-
----
-
 ## Outline
 
 - **Learn about CPU models in gem5​**
@@ -179,14 +168,6 @@ We will do this soon.
 <!-- _class: start -->
 
 ## Let's use these CPU Models!
-
----
-
-## First, run the following command
-
-```sh
-cd /workspaces/2024
-```
 
 ---
 
