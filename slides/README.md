@@ -92,12 +92,9 @@ In this case, you cannot have a description of the image, unfortunately.
     - Slides :white_check_mark:
     - Materials :white_check_mark:
 - 02 Using gem5
-  - 01: stdlib: (Bobby) :heavy_exclamation_mark:
-    - Slides
-      - Most slides are not done
-      - Jason will improve/finish :exclamation:
+  - 01: stdlib: (Bobby)
+    - Slides :white_check_mark:
     - Materials
-      - Need to be created :exclamation:
       - Need to be tested :exclamation:
   - 02: gem5 resources: (Harshil)
     - Slides :white_check_mark:
