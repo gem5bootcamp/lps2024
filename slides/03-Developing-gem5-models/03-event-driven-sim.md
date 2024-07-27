@@ -38,7 +38,7 @@ Jason's event driven slides.
 
 The reaction to an `event` is defined by a call to a specific function that is referred to as the `callback` function.
 
-The `callback` function might itself cause new `events` to occur. The new `events` could of the same type as the `event` that caused the call to the `callback` function or of different types.
+The `callback` function might itself cause new `events` to occur. The new `events` can be of the same type or a different type as the `event` that caused the call to the `callback` function.
 
 ---
 
@@ -96,7 +96,7 @@ To impose the latency of the fetch we will schedule `CPU::accessICache` in `curr
 
 ## Event-Driven Simulation in gem5
 
-Let's look at [src/sim/eventq.hh](/workspaces/2024/gem5/src/sim/eventq.hh). In there you will see a declaration for class `Event` that has a function called `process` like below.
+Let's look at [src/sim/eventq.hh](/gem5/src/sim/eventq.hh). In there you will see a declaration for class `Event` that has a function called `process` like below.
 
 ```cpp
   public:
@@ -209,11 +209,27 @@ By calling `m5.simulate`, gem5 will call the function `startup` from every `SimO
 ---
 <!-- _class: code-70-percent -->
 
-## Exercise: nextHelloEvent
+## Exercise 1: nextHelloEvent
 
-For the following exercise, the filepaths beginning with `src` are under the directory [materials/03-Developing-gem5-models/03-event-driven-sim/step-1](materials/03-Developing-gem5-models/03-event-driven-sim/step-1).
+For the exercises in this tutorial, we will be working in [gem5/src/bootcamp/hello-sim-object](/gem5/src/bootcamp/hello-sim-object). If this directory does not yet exist, run the following command in the gem5 directory:
 
-Now, let's add an `event` to our `HelloSimObject` to print `Hello ...` periodically for a certain number of times (i.e. `num_hellos`). Let's add it to the header file for `HelloSimObject` in [src/bootcamp/hello-sim-object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh).
+```sh
+mkdir -p src/bootcamp/hello-sim-object
+```
+
+We will also be storing the configuration scripts in [gem5/configs/bootcamp/hello-sim-object](../../gem5/configs/bootcamp/hello-sim-object). If this directory does not exist, run the following command in the gem5 directory.
+
+```sh
+mkdir -p configs/bootcamp/hello-sim-object
+```
+
+The completed files for exercise 1 are under the directory [materials/03-Developing-gem5-models/03-event-driven-sim/step-1](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/).
+
+---
+
+## nextHelloEvent
+
+Now, let's add an `event` to our `HelloSimObject` to print `Hello ...` periodically for a certain number of times (i.e. `num_hellos`). Let's add it to the header file for `HelloSimObject` in [src/bootcamp/hello-sim-object.hh](/gem5/src/bootcamp/hello-sim-object/hello_sim_object.hh).
 
 First, we need to include `sim/eventq.hh` so we can add a member of type `EventFunctionWrapper`. Add the following line to do this. **REMEMBER**: Make sure to follow the right order of includes.
 
@@ -243,7 +259,9 @@ To do this, add the following lines to your declaration of the `HelloSimObject` 
 
 ## nextHelloEvent: Header File
 
-This is how your [hello_sim_object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh) should look after all the changes.
+This is how your `hello_sim_object.hh` should look after all the changes.
+
+<!--  [hello_sim_object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh) -->
 
 ```cpp
 #ifndef __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
@@ -276,7 +294,9 @@ class HelloSimObject: public SimObject
 
 ## nextHelloEvent: HelloSimObject: Constructor
 
-Now, let's change our definition of the constructor of `HelloSimObject` to initialize `nextHelloEvent`. Let's add the following line to the initialization list in `HelloSimObject::HelloSimObject` which you can find in [src/bootcamp/hello-sim-object/hello_sim_object.cc](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.cc).
+Now, let's change our definition of the constructor of `HelloSimObject` to initialize `nextHelloEvent`. Let's add the following line to the initialization list in `HelloSimObject::HelloSimObject` which you can find in `src/bootcamp/hello-sim-object/hello_sim_object.cc`.
+
+<!-- [src/bootcamp/hello-sim-object/hello_sim_object.cc](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.cc). -->
 
 ```cpp
     nextHelloEvent([this](){ processNextHelloEvent(); }, name() + "nextHelloEvent")
@@ -558,6 +578,22 @@ HelloSimObject::processNextHelloEvent()
 
 ## Let's Compile and Simulate
 
+If you want to use the completed examples, move your work to another folder and run the following command in the base gem5 directory to copy the examples over.
+
+```bash
+cp -r ../materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp src
+```
+
+If you want to use the completed configuration script, run the following command in the base gem5 directory:
+
+```sh
+cp -r ../materials/03-Developing-gem5-models/03-event-driven-sim/step-1/configs/bootcamp configs
+```
+
+---
+
+## Let's Compile and Simulate (cont.)
+
 Run the following command in the base gem5 directory to rebuild gem5.
 
 ```sh
@@ -587,7 +623,9 @@ Below is a recording of what you should expect to see.
 ---
 <!-- _class: code-50-percent -->
 
-## GoodByeSimObject
+## Exercise 2: GoodByeSimObject
+
+For this exercise, we will continue working in [gem5/src/bootcamp/hello-sim-object](/gem5/src/bootcamp/hello-sim-object).
 
 In this step, we will learn about adding a `SimObject` as a parameter. To do this, let's first build our second `SimObject` called `GoodByeSimObject`. As you remember, we need to declare `GoodByeSimObject` in Python. Let's open `src/bootcamp/hello-sim-object/HelloSimObject.py` and add the following code to it.
 
@@ -662,7 +700,7 @@ class GoodByeSimObject(SimObject):
 
 ## Current Version: SConscript
 
-This is how `SConscript` should look after the changes.
+This is how [SConscript](../../materials/03-Developing-gem5-models/03-event-driven-sim/step-2/src/bootcamp/hello-sim-object/SConscript) should look after the changes.
 
 ```python
 Import("*")
@@ -683,7 +721,7 @@ CompoundFlag("GreetFlag", ["HelloExampleFlag", "GoodByeExampleFlag"])
 
 In our design, let's have `GoodByeSimObject` debug print a `GoodBye ...` statement. It will do it when the `sayGoodBye` function is called, which will schedule an `event` to say GoodBye.
 
-In the next slides you can find the completed version for `src/bootcamp/hello-sim-object/goodbye_sim_object.hh` and `src/bootcamp/hello-sim-object/goodbye_sim_object.cc`.
+In the next slides you can find the completed version for [src/bootcamp/hello-sim-object/goodbye_sim_object.hh](../../materials/03-Developing-gem5-models/03-event-driven-sim/step-2/src/bootcamp/hello-sim-object/goodbye_sim_object.hh) and [src/bootcamp/hello-sim-object/goodbye_sim_object.cc](../../materials/03-Developing-gem5-models/03-event-driven-sim/step-2/src/bootcamp/hello-sim-object/goodbye_sim_object.cc).
 
 **IMPORTANT**: I'm not going to go over the details of the files, look through this file thoroughly and make sure you understand what every line is supposed to do.
 
@@ -833,7 +871,7 @@ HelloSimObject::processNextHelloEvent()
 
 ## Current Version: HelloSimObject: Header File
 
-This is how `src/bootcamp/hello-sim-object/hello_sim_object.hh` should look after the changes.
+This is how [src/bootcamp/hello-sim-object/hello_sim_object.hh](/../../materials/03-Developing-gem5-models/03-event-driven-sim/step-2/src/bootcamp/hello-sim-object/hello_sim_object.hh) should look after the changes.
 
 ```cpp
 #ifndef __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
@@ -871,7 +909,7 @@ class HelloSimObject: public SimObject
 
 ## Current Version: HelloSimObject: Source File
 
-This is how `src/bootcamp/hello-sim-object/hello_sim_object.cc` should look after the changes.
+This is how [src/bootcamp/hello-sim-object/hello_sim_object.cc](../../materials/03-Developing-gem5-models/03-event-driven-sim/step-2/src/bootcamp/hello-sim-object/hello_sim_object.cc) should look after the changes.
 
 ```cpp
 #include "bootcamp/hello-sim-object/hello_sim_object.hh"
@@ -925,15 +963,24 @@ HelloSimObject::processNextHelloEvent()
 ```
 
 ---
-<!-- _class: code-70-percent -->
 
 ## Let's Build
+
+If you want to run the completed examples, move your work to another directory, then run the following command in the base gem5 directory.
+
+```sh
+cp -r ../materials/03-Developing-gem5-models/03-event-driven-sim/step-2/src/bootcamp src
+```
 
 Run the following command in the base gem5 directory to rebuild gem5 after all the changes.
 
 ```sh
 scons build/NULL/gem5.opt -j$(nproc)
 ```
+
+---
+
+## Let's Build (cont.)
 
 After the compilation is done, look at `build/NULL/params/HelloSimObject.hh`. Notice that `gem5::GoodByeSimObject * goodbye_object` is added. Below is the declaration for `HelloSimObjectParams`.
 
@@ -1000,6 +1047,12 @@ print(f"Exited simulation because: {exit_event.getCause()}.")
 ---
 
 ## Let's Simulate: Part 1
+
+If you want to run the completed script, move the completed `third-hello-example.py` into the gem5 directory by running the following command while in the base gem5 folder:
+
+```bash
+cp -r ../materials/03-Developing-gem5-models/03-event-driven-sim/step-2/configs/bootcamp/hello-sim-object/third-hello-example.py configs/bootcamp/hello-sim-object
+```
 
 Now let's simulate `third-hello-example.py` once with `GoodByeExampleFlag` and once with `GreetFlag` enabled and compare the outputs.
 
