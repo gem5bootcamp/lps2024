@@ -110,6 +110,10 @@ In this case, you cannot have a description of the image, unfortunately.
     - Slides :white_check_mark:
     - Materials :white_check_mark:
   - 05: cache hierarchy: (Jason) :heavy_exclamation_mark:
+    - Plan:
+      - Make an example of specializing/extending a classic cache hierarchy in the stdlib
+      - Make an example of using Ruby
+        - Maybe use the material from assignment 5?
     - Slides
       - Mahyar can potentially help.
       - Need some small changes :exclamation:
@@ -120,17 +124,13 @@ In this case, you cannot have a description of the image, unfortunately.
       - Need an editing pass :heavy_exclamation:
     - Materials :white_check_mark:
   - 07: Full system: Mostly done (Harshil)
-    - Slides
-      - Needs an editing pass :white_checkmark:
-      - Needs a PR, almost done
-    - Materials
-      - Noah to go through and test :white_check_mark:
+    - Slides :white_checkmark:
+    - Materials :white_check_mark:
   - 08: Acceleration: (Zhantong)
     - Slides :white_check_mark:
     - Materials :white_check_mark:
-  - 09: Sampling: (Zhantong) :heavy_exclamation_mark:
+  - 09: Sampling: (Zhantong)
     - Slides
-      - (Friday) Need to be merged/reviewed :exclamation:
       - Need an editing pass :exclamation:
     - Materials
       - Erin to go through and test :exclamation:
@@ -169,11 +169,8 @@ In this case, you cannot have a description of the image, unfortunately.
       - Need to be tested :exclamation:
   - 05: Modeling cores: (Bobby)
     - Slides
-      - (Harshil) Needs improvement on instruction steps :heavy_exclamation_mark:
       - Needs an editing pass :exclamation:
-    - Materials
-      - Harshil updating :exclamation:
-      - Harshil to be tested :exclamation:
+    - Materials :white_check_mark:
   - 06: Modeling cache coherence:
     - Slides
       - Needs an editing pass :exclamation:
@@ -201,5 +198,3 @@ In this case, you cannot have a description of the image, unfortunately.
   - 02: Testing (Bobby)
     - Slides :white_check_mark:
     - Materials :white_check_mark:
-
-JASON: FIGURE OUT LAPTOP SETUP! :heavy_exclamation_mark:
