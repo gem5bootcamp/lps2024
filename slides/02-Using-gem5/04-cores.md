@@ -75,6 +75,8 @@ resource contention
 
 ---
 
+<!-- _class: center-image -->
+
 ## O3CPU (Out of Order CPU Model)
 
 - **_Timing_** memory accesses _execute-in-execute_ semantics
@@ -226,7 +228,8 @@ cpu_type = CPUTypes.ATOMIC
 Let's run it!
 
 ```sh
-gem5 --outdir=atomic-normal-cache ./materials/02-Using-gem5/04-cores/cores.py
+cd /workspaces/2024/materials/02-Using-gem5/04-cores
+gem5 --outdir=atomic-normal-cache cores.py
 ```
 
 Make sure the out directory is set to **atomic-normal-cache**.
@@ -248,7 +251,7 @@ cpu_type = CPUTypes.TIMING
 Let's run it!
 
 ```sh
-gem5 --outdir=timing-normal-cache ./materials/02-Using-gem5/04-cores/cores.py
+gem5 --outdir=timing-normal-cache cores.py
 ```
 
 Make sure the out directory is set to **timing-normal-cache**.
@@ -294,7 +297,7 @@ cpu_type = CPUTypes.ATOMIC
 Let's run it!
 
 ```sh
-gem5 --outdir=atomic-small-cache ./materials/02-Using-gem5/04-cores/cores.py
+gem5 --outdir=atomic-small-cache cores.py
 ```
 
 Make sure the out directory is set to **atomic-small-cache**.
@@ -364,16 +367,18 @@ This is because Atomic CPU ignores memory access latency.
 
 ## Extra Notes about gem5 Statistics
 
-When you specify the out-directory for the stats file (when you use the flag `--outdir=<outdir-name>`), go to **\<outdir-name>/stats.txt** to look at the entire statistics file.
+When you specify the out-directory for the stats file (when you use the flag `--outdir=<outdir-name>`), go to **`<outdir-name>/stats.txt`** to look at the entire statistics file.
 
-For example, to look at the statistics file for the Atomic CPU with a small cache, go to **atomic-small-cache/stats.txt**.
+For example, to look at the statistics file for the Atomic CPU with a small cache, go to **`atomic-small-cache/stats.txt`**.
 
-In general, if you don't specify the out-directory, it will be **m5out/stats.txt**.
+In general, if you don't specify the out-directory, it will be **`m5out/stats.txt`**.
 
 ### Other statistics to look at
 
+- Simulated time (time simulated by gem5)
+  - `simSeconds`
 - Host time (time taken by gem5 to run your simulation)
-  - _hostSeconds_
+  - `hostSeconds`
 
 ---
 
@@ -420,13 +425,13 @@ We will make one fast processor (**_Big_**) and one slow processor (**_Little_**
 To do this, we will change **4** parameters in each processor.
 
 - **width**
-  - width of fetch, decode, rename, issue, wb, and commit stages
+  - Width of fetch, decode, rename, issue, wb, and commit stages
 - **rob_size**
-  - the number of entries in the reorder buffer
+  - The number of entries in the reorder buffer
 - **num_int_regs**
-  - the number of physical integer registers
+  - The number of physical integer registers
 - **num_fp_regs**
-  - the number of physical vector/floating point registers
+  - The number of physical vector/floating point registers
 
 ---
 
@@ -434,15 +439,17 @@ To do this, we will change **4** parameters in each processor.
 
 ## Configuring Big
 
-Open the following file.
+Open the following file:
 [materials/02-Using-gem5/04-cores/components/processors.py](../../materials/02-Using-gem5/04-cores/components/processors.py)
 
-In class Big, set
+On the right, you'll see what `class Big` currently looks like.
 
-- width=**10**
-- rob_size=**40**
-- num_int_regs=**50**
-- num_fp_regs=**50**
+Change the parameter values so that they are as follows:
+
+- `width=10`
+- `rob_size=40`
+- `num_int_regs=50`
+- `num_fp_regs=50`
 
 ###
 
@@ -463,15 +470,14 @@ class Big(O3CPU):
 
 ## Configuring Little
 
-Keep working in the following file.
-[materials/02-Using-gem5/04-cores/components/processors.py](../../materials/02-Using-gem5/04-cores/components/processors.py)
+Now, on the right, you'll see what `class Little` currently looks like.
 
-In class Little, set
+Change the parameter values so that they are as follows:
 
-- width=**2**
-- rob_size=**30**
-- num_int_regs=**40**
-- num_fp_regs=**40**
+- `width=2`
+- `rob_size=30`
+- `num_int_regs=40`
+- `num_fp_regs=40`
 
 ###
 
@@ -493,29 +499,29 @@ class Little(O3CPU):
 We will be running the following file.
 [materials/02-Using-gem5/04-cores/cores-complex.py](../../materials/02-Using-gem5/04-cores/cores-complex.py)
 
-First, we will run matrix-multiply with our Big processor.
+First, we will run matrix-multiply with our `Big` processor.
 
-Run with the following command.
+Run with the following command:
 
 ```sh
-gem5 --outdir=big-proc ./materials/02-Using-gem5/04-cores/cores-complex.py -p big
+gem5 --outdir=big-proc cores-complex.py -p big
 ```
 
-Make sure the out directory is set to **big-proc**.
+Make sure the out directory is set to **`big-proc`**.
 
 ---
 
 ## Run with Little processor
 
-Next, we will run matrix-multiply with our Little processor.
+Next, we will run matrix-multiply with our `Little` processor.
 
-Run with the following command.
+Run with the following command:
 
 ```sh
-gem5 --outdir=little-proc ./materials/02-Using-gem5/04-cores/cores-complex.py -p little
+gem5 --outdir=little-proc cores-complex.py -p little
 ```
 
-Make sure the out directory is set to **little-proc**.
+Make sure the out directory is set to **`little-proc`**.
 
 ---
 
@@ -536,7 +542,7 @@ big-proc/stats.txt:board.processor.cores.core.numCycles                 56247195
 little-proc/stats.txt:board.processor.cores.core.numCycles              73430220
 ```
 
-Our Little processor takes more time and more cycles than our Big processor.
+Our `Little` processor takes more time and more cycles than our `Big` processor.
 
 <!-- This is likely mostly because our Little processor has to access the cache more times since it has less physical registers to work with
 
