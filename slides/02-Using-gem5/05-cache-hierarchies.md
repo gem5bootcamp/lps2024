@@ -20,7 +20,7 @@ title: Modeling caches in gem5
 
 ###
 
-![Placement of the Cache Hierarchy in gem5](05-cache-hierarchies/CPU_CacheHierarchy_MemCtrl.svg)
+![Placement of the Cache Hierarchy in gem5](05-cache-hierarchies-imgs/CPU_CacheHierarchy_MemCtrl.svg)
 
 ---
 
@@ -40,7 +40,7 @@ title: Modeling caches in gem5
 
 A coherence problem can arise if multiple cores have access to multiple copies of a data (e.g., in multiple caches) and at least one access is a write
 
-![Cores and Coherency across caches](05-cache-hierarchies/cache_line_1.svg)
+![Cores and Coherency across caches](05-cache-hierarchies-imgs/cache_line_1.svg)
 
 ---
 
@@ -48,7 +48,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 A coherence problem can arise if multiple cores have access to multiple copies of a data (e.g., in multiple caches) and at least one access is a write
 
-![Cores and Coherency across caches with write request](05-cache-hierarchies/cache_line_2.svg)
+![Cores and Coherency across caches with write request](05-cache-hierarchies-imgs/cache_line_2.svg)
 
 ---
 
@@ -56,7 +56,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 A coherence problem can arise if multiple cores have access to multiple copies of a data (e.g., in multiple caches) and at least one access is a write
 
-![Cores and Coherency across caches with write request](05-cache-hierarchies/cache_line_2.svg)
+![Cores and Coherency across caches with write request](05-cache-hierarchies-imgs/cache_line_2.svg)
 
 * Coherency protocols
     1. Snooping
@@ -76,7 +76,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 ###
 
-![w:600px Snoop protocol](05-cache-hierarchies/snoop_protocol.drawio.svg)
+![w:600px Snoop protocol](05-cache-hierarchies-imgs/snoop_protocol.drawio.svg)
 
 ---
 
@@ -92,7 +92,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 ###
 
-![w:590px Directory protocol](05-cache-hierarchies/directory_protocol.drawio.svg)
+![w:590px Directory protocol](05-cache-hierarchies-imgs/directory_protocol.drawio.svg)
 
 ---
 
@@ -104,7 +104,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 ## Classic Cache: Coherence protocol (Snooping)
 
-![Categories of Crossbars bg 90%](05-cache-hierarchies/crossbar.drawio.svg)
+![Categories of Crossbars bg 90%](05-cache-hierarchies-imgs/crossbar.drawio.svg)
 
 ---
 
@@ -128,7 +128,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 ## Example of system with simple cache
 
-![bg center w:600 Example of a system with simple cache and crossbars](05-cache-hierarchies/Example_system.drawio.svg)
+![bg center w:600 Example of a system with simple cache and crossbars](05-cache-hierarchies-imgs/Example_system.drawio.svg)
 
 ---
 
@@ -160,13 +160,13 @@ Parameters:
 2. Caches + Interface
 3. Interconnect
 
-![System with Ruby Caches bg right fit](05-cache-hierarchies/ruby_cache.drawio.svg)
+![System with Ruby Caches bg right fit](05-cache-hierarchies-imgs/ruby_cache.drawio.svg)
 
 ---
 
 ## Ruby
 
-![ On chip interconnect + controllers bg 60%](05-cache-hierarchies/ruby.drawio.svg)
+![ On chip interconnect + controllers bg 60%](05-cache-hierarchies-imgs/ruby.drawio.svg)
 
 ---
 
