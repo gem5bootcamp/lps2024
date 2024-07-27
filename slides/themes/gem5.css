@@ -217,6 +217,11 @@ section.start h2 {
     -webkit-text-fill-color: transparent;
 }
 
+/* Remove the triangle */
+section.start h2::before {
+    border: none;
+}
+
 /****************************************************/
 /* For 5 column/full outline */
 
