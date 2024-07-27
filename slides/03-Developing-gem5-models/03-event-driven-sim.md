@@ -211,7 +211,7 @@ By calling `m5.simulate`, gem5 will call the function `startup` from every `SimO
 
 ## Exercise 1: nextHelloEvent
 
-For the exercises in this tutorial, we will be working in [gem5/src/bootcamp/hello-sim-object](/gem5/src/bootcamp/hello-sim-object). If this directory does not yet exist, run the following command in the gem5 directory:
+For the exercises in this tutorial, we will be working in [gem5/src/bootcamp/hello-sim-object](/gem5/src/bootcamp/hello-sim-object). If this directory does not exist, run the following command in the gem5 directory:
 
 ```sh
 mkdir -p src/bootcamp/hello-sim-object
