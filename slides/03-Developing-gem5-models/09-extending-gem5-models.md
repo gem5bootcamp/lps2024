@@ -7,18 +7,22 @@ title: Developing SimObjects in gem5
 
 <!-- _class: title -->
 
-## Tools to extend gem5 models
+## Useful Tools to Extend gem5 Models
 
 ---
 
-## We will cover
+## The Ninja Feature of gem5
+
+There are many useful tool inside gem5 that do not have proper documentations.
+In this section, we will cover
 
 - Probe points
-- Base utilities like bitsets
+- Bitsets
 - Random number generation
-- Signal ports?
+<!-- - Signal ports? a big maybe. if I have extra time I'll dive in to gem5/src/dev/IntPin.py -->
 
 ---
 
 ## Probe points
+<!--  -->
 
