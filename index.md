@@ -1,6 +1,6 @@
 ---
-layout: index
-title: Learning gem5 Bootcamp 2024
+layout: home
+title: gem5 Bootcamp 2024
 ---
 
 Welcome to the gem5 Bootcamp!
