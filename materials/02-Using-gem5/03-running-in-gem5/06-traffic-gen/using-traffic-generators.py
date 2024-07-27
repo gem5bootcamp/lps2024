@@ -29,7 +29,7 @@ import argparse
 import m5
 from m5.objects import Root
 
-from components.cache_hierarchy import ModifiedPrivateL1SharedL2CacheHierarchy
+from components.cache_hierarchy import MyPrivateL1SharedL2CacheHierarchy
 from components.hybrid_generator import HybridGenerator
 
 from gem5.components.boards.test_board import TestBoard
@@ -90,7 +90,7 @@ def parseArgs():
 
 args = parseArgs()
 
-cache_hierarchy = ModifiedPrivateL1SharedL2CacheHierarchy()
+cache_hierarchy = MyPrivateL1SharedL2CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 

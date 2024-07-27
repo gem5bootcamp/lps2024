@@ -100,7 +100,7 @@ class HybridGenerator(AbstractGenerator):
         the same inputs as the constructor function.
         """
 
-        def biggest_power_of_two_smaller_than(num_cores: int):
+        def get_num_linear_cores(num_cores: int):
             """
             Returns the largest power of two that is smaller than num_cores
             """
@@ -115,7 +115,7 @@ class HybridGenerator(AbstractGenerator):
         # (1)
         core_list = []
 
-        num_linear_cores = biggest_power_of_two_smaller_than(num_cores)
+        num_linear_cores = get_num_linear_cores(num_cores)
         num_random_cores = num_cores - num_linear_cores
 
         """

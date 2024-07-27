@@ -6,7 +6,7 @@ from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarc
 )
 from gem5.utils.override import overrides
 
-class ModifiedPrivateL1SharedL2CacheHierarchy(PrivateL1SharedL2CacheHierarchy):
+class MyPrivateL1SharedL2CacheHierarchy(PrivateL1SharedL2CacheHierarchy):
     def __init__(
         self,
         l1d_size="32KiB",
