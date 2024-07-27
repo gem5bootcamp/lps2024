@@ -119,9 +119,8 @@ In this case, you cannot have a description of the image, unfortunately.
       - Need some small changes :exclamation:
       - Need an editing pass :exclamation:
     - Materials :white_check_mark:
-  - 06: memory: Mostly done (William) **
-    - Slides
-      - Need an editing pass :heavy_exclamation:
+  - 06: memory: (William)
+    - Slides :white_check_mark:
     - Materials :white_check_mark:
   - 07: Full system: Mostly done (Harshil)
     - Slides :white_checkmark:
@@ -154,12 +153,8 @@ In this case, you cannot have a description of the image, unfortunately.
     - Materials :white_check_mark:
   - 03: Events:  (Mahyar)
     - Slides
-      - Need to copy paste from Jason's slides
-      - Needs more stuff in the slides :white_check_mark:
-      - (WIP) Needs an editing pass :heavy_exclamation:
-    - Materials
-      - Erin testing them
-      - Mahyar has tested them
+      - Needs an editing pass :exclamation:
+    - Materials :white_check_mark:
   - 04: Ports: (Mahyar)
     - Slides
       - (WIP) Not done yet :heavy_exclamation_mark:
