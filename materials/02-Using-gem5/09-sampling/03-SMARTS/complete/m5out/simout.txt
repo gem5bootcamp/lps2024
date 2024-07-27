@@ -1,0 +1,1662 @@
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 24.0.0.0
+gem5 compiled Jul 10 2024 03:10:50
+gem5 started Jul 27 2024 00:03:05
+gem5 executing on codespaces-11c89e, pid 70504
+command line: gem5 -re SMARTS.py
+
+Global frequency set at 1000000000000 ticks per second
+curTick is 333
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 5891103
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 8702955
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 147948570
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 148484034
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 148798719
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 295373331
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 295957413
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 296216154
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 442793097
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 443315241
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 443573982
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 590150925
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 590673069
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 590931810
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 737508753
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 738033228
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 738292302
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 884870244
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 885392388
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 885651129
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 1032228072
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 1032750216
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 1033008957
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 1179585900
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 1180110375
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 1180369449
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 1326947058
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 1327469202
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 1327727943
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 1474304886
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 1474827030
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 1475085771
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 1621662714
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 1622187189
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 1622446263
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 1769023872
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 1769546016
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 1769804757
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 1916381700
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 1916903844
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 1917162585
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 2063739528
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 2064264003
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 2064523077
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 2211101019
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 2211623163
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 2211881904
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 2358458847
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 2358980991
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 2359239732
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 2505816675
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 2506338819
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 2506600224
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 2653178166
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 2653700310
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 2653959051
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 2800535994
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 2801058138
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 2801316879
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 2947893822
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 2948415966
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 2948677371
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 3095254980
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 3095777124
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 3096035865
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 3242612808
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 3243134952
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 3243393693
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 3389970636
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 3390492780
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 3390754185
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 3537328464
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 3537853605
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 3538112346
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 3684689289
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 3685211433
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 3685470174
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 3832047117
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 3832569261
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 3832828002
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 3979404945
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 3979929420
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 3980188494
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 4126766103
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 4127288247
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 4127546988
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 4274123931
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 4274646075
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 4274904816
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 4421481759
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 4422006234
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 4422265308
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 4568842917
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 4569365061
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 4569623802
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 4716200745
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 4716722889
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 4716981630
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 4863558573
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 4864083048
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 4864342122
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 5010920064
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 5011442208
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 5011700949
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 5158277892
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 5158800036
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 5159058777
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 5305635720
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 5306160195
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 5306419269
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 5452997211
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 5453519355
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 5453778096
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 5600355039
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 5600877183
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 5601135924
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 5747712867
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 5748235011
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 5748496416
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 5895074025
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 5895596169
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 5895854910
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 6042431853
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 6042953997
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 6043212738
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 6189789681
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 6190311825
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 6190573230
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 6337150839
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 6337672983
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 6337931724
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 6484508667
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 6485030811
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 6485289552
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 6631866495
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 6632388639
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 6632647380
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 6779224323
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 6779748798
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 6780007872
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 6926585481
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 6927107625
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 6927366366
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 7073943309
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 7074465453
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 7074724194
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+curTick is 7221301137
+got to warmup start
+
+switch core type
+switching cpus
+now schedule for end of warmup and start of detailed simluation
+
+fall back to simulation
+
+curTick is 7221825612
+got to detail simulation start
+
+now reset m5 stats
+
+fall back to simulation
+
+curTick is 7222084686
+got to end of detail simulation
+
+now dump stats
+
+switch core type
+
+switching cpus
+now schedule for next warmup start and detail simulation start
+
+schedule for the next start of warmup
+
+increase n counter
+
+switch core type to functional core type
+fall back to simulation
+
+Sum: 332833500000
+Simulation Done

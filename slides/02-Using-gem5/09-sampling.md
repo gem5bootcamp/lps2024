@@ -38,7 +38,7 @@ There are two major types of sampling:
 
 Representative methodologies: SimPoint, LoopPoint
 <!-- _class: center-image -->
-![width:950](09-sampling/targeted_sampling.png)
+![width:950](09-sampling-img/targeted_sampling.png)
 
 Targeted sampling selects samples based on specific characteristics that are discovered by analysis.
 
@@ -51,7 +51,7 @@ Well-known simulation sampling methods that use the targeted sampling approach i
 Both methods divided the whole program execution into regions that each executes a fixed number of instructions.
 They record the basic block execution pattern inside each region to be the signature of the program behavior for the region. It's known as the **basic block vector**. Here is an example of a basic block vector.
 <!-- _class: center-image -->
-![basic block vecotr](09-sampling/basic_block_vecotr.png)
+![basic block vecotr](09-sampling-img/basic_block_vecotr.png)
 
 They use the basic block vectors to cluster and find the representative regions. They will predict the overall performance of the program by collecting only the representative regions' performance and sum them with weights.
 
@@ -61,7 +61,7 @@ They use the basic block vectors to cluster and find the representative regions.
 <!-- _class: center-image -->
 Representative methodologies: SMARTS, FSA
 
-![width:950](09-sampling/statical_sampling.png)
+![width:950](09-sampling-img/statical_sampling.png)
 
 Statistical sampling, as the name suggests, statistically selects its sampling units.
 
@@ -84,7 +84,7 @@ They use the performance of the randomly distributed samples to predict the over
 Before using any of the sampling techniques, we need to make sure the sampling technique works for our experiments.
 For example, SimPoint is designed to work with single-threaded workloads only, so **if our experiments require multi-threaded workloads, we should NOT use SimPoint with them.**
 <!-- _class: center-image -->
-![width:500](09-sampling/misuse_tool.png)
+![width:500](09-sampling-img/misuse_tool.png)
 
 ---
 
@@ -250,11 +250,11 @@ There are many methods to do it. In this exercise, we will be using the SimPoint
 
 ## 01-simpoint
 
-The tool is already compiled under [materials/02-Using-gem5/09-sampling/01-simpoint/Simpoint3.2/bin/simpoint](../../materials/02-Using-gem5/09-sampling/01-simpoint/Simpoint3.2/bin/simpoint).
+The tool is already compiled under [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint).
 We also provided a runscript with the command in [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint3.2-cmd.sh](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint3.2-cmd.sh).
 
 ```bash
-/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/Simpoint3.2/bin/simpoint \
+/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/simpoint \
     -inputVectorsGzipped -loadFVFile simpoint-analysis-m5out/simpoint.bb.gz -k 5 -saveSimpoints \
     results.simpts -saveSimpointWeights results.weights
 ```
@@ -807,7 +807,7 @@ As the output suggests, the relative error between the predicted IPC and the act
 
 Now we experimented both targeted and statistical sampling in gem5, let's end it with the trade-offs.
 
-![width:1100](09-sampling/tradeoff-table.png)
+![width:1100](09-sampling-img/tradeoff-table.png)
 
 ---
 
