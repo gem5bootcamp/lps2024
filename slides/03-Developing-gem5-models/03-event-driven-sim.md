@@ -59,7 +59,7 @@ This way every time event $A$ occurs, event $B$ will occur 1000 units of time la
 
 ---
 
-## Event-Driven Simulation: Practical View (1/3)
+## Event-Driven Simulation: Practical View
 
 An event-driven simulator needs to facilitate the following:
 
@@ -69,7 +69,7 @@ An event-driven simulator needs to facilitate the following:
 
 ---
 
-## Event-Driven Simulation: Practical View (2/3)
+## Event-Driven Simulation: Practical View (cont.)
 
 Let's see how this will look if you were to write your own hardware simulator.
 
@@ -83,9 +83,9 @@ To impose the latency of the fetch we will schedule `CPU::accessICache` in `curr
 
 ---
 
-## Event-Driven Simulation: Practical View (3/3)
+## Event-Driven Simulation: Practical View (cont.)
 
-4- When the simulator has finished reacting to all events that occured at $t = 0$, it will move time to the closest time that an event is scheduled to occur ($t = 0 + fetch\_delay$ in this case).
+4- When the simulator has finished reacting to all events that occurred at $t = 0$, it will move time to the closest time that an event is scheduled to occur ($t = 0 + fetch\_delay$ in this case).
 
 5- At time $t= fetch\_delay$ the simulator will call `cpu_0::accessICache::callback` and `cpu_1::accessICache::callback` to react to both events. These events will probably access the instruction caches and then might schedule events to handle misses in the cache like `Cache::handleMiss`.
 
@@ -239,7 +239,7 @@ First, we need to include `sim/eventq.hh` so we can add a member of type `EventF
 
 ---
 
-## Exercise: nextHelloEvent
+## nextHelloEvent
 
 Next, we need to declare a member of type `EventFunctionWrapper` which we will call `nextHelloEvent`.
 
@@ -260,8 +260,6 @@ To do this, add the following lines to your declaration of the `HelloSimObject` 
 ## nextHelloEvent: Header File
 
 This is how your `hello_sim_object.hh` should look after all the changes.
-
-<!--  [hello_sim_object.hh](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.hh) -->
 
 ```cpp
 #ifndef __BOOTCAMP_HELLO_SIM_OBJECT_HELLO_SIM_OBJECT_HH__
@@ -295,8 +293,6 @@ class HelloSimObject: public SimObject
 ## nextHelloEvent: HelloSimObject: Constructor
 
 Now, let's change our definition of the constructor of `HelloSimObject` to initialize `nextHelloEvent`. Let's add the following line to the initialization list in `HelloSimObject::HelloSimObject` which you can find in `src/bootcamp/hello-sim-object/hello_sim_object.cc`.
-
-<!-- [src/bootcamp/hello-sim-object/hello_sim_object.cc](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/src/bootcamp/hello-sim-object/hello_sim_object.cc). -->
 
 ```cpp
     nextHelloEvent([this](){ processNextHelloEvent(); }, name() + "nextHelloEvent")
@@ -403,7 +399,7 @@ HelloSimObject::processNextHelloEvent()
 Looking at the code, we do the following every time `nextHelloEvent` occurs (i.e. `processNextHelloEvent` is called):
 
 - Print `Hello ...`.
-- Decrement `remaingingHellosToPrintByEvent`.
+- Decrement `remainingHellosToPrintByEvent`.
 - Check if we have remaining prints to do. If so, we will schedule `nextHelloEvent` 500 ticks into the future. **NOTE**: `curTick` is a function that returns the current simulator time in `Ticks`.
 
 ---
@@ -1019,7 +1015,7 @@ from m5.objects.HelloSimObject import HelloSimObject, GoodByeSimObject
 ---
 <!-- _class: code-70-percent -->
 
-## Configuration Script cont.
+## Configuration Script (cont.)
 
 Now, let's add the following line to give a value to `goodbye_object` from `root.hello`.
 
@@ -1046,7 +1042,7 @@ print(f"Exited simulation because: {exit_event.getCause()}.")
 
 ---
 
-## Let's Simulate: Part 1
+## Let's Simulate
 
 If you want to run the completed script, move the completed `third-hello-example.py` into the gem5 directory by running the following command while in the base gem5 folder:
 
