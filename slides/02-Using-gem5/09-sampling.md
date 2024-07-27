@@ -146,7 +146,7 @@ There are two key files related to using SimPoint in gem5:
 1. [src/python/gem5/utils/simpoint.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/utils/simpoint.py)
 2. [src/cpu/simple/probes/SimPoint.py](https://github.com/gem5/gem5/blob/stable/src/cpu/simple/probes/SimPoint.py)
 
-We will step through them in this section.
+We will be seeing them throughout this section.
 
 ---
 
@@ -182,7 +182,7 @@ We will only work with [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint
 
 ## 01-simpoint
 
-Because the profiling might take a while, will run the simulation first with the following command
+Because the profiling and getting the baseline performance might take a while, we will run the simulation first with the following command.
 
 ```bash
 gem5 -re --outdir=full-detailed-run-m5out full-detailed-run.py
@@ -258,7 +258,7 @@ T:1900:222 :1901:222 :1902:999216 :1903:333
 - `:1900:222` means that basic block 1900 executed (committed) 222 instructions. The key here is that 222 is NOT the number of times the basic block has been executed, but the number of times the basic block has been executed multiplied by the total instructions in the basic block . If we sum up all the instructions that have been executed by the basic blocks, we will get roughly the length of the region. $222+222+999216+333=999993$.
 
 The next step is to use this information to cluster the regions and find the representative regions.
-There are many methods to do it. In this exercise, we will be using the SimPoint3.2 tool that was provided by the SimPoint paper's authors.
+There are many methods to do it. In this exercise, we will be using the SimPoint3.2 tool that was provided by the SimPoint paper's authors. [Link](https://cseweb.ucsd.edu/~calder/simpoint/) to the tool.
 
 ---
 
@@ -450,8 +450,8 @@ We provided a runscript to run all three in [materials/02-Using-gem5/09-sampling
 
 ## 01-simpoint
 
-Let's look at [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py). It has a detailed system that matches the one that is used in our baseline, [full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py).
-There are a few key points that we want to look at. Let's start with the one we are familiar with.
+Let's look at [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py). It has a detailed system that matches the one that is used in our baseline [materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py).
+There are a few key points that we want to look at. Let's start with the ones we are familiar with
 
 ```python
 # key 1:
@@ -600,7 +600,7 @@ Therefore, if we know how to do sampling with the SimPoint method, it should not
 
 LoopPoint is similar to SimPoint with some key differences.
 
-LoopPoint uses the number of times a loop is executed to mark the regions instead of using instructions executed. Therefore, we need to collect the loop execution information in the analysis stage in addition to the basic block execution information. Other than this, it is very similar to SimPoint in terms of the process.
+LoopPoint uses the number of times a loop is executed to mark the regions instead of using instructions executed. Therefore, we need to collect the loop execution information in the analysis stage in addition to the basic block execution information. Other than this, it is very similar to SimPoint in terms of the process (the 3 step process we did in 01-simpoint).
 
 We will not do a detailed example on LoopPoint, but there are examples under [configs/example/gem5_library/looppoints](https://github.com/gem5/gem5/tree/stable/configs/example/gem5_library/looppoints). We have the infrastructure ready for LoopPoint checkpointing and running the LoopPoint in gem5 v24.0. The LoopPoint analysis is tested and ready to be upstream in gem5 v24.1.
 
@@ -711,7 +711,7 @@ Now we covered all the targeted sampling methods that are supported in gem5, let
 
 SMARTS is one of the statical sampling methods.
 
-It uses the statistical model to predict the overall performance with randomly or periodically selected samples.
+It uses a statistical model to predict the overall performance with randomly or periodically selected samples.
 We use small samples distributed throughout the whole program execution to predict the average performance. We can also use the average performance to predict the overall performance, such as runtime.
 
 Before running the simulation, we need to decide a few statistical parameters.
@@ -753,12 +753,7 @@ Let's look at the `smarts_generator` with the statistical parameters.
 - `U`: the sampling unit size. It is a number of instructions executed.
 - `W`: the length of the detailed warm up period. It is a number of instructions executed.
 
-Each interval instruction length is $k*U$.
-The warmup part starts at $(k-1)*U-W$
-The detailed simulation part starts at $(k-1)*U$
-
-This exit generator only works with SwitchableProcessor.
-When it reaches to the start of the detailed warmup part, it resets the stats. It then switches the core type and schedules for the end of the warmup part and the end of the interval. When it reaches the end of the detailed warmup, it resets the stats. When it reaches the end of the detailed simulation, it dumps the stats, then switches the core type and schedules for the start of the next detailed warmup part.
+![](09-sampling-img/smarts-statistical-model.drawio.svg)
 
 ---
 
@@ -783,9 +778,10 @@ With these parameters, we will have about 50 samples. Each sample has a gap $(k-
 
 ## 03-SMARTS
 
-With these parameters, what the `smarts_generator` will
+This SMARTS exit generator only works with SwitchableProcessor.
+When it reaches to the start of the detailed warmup part, it resets the stats; then it switches the core type and schedule for the end of the warmup part and the end of the interval. When it reaches to the end of the detailed warmup part, it resets the stats. When it reaches to the end of the detailed simulation, it dumps the stats; then it switches the core type and schedule for the start of the next detailed warmup part.
 
-<!-- do some visualization here -->
+![](09-sampling-img/smarts-generator-model.drawio.svg)
 
 ---
 
@@ -798,7 +794,7 @@ It uses exactly the same system as  [materials/02-Using-gem5/09-sampling/01-simp
 If the simulation is run with
 
 ```bash
-gem5 -re --outdir=full-detailed-run-m5out SMARTS.py
+gem5 -re SMARTS.py
 ```
 
 we can run [materials/02-Using-gem5/09-sampling/03-SMARTS/predict_ipc.py](../../materials/02-Using-gem5/09-sampling/03-SMARTS/predict_ipc.py) to predict the overall IPC and calculate the relative error with the baseline IPC.
