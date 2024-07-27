@@ -1,0 +1,15 @@
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 24.0.0.0
+gem5 compiled Jul 10 2024 03:10:50
+gem5 started Jul 26 2024 03:05:04
+gem5 executing on codespaces-11c89e, pid 40935
+command line: gem5 -re --outdir=simpoint2-run simpoint-run.py --sid=2
+
+Starting Simulation with warmup interval 1000000
+Global frequency set at 1000000000000 ticks per second
+end of warmup, starting to simulate SimPoint
+end of SimPoint interval
+Simulation Done
+Ran SimPoint 2 with weight 0.666667

@@ -1,0 +1,81 @@
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (16384 Mbytes) does not match the address range assigned (2048 Mbytes)
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (16384 Mbytes) does not match the address range assigned (2048 Mbytes)
+src/arch/x86/linux/se_workload.cc:76: warn: Unknown operating system; assuming Linux.
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+board.remote_gdb: Listening for connections on port 7000
+src/sim/simulate.cc:199: info: Entering event queue @ 0.  Starting simulation...
+Will set affinity using  
+  Start Simics magic instruction: 1. 0x1 2. 0x2 SSC mark 1. 0x111  src/sim/syscall_emul.cc:74: warn: ignoring syscall mlockall(...)
+src/arch/x86/linux/se_workload.cc:76: warn: Unknown operating system; assuming Linux.
+src/sim/power_state.cc:105: warn: PowerState: Already in the requested power state, request ignored
+src/arch/x86/linux/se_workload.cc:76: warn: Unknown operating system; assuming Linux.
+src/arch/x86/linux/se_workload.cc:76: warn: Unknown operating system; assuming Linux.
+src/arch/x86/linux/se_workload.cc:76: warn: Unknown operating system; assuming Linux.
+src/arch/x86/linux/se_workload.cc:76: warn: Unknown operating system; assuming Linux.
+src/arch/x86/linux/se_workload.cc:76: warn: Unknown operating system; assuming Linux.
+src/arch/x86/linux/se_workload.cc:76: warn: Unknown operating system; assuming Linux.
+src/sim/syscall_emul.cc:74: warn: ignoring syscall sched_setaffinity(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall sched_setaffinity(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall sched_setaffinity(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall sched_setaffinity(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall sched_setaffinity(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall sched_setaffinity(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall sched_setaffinity(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall sched_setaffinity(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/syscall_emul.cc:74: warn: ignoring syscall modify_ldt(...)
+src/sim/simulate.cc:199: info: Entering event queue @ 477128000.  Starting simulation...
+src/sim/syscall_emul.cc:85: warn: ignoring syscall sched_yield(...)
+      (further warnings will be suppressed)
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'fwait' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'roundps_Vdq_Wdq_Ib' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'roundps_Vdq_Wdq_Ib' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'roundps_Vdq_Wdq_Ib' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'roundps_Vdq_Wdq_Ib' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rsqrtss_Vd_Wd' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rsqrtss_Vd_Wd' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rsqrtss_Vd_Wd' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rsqrtss_Vd_Wd' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rqsrtps_Vo_Wo' unimplemented
+build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'rsqrtss_Vd_Wd' unimplemented

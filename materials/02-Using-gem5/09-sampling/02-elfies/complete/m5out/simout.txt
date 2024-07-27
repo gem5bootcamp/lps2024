@@ -1,0 +1,27 @@
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 24.0.0.0
+gem5 compiled Jul 10 2024 03:10:50
+gem5 started Jul 27 2024 00:02:47
+gem5 executing on codespaces-11c89e, pid 70295
+command line: gem5 -re run-elfies.py
+
+info: Using default config
+Global frequency set at 1000000000000 ticks per second
+core_base: 0
+  elfie tid: 0  core id: 0
+preopen_files():#must be in 'sysstate' to succeed 
+could not pre-open FD_1 
+reached (16823875,1)
+
+now reset stats
+
+fall back to simulation
+
+reached (5400368,297879)
+
+now dump stats and exit simulation
+
+Simulation Done
+
