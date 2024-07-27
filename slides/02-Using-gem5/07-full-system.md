@@ -202,16 +202,16 @@ Let's go over the packer file.
 
 ## Let's use the base ubuntu image to create a diskimage with the gapbs benchmark
 
-Update the [x86-ubuntu.pkr.hcl](../../materials/02-Using-gem5/07-full-system/x86-ubuntu-gapbs/x86-ubuntu.pkr.hcl) file
+Update the [x86-ubuntu.pkr.hcl](../../materials/02-Using-gem5/07-full-system/x86-ubuntu-gapbs/x86-ubuntu.pkr.hcl) file.
 
 The general structure of the packer file would be the same but with a few key changes:
 
-- We will now add an argument in `source "qemu" "initialize"` block
+- We will now add an argument in `source "qemu" "initialize"` block.
   - `diskimage = true` : This will let packer know that we are using a base diskimage and not an iso from which we will install ubuntu.
-- remove the `http_directory   = "http"` directory as we no longer need to use autoinstall.
+- Remove the `http_directory   = "http"` directory as we no longer need to use autoinstall.
 - Change the `iso_checksum` and `iso_urls` to that of our base image.
 
-    Lets get the base ubuntu 24.04 image gen5 resources and unzip it.
+    Let's get the base ubuntu 24.04 image gen5 resources and unzip it.
 
     ```bash
     wget https://storage.googleapis.com/dist.gem5.org/dist/develop/images/x86/ubuntu-24-04/x86-ubuntu-24-04.gz
@@ -220,15 +220,15 @@ The general structure of the packer file would be the same but with a few key ch
 
 ---
 
-`iso_checksum` is the sha256sum of the iso file that we are using. To get he `sha256sum` run the following in the linux terminal.
+`iso_checksum` is the `sha256sum` of the iso file that we are using. To get the `sha256sum` run the following in the linux terminal.
 
 ```bash
 sha256sum ./x86-ubuntu-24-04.gz
 ```
 
 
-- Update the file and shell provisioners: Lets remove the file provisioners as we dont need to transfer the files again
-- Boot command: As we are not installing ubuntu. We can write the commands to login and any other commands we need like setting up network or ssh. Lets update the boot command to login and enable network.
+- **Update the file and shell provisioners:** Let's remove the file provisioners as we dont need to transfer the files again.
+- **Boot command:** As we are not installing ubuntu, we can write the commands to login along with any other commands we need (e.g. setting up network or ssh). Let's update the boot command to login and enable network:
 
 ```hcl
 "<wait30>",
