@@ -46,9 +46,10 @@ In this section, we will cover how to accelerate gem5 simulations using fast-for
 
 ## Our goal is to just run the region of interest in detailed mode
 
-### how do we get to the ROI fast?
+### How do we get to the ROI fast?
 
 - Using KVM to fast-forward
+
 - Taking and restoring a checkpoint
 
 ---
@@ -56,20 +57,21 @@ In this section, we will cover how to accelerate gem5 simulations using fast-for
 ## Fast-forwarding with KVM
 
 - KVM: Kernel-based virtual machine
-- Uses hardware virtualization extensions (e.g., nested page tables, vmexit, etc.)
-- gem5 uses KVM as the “CPU model”, i.e., the code is actually executing on the host CPU
-- It is fast!
+- Uses hardware virtualization extensions (e.g. nested page tables, vmexit, etc.)
+- gem5 uses KVM as the “CPU model”, i.e. the code is actually executing on the host CPU
+- **It is fast!**
 
 ### Things to be aware of when using KVM to fast forward
 
-- **the guest ISA (the ISA that is simulating) must match the host ISA**
-- **the m5ops annotation must be address version**
+- **The guest ISA (the ISA that is simulating) must match the host ISA**
+- **The m5ops annotation must be address version**
 
 ---
 
 ## Address version m5ops annotation
 
-The instruction version of the m5ops annotation we did in [03-running-in-gem5](03-running-in-gem5.md) will not work with KVM because the host does not recognize the m5ops instructions.
+The instruction version of the m5ops annotation we did in [03-running-in-gem5](./03-running-in-gem5.md) will not work with KVM because the host does not recognize the m5ops instructions.
+
 As shown in that session, the following error message will appear:
 
 ```console
@@ -82,21 +84,20 @@ In order to use the address version of the m5ops, we need to open `/dev/mem` dur
 
 ## Note
 
-"magic" address for
+"magic" address for:
 
 **X86 is `0XFFFF0000`**
 
 **arm64 is `0x10010000`**
 
-You can config these "magic" addresses by changing the `m5ops_base` address in the `System` SimObject. The source code is under [gem5/src/sim/System.py](../../gem5/src/sim/System.py).
+You can config these "magic" addresses by changing the `m5ops_base` address in the `System` SimObject. The source code is under [`gem5/src/sim/System.py`](../../gem5/src/sim/System.py).
 
-One high level example can be found under [gem5/src/python/gem5/components/boards/x86_board.py](../../gem5/src/python/gem5/components/boards/x86_board.py).
+One high level example can be found under [`gem5/src/python/gem5/components/boards/x86_board.py`](../../gem5/src/python/gem5/components/boards/x86_board.py).
 
 ```python
 @overrides(AbstractSystemBoard) <- it inherits (System, AbstractBoard)
 def _setup_board(self) -> None:
     ...
-
     self.m5ops_base = 0xFFFF0000
 ```
 
@@ -107,7 +108,7 @@ def _setup_board(self) -> None:
 ### 01-annotate-this
 
 Materials are under `materials/02-Using-gem5/08-accelerating-simulation/01-annotate-this`.
-[01-annotate-this.cpp](../../materials/02-Using-gem5/08-accelerating-simulation/01-annotate-this/01-annotate-this.cpp) is the same workload we used in [03-running-in-gem5](03-running-in-gem5.md), but this time, we need to use the address version of m5ops to annotate it.
+[`01-annotate-this.cpp`](../../materials/02-Using-gem5/08-accelerating-simulation/01-annotate-this/01-annotate-this.cpp) is the same workload we used in [03-running-in-gem5](03-running-in-gem5.md), but this time, we need to use the address version of m5ops to annotate it.
 
 We first need to get the functions we need from the m5ops library.
 
@@ -121,6 +122,8 @@ We first need to get the functions we need from the m5ops library.
 ```
 
 ---
+
+<!-- _class: code-80-percent -->
 
 ## 01-annotate-this
 
@@ -144,6 +147,8 @@ Note that this step requires the process to have permission to access `/dev/mem`
 ```
 
 ---
+
+<!-- _class: code-70-percent -->
 
 ## 01-annotate-this
 
@@ -170,18 +175,20 @@ Lastly, we need to unmap the address range after everything is done.
 
 ---
 
+<!-- _class: no-logo code-70-percent -->
+
 ## 01-annotate-this
 
 For the compiler command, aside from
 
-1. Including **gem5/m5ops.h** in the workload's source file(s)
-2. Adding **gem5/include** to the compiler's include search path
-3. Adding **gem5/util/m5/build/{TARGET_ISA}/out** to the linker search path
-4. Linking against **libm5.a** with `-lm5`
+1. Including **`gem5/m5ops.h`** in the workload's source file(s)
+2. Adding **`gem5/include`** to the compiler's include search path
+3. Adding **`gem5/util/m5/build/{TARGET_ISA}/out`** to the linker search path
+4. Linking against **`libm5.a`** with `-lm5`
 
 We also need to
 
-1. Add **gem5/util/m5/src** to the compiler's include search path
+1. Add **`gem5/util/m5/src`** to the compiler's include search path
 2. Add `-no-pie` to not make a position independent executable
 
 For our [Makefile](../../materials/02-Using-gem5/08-accelerating-simulation/01-annotate-this/Makefile), we have the following compiler command:
@@ -203,7 +210,7 @@ Now, let's try running the compiled workload:
 ./01-annotate-this
 ```
 
-We should now see without any errors.
+We should now see this without any errors:
 
 ```console
 This will be output to standard out
@@ -222,7 +229,7 @@ Since it runs on the host, we know that we can use it with X86 KVM.
 ### Let's use KVM to fast forward to the ROI
 
 Let's run the Class A EP benchmark in the NPB benchmark suite.
-gem5 resources provides us with the `npb-ep-a`workload that allows us to run it with a single line
+gem5 resources provides us with the `npb-ep-a` workload that allows us to run it with a single line
 
 ```python
 board.set_workload(obtain_resource("npb-ep-a"))
@@ -239,7 +246,8 @@ You can find the details about the workload at the [gem5 resources website](http
 ## 02-kvm-time
 
 All materials can be found in `materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time`.
-We will be editing [materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time/02-kvm-time.py](../../materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time/02-kvm-time.py)
+
+We will be editing [`02-kvm-time.py`](../../materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time/02-kvm-time.py)
 
 ### Goal
 
@@ -283,6 +291,8 @@ Then, we will need to set up the workbegin handler to
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ```python
 # Set up workbegin handler to reset stats and switch to TIMING CPU
 def workbegin_handler():
@@ -322,11 +332,14 @@ simulator = Simulator(
 
 ---
 
+<!-- _class: no-logo code-80-percent -->
+
 ## 02-kvm-time
 
 If we run it with
 
 ```bash
+cd /workspaces/2024/materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time
 gem5 -re 02-kvm-time.py
 ```
 
@@ -371,7 +384,7 @@ gem5 -re 02-kvm-time.py
 
 ## 02-kvm-time
 
-It might take a minutes to boot up the kernel and fast-forward to the ROI begin.
+It might take a minute to boot up the kernel and fast-forward to the ROI begin.
 
 We can see what is happening in the terminal with the file `board.pc.com_1.device` under the `m5out` directory.
 
@@ -424,6 +437,8 @@ indicate different stats dumps.
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ## 02-kvm-time
 
 Let's look at the first stats dump.
@@ -441,6 +456,8 @@ It indicates that the KVM CPU did not simulate any operations, so any stats that
 Importantly, it also indicates that the KVM fast-forwarding does not warm up the micro-architectural components, such as caches, so we should consider having a period of warmup simulation before measuring the actual detailed simulation.
 
 ---
+
+<!-- _class: no-logo -->
 
 ## 02-kvm-time
 
@@ -512,7 +529,7 @@ However, we have a different goal this time. Also we will have a much simpler sy
 ## 03-checkpoint-and-restore
 
 All materials can be found under `materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore`.
-We will first edit the [03-take-a-checkpoint.py](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-take-a-checkpoint.py) to take a checkpoint. We will be calling it as the checkpointing script.
+We will first edit the [`03-take-a-checkpoint.py`](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-take-a-checkpoint.py) to take a checkpoint. We will be calling it as the checkpointing script.
 
 In the checkpointing script, let's first give the system the simplest cache hierarchy, which is no cache at all.
 
@@ -524,6 +541,8 @@ cache_hierarchy = NoCache()
 ```
 
 ---
+
+<!-- _class: no-logo code-80-percent -->
 
 ## 03-checkpoint-and-restore
 
@@ -597,14 +616,16 @@ Simulation Done
 ## 03-checkpoint-and-restore
 
 We should also find the checkpoint saved at `materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-cpt`.
-If you're interested, you can look at the [m5.cpt](/materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-cpt/m5.cpt) inside the `03-cpt` directory to see what is being saved.
+If you're interested, you can look at the [`m5.cpt`](/materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-cpt/m5.cpt) inside the `03-cpt` directory to see what is being saved.
 
 It is possible for a gem5 checkpoint to be outdated if the checkpoint is taken with an older version of gem5 and being restored with a newer version of gem5.
-In this case, we might need to update it with [gem5/util/cpt_upgrader.py](../../gem5/util/cpt_upgrader.py) of the newer version gem5.
+In this case, we might need to update it with [`gem5/util/cpt_upgrader.py`](../../gem5/util/cpt_upgrader.py) of the newer version gem5.
 
 <!-- I feel like there is still something to add here -->
 
 ---
+
+<!-- _class: no-logo -->
 
 ## 03-checkpoint-and-restore
 
@@ -612,7 +633,7 @@ In this case, we might need to update it with [gem5/util/cpt_upgrader.py](../../
 
 We will be using the exact same system that we used in 02-kvm-time to restore the checkpoint we just took.
 
-The restoring script is [materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-restore-the-checkpoint.py](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-restore-the-checkpoint.py).
+The restoring script is [`materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-restore-the-checkpoint.py`](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-restore-the-checkpoint.py).
 
 We can pass in the path to the checkpoint as a parameter to the `simulator` object.
 We can also pass in the path using the `board` object. More detail can be found [here](https://github.com/gem5/gem5/blob/stable/src/python/gem5/components/boards/kernel_disk_workload.py#L142).
@@ -638,9 +659,9 @@ simulator.run(1_000_000_000)
 
 **Note**: We set the simulation to be exited after 1,000,000,000 Ticks in the restoring script, but in an actual scenario, we might want to stop at the end of the ROI.
 
-To do this, we would need to use `simulator.run()` with no arguments and a workend exit event handler. An example can be found at [gem5/configs/example/gem5_library/x86-npb-benchmarks.py](/gem5/configs/example/gem5_library/x86-npb-benchmarks.py).
+To do this, we would need to use `simulator.run()` with no arguments and a workend exit event handler. An example can be found at [`gem5/configs/example/gem5_library/x86-npb-benchmarks.py`](/gem5/configs/example/gem5_library/x86-npb-benchmarks.py).
 
-Other than the `simulator` and the `processor` being a non-switchable SimpleProcessor, everything is the same as the script we used in [02-kvm-time](../../materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time/02-kvm-time.py).
+Other than the `simulator` and the `processor` being a non-switchable SimpleProcessor, everything is the same as the script we used in [`02-kvm-time.py`](../../materials/02-Using-gem5/08-accelerating-simulation/02-kvm-time/02-kvm-time.py).
 
 We can run this [restoring script](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-restore-the-checkpoint.py) with
 
@@ -652,7 +673,7 @@ gem5 -re --outdir=restore-m5-out 03-restore-the-checkpoint.py
 
 ## 03-checkpoint-and-restore
 
-After the simulation finishes, we should see in [simerr.txt](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/restore-m5-out/simerr.txt)
+After the simulation finishes, we should see in [`simerr.txt`](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/restore-m5-out/simerr.txt)
 
 ```bash
 src/sim/simulate.cc:199: info: Entering event queue @ 14788319800411.  Starting simulation...
@@ -662,7 +683,7 @@ build/ALL/arch/x86/generated/exec-ns.cc.inc:27: warn: instruction 'verw_Mw_or_Rv
 
 Unlike a simulation that starts from the beginning, a simulation that restores a checkpoint will start at the Tick when the checkpoint was taken.
 
-If we search for `curTick` in the [m5.cpt](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-cpt/m5.cpt) file under the checkpoint folder, we will see the Tick when the checkpoint was taken. It might not be exact to the sample showing here because KVM brings variation to the Ticks, but the starting Tick in the restoring simulation should match with the `curTick` in the m5.cpt file.
+If we search for `curTick` in the [`m5.cpt`](../../materials/02-Using-gem5/08-accelerating-simulation/03-checkpoint-and-restore/03-cpt/m5.cpt) file under the checkpoint folder, we will see the Tick when the checkpoint was taken. It might not be exact to the sample showing here because KVM brings variation to the Ticks, but the starting Tick in the restoring simulation should match with the `curTick` in the `m5.cpt` file.
 
 ```bash
 curTick=14788319800411
