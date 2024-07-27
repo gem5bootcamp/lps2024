@@ -161,6 +161,8 @@ print(getting_started_suite.get_input_groups())
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ## Running a workload from the suite (single code block)
 
 Let's run the NPB IS benchmark in this suite.
