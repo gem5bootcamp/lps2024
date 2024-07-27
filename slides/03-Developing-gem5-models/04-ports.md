@@ -45,6 +45,8 @@ Every `Packet` has the following fields:
 - `MemCmd`: It denotes what the `Packet` should do. Examples include: `readReq`/`readResp`/`writeReq`/`writeResp`.
 - `RequestorID`: ID for the `SimObject` that created the request (requestor).
 
+Class `Packet` is defined in `mem/packet.hh`. ‍Note that in our tutorial we will deal with `Packet` in pointers. `PacketPtr` is a type in gem5 that is equivalent to `Packet*`.
+
 ---
 <!-- _class: code-50-percent -->
 
@@ -466,3 +468,68 @@ We're going to follow a similar approach for extending `RequestPort`. Let's crea
         virtual void recvReqRetry() override;
     };
 ```
+
+---
+
+## Extending RequestPort: Deeper Look
+
+Let's take a deeper look into what we added for class `MemSidePort`.
+
+1- Like `CPUSidePort` we track a pointer to the instance of `InspectorGadget` class that owns this instance of `MemSidePort` in `InspectorGadget* owner`. We do it to access the owner when we receive `responses`, i.e. when `recvTimingResp` is called.
+2- We track a pointer to one `Packet` that is blocked (has received false) the last time `MemSidePort::sendTimingReq` is called. `PacketPtr blockedPacket` holds that `Packet`.
+3- Function `blocked` tells us if we are blocked by the memory side, i.e. still waiting to receive a `retry request` from memory side.
+4- Function `sendPacket` is a wrapper around `sendTimingReq` to give our code more structure. Notice we don't need to definte `sendTimingReq` as it is already defined by `TimingRequestProtocol`.
+5- We will need to implement all the functions that relate to moving packets (all the functions that start with `recv`). We will use `owner` to implement most of the functionality of these functions within `InspectorGadget`.
+
+---
+
+## Creating Instances of Ports in InspectorGadget
+
+Now that we have declared `CPUSidePort` and `MemSidePort` classes (which are note abstract classes) we can go ahead and create an instance of each class in `InspectorGadget`. To do that, add the following two lines to `src/bootcamp/inspector-gadget/inspector_gadget.hh`
+
+```cpp
+  private:
+    CPUSidePort cpuSidePort;
+    MemSidePort memSidePort;
+```
+
+---
+<!-- _class: code-50-percent -->
+
+## SimObject::getPort
+
+Let's take a look at `src/sim/sim_object.hh` again. You can find a declaration for a function called `getPort`. Below is a snippet of code from the declaration of class `SimObject`.
+
+```cpp
+  public:
+/**
+     * Get a port with a given name and index. This is used at binding time
+     * and returns a reference to a protocol-agnostic port.
+     *
+     * gem5 has a request and response port interface. All memory objects
+     * are connected together via ports. These ports provide a rigid
+     * interface between these memory objects. These ports implement
+     * three different memory system modes: timing, atomic, and
+     * functional. The most important mode is the timing mode and here
+     * timing mode is used for conducting cycle-level timing
+     * experiments. The other modes are only used in special
+     * circumstances and should *not* be used to conduct cycle-level
+     * timing experiments. The other modes are only used in special
+     * circumstances. These ports allow SimObjects to communicate with
+     * each other.
+     *
+     * @param if_name Port name
+     * @param idx Index in the case of a VectorPort
+     *
+     * @return A reference to the given port
+     *
+     * @ingroup api_simobject
+     */
+    virtual Port &getPort(const std::string &if_name, PortID idx=InvalidPortID);
+```
+
+---
+
+## SimObject::getPort cont.
+
+This function is used for connecting ports to each other. W
