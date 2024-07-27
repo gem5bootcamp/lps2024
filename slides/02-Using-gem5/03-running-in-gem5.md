@@ -573,11 +573,10 @@ Some inputs for a traffic generator include:
 
 gem5's standard library has a collection of components for generating synthetic traffic. All such components inherit from `AbstractGenerator`, found in `src/python/gem5/components/processors`.
 
-- These components simulate memory accesses.
-- A typical generator will return a list of generator cores that would replace the processing cores on a board.
-- The generator core will create **synthetic traffic** by using a `SimObject` called `PyTrafficGen`, and the generator associate with that core will return a list of generator cores that will replace the processing cores on a board.
+- These components simulate memory accesses. They are intended to replace a processor in a system that you configure with gem5.
+- The generator core will create **synthetic traffic** by using a `SimObject` called `PyTrafficGen`, for more information you can look at `src/cpu/testers/traffic_gen`.
 - Each generator core (as specified in the generator core) will have a constructor that will define the parameters will have its own implementation of `_create_traffic`.
--Let's take a look at the constructor and `_create_traffic` for an example generator.
+- Let's take a look at the constructor and `_create_traffic` for an example generator.
 
 ---
 
@@ -634,6 +633,7 @@ def _create_traffic(self) -> Iterator[BaseTrafficGen]:
         )
         yield self.generator.createExit(0)
 ```
+
 ---
 <!-- _class: center-image -->
 
