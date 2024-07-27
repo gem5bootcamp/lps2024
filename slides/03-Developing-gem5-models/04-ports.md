@@ -293,10 +293,11 @@ Add the following two lines under the declaration of `InspectorGadget` to add `c
     mem_side_port = RequestPort("RequestPort to send received requests to memory side.")
 ```
 
-Since we are going to buffer traffic, let's add a parameter for the number of entries in the internal FIFO. Our naming will be forward looking since we know that we will eventually call it the `inspectionBuffer`; Therefore, let's call it `inspection_buffer_entries`. Do it by adding the following line under the declaration of `InspectorGadget`.
+To buffer traffic, we need two FIFOs: one for `requests` (from `cpu_side_port` to `mem_side_port`) and one for `responses` (from `mem_side_port` to `cpu_side_port`). For the the FIFO in the `request` path, we know that in the future we want to *inspect* the requests. Therefore, let's call it `inspectionBuffer`; we need a parameter to determine the the number of entries in this buffer so let's call that parameter `inspection_buffer_entries`. For the `response` path, we will simply call the buffer `response_buffer` and add a parameter for its entries named `response_buffer_entries`. Do it by adding the following lines under the declaration of `InspectorGadget`.
 
 ```python
 inspection_buffer_entries = Param.Int("Number of entries in the inspection buffer.")
+response_buffer_entries = Param.Int("Number of entries in the response buffer.")
 ```
 
 ---
@@ -319,6 +320,7 @@ class InspectorGadget(ClockedObject):
     mem_side_port = RequestPort("RequestPort to send received requests to memory side.")
 
     inspection_buffer_entries = Param.Int("Number of entries in the inspection buffer.")
+    response_buffer_entries = Param.Int("Number of entries in the response buffer.")
 ```
 
 ---
@@ -373,6 +375,7 @@ class InspectorGadget : public ClockedObject
 {
   private:
     int inspectionBufferEntries;
+    int responseBufferEntries;
 
   public:
     InspectorGadget(const InspectorGadgetParams& params);
@@ -400,7 +403,7 @@ Before anything, let's go ahead and import the header file that contains the dec
 **REMEMBER** to follow the right include order based on gem5's convention.
 
 ---
-<!-- _class: code-60-percent -->
+<!-- _class: code-50-percent -->
 
 ## Extending ResponsePort
 
@@ -419,6 +422,8 @@ Now, let's get to extending `ResponsePort` class. Let's do it inside the scope o
         CPUSidePort(InspectorGadget* owner, std::string& name):
             ResponsePort(name), owner(owner), needToSendRetry(false)
         {}
+
+        bool needRetry() const { return needToSendRetry; }
 
         virtual AddrRangeList getAddrRanges() const override;
 
@@ -532,4 +537,326 @@ Let's take a look at `src/sim/sim_object.hh` again. You can find a declaration f
 
 ## SimObject::getPort cont.
 
-This function is used for connecting ports to each other. W
+This function is used for connecting ports to each other. As far as we are concerned, we are to create a mapping between our `Port` objects in C++ and the `Ports` that we declare in Python. To the best of my knowledge, we will never have to call this function on our own. For now let's implement this function to return a `Port&` if we recognize `if_name` (which would be the name that we have given to the `Port` in Python), otherwise, we will ask `ClockedObject` to handle the function call.
+
+Let's go ahead an add the declaration for this function to `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+
+```cpp
+  public:
+    virtual Port& getPort(const std::string& if_name, PortID idxInvalidPortID);
+```
+
+---
+<!-- _class: code-60-percent -->
+
+## Enough with the Declarations! For Now!
+
+So far, we have declared quite a few functions that we need to implement. Let's start defining some of them. In the next several slides, we will be defining functions from `CPUSidePort` and `MemSidePort` and `getPort` from `InspectorGadget`.
+
+Open `src/bootcamp/inspector-gadget/inspector_gadget.cc` and let's start adding include statements and `namespace gem5`. Add the following piece of code to `src/bootcamp/inspector-gadget/inspector_gadget.cc`. By now, you should why each line is added.
+
+```cpp
+#include "bootcamp/inspector-gadget/inspector_gadget.hh"
+
+#include "debug/InspectorGadget.hh"
+
+namespace gem5
+{
+
+} // namespace gem5
+```
+
+As we start defining functions, we will realize that we will need to declare and define more functions. To keep things organized, let's just note them down as we go. We will the go back to declaring and defining.
+
+---
+<!-- _class: code-60-percent -->
+
+## Defining InspectorGadget::getPort
+
+Let's start by implementing `InspectorGadget::getPort`. Add the following code inside `namespace gem5` in `src/bootcamp/inspector-gadget/inspector_gadget.cc` to do this.
+
+```cpp
+Port&
+InspectorGadget::getPort(const std::string &if_name, PortID idx)
+{
+    if (if_name == "cpu_side_port") {
+        return cpuSidePort;
+    } else if (if_name == "mem_side_port") {
+        return memSidePort;
+    } else {
+        return ClockedObject::getPort(if_name, idx);
+    }
+}
+```
+
+If you remember, `getPort` needs to create a mapping between `Port` objects in Python and `Port` objects in C++. In this function for `if_name == cpu_side_port` (it's a name that comes from Python, look at `src/bootcamp/inspector-gadget/InspectorGadget.py`) we will retrun `cpuSidePort` and we do the same thing for `mem_side_port`. For now, you don't have to worry about `idx`. We will talk about it later in the context of `VectorPorts` (Ports that can connect to multiple peers).
+
+---
+
+## Defining Functions from CPUSidePort
+
+Now, that we have implemented `InspectorGadget::getPort`, we can start declaring and the functions that simulate the `request` path (from `cpu_side_port` to `mem_side_port`) in `InspectorGadget`. Here are all the functions that we need to define from `CPUSidePort`.
+
+```cpp
+virtual AddrRangeList getAddrRanges() const override;
+
+virtual bool recvTimingReq(PacketPtr pkt) override;
+virtual Tick recvAtomic(PacketPtr pkt) override;
+virtual void recvFunctional(PacketPtr pkt) override;
+virtual void recvRespRetry() override;
+```
+
+As we start defining these functions you will see that `Ports` are interfaces between `SimObject` to communicate. Most of these functions rely on `InspectorGadget` to provide most of the functionality.
+
+---
+<!-- _class: code-50-percent -->
+## CPUSidePort::recvAtomic, CPUSidePort::recvFunctional
+
+These two functions are very simple to define. Basically our responsibility is to pass the `PacketPtr` to `SimObjects` further down in the memory hierarchy. To implement them we will call functions with the same name from `InspectorGadget`. Add the following code to define `CPUSidePort::recvAtomic` and `CPUSidePort::recvFunctional`.
+
+```cpp
+Tick
+InspectorGadget::CPUSidePort::recvAtomic(PacketPtr pkt)
+{
+    DPRINTF(InspectorGadget, "%s: Received pkt: %s in atomic mode.\n", __func__, pkt->print());
+    return owner->recvAtomic(pkt);
+}
+
+void
+InspectorGadget::CPUSidePort::recvFunctional(PacketPtr pkt)
+{
+    DPRINTF(InspectorGadget, "%s: Received pkt: %s in functional mode.\n", __func__, pkt->print());
+    owner->recvFunctional(pkt);
+}
+```
+
+**DECLARE**:
+`Tick InspectorGadget::recvAtomic(PacketPtr);`
+`void InspectorGadget::recvFunctional(PakcetPtr);`
+
+---
+
+## CPUSidePort::getAddrRanges
+
+Reminder: This function returns an `AddrRangeList` that represents the address ranges that the port is a responder for. To under this better think about dual channel memory. Each channel in the memory is responsible for a subsets of all the addresses in your computer.
+
+To define this function, we are again going to rely on `InspectorGadget` and call a function with the same name from `InspectorGadget`. Do this by adding the following code to `src/bootcamp/inspector-gadget/inspector_gadget.cc`
+
+```cpp
+AddrRangeList
+InspectorGadget::CPUSidePort::getAddrRanges() const
+{
+    return owner->getAddrRanges();
+}
+```
+
+**DECLARE**:
+`AddrRangeList InspectorGadget::getAddrRanges() const;`
+
+---
+<!-- _class: code-50-percent -->
+
+## CPUSidePort::recvTimingReq
+
+In this function we will do the following.
+
+Ask owner to receive the `Packet` the `Port` is receiving. To do this we will call a function with the same name from `InspectorGadget`. If `InspectorGadget` can accept the `Packet` then the `Port` will return true. Otherwise, the `Port` will return false as well as remember that we need to send a `retry request` in the future, i.e. we will set `needToSendRetry = true`.
+
+To define this function add the following code to `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+
+```cpp
+bool
+InspectorGadget::CPUSidePort::recvTimingReq(PacketPtr pkt)
+{
+    DPRINTF(InspectorGadget, "%s: Received pkt: %s in timing mode.\n", __func__, pkt->print());
+    if (owner->recvTimingReq(pkt)) {
+        return true;
+    }
+    needToSendRetry = true;
+    return false;
+}
+```
+
+**DECLARE**:
+`bool InspectorGadget::recvTimingReq(PacketPtr);`
+
+---
+
+## CPUSidePort::recvRespRetry
+
+This function is called, when `RequestPort` connected to this port has sent a `response retry`. This happens after a scenario where the `RequestPort` connected to `CPUSidePort` rejects a response `Packet` and sends a `retry response` later.
+
+To define this function we're going to call a function with the same name from `InspectorGadget`. Add the following code to `src/bootcamp/inspector-gadget/inspector_gadget.cc` to define this function.
+
+```cpp
+void
+InspectorGadget::CPUSidePort::recvRespRetry()
+{
+    DPRINTF(InspectorGadget, "%s: Received retry signal.\n", __func__);
+    owner->recvRespRetry();
+}
+```
+
+**DECLARE**:
+`void InspectorGadget::recvRespRetry();`
+
+---
+
+## Back to Declaration
+
+Now that we are finished with defining functions from `CPUSidePort`, let's go ahead and declare the functions from `InspectorGadget` that we noted down.
+
+To do this add the following code to the `public` scope of `InspectorGadget` in `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+
+```cpp
+  public:
+    bool recvTimingReq(PacketPtr pkt);
+    Tick recvAtomic(PacketPtr pkt) const;
+    void recvFunctional(PacketPtr pkt) const;
+    void recvRespRetry();
+```
+
+---
+
+## TimedQueue
+
+As we mentioned, in the first step, all `InspectorGadget` does do would be to buffer the traffic, forwarding `requests` and `responses`. To do that let's create a first in first out structure for `inspectionBuffer` and `responseBuffer`. We will wrap `std::queue` to expose the following functionalities, the purpose of this structure is impose a minimum latency after items are pushed to the queue and before they can be accessed. We will add a member variable called `latency` to make this delay configurable.
+
+1- Method `front` that will return a reference to the oldest item in the queue similar to `std::queue`.
+2- Method `pop` that will remove the oldest item in the queue, similar to `std::queue`.
+3- Method `push` that will add a new item to the queue as well as tracking the simulation time the item was inserted. It is useful for ensuring a minimum amount of time has passed before making it ready to be accessed (modeling latency).
+4- Method `empty` that will return true if queue is empty, similar to `std::queue`.
+5- Method `size` that will return the number of items in the queue, similar to `std::queue`.
+6- Method `hasReady` will return true if an item in the queue can be accessed at a given time (i.e. has spent a minimum latency in the queue).
+
+---
+<!-- _class: two-col code-50-percent -->
+
+### Timed Queue: Details
+
+Like `CPUSidePort` and `MemSidePort`, let's declare our class `TimedQueue` in the `private` scope of `InspectorGadget`. Do it by adding the following lines to `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+
+
+```cpp
+  private:
+    template<typename T>
+    class TimedQueue
+    {
+      private:
+        Tick latency;
+
+        std::queue<T> items;
+        std::queue<T> insertionTimes;
+
+      public:
+        TimedQueue(Tick latency): latency(latency) {}
+
+        void push(T item, Tick insertion_time) {
+            items.push(item);
+            insertionTimes.push(insertion_time);
+        }
+
+        void pop() {
+            items.pop();
+            insertionTimes.pop();
+        }
+
+        T& front() const { return items.front(); }
+
+        bool empty() const { return items.empty(); }
+
+        size_t size() const { return items.size(); }
+
+        bool hasReady(Tick current_time) const {
+            if (empty()) {
+                return false;
+            }
+            return (current_time - insertionTimes.front()) >= latency;
+        }
+    };
+```
+
+---
+
+## inspectionBuffer
+
+Now, let's declare an instance of `TimedQueue` to buffer `PacketPtr` that `InspectorGadget` receives from `InspectorGadget::cpuSidePort::recvTimingReq`. Add the following line to the `private` scope of class `InspectorGadget` to do this.
+
+```cpp
+  private:
+    TimedQueue<PacketPtr> inspectionBuffer;
+```
+
+Now that we have declared `inspectionBuffer`, we are ready to define the following functions. **NOTE**: For now we are focusing on the `request` path, i.e. we're not going to define `recvRespRetry` just yet.
+
+```cpp
+AddrRangeList getAddrRanges() const;
+bool recvTimingReq(PacketPtr pkt);
+Tick recvAtomic(PacketPtr pkt) const;
+void recvFunctional(PacketPtr pkt) const;
+```
+
+---
+<!-- _class: code-60-percent -->
+
+## Let's Get the Easy Ones Out the Way
+
+Between the four functions, `getAddrRanges` and `recvFunctional` are the most straight-forward functions to define. We just need to call the same functions from `memSidePort`. To define these two functions, add the following code under `namespace gem5` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+
+```cpp
+AddrRangeList
+InspectorGadget::getAddrRanges()
+{
+    return memSidePort.getAddrRanges();
+}
+
+void
+InspectorGadget::recvFunctional(PacketPtr pkt)
+{
+    memSidePort.sendFunctional(pkt);
+}
+```
+
+**NOTE**: These two functions are already defined by `RequestPort` and we don't need to redefine them. Notice, how for `Ports` you only have to define functions that relate to receiving signals.
+
+---
+
+## InspectorGadget::recvAtomic
+
+Looking at the `recvAtomic`, this function returns a value of type `Tick`. This value is supposed to represent the latency of the access if that access was done in singularity, i.e atomically/without being interleaved. **CAUTION**: This latency is not an accurate representation of the actual latency of the access in a real setup. In a real setup there are many accesses happening at the same time and most of the time accesses do not happen atomically.
+
+Let's add *one* cycle of latency to the latency of accesses in the lower level of memory hierarchy. To do this we are going to call `period` method from the parent class of `InspectorGadget` which is `ClockedObject`. This function return the period of the `clk_domain` in `Ticks`. Add the following code for definition of `InspectorGadget::recvAtomic` to `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+
+```cpp
+Tick
+InspectorGadget::recvAtomic(PacketPtr pkt)
+{
+    return period() + memSidePort.sendAtomic(pkt);
+}
+```
+
+---
+<!-- _class: code-80-percent -->
+
+## On to the Hard Part
+
+As we discussed before, `timing` accesses are the accesses that advance simulator time and represent real setups.
+`InspectorGadget::recvTimingReq` will need check if there is at least one entry available in the `inspectionBuffer`. If there are no entries left, it should return false; otherwise, it should place the `Packet` at the end of the buffer, i.e. call `push` from `inspectionBuffer`, and return true.
+
+To define `InspectorGadget::recvTimingReq`, add the following code under `namespace gem5` to `src/bootcamp/inspector-gadget/inspector-gadget.cc`.
+
+```cpp
+bool
+InspectorGadget::recvTimingReq(PacketPtr pkt)
+{
+    if (inspectionBuffer.size() >= inspectionBufferEntries) {
+        return false;
+    }
+    inspectionBuffer.push(pkt, curTick());
+    return true;
+}
+```
+
+---
+
+##
