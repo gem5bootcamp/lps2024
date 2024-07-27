@@ -14,8 +14,37 @@ author: Jason Lowe-Power
 
 ## About the overall structure of the bootcamp
 
-- People presenting
-- People attending
+These slides and are available at <https://gem5bootcamp.gem5.org/> for you to follow along.
+
+(Note: They will be archived at <https://gem5bootcamp.github.io/2024>)
+
+The source for the slides, and what you'll be using throughout the bootcamp can be found on github at <https://github.com/gem5bootcamp/2024>
+
+> Note: Don't clone that repo, yet. We'll do that in a bit.
+
+---
+
+## A bit about us
+
+We are the Davis Computer Architecture Research (DArchR) Group.
+
+![UC Davis logo width:500px](00-introduction-to-bootcamp-imgs/expanded_logo_gold-blue.png)
+
+![DArchR logo fit](00-introduction-to-bootcamp-imgs/darchr.png)
+
+<https://arch.cs.ucdavis.edu>
+
+---
+
+## The bootcamp team
+
+The bootcamp is a team effort!
+
+### gem5 developers
+
+### Grad students
+
+### Undergrads
 
 ---
 
@@ -218,16 +247,16 @@ The slides will be a reference, but we'll be doing a lot of live coding!
 
 ## Important resources
 
-- [Bootcamp website]()
-- [Source for bootcamp materials]() (You'll work here)
-- [GitHub Classroom]() (Needed to use codespaces)
-- [gem5 Slack]() (for asking offline questions)
+### Bootcamp links
+
+- [Bootcamp website](https://gem5bootcamp.gem5.org/) (Maybe you're here now)
+  - [Bootcamp archive](https://gem5bootcamp.github.io/2024) (If you're coming to this later)
+- [Source for bootcamp materials](https://github.com/gem5bootcamp/2024) (You'll work here)
+- [GitHub Classroom](https://classroom.github.com/a/gCcXlgBs) (Needed to use codespaces)
+
+### gem5 links
+
 - [gem5 code](https://github.com/gem5/gem5)
 - [gem5 website](https://www.gem5.org/)
 - [gem5 YouTube](https://youtube.com/@gem5)
-
----
-
-## Slides about gem5
-
-(Get from PPT)
+- [gem5 Slack](https://gem5-workspace.slack.com/join/shared_invite/zt-2e2nfln38-xsIkN1aRmofRlAHOIkZaEA) (for asking offline questions)

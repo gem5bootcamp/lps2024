@@ -72,10 +72,18 @@ See [CONTRIBUTING.md](../../gem5/CONTRIBUTING.md#Releases) for more information.
 
 - We will be using the "bootcamp environment"
   - Note: That's also where the source for these slides are
+  - You will be doing all of your development in the repo found at <https://github.com/gem5bootcamp/2024>.
 
-> **Step 1:** Go to the classroom <https://classroom.github.com/...>
+These slides and are available at <https://gem5bootcamp.gem5.org/> for you to follow along.
+(Note: They will be archived at <https://gem5bootcamp.github.io/2024>)
+
+> **Step 1:** Go to the classroom <https://classroom.github.com/a/gCcXlgBs>
 
 You need to be in the github organization (via the classroom) to get free codespaces.
+
+### We strongly recommend using codespaces for the bootcamp.
+
+This guarantees everyone is using the same environment and will make debugging easier.
 
 ---
 
