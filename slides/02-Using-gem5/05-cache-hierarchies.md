@@ -3,22 +3,11 @@ marp: true
 paginate: true
 theme: gem5
 title: Modeling caches in gem5
-color: #444
 ---
 
 <!-- _class: title -->
 
 ## Modeling caches in gem5
-
----
-
-
-## Before We Start
-
-```bash
-cd gem5
-scons build/NULL_MESI_Two_Level/gem5.opt --default=NULL PROTOCOL=MESI_Two_Level SLICC_HTML=True -j17
-```
 
 ---
 
@@ -30,8 +19,8 @@ scons build/NULL_MESI_Two_Level/gem5.opt --default=NULL PROTOCOL=MESI_Two_Level 
 2. **Ruby**: Models cache coherence in detail
 
 ###
-![Placement of the Cache Hierarchy in gem5](05-cache-hierarchies/CPU_CacheHierarchy_MemCtrl.svg)
 
+![Placement of the Cache Hierarchy in gem5](05-cache-hierarchies/CPU_CacheHierarchy_MemCtrl.svg)
 
 ---
 
@@ -39,12 +28,11 @@ scons build/NULL_MESI_Two_Level/gem5.opt --default=NULL PROTOCOL=MESI_Two_Level 
 
 * Background on cache coherency
 * Simple Cache
-    * Coherency protocol in simple cache
-    * How to use simple cache
+  * Coherency protocol in simple cache
+  * How to use simple cache
 * Ruby cache
-    * Ruby components
-    * Example of MESI two level protocol
-
+  * Ruby components
+  * Example of MESI two level protocol
 
 ---
 
@@ -116,7 +104,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 ## Classic Cache: Coherence protocol (Snooping)
 
-![w:1100px Categories of Crossbars](05-cache-hierarchies/crossbar.drawio.svg)
+![Categories of Crossbars bg 90%](05-cache-hierarchies/crossbar.drawio.svg)
 
 ---
 
@@ -144,7 +132,7 @@ A coherence problem can arise if multiple cores have access to multiple copies o
 
 ---
 
-## Classic Cache: Pameters
+## Classic Cache: Parameters
 
 * src/mem/cache/Cache.py
   * src/mem/cache/cache.cc
@@ -164,10 +152,7 @@ Parameters:
 
 ### Directory Based
 
-
 ---
-
-<!-- _class: two-col -->
 
 ## Ruby Cache
 
@@ -175,17 +160,13 @@ Parameters:
 2. Caches + Interface
 3. Interconnect
 
-###
-
-![w:600 System with Ruby Caches](05-cache-hierarchies/ruby_cache.drawio.svg)
+![System with Ruby Caches bg right fit](05-cache-hierarchies/ruby_cache.drawio.svg)
 
 ---
 
-<!-- _class: no-logo center-image -->
-
 ## Ruby
 
-![ On chip interconnect + controllers](05-cache-hierarchies/ruby.drawio.svg)
+![ On chip interconnect + controllers bg 60%](05-cache-hierarchies/ruby.drawio.svg)
 
 ---
 
@@ -250,19 +231,3 @@ Code for controllers is "generated" via SLICC compilers
 * 1 Shared L2 cache
 * 1 Memory channel
 
----
-
-Build:
-
-
-```bash
-cd gem5
-scons build/NULL_MESI_Two_Level/gem5.opt --default=NULL PROTOCOL=MESI_Two_Level -j17
-```
-
-Run:
-
-```bash
-cd ../
-.gem5/build/NULL_MESI_Two_Level/gem5.opt materials/using-gem5/04-cache-models/simple_cache_run.py 2 MESITwoLevel 512MB
-```
