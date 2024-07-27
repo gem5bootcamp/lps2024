@@ -69,7 +69,7 @@ The most important distinction is that the gem5 binary gives the script the `m5`
 For all coding examples, we will be in the `materials` directory.
 
 ```sh
-cd materials/01-Introduction/03-python-background
+cd /workspaces/2024/materials/01-Introduction/03-python-background
 ```
 
 1. Create a file called "mysim.py" and add the following:
@@ -106,7 +106,7 @@ These are the basic building blocks of all Python programs and can be set and us
 
 ## Primitive: Integers
 
-[materials/01-Introduction/03-python-background/02-primitives-int.py](/materials/01-Introduction/03-python-background/02-primitives-int.py) can be used as a reference for basic integer usage.
+[`materials/01-Introduction/03-python-background/02-primitives-int.py`](../../materials/01-Introduction/03-python-background/02-primitives-int.py) can be used as a reference for basic integer usage.
 This tutorial will cover the basics.
 
 ### Declaring Integers
@@ -138,7 +138,7 @@ We're jumping ahead a bit here but they are very useful and we recommend using t
 
 ## Primitive: Floats
 
-[materials/01-Introduction/03-python-background/03-primitives-float.py](/materials/01-Introduction/03-python-background/03-primitives-float.py) can be used as a reference for basic float usage.
+[`materials/01-Introduction/03-python-background/03-primitives-float.py`](../../materials/01-Introduction/03-python-background/03-primitives-float.py) can be used as a reference for basic float usage.
 
 ### Declaring Floats
 
@@ -182,7 +182,7 @@ print(f"Value of div_xy: {div_xy}")
 
 ## Primitive: Strings
 
-[materials/01-Introduction/03-python-background/04-primitives-string.py](/materials/01-Introduction/03-python-background/04-primitives-string.py) can be used as a reference for basic string usage.
+[`materials/01-Introduction/03-python-background/04-primitives-string.py`](../../materials/01-Introduction/03-python-background/04-primitives-string.py) can be used as a reference for basic string usage.
 
 Strings are a primitive data type in Python. They are sequences of characters
 and are declared like so. Here we declare a variable `x` and assign it the
@@ -222,7 +222,7 @@ print(z)
 
 ## Primitive: Booleans
 
-[materials/01-Introduction/03-python-background/05-primitives-bool.py](/materials/01-Introduction/03-python-background/05-primitives-bool.py) can be used as a reference for basic boolean usage.
+[`materials/01-Introduction/03-python-background/05-primitives-bool.py`](../../materials/01-Introduction/03-python-background/05-primitives-bool.py) can be used as a reference for basic boolean usage.
 
 Bools are a primitive data type in Python. They are "True" or "False" and are
 declared like so. Here we declare a variable `x` and assign it the literal
@@ -302,7 +302,7 @@ The are set in square brackets.
 a_list = [1, 1, 2]
 ```
 
-More on lists can be found at [materials/01-Introduction/03-python-background/06-collections-list.py](/materials/01-Introduction/03-python-background/06-collections-list.py)
+More on lists can be found at [`materials/01-Introduction/03-python-background/06-collections-list.py`](../../materials/01-Introduction/03-python-background/06-collections-list.py)
 
 ### Sets
 
@@ -313,7 +313,7 @@ They are set in curly braces.
 a_set = {"one", "two", "three", "four", "five"}
 ```
 
-More on examples with sets can be found at [materials/01-Introduction/03-python-background/07-collections-set.py](/materials/01-Introduction/03-python-background/07-collections-set.py).
+More on examples with sets can be found at [`materials/01-Introduction/03-python-background/07-collections-set.py`](../../materials/01-Introduction/03-python-background/07-collections-set.py).
 
 ---
 
@@ -327,11 +327,13 @@ with each value in the set (the 'key') mapping to another variable (the
 a_dict = {1: "one", 2: "two"}
 ```
 
-More on examples with dictionaries can be found at [materials/01-Introduction/03-python-background/08-collections-dict.py](/materials/01-Introduction/03-python-background/08-collections-dict.py).
+More on examples with dictionaries can be found at [`materials/01-Introduction/03-python-background/08-collections-dict.py`](../../materials/01-Introduction/03-python-background/08-collections-dict.py).
 
 ---
 
-## Python collections usage
+<!-- _class: code-80-percent -->
+
+### Python collections usage
 
 ```python
 # The collections examples from the past few slides
@@ -477,7 +479,7 @@ else:
     print("The condition is False")
 ```
 
-[materials/01-Introduction/03-python-background/09-if-statements.py](/materials/01-Introduction/03-python-background/09-if-statements.py) can be used as a reference for basic `if` usage.
+[`materials/01-Introduction/03-python-background/09-if-statements.py`](../../materials/01-Introduction/03-python-background/09-if-statements.py) can be used as a reference for basic `if` usage.
 
 - Python doesn't use braces to define blocks of code. Instead it uses indentation.
 - The `print` statements are indented to show that they are part of the `if` block (for example, "The condition is True" `print` will only be execute if `condition` is `True`).
@@ -497,7 +499,7 @@ for value in [1, 2, 3]:
 
 Again, the `print` statement is indented to show that it is part of the `for`.
 
-[materials/01-Introduction/03-python-background/10-for-loops.py](/materials/01-Introduction/03-python-background/10-for-loops.py) can be used as a reference for basic `for` usage.
+[`materials/01-Introduction/03-python-background/10-for-loops.py`](../../materials/01-Introduction/03-python-background/10-for-loops.py) can be used as a reference for basic `for` usage.
 
 ---
 
@@ -512,9 +514,9 @@ while counter < 3:
     counter += 1
 ```
 
-[materials/01-Introduction/03-python-background/11-while-loop.py](/materials/01-Introduction/03-python-background/11-while-loop.py) can be used as a reference for basic `while` usage.
+[`materials/01-Introduction/03-python-background/11-while-loop.py`](../../materials/01-Introduction/03-python-background/11-while-loop.py) can be used as a reference for basic `while` usage.
 
-**Note:** The `counter += 1` line is shorthand for `counter = counter + 1`.
+> **Note:** The `counter += 1` line is shorthand for `counter = counter + 1`.
 This sets the counter value to the current counter value plus 1. E.g.,
 if the counter is 0, `counter += 1` will set the `counter` variable to 1.
 
@@ -545,7 +547,7 @@ def my_function(arg1: int, arg2: int) -> int:
 
 We strongly recommend using typing hints in your functions. This improves code readability and helps catch errors.
 
-[materials/01-Introduction/03-python-background/12-function.py](/materials/01-Introduction/03-python-background/12-function.py) can be used as a reference for basic function usage.
+[`materials/01-Introduction/03-python-background/12-function.py`](../../materials/01-Introduction/03-python-background/12-function.py) can be used as a reference for basic function usage.
 
 > The examples in the slides, and much of the materials, don't use type hinting to save space. This is not recommended practice.
 
@@ -588,7 +590,7 @@ If `math_funcs.py` is in a directory, say "math_dir" we can use:
 from math_dir.math_funcs import add, subtract, multiply
 ```
 
-A completed and extended example can be found at [13-importing-code.py](/materials/01-Introduction/03-python-background/13-importing-code.py).
+A completed and extended example can be found at [`13-importing-code.py`](../../materials/01-Introduction/03-python-background/13-importing-code.py).
 
 ---
 
@@ -644,7 +646,7 @@ Though each object of the class `Car` will have the same attributes and methods,
 
 ## Basic object-oriented design in Python
 
-Code for this example can be found at [materials/01-Introduction/03-python-background/14-basic-class-and-object.py](/materials/01-Introduction/03-python-background/14-basic-class-and-object.py).
+Code for this example can be found at [`materials/01-Introduction/03-python-background/14-basic-class-and-object.py`](../../materials/01-Introduction/03-python-background/14-basic-class-and-object.py).
 
 Let's create a simple class with some object instantiations.
 
@@ -748,7 +750,7 @@ Let's imagine we want to add an elephant object using to our Animal class. We wa
 
 ## Inheritance example
 
-The code for this section can be found at [materials/01-Introduction/03-python-background/15-inheritance.py](/materials/01-Introduction/03-python-background/15-inheritance.py)
+The code for this section can be found at [`materials/01-Introduction/03-python-background/15-inheritance.py`](../../materials/01-Introduction/03-python-background/15-inheritance.py)
 
 ```python
 class Elephant(Animal):
@@ -847,9 +849,11 @@ Methods do not have to be implemented in the Abstract Base Class, but they can b
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ## Abstract Classes example
 
-The code for this section can be found at [materials/01-Introduction/03-python-background/16-inheritance-with-abstract-base.py](/materials/01-Introduction/03-python-background/16-inheritance-with-abstract-base.py)
+The code for this section can be found at [`materials/01-Introduction/03-python-background/16-inheritance-with-abstract-base.py`](../..//materials/01-Introduction/03-python-background/16-inheritance-with-abstract-base.py)
 
 ```python
 from abc import ABC, abstractmethod
@@ -967,9 +971,11 @@ merge conflicts when updating to new versions of gem5.
 The following shows an example of of specializing a gem5 SimObject to create an abstract
 L1 cache. This is then used as a base class for L1 instruction cache.
 
-The code for the following example can also be found at [materials/01-Introduction/03-python-background/17-inheriting-from-a-simobject.py](/materials/01-Introduction/03-python-background/17-inheriting-from-a-simobject.py)
+The code for the following example can also be found at [`materials/01-Introduction/03-python-background/17-inheriting-from-a-simobject.py`](../../materials/01-Introduction/03-python-background/17-inheriting-from-a-simobject.py)
 
 ---
+
+<!-- _class: code-80-percent -->
 
 ## A SimObject OO Design example
 
