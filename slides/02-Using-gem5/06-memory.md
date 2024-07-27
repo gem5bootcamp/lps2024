@@ -66,147 +66,32 @@ DRAM and other memory devices, too!
 
 ---
 
-## Configuring Memory Controllers & Interfaces
+## How the memory model works
 
-```python
-# memory controller parameters
-system.mem_ctrl = MemCtrl()
-system.mem_ctrl.mem_sched_policy = "fcfs"
+- The memory controller is responsible for scheduling and issuing read and write requests
+- It obeys the timing parameters of the memory interface
+  - `tCAS`, `tRAS`, etc. are tracked *per bank* in the memory interface
+  - Use gem5 *events* ([more later](../03-Developing-gem5-models/03-event-driven-sim.md)) to schedule when banks are free
 
-# memory interface parameters
-system.mem_ctrl.dram = DDR4_2400_16x4()
-system.mem_ctrl.dram.range = AddrRange('512MB')
-system.mem_ctrl.dram.read_buffer_size = 32
-system.mem_ctrl.dram.write_buffer_size = 64
+The models isn't "cycle accurate," but it's *cycle level* and quite accurate compared to other DRAM simulators such as DRAMSim and DRAMSys.
 
-system.mem_ctrl.port = system.membus.mem_side_ports
-```
+You can extend the interface for new kinds of memory devices (e.g., DDR6), but usually you will use interfaces that have already been implemented.
 
-For full list of their configuration options, investigate their Python object files in: `gem5/src/mem`
-
----
-
-## Configuring Memory Controllers & Interfaces
-
-```python
-# memory controller parameters
-system.mem_ctrl = HBMCtrl()
-system.mem_ctrl.mem_sched_policy = "fcfs"
-
-# memory interface parameters
-system.mem_ctrl.dram = HBM_1000_4H_1x128(range=AddrRange(start = '0', end = '512MB', masks = [1 << 6], intlvMatch = 0))
-system.mem_ctrl.dram_2 = HBM_1000_4H_1x128(range=AddrRange(start = '0', end = '512MB', masks = [1 << 6], intlvMatch = 1))
-# system.mem_ctrl.dram.range = addr_range
-system.mem_ctrl.dram.read_buffer_size = 32
-system.mem_ctrl.dram.write_buffer_size = 64
-system.mem_ctrl.dram_2.read_buffer_size = 32
-system.mem_ctrl.dram_2.write_buffer_size = 64
-
-system.mem_ctrl.port = system.membus.mem_side_ports
-```
-
-For full list of their configuration options, investigate their Python object files in: `gem5/src/mem`
-
----
-
-## Configuring Memory Controllers & Interfaces
-
-```python
-# memory controller parameters
-system.mem_ctrl = HeteroMemCtrl()
-system.mem_ctrl.mem_sched_policy = "fcfs"
-
-# memory interface parameters
-system.mem_ctrl.dram = DDR4_2400_16x4(range=AddrRange(start = '0', end = '256MB'))
-system.mem_ctrl.nvm = NVM_2400_1x64(range=AddrRange(start = '256MB', end = '512MB'))
-system.mem_ctrl.dram.read_buffer_size = 32
-system.mem_ctrl.dram.write_buffer_size = 64
-system.mem_ctrl.nvm.read_buffer_size = 32
-system.mem_ctrl.nvm.write_buffer_size = 64
-
-system.mem_ctrl.port = system.membus.mem_side_ports
-```
-
-<!-- For full list of their configuration options, investigate their Python object files in: `gem5/src/mem` -->
-
----
-
-## Configuring Memory Controllers & Interfaces
-
-```python
-# memory controller parameters
-num_chnls = 2
-addr_ranges = [AddrRange('0', '256MB'), AddrRange('256MB', '512MB')]
-system.mem_ctrls = [MemCtrl() for i in range(num_chnls)]
-
-for i, mem_ctrl in enumerate(system.mem_ctrls):
-    mem_ctrl.mem_sched_policy = "fcfs"
-
-    # memory interface parameters
-    mem_ctrl.dram = DDR4_2400_16x4(range=addr_ranges[i])
-    mem_ctrl.dram.read_buffer_size = 32
-    mem_ctrl.dram.write_buffer_size = 64
-
-    mem_ctrl.port = system.membus.mem_side_ports
-```
-
-<!-- For full list of their configuration options, investigate their Python object files in: `gem5/src/mem` -->
-
----
-
-## Memory Controller/Interface Example
-
-- Open [`materials/02-Using-gem5/06-memory/blank_memory.py`](../../materials/02-Using-gem5/06-memory/blank_memory.py)
-- Look for the comment `# insert memory controller and interface here`
-- Copy and paste any of the code blocks from the 4 slides above or the one below
-
-```python
-# memory controller parameters
-system.mem_ctrl = MemCtrl()
-system.mem_ctrl.mem_sched_policy = "fcfs"
-
-# memory interface parameters
-system.mem_ctrl.dram = DDR4_2400_16x4()
-system.mem_ctrl.dram.range = AddrRange('512MB')
-system.mem_ctrl.dram.read_buffer_size = 32
-system.mem_ctrl.dram.write_buffer_size = 64
-
-system.mem_ctrl.port = system.membus.mem_side_ports
-```
-
----
-
-## Memory Controller/Interface Example
-
-Run with
-
-```sh
-gem5 blank_memory.py
-```
-
-```python
-# memory controller parameters
-system.mem_ctrl = MemCtrl()
-system.mem_ctrl.mem_sched_policy = "fcfs"
-
-# memory interface parameters
-system.mem_ctrl.dram = DDR4_2400_16x4()
-system.mem_ctrl.dram.range = AddrRange('512MB')
-system.mem_ctrl.dram.read_buffer_size = 32
-system.mem_ctrl.dram.write_buffer_size = 64
-
-system.mem_ctrl.port = system.membus.mem_side_ports
-```
+The main way gem5's memory is normally configured is the number of channels and the channel/rank/bank/row/column bits since systems rarely use bespoke memory devices.
 
 ---
 
 ## Memory in the standard library
 
-- Find memory in standard library at [`gem5/src/python/gem5/components/memory`](../../gem5/src/python/gem5/components/memory/memory.py)
-- Standard library has two types of memory
-    1. SimpleMemory
-    2. ChanneledMemory
-- `SimpleMemory()` allows the user to not worry about timing parameters and instead, just give the desiredlatency. bandwidth, and latency variation
+The standard library wraps the DRAM/memory models into `MemorySystem`s.
+
+Many examples are already implemented in the standard library for you.
+
+See [`gem5/src/python/gem5/components/memory/multi_channel.py`](../../gem5/src/python/gem5/components/memory/multi_channel.py) and [`gem5/src/python/gem5/components/memory/single_channel.py`](../../gem5/src/python/gem5/components/memory/single_channel.py) for examples.
+
+Additionally,
+
+- `SimpleMemory()` allows the user to not worry about timing parameters and instead, just give the desired latency. bandwidth, and latency variation
 - `ChanneledMemory()` encompasses a whole memory system (both the controller and the interface)
 - ChanneledMemory provides a simple way to use multiple memory channels
 - ChanneledMemory handles things like scheduling policy and interleaving for you
@@ -215,12 +100,38 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 
 ## Running an example with the standard library
 
-- Open [`materials/02-Using-gem5/06-memory/std_lib_mem.py`](../../materials/02-Using-gem5/06-memory/std_lib_mem.py)
-- Look at the line:
-`memory = SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")`
-- This shows how we can use SimpleMemory
+Open [`materials/02-Using-gem5/06-memory/run-mem.py`](../../materials/02-Using-gem5/06-memory/run-mem.py)
 
-Run with `gem5/build/NULL/gem5.opt`
+This file uses traffic generators (seen [previously](03-running-in-gem5.md)) to generate memory traffic at 64GiB.
+
+Let's see what happens when we use a simple memory. Add the following line for the memory system.
+
+```python
+memory = SingleChannelSimpleMemory(latency="50ns", bandwidth="32GiB/s", size="8GiB", latency_var="10ns")
+```
+
+Run with the following. Use `-c <LinearGenerator,RandomGenerator>` to specify the traffic generators and `-r <read percentage>` to specify the percentage of reads.
+
+```sh
+gem5 run-mem.py
+```
+
+---
+
+## Vary the latency and bandwidth
+
+Results for running with 16 GiB/s, 32 GiB/s, 64 GiB/s, and 100% reads and 50% reads.
+
+| Bandwidth | Read Percentage | Linear Speed (GB/s) | Random Speed (GB/s) |
+|-----------|-----------------|---------------------|---------------------|
+| 16 GiB/s  | 100%            | 17.180288           | 17.180288           |
+|           | 50%             | 17.180288           | 17.180288           |
+| 32 GiB/s  | 100%            | 34.351296           | 34.351296           |
+|           | 50%             | 34.351296           | 34.351296           |
+| 64 GiB/s  | 100%            | 34.351296           | 34.351296           |
+|           | 50%             | 34.351296           | 34.351296           |
+
+With the `SimpleMemory` you don't see any complex behavior in the memory model (but it **is** fast).
 
 ---
 
@@ -259,6 +170,26 @@ with
 SingleChannelDDR4_2400()
 ```
 
+### Let's see what happens when we run our test
+
+---
+
+## Vary the latency and bandwidth
+
+Results for running with 16 GiB/s, 32 GiB/s, and 100% reads and 50% reads.
+
+| Bandwidth | Read Percentage | Linear Speed (GB/s) | Random Speed (GB/s) |
+|-----------|-----------------|---------------------|---------------------|
+| 16 GiB/s  | 100%            | 13.85856            | 14.557056           |
+|           | 50%             | 13.003904           | 13.811776           |
+| 32 GiB/s  | 100%            | 13.85856            | 14.541312           |
+|           | 50%             | 13.058112           | 13.919488           |
+
+As expected, because of read-to-write turn around, reading 100% is more efficient than 50% reads.
+Also as expected, the bandwidth is lower than the SimpleMemory (only about 75% utilization).
+
+Somewhat surprising, the memory modeled has enough banks to handle random traffic efficiently.
+
 ---
 
 ## Adding a new channeled memory
@@ -282,7 +213,7 @@ to the top of your `lpddr2.py`
 Then add the following to the body of `lpddr2.py`
 
 ```python
-def SingleChannelLPDDR2_S4_1066_1x32(
+def SingleChannelLPDDR2(
     size: Optional[str] = None,
 ) -> AbstractMemorySystem:
     return ChanneledMemory(LPDDR2_S4_1066_1x32, 1, 64, size=size)
@@ -291,8 +222,23 @@ def SingleChannelLPDDR2_S4_1066_1x32(
 then we import this new class to our script with
 
 ```python
-from lpddr2 import SingleChannelLPDDR2_S4_1066_1x32
+from lpddr2 import SingleChannelLPDDR2
 ```
+
+### Let's test this again!
+
+---
+
+## Vary the latency and bandwidth
+
+Results for running with 16 GiB/s, and 100% reads and 50% reads.
+
+| Bandwidth | Read Percentage | Linear Speed (GB/s) | Random Speed (GB/s) |
+|-----------|-----------------|---------------------|---------------------|
+| 16 GiB/s  | 100%            | 4.089408            | 4.079552            |
+|           | 50%             | 3.65664             | 3.58816             |
+
+LPDDR2 doesn't perform as well as DDR4.
 
 ---
 
