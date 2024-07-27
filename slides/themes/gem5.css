@@ -96,8 +96,9 @@ footer img {
 /* For the page number */
 section::after {
     right: -50px;
-    bottom: -50px;
+    bottom: -55px;
     font-size: 80%;
+    color: var(--gem5-light);
 }
 
 a {
