@@ -807,48 +807,85 @@ As you can see, the simulated requests are very linear. Each new memory access i
 <!-- some code -->
 
 ---
-<!-- _class: two-col -->
+## Extending `AbstractGenerator`
 
-<!-- Mysore start here -->
-## 06-traffic-gen: HybridGenerator
+gem5 has a lot of tools in its standard library, but in your research, if you want to simulate specific memory accesses patterns, there might not be anything in the standard library to do this.
 
-Now, let's create a traffic generator that simulates linear *and* random memory acesses at the same time.
+In this case, you would have to extend `AbstractGenerator` to create a concrete generator that is tailored to your needs.
 
-Open the following file.
-[materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py)
+To do this, we will go through an example called `HybridGenerator`.
 
-In the file above, there is a class called `HybridGenerator`.
+The goal of `HybridGenerator` is to simultaneously simulate both linear and random memory accesses.
 
-Like `LinearGenerator` and `RandomGenerator`, `HybridGenerator` inherits from a class called  `AbstractGenerator`.
+To do this, we need `LinearGeneratorCores` (to simulate linear traffic) and `RandomGeneratorCores` (to simulate random traffic).
 
-###
-
-```python
-class HybridGenerator(AbstractGenerator):
-    def __init__(
-        self,
-        num_cores: int = 1,
-        duration: str = "1ms",
-        rate: str = "100GB/s",
-        block_size: int = 64,
-        min_addr: int = 0,
-        max_addr: int = 32768,
-        rd_perc: int = 100,
-        data_limit: int = 0,
-    ) -> None:
-```
 ---
+
+## 06-traffic-gen: `HybridGenerator`: A Quick Side Note about `LinearGeneratorCores`
+
+`LinearGeneratorCores` simulate linear traffic.
+
+When we have multiple `LinearGeneratorCores`, we should not configure each one to have the same `min_addr` and `max_addr`.
+
+If we do that, each one will start simulating memory accesses at the same `min_addr` and go up to the same `max_addr`. They will be accessing the same addresses at the same time.
+
+We want `LinearGeneratorCore` to simulate accesses to different areas of memory.
+
+Therefore, we have to split up memory into equal-sized chunks and configure each `LinearGeneratorCore` to simulate accesses to one of these chunks.
+
+---
+<!-- _class: center-image -->
+
+## 06-traffic-gen: `HybridGenerator`: A Quick Side Note about `LinearGeneratorCores` Cont.
+
+Here's a diagram that shows how each `LinearGeneratorCore` should access memory.
+
+![Linear Generator Core Memory Access Diagram](03-running-in-gem5-imgs/lin_core_access_diagram.drawio.svg)
+
+
+---
+
+## 06-traffic-gen: `HybridGenerator`: Dividing Memory Address Range
+
+When we create a `HybridGenerator`, we have to determine which `LinearGeneratorCore` gets what chunk of memory.
+
+As previously discussed, we need to partition the memory address range into equally sized sections and configure each `LinearGeneratorCore` to simulate accesses to a different section.
+
+To partition, we will use the `partition_range()` function in [`gem5/src/python/gem5/components/processors/abstract_generator.py`](../../gem5/src/python/gem5/components/processors/abstract_generator.py).
+
+This function takes the range of `min_addr` to `max_addr` and partitions it into `num_partitions` equal-length pieces.
+
+For example, if `min_addr` = 0, `max_addr` = 9, and `num_partitions` = 3, then `partition_range` would return <0,3>, <3,6>, <6,9>.
+
+---
+
+## 06-traffic-gen: `HybridGenerator`: A quick reminder about `RandomGenerator`
+
+We also have to consider the `RandomGenerators`.
+
+It would be reasonable to assume that we should partition them like the `LinearGenerators`, but this is not the case.
+
+Even if each `RandomGeneratorCore` has the same `min_addr` and `max_addr`, since each one simulates a random memory access, each one will be simulating accesses to different (random) memory addresses.
+
+---
+
+<!-- _class: center-image -->
+
+## 06-traffic-gen: `HybridGenerator`: Dividing Memory Address Range Cont.
+
+In the end, this is how each core will simulate memory accesses.
+
+![Linear vs. Random memory accesses](./03-running-in-gem5-imgs/core_access_diagram.drawio.svg)
+
+---
+
 <!-- _class: code-70-percent -->
 
-## 06-traffic-gen: HybridGenerator: Choosing a Distribution of Cores
+## 06-traffic-gen: `HybridGenerator`: Choosing a Distribution of Cores
 
-The goal of our `HybridGenerator` class is to have both linear and random traffic generation.
+Now that we know how each core will access memory, next, we need to determine how many `LinearGeneratorCores` and `RandomGeneratorCores` we need.
 
-To do that, we need `LinearGeneratorCores` (to simulate linear traffic) and `RandomGeneratorCores` (to simulate random traffic).
-
-But how many of each type of core do we need?
-
-We will use the following function to determine the number of `LinearGeneratorCores`, and the rest will be `RandomGeneratorCores`.
+There are many correct ways to do this, but we will use the following function to determine the number of `LinearGeneratorCores`.
 
 ```python
         def get_num_linear_cores(num_cores: int):
@@ -861,22 +898,7 @@ We will use the following function to determine the number of `LinearGeneratorCo
                 return 2 ** int(log(num_cores, 2))
 ```
 
-
----
-
-## 06-traffic-gen: HybridGenerator: Dividing Memory Address Range
-
-Next, we have to determine which core gets what chunk of the given memory address range (the range of `min_addr` to `max_addr`).
-
-Let's partition the given memory address range into equally sized sections so that each `LinearGeneratorCore` can be assigned a section.
-
-(For the `RandomGeneratorCores`, each will be able to access all of the given memory address range.)
-
-To partition, we will use the `partition_range()` function in [gem5/src/python/gem5/components/processors/abstract_generator.py](../../gem5/src/python/gem5/components/processors/abstract_generator.py).
-
-This function takes the range of `min_addr` to `max_addr` and partitions it into `num_partitions` equal-length pieces.
-
-For example, if `min_addr` = 0, `max_addr` = 9, and `num_partitions` = 3, then `partition_range` would return <0,3>, <3,6>, <6,9>.
+The rest of the cores will be `RandomGeneratorCores`
 
 ---
 
@@ -884,22 +906,25 @@ For example, if `min_addr` = 0, `max_addr` = 9, and `num_partitions` = 3, then `
 
 ## 06-traffic-gen: HybridGenerator Constructor
 
+Let's start looking at the code!
+
+Make sure you have the following file open.
+[`materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py`](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py)
+
+On the right, you'll see the constructor for `HybridGenerator`.
+
 When we initialize `HybridGenerator` (via `def __init__`), we will be initializing an `AbstractGenerator` (via `super() __init__`) with the values on the right.
-
-(We construct a `HybridGenerator` from an `AbstractGenerator`.)
-
-Here is the entire code snippet for the constructor of `HybridGenerator`.
 
 ```python
 class HybridGenerator(AbstractGenerator):
     def __init__(
         self,
-        num_cores: int = 1,
+        num_cores: int = 2,
         duration: str = "1ms",
-        rate: str = "100GB/s",
-        block_size: int = 64,
+        rate: str = "1GB/s",
+        block_size: int = 8,
         min_addr: int = 0,
-        max_addr: int = 32768,
+        max_addr: int = 131072,
         rd_perc: int = 100,
         data_limit: int = 0,
     ) -> None:
@@ -923,19 +948,25 @@ class HybridGenerator(AbstractGenerator):
 
 ## 06-traffic-gen: Designing a HybridGenerator
 
-Right now, our `HybridGenerator` class has a constructor but does not return any list of cores. (Note that generators just need to return a list of cores. They don't necessarily need a function to do this.) Therefore, we need to create this method.
+Right now, our `HybridGenerator` class has a constructor, but we need to return a list of cores.
 
-If you look at [hybrid_generator.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py), you'll see that a method called `_create_cores`. This is the method we will use to create our list of cores.
+In gem5, the method that returns a list of cores is conventionally named `_create_cores`.
 
-Traffic generators just need to return a list of cores. It's simply gem5's convention to use the name `_create_cores`.
+If you look at our file, [`hybrid_generator.py`](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/components/hybrid_generator.py), you'll see this method called `_create_cores`.
 
 ---
 
-## 06-traffic-gen: HybridGenerator: Initializing Variables
+## 06-traffic-gen: `HybridGenerator`: Initializing Variables
 
+Let's define `_create_cores`!
 
-Now, let's define `_create_cores`!
-First, let's declare our list of cores and define the number of `LinearGeneratorCores` and `RandomGeneratorCores`. Add the following lines under the comment labeled `(1)`.
+Let's start by declaring/defining some important variables.
+
+First, we'll declare our list of cores.
+
+Then, we'll define the number of `LinearGeneratorCores` and `RandomGeneratorCores`.
+
+Add the following lines under the comment labeled `(1)`.
 
 ```python
 core_list = []
@@ -946,7 +977,9 @@ num_random_cores = num_cores - num_linear_cores
 
 ---
 
-## 06-traffic-gen: HybridGenerator: Dividing Memory Address Range Cont.
+## 06-traffic-gen: `HybridGenerator`: Partitioning Memory Address Range
+
+Next, let's define the memory address range for each `LinearGeneratorCore`.
 
 If we want to give each `LinearGeneratorCore` an equal chunk of the given memory address range, we need to partition the range of `min_addr` to `max_addr` into `num_linear_cores` pieces.
 
@@ -960,7 +993,7 @@ addr_ranges = partition_range(min_addr, max_addr, num_linear_cores)
 
 ---
 
-## 06-traffic-gen: Dividing Memory Address Range Cont.
+## 06-traffic-gen: Partitioning Memory Address Range Cont.
 
 For example, we have `min_addr=0`, `max_addr=32768`, and `num_cores=16` (8 `LinearGeneratorCores`), then
 
@@ -970,14 +1003,14 @@ addr_ranges=
   (16384, 20480), (20480, 24576), (24576, 28672), (28672, 32768)]
 ```
 
-For the i'th `LinearGeneratorCore`, we take the i'th entry in `addr_ranges`. `min_addr` is the first value that entry, and `max_addr` is the second value in that entry.
+For the `i`'th `LinearGeneratorCore`, we take the `i`'th entry in `addr_ranges`. `min_addr` is the first value that entry, and `max_addr` is the second value in that entry.
 
-In our example, `LinearGeneratorCore` 0 gets initialized with `min_addr=0` and `max_addr=4096`, `LinearGeneratorCore` 2 gets initialized with `min_addr=4096` and `max_addr=8192`, etc.
+In this example, `LinearGeneratorCore` 0 gets initialized with `min_addr=0` and `max_addr=4096`, `LinearGeneratorCore` 2 gets initialized with `min_addr=4096` and `max_addr=8192`, etc.
 
 ---
 <!-- _class: two-col -->
 
-## 06-traffic-gen: HybridGenerator: Creating a List of Cores: LinearGenerator Core
+## 06-traffic-gen: `HybridGenerator`: Creating a List of Cores: `LinearGeneratorCore`
 
 Next, let's start creating our list of cores.
 
@@ -1001,13 +1034,13 @@ for i in range(num_linear_cores):
 ---
 <!-- _class: two-col -->
 
-## 06-traffic-gen: HybridGenerator: Creating a List of Cores: LinearGeneratorCore Explained
+## 06-traffic-gen: `HybridGenerator`: Creating a List of Cores: `LinearGeneratorCore` Explained
 
 In the for loop, we create `num_linear_cores` `LinearGeneratorCores` and append each one to our `core_list`.
 
 Each `LinearGeneratorCore` parameter is initialized with the same values from the constructor, except for `min_addr` and `max_addr`.
 
-We use these "knobs" to give each `LinearGeneratorCore` a partition of the range of `min_addr` to `max_addr`.
+We change `min_addr` and `max_addr` so that each `LinearGeneratorCore` only simulates accesses to a section of the range of `HybridGenerator's` `min_addr` to `max_addr`.
 
 ###
 
@@ -1027,7 +1060,7 @@ for i in range(num_linear_cores):
 ---
 <!-- _class: two-col -->
 
-## 06-traffic-gen: HybridGenerator: Creating a List of Cores: RandomGeneratorCore
+## 06-traffic-gen: `HybridGenerator`: Creating a List of Cores: `RandomGeneratorCore`
 
 Now that we've added the `LinearGeneratorCores`, let's add all the `RandomGeneratorCores`.
 
@@ -1051,13 +1084,13 @@ for i in range(num_random_cores):
 ---
 <!-- _class: two-col -->
 
-## 06-traffic-gen: HybridGenerator: Creating a List of Cores: RandomGeneratorCore Explained
+## 06-traffic-gen: `HybridGenerator`: Creating a List of Cores: `RandomGeneratorCore` Explained
 
 Once again, in the for loop, we create `num_linear_cores` `RandomGeneratorCores` and append each one to our core_list.
 
 Each `RandomGeneratorCore` parameter is initialized with the same values from the constructor, including `min_addr` and `max_addr`.
 
-`min_addr` and `max_addr` do not change because each `RandomGeneratorCore` should be able to access the entire range of `min_addr` to `max_addr`.
+`min_addr` and `max_addr` do not change because each `RandomGeneratorCore` should be able to access the entire range of `HybridGenerator's` `min_addr` to `max_addr`.
 
 ###
 
@@ -1076,7 +1109,7 @@ for i in range(num_random_cores):
 
 ---
 
-## 06-traffic-gen: HybridGenerator: Returning and Configuring
+## 06-traffic-gen: `HybridGenerator`: Returning and Beginning Configuration
 
 We're almost done with this file!
 
@@ -1088,9 +1121,9 @@ return core_list
 
 Now, open the file [materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py).
 
-Let's replace `LinearGenerator` with `HybridGenerator`.
+Let's replace our `LinearGenerator` with a `HybridGenerator`.
 
-First, add the following line somewhere at the top of your code to import the `HybridGenerator `.
+First, add the following line somewhere at the top of your code to import the `HybridGenerator`.
 
 ```python
 from components.hybrid_generator import HybridGenerator
@@ -1100,7 +1133,7 @@ from components.hybrid_generator import HybridGenerator
 
 <!-- _class: two-col code-70-percent -->
 
-## 06-traffic-gen: HybridGenerator: Configuring
+## 06-traffic-gen: `HybridGenerator`: Configuring
 
 In this section of code to the right, you should currently have a `LinearGenerator`.
 
@@ -1144,7 +1177,7 @@ motherboard = TestBoard(
 ---
 <!-- _class: two-col code-70-percent -->
 
-## 06-traffic-gen: HybridGenerator: Configuring Cont.
+## 06-traffic-gen: `HybridGenerator`: Configuring Cont.
 
 This is what it should look like now.
 
@@ -1169,7 +1202,7 @@ motherboard = TestBoard(
 
 ---
 
-## 06-traffic-gen: HybridGenerator: Running
+## 06-traffic-gen: `HybridGenerator`: Running
 
 Now, that we've created a `HybridGenerator`, let's run the program again!
 
@@ -1186,113 +1219,61 @@ simple-traffic-generators.py
 
 ---
 
-## 06-traffic-gen: HybridGenerator: Output
+## 06-traffic-gen: `HybridGenerator`: Output
 
 After running the command, you should see something like below.
 
 ```sh
-   1490: system.processor.cores5.generator: RandomGen::getNextPacket: r to addr 2000, size 64
-   1490: system.processor.cores5.generator: Next event scheduled at 2980
-   1490: system.processor.cores4.generator: RandomGen::getNextPacket: r to addr 2c00, size 64
-   1490: system.processor.cores4.generator: Next event scheduled at 2980
-   1490: system.processor.cores3.generator: LinearGen::getNextPacket: r to addr 6000, size 64
-   1490: system.processor.cores3.generator: Next event scheduled at 2980
-   1490: system.processor.cores2.generator: LinearGen::getNextPacket: r to addr 4000, size 64
-   1490: system.processor.cores2.generator: Next event scheduled at 2980
-   1490: system.processor.cores1.generator: LinearGen::getNextPacket: r to addr 2000, size 64
-   1490: system.processor.cores1.generator: Next event scheduled at 2980
-   1490: system.processor.cores0.generator: LinearGen::getNextPacket: r to addr 0, size 64
-   1490: system.processor.cores0.generator: Next event scheduled at 2980
+   7451: system.processor.cores5.generator: RandomGen::getNextPacket: r to addr 80a8, size 8
+   7451: system.processor.cores5.generator: Next event scheduled at 14902
+   7451: system.processor.cores4.generator: RandomGen::getNextPacket: r to addr 10a90, size 8
+   7451: system.processor.cores4.generator: Next event scheduled at 14902
+   7451: system.processor.cores3.generator: LinearGen::getNextPacket: r to addr 18000, size 8
+   7451: system.processor.cores3.generator: Next event scheduled at 14902
+   7451: system.processor.cores2.generator: LinearGen::getNextPacket: r to addr 10000, size 8
+   7451: system.processor.cores2.generator: Next event scheduled at 14902
+   7451: system.processor.cores1.generator: LinearGen::getNextPacket: r to addr 8000, size 8
+   7451: system.processor.cores1.generator: Next event scheduled at 14902
+   7451: system.processor.cores0.generator: LinearGen::getNextPacket: r to addr 0, size 8
+   7451: system.processor.cores0.generator: Next event scheduled at 14902
 ```
 
-As you can see, cores 0, 1, 2, and 3 are `LinearGeneratorCores`, and cores 4 and 5 are `RandomGeneratorCores`.
+As you can see, cores 0, 1, 2, and 3 are `LinearGeneratorCores`, and cores 4 and 5 are `RandomGeneratorCores`!
 
 ---
 
-## 06-traffic-gen: HybridGenerator: Statistics
+## 06-traffic-gen: `HybridGenerator`: Statistics
 
-Now, let's look at some benefits that this configuration may provide.
+Now, let's look at some of the statistical differences between our `LinearGeneratorCores` and `RandomGeneratorCores`.
 
 Run the following command to see the miss rate for each core's l1 data cache.
 
 ```sh
-grep l2cache.overallMissRate::processor m5out/stats.txt
+grep ReadReq.missRate::processor m5out/stats.txt
 ```
 
 On the next slide, you'll see the expected output (with some text removed for readbility).
 
 ---
 
-## 06-traffic-gen: HybridGenerator: Statistics Cont.
+## 06-traffic-gen: `HybridGenerator`: Statistics Cont.
 
 ```sh
-system.cache_hierarchy.l2cache.overallMissRate::processor.cores0.generator     0.015422
-system.cache_hierarchy.l2cache.overallMissRate::processor.cores1.generator     0.015081
-system.cache_hierarchy.l2cache.overallMissRate::processor.cores2.generator     0.014930
-system.cache_hierarchy.l2cache.overallMissRate::processor.cores3.generator     0.014855
-system.cache_hierarchy.l2cache.overallMissRate::processor.cores4.generator     0.000350
-system.cache_hierarchy.l2cache.overallMissRate::processor.cores5.generator     0.000346
+system.cache_hierarchy.l1dcaches0.ReadReq.missRate::processor.cores0.generator     0.132345
+system.cache_hierarchy.l1dcaches1.ReadReq.missRate::processor.cores1.generator     0.133418
+system.cache_hierarchy.l1dcaches2.ReadReq.missRate::processor.cores2.generator     0.133641
+system.cache_hierarchy.l1dcaches3.ReadReq.missRate::processor.cores3.generator     0.132971
+system.cache_hierarchy.l1dcaches4.ReadReq.missRate::processor.cores4.generator     0.876426
+system.cache_hierarchy.l1dcaches5.ReadReq.missRate::processor.cores5.generator     0.875055
 ```
 
-Cores 0, 1, 2, and 3 (`LinearGeneratorCores`) have a miss rate of around **0.015072** (~1.51%) on average.
+Cores 0, 1, 2, and 3 (`LinearGeneratorCores`) have a miss rate of **0.13309375** (~13.3%) on average.
 
-Cores 4 and 5 (`RandomGeneratorCores`) have a miss rate of around **0.000348** (~0.03%) on average.
+Cores 4 and 5 (`RandomGeneratorCores`) have a miss rate of **0.8757405** (~87.5%) on average.
 
----
+This is because `LinearGeneratorCores` access memory linearly, so everytime there's a cache miss, the entire `block_size` worth of data is fetched. (When there's a cache miss, instead of fetching only one piece of data, it'll fetch multiple pieces of data.)
 
-## 06-traffic-gen: Comparing HybridGenerators and LinearGenerators
-
-Right now, we have 4 `LinearGeneratorCores` working with 2 `RandomGeneratorCores`.
-
-What happens to the L2 miss rate when we remove the `RandomGeneratorCores`?
-
-Let's run the following [program](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/using-traffic-generators.py) to generate a statistics file for just 4 `LinearGeneratorCores`.
-
-The program takes two command line arguments (traffic generator type and number of cores) to set up the traffic generator and configure the board for us.
-
-Let's test a board with only 4 `LinearGeneratorCores`.
-
----
-
-## 06-traffic-gen: Comparing Hybrid and LinearGenerators Cont.
-
-Make sure you're in the following directory.
-
-**`materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/`**.
-
-Now run with the following command.
-
-```sh
-gem5 --debug-flags=TrafficGen --debug-end=10000 \
-using-traffic-generators.py linear 4
-```
-
-Now, use the following command to see the L2 miss rate when we remove the `RandomGeneratorCores`.
-
-```sh
-grep l2cache.overallMissRate::processor m5out/stats.txt
-```
-
-On the next slide, you'll see the expected output (with some text removed for readbility).
-
----
-
-## 06-traffic-gen: Comparing Hybrid and LinearGenerators Cont.
-
-```sh
-system.cache_hierarchy.l2cache.overallMissRate::processor.cores0.generator     0.047132
-system.cache_hierarchy.l2cache.overallMissRate::processor.cores1.generator     0.047132
-system.cache_hierarchy.l2cache.overallMissRate::processor.cores2.generator     0.047132
-system.cache_hierarchy.l2cache.overallMissRate::processor.cores3.generator     0.047229
-```
-
-The average L2 miss rate without the `RandomGeneratorCores` is **0.04715625** (4.72%), which is much higher than 0.015072 (1.5%).
-
-The two sets of data that we just looked at can be explained by the `RandomGeneratorCores`.
-
-The `RandomGeneratorCores` essentially act as "prefetchers" for the L2 cache.
-
-Therefore, when a `LinearGeneratorCore` tries to access the L2, there's a much higher percentage that the data it was looking for will be there.
+On the other hand, since the `RandomGeneratorCores` access memory randomly, the caches can't take advantage of locality in the same way.
 
 ---
 
@@ -1304,9 +1285,9 @@ Overall, we discussed two diffent types of traffic generators: **Linear** and **
 
 We looked into how to configure a board that uses these traffic generators.
 
-We also extended the `AbstractGenerator` class to create a `HybridGenerator`, which simulates linear and random memory acesses.
+We also extended the `AbstractGenerator` class to create a `HybridGenerator`, which simulates linear and random memory acesses simultaneously.
 
-Finally, we saw some of the statistical differences between varying configurations.
+Finally, we saw some of the statistical differences `LinearGeneratorCores` and `RandomGeneratorCores`.
 
 ---
 

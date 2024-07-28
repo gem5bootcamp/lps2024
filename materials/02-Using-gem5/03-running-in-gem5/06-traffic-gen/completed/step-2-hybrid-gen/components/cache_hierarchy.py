@@ -9,8 +9,8 @@ from gem5.utils.override import overrides
 class MyPrivateL1SharedL2CacheHierarchy(PrivateL1SharedL2CacheHierarchy):
     def __init__(
         self,
-        l1d_size="32KiB",
-        l1i_size="32KiB",
+        l1d_size="16KiB",
+        l1i_size="16KiB",
         l2_size="256KiB",
     ) -> None:
         super().__init__(

@@ -31,9 +31,6 @@ from m5.objects import Root
 from components.cache_hierarchy import MyPrivateL1SharedL2CacheHierarchy
 
 from gem5.components.boards.test_board import TestBoard
-from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
-            PrivateL1CacheHierarchy,
-        )
 from gem5.components.memory import SingleChannelDDR3_1600
 from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator

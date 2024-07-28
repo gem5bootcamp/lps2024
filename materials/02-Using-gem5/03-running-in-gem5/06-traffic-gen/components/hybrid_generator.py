@@ -39,12 +39,12 @@ from gem5.components.processors.random_generator_core import RandomGeneratorCore
 class HybridGenerator(AbstractGenerator):
     def __init__(
         self,
-        num_cores: int = 1,
+        num_cores: int = 2,
         duration: str = "1ms",
-        rate: str = "100GB/s",
-        block_size: int = 64,
+        rate: str = "1GB/s",
+        block_size: int = 8,
         min_addr: int = 0,
-        max_addr: int = 131072, #CHANGED 2097152 131072
+        max_addr: int = 131072,
         rd_perc: int = 100,
         data_limit: int = 0,
     ) -> None:
