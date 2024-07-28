@@ -15,11 +15,11 @@ The purpose of this session is to introduce you to Python programming and how it
 
 ## Key idea: gem5 Interprets Python
 
-The gem5 simulator can be thought of as a CPP program that interprets a Python script which defines the simulation.
+The gem5 simulator can be thought of as a C++ program that interprets a Python script which defines the simulation. `gem5` *is a Python interpreter* that includes the gem5 python libraries.
 
-(**WARNING**: This is a simplification.
-Some simulation configuration information is present in the C++ code.
-However this simple idea can serve as a useful mental model.)
+> **WARNING**: This is a simplification.
+> Some simulation configuration information is present in the C++ code.
+> However this simple idea can serve as a useful mental model.
 
 The Python script _imports_ simulated components (**SimObjects**) and uses the Python configuration script to specify their configuration and interconnections to other SimObjects.
 
@@ -58,7 +58,19 @@ The most important distinction is that the gem5 binary gives the script the `m5`
 
 ---
 
+<!-- _class: start -->
+
+## Some Python reminders
+
+---
+
 ## Exercise: Literally "Hello world" in gem5
+
+For all coding examples, we will be in the `materials` directory.
+
+```sh
+cd materials/01-Introduction/03-python-background
+```
 
 1. Create a file called "mysim.py" and add the following:
 
@@ -72,11 +84,9 @@ Execute the script with gem5:
 gem5 mysim.py
 ```
 
-### Notes
-
-- End the python file name with ".py".
-- Don't use dashes in the file name (use underscores instead). Python can't import files with dashes in the name so best to avoid them.
-<!-- It says to avoid dashes in Python file names here, but in the materials directory all of the Python scripts have dashes -->
+> End the python file name with ".py".
+> Python can't import files with dashes (`-`) in the name. Use `_` for modules.
+> Use dashes (`-`) for scripts to run (that you don't want others to import).
 
 ---
 
@@ -94,12 +104,12 @@ These are the basic building blocks of all Python programs and can be set and us
 
 ---
 
-### Primitive: Integers
+## Primitive: Integers
 
 [materials/01-Introduction/03-python-background/02-primitives-int.py](/materials/01-Introduction/03-python-background/02-primitives-int.py) can be used as a reference for basic integer usage.
 This tutorial will cover the basics.
 
-#### Declaring Integers
+### Declaring Integers
 
 ```python
 x = 1
@@ -108,7 +118,7 @@ y = 2
 
 ---
 
-#### Basic Integer Operations
+## Basic Integer Operations
 
 ```python
 a = x + y
@@ -126,11 +136,11 @@ We're jumping ahead a bit here but they are very useful and we recommend using t
 
 ---
 
-### Primitive: Floats
+## Primitive: Floats
 
 [materials/01-Introduction/03-python-background/03-primitives-float.py](/materials/01-Introduction/03-python-background/03-primitives-float.py) can be used as a reference for basic float usage.
 
-#### Declaring Floats
+### Declaring Floats
 
 Floats are a primitive data type in Python. They are "real numbers" and are
 declared like so. Here we declare a variable `x` and assign it the literal value `1.5`.
@@ -141,7 +151,7 @@ x = 1.5
 
 ---
 
-#### Basic Float Operations
+## Basic Float Operations
 
 ```python
 # Like integers, floats can be set using arithmetic operations.
@@ -153,6 +163,8 @@ y = 10.5 + 5.5
 z = y - x
 print(f"Value of z: {z}")
 ```
+
+> In Python3 (the version gem5 uses), division of two integers will return a float.
 
 ---
 
@@ -168,78 +180,84 @@ print(f"Value of div_xy: {div_xy}")
 
 ---
 
-### Primitive: Strings
+## Primitive: Strings
 
 [materials/01-Introduction/03-python-background/04-primitives-string.py](/materials/01-Introduction/03-python-background/04-primitives-string.py) can be used as a reference for basic string usage.
 
-```python
-# Strings are a primitive data type in Python. They are sequences of characters
-# and are declared like so. Here we declare a variable `x` and assign it the
-# literal value `"Hello World!"`.
+Strings are a primitive data type in Python. They are sequences of characters
+and are declared like so. Here we declare a variable `x` and assign it the
+literal value `"Hello World!"`.
 
+```python
 x = "Hello World!"
 print(x)
+```
 
-# Concatenation of two strings
-# Note the use of the a literal string ("GoodBye!") and the variable `x`.
+Concatenation of two strings
+Note the use of the a literal string ("GoodBye!") and the variable `x`.
+
+```python
 y = x + " GoodBye!"
 print(y)
 ```
 
 ---
 
+## Printing strings
+
+We use the "f-string" syntax to insert the value strings inside other
+strings. The contents between the curly braces are evaluated as Python.
+In the following we concatenate x with " GoodBye " and the value of x + y
+("Hello World! GoodBye!"). This z will be set to
+"Hello World! GoodBye Hello World! Goodbye!"
+
 ```python
-# We use the "f-string" syntax to insert the value strings inside other
-# strings. The contents between the curly braces are evaluated as Python.
-# In the following we concatenate x with " GoodBye " and the value of x + y
-# ("Hello World! GoodBye!"). This z will be set to
-# "Hello World! GoodBye Hello World! Goodbye!"
 z = f"{x} GoodBye {x + y}"
 print(z)
 ```
 
 ---
 
-### Primitive: Booleans
+<!-- _class: two-col -->
+
+## Primitive: Booleans
 
 [materials/01-Introduction/03-python-background/05-primitives-bool.py](/materials/01-Introduction/03-python-background/05-primitives-bool.py) can be used as a reference for basic boolean usage.
 
+Bools are a primitive data type in Python. They are "True" or "False" and are
+declared like so. Here we declare a variable `x` and assign it the literal
+value `True`.
+
 ```python
-# Bools are a primitive data type in Python. They are "True" or "False" and are
-# declared like so. Here we declare a variable `x` and assign it the literal
-# value `True`.
 x = True
 print(f"Value of x: {x}")
 ```
 
----
+Bools can be set using logical operations of literals or other bool
+variables. These logical operations are `is` `and`, `or`, and `not` and are
+used to compare values.
 
 ```python
-# Bools can be set using logical operations of literals or other bool
-# variables. These logical operations are `is` `and`, `or`, and `not` and are
-# used to compare values.
-
-# Set `y`` to True if  `x and True`.
 y = x and True
 print(f"Value of y: {y}")
 
-# Set `z`` to True if `x or False`.
 z = x or False
 print(f"Value of z: {z}")
 
-# Set `a`` to True if `not x`.
 a = not x
 print(f"Value of a: {a}")
 ```
 
 ---
 
-#### Boolean Comparison
+<!-- _class: two-col -->
+
+## Boolean Comparison
+
+The `==`, `!=`, `<`, `>`, `<=`, and `>=` operators can be used to compare values of other
+primitive data types. The result of these operations is a bool.
 
 ```python
-# The ==, !=, <, >, <=, and >= operators can be used to compare values of other
-# primitive data types. The result of these operations is a bool.
-
 # Set `b` to True if `1 + 1` is equal to `2`.
 b = (1 + 1) == 2
 print(f"Value of b: {b}")
@@ -249,7 +267,7 @@ c = (1 + 1) != 2
 print(f"Value of c: {c}")
 ```
 
----
+###
 
 ```python
 # Set `d` to True if `1 + 1` is less than `3`.
@@ -269,6 +287,8 @@ g = (1 + 1) >= 2
 
 ---
 
+<!-- _class: two-col -->
+
 ## Getting started with Python: Collections
 
 Python has many built-in collection types though the most commonly used are
@@ -284,7 +304,7 @@ a_list = [1, 1, 2]
 
 More on lists can be found at [materials/01-Introduction/03-python-background/06-collections-list.py](/materials/01-Introduction/03-python-background/06-collections-list.py)
 
----
+### Sets
 
 Sets are unordered collections of variables. Duplicates are not allowed.
 They are set in curly braces.
@@ -296,6 +316,8 @@ a_set = {"one", "two", "three", "four", "five"}
 More on examples with sets can be found at [materials/01-Introduction/03-python-background/07-collections-set.py](/materials/01-Introduction/03-python-background/07-collections-set.py).
 
 ---
+
+## Dictionaries
 
 Dictionaries are collections of key-value pairs. These are effectively sets
 with each value in the set (the 'key') mapping to another variable (the
@@ -309,7 +331,7 @@ More on examples with dictionaries can be found at [materials/01-Introduction/03
 
 ---
 
-### Python collections usage
+## Python collections usage
 
 ```python
 # The collections examples from the past few slides
@@ -330,6 +352,7 @@ for element in a_set:
     print(element)
 ```
 
+<!--
 ---
 
 ```python
@@ -351,7 +374,7 @@ a_dict[3] = "three"
 # `a_dict` will be set to `{1: "one", 2: "two", 3: "four"}`.
 a_dict[3] = "four"
 ```
-
+-->
 ---
 
 ## More on Python primitives and collections
@@ -375,11 +398,11 @@ Those of you new to Python may want to dedicate some time this evening to go thr
 
 ---
 
-### List Comprehensions
+## List Comprehensions
 
 List comprehensions are a way to create lists in Python, and commonly used in gem5.
 
-They allow for creation of a list in a single line of code by interating over another list and applying an operation to each element.
+They allow for creation of a list in a single line of code by iterating over another list and applying an operation to each element.
 
 The following code creates a list of even numbers from 1 to 20:
 
@@ -398,6 +421,8 @@ for x in range(1, 21):
 
 ---
 
+## List Comprehensions
+
 The syntax for a list comprehension is:
 
 ```python
@@ -414,6 +439,8 @@ item_under_10 = [item.get_name() for item in store if item.get_price() < 10]
 ```
 
 ---
+
+## List Comprehensions
 
 It is also possible to nest list comprehensions.
 
@@ -439,7 +466,6 @@ for sublist in list_of_lists:
 
 ---
 
-
 ## Python `if`
 
 ```python
@@ -452,10 +478,6 @@ else:
 ```
 
 [materials/01-Introduction/03-python-background/09-if-statements.py](/materials/01-Introduction/03-python-background/09-if-statements.py) can be used as a reference for basic `if` usage.
-
----
-
-### `if` Notes
 
 - Python doesn't use braces to define blocks of code. Instead it uses indentation.
 - The `print` statements are indented to show that they are part of the `if` block (for example, "The condition is True" `print` will only be execute if `condition` is `True`).
@@ -512,6 +534,8 @@ print(result) # 3
 
 ---
 
+## Python functions
+
 The following style of explicitly referencing the arguments is also common.
 
 ```python
@@ -523,7 +547,11 @@ We strongly recommend using typing hints in your functions. This improves code r
 
 [materials/01-Introduction/03-python-background/12-function.py](/materials/01-Introduction/03-python-background/12-function.py) can be used as a reference for basic function usage.
 
+> The examples in the slides, and much of the materials, don't use type hinting to save space. This is not recommended practice.
+
 ---
+
+<!-- _class: two-col -->
 
 ## Importing Code
 
@@ -532,7 +560,6 @@ Python allows you to import code from other files.
 Let's say we have functions `add`, `subtract`, and `multiply` in a file called `math_funcs.py`:
 
 ```python
-# Contents of math_funcs.py
 def add(a: int b: int) -> int:
     return a + b
 
@@ -543,7 +570,7 @@ def multiply(a: int, b: int) -> int:
     return a * b
 ```
 
----
+###
 
 We can import the functions and use them with:
 
@@ -555,13 +582,13 @@ print(subtract(4,2))
 print(multiply(3,3))
 ```
 
-If math_funcs.py is in a directory, say "math_dir" we can use:
+If `math_funcs.py` is in a directory, say "math_dir" we can use:
 
 ```python
 from math_dir.math_funcs import add, subtract, multiply
 ```
 
-A completed and extended example can be found at [materials/01-Introduction/03-python-background/13-importing-code.py](/materials/01-Introduction/03-python-background/13-importing-code.py).
+A completed and extended example can be found at [13-importing-code.py](/materials/01-Introduction/03-python-background/13-importing-code.py).
 
 ---
 
@@ -583,6 +610,8 @@ The difference in syntax is the `yield` keyword.
 This is used to return a value from the generator.
 
 ---
+
+## Python Generators
 
 In addition to being more memory efficient, generators are useful for creating infinite sequences.
 
@@ -613,7 +642,7 @@ Though each object of the class `Car` will have the same attributes and methods,
 
 ---
 
-### Basic class
+## Basic object-oriented design in Python
 
 Code for this example can be found at [materials/01-Introduction/03-python-background/14-basic-class-and-object.py](/materials/01-Introduction/03-python-background/14-basic-class-and-object.py).
 
@@ -639,10 +668,9 @@ class Animal:
     #     self.name = name
  -->
 
-
-This defines the class.
-
 ---
+
+## Basic object-oriented design in Python
 
 The `__init__` method is a special method that is called when an object is created.
 It is used to initialize the object's attributes.
@@ -674,6 +702,8 @@ dog.sleep()
 
 ---
 
+## Basic object-oriented design in Python
+
 Despite having different values for `name` and `age`, both `dog` and `cat` objects have the have the same type, `Animal`.
 Therefore they can be passed to functions that expect an `Animal` object.
 
@@ -687,7 +717,7 @@ feed_animal(cat)
 
 ---
 
-### Object Oriented Design Terminology you should know
+## Object Oriented Design Terminology you should know
 
 - **Class**: A blueprint for an object. It defines the attributes and methods object instances of the class will have.
 (i.e., `Animal` in our example).
@@ -704,28 +734,20 @@ feed_animal(cat)
 
 ---
 
+## Inheritance
 
-### Inheritance
+Inheritance allows for a class to be defined in relation to another class. This other class is referred to as the base class, parent class, or super class, with the new class being the derived class, child class, or sub class.
 
-Inheritance allows for a class to be defined in relation to another class.
-This other class is referred to as the base class, parent class, or super
-class, with the new class being the derived class, child class, or sub class.
+There are many instances where a new class is needed but shares many of the same attributes and methods as an existing class. In these cases it is possible to inherit from the existing class and extend it with new attributes and methods.
 
-There are many instances where a new class is needed but shares many of the
-same attributes and methods as an existing class. In these cases it is
-possible to inherit from the existing class and extend it with new
-attributes and methods.
-
-Let's imagine we want to add an elephant object using to our Animal class.
-We want a new member variable `trunk_length` and a new member function `trumpet`.
-The insight here is Elephants are Animals, but not all Animals are Elephants.
-An Elephant will always have all the common attributes and methods of an
-Animal, but not all Animals will have the attributes and methods of an
-Elephant.
-
+Let's imagine we want to add an elephant object using to our Animal class. We want a new member variable `trunk_length` and a new member function `trumpet`. The insight here is Elephants are Animals, but not all Animals are Elephants. An Elephant will always have all the common attributes and methods of an Animal, but not all Animals will have the attributes and methods of an Elephant.
 
 <!-- Prior to this point, the constructor for the Animal class takes weight, height, and name as arguments, but after this point, the constructor appears to take name and age. The inconsistency might be confusing to audience members -->
+
 ---
+
+## Inheritance example
+
 The code for this section can be found at [materials/01-Introduction/03-python-background/15-inheritance.py](/materials/01-Introduction/03-python-background/15-inheritance.py)
 
 ```python
@@ -739,18 +761,15 @@ class Elephant(Animal):
         print("Trumpeting")
 ```
 
-
-
-The Elephant class inherits from the Animal class. This means
-that the Elephant class has all the attributes and methods of the Animal
-class. Not only does this save a lot of typing and time by borrowing the
-attributes and methods of the Animal class, but it also makes the code more
-readable and maintainable.
+The Elephant class inherits from the Animal class. This means that the Elephant class has all the attributes and methods of the Animal class. Not only does this save a lot of typing and time by borrowing the attributes and methods of the Animal class, but it also makes the code more readable and maintainable.
 
 ---
 
-Of most importance, an Elephant can be passed as an Animal to any function
-So:
+<!-- _class: two-col -->
+
+## Inheritance example
+
+Of most importance, an Elephant can be passed as an Animal to any function.
 
 ```python
 def print_animal(animal):
@@ -763,11 +782,9 @@ print_animal(elephant)
 print_animal(dog)
 ```
 
----
+###
 
-However a function that expects an Elephant object will not accept an Animal
-object. This is because an Elephant is an Animal, but an Animal is not an
-Elephant.
+However a function that expects an Elephant object will not accept an Animal object. This is because an Elephant is an Animal, but an Animal is not an Elephant.
 
 ```python
 def toot_horn(elephant):
@@ -782,12 +799,9 @@ toot_horn(dog)
 
 ---
 
-#### Overriding Methods
+## Overriding Methods
 
-Finally subclasses can override methods of the parent class. This is useful
-when the method of the parent class does not make sense for the subclass.
-For example, the Elephant class could override the eat method of the Animal
-class to print a different message when an Elephant eats.
+Finally subclasses can override methods of the parent class. This is useful when the method of the parent class does not make sense for the subclass. For example, the Elephant class could override the eat method of the Animal class to print a different message when an Elephant eats.
 
 ```python
 class Elephant(Animal):
@@ -803,6 +817,8 @@ class Elephant(Animal):
 ```
 
 ---
+
+## Overriding Methods
 
 A piece of code which expects an `Animal` can therefore execute completely different code depending on the type of the object passed to it.
 
@@ -820,26 +836,19 @@ This means a function which expects a base class object can execute completely d
 
 ---
 
-### Abstract Classes
+## Abstract Classes
 
-In the past couple of examples we've envisioned a simple class `Animal` that
-has object instantiations. There are cases where you don't want there to be
-any object instantiations of a class. This is where Abstract Base Classes are useful.
-In our case it makes no sense to have a generic Animal when we can create a subclass for each animal type.
+In the past couple of examples we've envisioned a simple class `Animal` that has object instantiations. There are cases where you don't want there to be any object instantiations of a class. This is where Abstract Base Classes are useful. In our case it makes no sense to have a generic Animal when we can create a subclass for each animal type.
 
-Abstract Base Classes are classes that are meant to be inherited from, but not
-instantiated. They are used to define a common interface for subclasses to
-implement.
+Abstract Base Classes are classes that are meant to be inherited from, but not instantiated. They are used to define a common interface for subclasses to implement.
+
+The `abc` module in Python provides the `ABC` class that can be inherited from to create an Abstract Base Class.
+Methods do not have to be implemented in the Abstract Base Class, but they can be. This is useful for cases where you wish to enforce that a method is defined in the subclass.
 
 ---
 
-The `abc` module in Python provides the `ABC` class that can be inherited from
-to create an Abstract Base Class.
-Methods do not have to be implemented in the Abstract Base Class, but they can
-be. This is useful for cases where you wish to enforce that a method is
-defined in the subclass.
+## Abstract Classes example
 
----
 The code for this section can be found at [materials/01-Introduction/03-python-background/16-inheritance-with-abstract-base.py](/materials/01-Introduction/03-python-background/16-inheritance-with-abstract-base.py)
 
 ```python
@@ -860,6 +869,8 @@ class Animal(ABC):
 
 ---
 
+## Abstract Classes example
+
 We can then add animals. Let's say a Dog and a Cat:
 
 ```python
@@ -872,13 +883,15 @@ class Cat(Animal):
         print("Cat is walking")
 ```
 
-All we needed to do was specify the unimplemented methods of the Animal class in the
-subclasses.
+All we needed to do was specify the unimplemented methods of the Animal class in the subclasses.
 
 ---
 
-We could add a subclass to cat. Let's say "LazyCat", which has
-a new method "sleep", unique to it while sharing all other Cat methods.
+<!-- _class: two-col -->
+
+## Abstract Classes example
+
+We could add a subclass to cat. Let's say "LazyCat", which has a new method "sleep", unique to it while sharing all other Cat methods.
 
 ```python
 class LazyCat(Cat):
@@ -889,17 +902,14 @@ class LazyCat(Cat):
 We can instantiate these classes and call their methods, everything except
 the abstract base class.
 
----
+###
 
 ```python
-dog1 = Dog()
-dog2 = Dog()
-cat = Cat()
+dog1 = Dog(); dog2 = Dog(); cat = Cat()
 lazy_cat = LazyCat()
 
 dog1.eat("meat")
 dog1.move()
-
 dog2.eat("bones")
 dog2.move()
 
@@ -913,7 +923,7 @@ lazy_cat.sleep()
 
 ---
 
-### More Object Oriented Design terminology
+## More Object Oriented Design terminology
 
 - **Inheritance**: The ability of a class to inherit attributes and methods from another class.
 (i.e., `Elephant` inherits from `Animal` in our example).
@@ -925,9 +935,6 @@ This can also be called the child class or sub class.
 (i.e., `Elephant` in our example).
 - **Overriding**: The ability of a subclass to provide a specific implementation of a method that is already provided by one of its superclasses.
 (i.e., `Elephant` overrides the `eat` method of `Animal` in our example).
-
----
-
 - **Abstract class**: A class that is meant to be inherited from, but not instantiated directly.
 (i.e., `Animal` in our example).
 - **Abstract Method**: A method that is declared in an abstract class, but not implemented.
@@ -944,13 +951,12 @@ They are instantiated from classes which inherit from the `SimObject` abstract c
 As each of these shares a common base class, gem5 can handle them in consistent manner, despite simulating a wide variety of components.
 If a new component is needed then we simply create a child from an the most logical, existing component and extend it with the new functionality.
 
-
-**Worth noting:** gem5 also has special parameters called "Ports" which are used to define communication channels between SimObjects.
-More on this in future sessions.
+> gem5 also has special parameters called "Ports" which are used to define communication channels between SimObjects.
+> More on this in future sessions.
 
 ---
 
-### A SimObject OO Design example
+## A SimObject OO Design example
 
 It's useful in gem5 to take a SimObject and extend it to add new functionality.
 gem5 should ideally be open **for extension but closed for modification**.
@@ -964,6 +970,8 @@ L1 cache. This is then used as a base class for L1 instruction cache.
 The code for the following example can also be found at [materials/01-Introduction/03-python-background/17-inheriting-from-a-simobject.py](/materials/01-Introduction/03-python-background/17-inheriting-from-a-simobject.py)
 
 ---
+
+## A SimObject OO Design example
 
 ```python
 from m5.objects import Cache
@@ -986,12 +994,15 @@ class L1Cache(type(Cache), type(ABC)):
 
 ---
 
-```python
+<!-- _class: two-col -->
 
-    # We extend the functionality. In this case by adding a method to aid in
-    # Adding the cache to a bus and processor.
-    # Connecting to the cpu is left unimplemented as it will be different for
-    # each type of cache.
+## A SimObject OO Design example
+
+We extend the functionality. In this case by adding a method to aid in adding the cache to a bus and processor. Connecting to the cpu is left unimplemented as it will be different for each type of cache.
+
+```python
+class L1Cache(type(Cache), type(ABC)):
+    ...
     def connectBus(self, bus):
         """Connect this cache to a memory-side bus"""
         self.mem_side = bus.cpu_side_ports
@@ -1002,20 +1013,23 @@ class L1Cache(type(Cache), type(ABC)):
         raise NotImplementedError
 ```
 
----
+###
 
 ```python
 class L1ICache(L1Cache):
-    """Simple L1 instruction cache with default values"""
+    """Simple L1 instruction cache with default values
+    """
 
     def __init__(self):
         # Set the size
         self.size = "32kB"
         super().__init__()
 
-    # This is the implementation needed for the L1ICache to connect to the CPU.
+    # This is the implementation needed for
+    # the L1ICache to connect to the CPU.
     def connectCPU(self, cpu):
-        """Connect this cache's port to a CPU icache port"""
+        """Connect this cache's port to a CPU icache port
+        """
         self.cpu_side = cpu.icache_port
 ```
 
@@ -1032,7 +1046,9 @@ The `m5` module is a special module that provides the interfaces between the con
 
 ---
 
-### SimObject parameter assignments are special
+<!-- _class: two-col -->
+
+## SimObject parameter assignments are special
 
 In most cases Python allows this:
 
@@ -1054,8 +1070,6 @@ However, gem5 will throw an error if you try to do this with a SimObject.
 AttributeError: 'example' object has no attribute 'whatever'
 ```
 
----
-
 There are rules on what you can and cannot assign to a SimObject.
 
 SimObjects only allow parameter assignment in 3 cases:
@@ -1066,7 +1080,7 @@ SimObjects only allow parameter assignment in 3 cases:
 
 ---
 
-### SimObject Port assignments are special
+## SimObject Port assignments are special
 
 Ports are a special type of SimObject variable.
 They are used to connect SimObjects together.
@@ -1075,7 +1089,7 @@ This is not a traditional `=` assignment and is instead calling a `connect` func
 
 ---
 
-### SimObject Vector parameters are immutable
+## SimObject Vector parameters are immutable
 
 Vector parameters are vectors of parameter values of other SimObjects.
 They are a special type of SimObject parameter.
@@ -1093,6 +1107,8 @@ simobject.vector_param.remove(1) # This is not permitted.
 
 ---
 
+## SimObject Vector parameters are immutable
+
 The following is a common mistake:
 
 ```python
@@ -1109,7 +1125,7 @@ simobject.cpus = [CPU() for _ in range(4)]
 
 ---
 
-### After simulation initialization, you can't add new variables to a SimObject
+## After simulation initialization, you can't add new variables to a SimObject
 
 ```python
 simobject = ASimObject()
@@ -1123,3 +1139,14 @@ simobject.var3 = 7 # This is not permitted
 ```
 
 In some cases this may not fail but the change in the SimObject configuration will not be reflected in the simulation.
+
+---
+
+## Summary
+
+- Python is a powerful and flexible language.
+- It is used in gem5 to configure and run simulations.
+- Python has a number of built-in data types and collections.
+- Python is an Object Oriented language.
+- gem5 uses Object Oriented Design to model the components of a computer system.
+- gem5 has some special rules for SimObjects.
