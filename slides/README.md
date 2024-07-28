@@ -153,7 +153,7 @@ In this case, you cannot have a description of the image, unfortunately.
     - Materials :white_check_mark:
   - 03: Events:  (Mahyar)
     - Slides
-      - Needs an editing pass :exclamation:
+      - Editing pass done on Mahyar's slides :exclamation:
     - Materials :white_check_mark:
   - 04: Ports: (Mahyar)
     - Slides
