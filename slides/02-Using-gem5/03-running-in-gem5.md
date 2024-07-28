@@ -1240,7 +1240,7 @@ Run the following command to see the miss rate for each core's l1 data cache.
 grep ReadReq.missRate::processor m5out/stats.txt
 ```
 
-On the next slide, you'll see the expected output (with some text removed for readbility).
+On the next slide, you'll see the expected output (with some text removed for readability).
 
 ---
 
@@ -1259,13 +1259,22 @@ Cores 0, 1, 2, and 3 (`LinearGeneratorCores`) have a miss rate of **0.13309375**
 
 Cores 4 and 5 (`RandomGeneratorCores`) have a miss rate of **0.8757405** (~87.5%) on average.
 
-This is because `LinearGeneratorCores` access memory linearly, so everytime there's a cache miss, the entire `block_size` worth of data is fetched. (When there's a cache miss, instead of fetching only one piece of data, it'll fetch multiple pieces of data.)
+This is because `LinearGeneratorCores` access memory linearly. Therefore, they exhibit more locality which in turn results in less misses in the l1dcache.
 
 On the other hand, since the `RandomGeneratorCores` access memory randomly, the caches can't take advantage of locality in the same way.
 
 ---
+<!-- Speaker Notes:
 
-## 06-traffic-gen: Summary
+## More summaries
+
+m5ops can be used to communicate between simulated workload and the simulator
+
+Traffic generator can abstract away the details of a data requestor such as CPU for generating test cases for memory systems
+
+-->
+
+## Summary
 
 Overall, we discussed two diffent types of traffic generators: **Linear** and **Random**.
 
@@ -1273,14 +1282,6 @@ Overall, we discussed two diffent types of traffic generators: **Linear** and **
 
 We looked into how to configure a board that uses these traffic generators.
 
-We also extended the `AbstractGenerator` class to create a `HybridGenerator`, which simulates linear and random memory acesses simultaneously.
+We also extended the `AbstractGenerator` class to create a `HybridGenerator`, which simulates linear and random memory accesses simultaneously.
 
 Finally, we saw some of the statistical differences `LinearGeneratorCores` and `RandomGeneratorCores`.
-
----
-
-## More summaries
-
-### m5ops can be used to communicate between simulated workload and the simulator
-
-### Traffic generator can abstract away the details of a data requestor such as CPU for generating test cases for memory systems
