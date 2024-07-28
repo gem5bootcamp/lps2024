@@ -152,8 +152,7 @@ In this case, you cannot have a description of the image, unfortunately.
     - Slides :white_check_mark:
     - Materials :white_check_mark:
   - 03: Events:  (Mahyar)
-    - Slides
-      - Editing pass done on Mahyar's slides :exclamation:
+    - Slides ✅
     - Materials :white_check_mark:
   - 04: Ports: (Mahyar)
     - Slides
