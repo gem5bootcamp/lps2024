@@ -48,6 +48,154 @@ scons build/NULL/gem5.opt -j$(nproc)
 
 ---
 
+## Some Basics on gem5's build system
+
+gem5's build system is *complicated*
+
+As we'll see in the coming sections, gem5 has a number of domain-specific languages and source-to-source compilers.
+
+This means two things:
+
+1. It's not always obvious what the final code is going to look like
+2. Setting up the gem5 is build has many, many options.
+
+---
+
+## Configuring the gem5 build
+
+As we've seen, there are multiple ways to configure the gem5 build and this results in different binaries.
+
+There are to categories of options:
+
+1. Build-time configuration (e.g., what models to include in the binary)
+2. Compiler configuration (e.g., optimizations, debug flags, etc.)
+
+If you forget any of this
+
+> `scons --help` will explain the targets and Kconfig tools.
+
+---
+
+## Compiler configuration
+
+This is specified by the *suffix* of the gem5 binary you build. For example, `gem5.opt` is built with the "opt" configuration. The options are:
+
+- `fast`: All optimizations, no debug symbols, most assertions are disabled.
+  - Use this only after you have fully debugged your models.
+  - Significant speedup over `opt` because the binary is smaller (~50 MiB)
+- `opt`: Optimized build with debug symbols and all panics, assertions, etc. enabled.
+  - This is the most common build target, but it's very large (~500 MiB)
+  - Can use this with `gdb` but sometimes it will say "that variable is optimized away"
+- `debug`: Minimal optimizations (`-O1`) and all debug symbols.
+  - Use this when you need to debug the gem5 code itself and `opt` doesn't work for you.
+  - *Much, much* slower than `opt` (order 5-10x slower)
+
+> Remember, these options are for the *gem5* binary, not the simulated system. Choosing *fast* or *debug* will not affect the output of the simulator (unless there are bugs, of course).
+
+---
+
+## Build-time configuration
+
+There are many options for configuring the gem5 build.
+
+Two ways to do this
+
+1. Use the defaults found in `gem5/build_opts`
+2. Configure with `Kconfig` (the same tool the Linux kernel uses)
+
+---
+
+## Build_opts
+
+```text
+ALL                       GCN3_X86                  NULL_MOESI_hammer  X86_MESI_Two_Level
+ARM                       MIPS                      POWER              X86_MI_example
+ARM_MESI_Three_Level      NULL                      RISCV              X86_MOESI_AMD_Base
+ARM_MESI_Three_Level_HTM  NULL_MESI_Two_Level       SPARC
+ARM_MOESI_hammer          NULL_MOESI_CMP_directory  VEGA_X86
+Garnet_standalone         NULL_MOESI_CMP_token      X86
+```
+
+In `build_opts` you'll find a number of default options. Most of them are named `<ISA>_<PROTOCOL>`.
+
+For example, `X86_MESI_Two_Level` is the build option for the X86 ISA and with the MESI_Two_Level protocol.
+
+You can also build multiple ISAs into a single binary (e.g., `ALL`), but you **cannot** build multiple Ruby coherence protocols into one binary.
+
+---
+
+## Using Kconfig
+
+Kconfig is a tool that allows you to configure the gem5 build interactively.
+
+When using Kconfig, you first must create a build directory.
+Note: This directory can have any name and live *anywhere* on your system.
+
+Common practice is to create a directory called `build` in the gem5 source directory and to use a default from `build_opts`.
+
+```sh
+scons defconfig build/my_gem5/ build_opts/ALL
+```
+
+In this case, we are using `build/m5_gem5` as the build directory and `build_opts/ALL` as the default configuration.
+
+---
+
+## Using Kconfig (cont.)
+
+Once you have created the build directory, you can run `scons` with the `menuconfig` target to get an interactive configuration tool.
+
+```sh
+scons menuconfig build/my_gem5/
+```
+
+<script src="https://asciinema.org/a/nMSV0wVOKNavHSJEt3I77jxyu.js" id="asciicast-nMSV0wVOKNavHSJEt3I77jxyu" async="true"></script>
+
+---
+
+## Putting it all together
+
+To build gem5, once you have a build directory set up and configured, you can run the following command.
+
+```sh
+scons build/my_gem5/gem5.opt -j$(nproc)
+```
+
+This will build the gem5 binary with the configuration you have set up.
+It will build the "opt" binary.
+
+Note: gem5 takes a long time to build, so using multiple cores is important.
+I don't know how many cores you have, so I've used `-j$(nproc)` to use all of them.
+You may want to use fewer cores if you're doing other things on your system.
+
+---
+
+## gem5's Scons build system
+
+There are two main types of files used to set up gem5's build:
+
+- `SConsctruct`: Contains definitions of types of build targets.
+  - All of the `SConstruct` files are executed first.
+  - Some code is also in `gem5/build_tools`
+  - To be honest, this code is confusing and not easy to trace.
+- `SConscript`: Contains the build instructions for a file.
+  - Defines *what* to build (e.g., which C++ files to compile).
+  - You will mostly interact with these files.
+
+We support *most* common OSes and *most* modern compilers. Fixing compiler errors in the SCons build is not straightforward.
+
+> We strongly encourage you to use **supported** compilers/OSes or use docker to build gem5.
+>
+> You will *not* find the SCons documentation helpful. gem5 has customized it *way* too much.
+
+---
+
+<!-- _class: start -->
+
+## SimObjects
+
+---
+
 <!--
 Speaker Notes
 - SimObject
