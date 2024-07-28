@@ -17,6 +17,7 @@ title: Sampled simulation with gem5
 ## What if the ROI is large
 
 ### We now know how to skip the "unimportant" part of the simulation, but what if the important part of the simulation is too large?
+### We now know how to skip the "unimportant" part of the simulation, but what if the important part of the simulation is too large?
 
 What if we are not facing this
 
@@ -123,8 +124,8 @@ In gem5, we have the infrastructure for
 ## Targeted Sampling in gem5
 
 - gem5 provides infrastructure for **SimPoint** and **LoopPoint** to analyze the program, take checkpoints for the representative regions, and run the representative regions.
-Note that LoopPoint's analysis support is not currently supported in gem5 24.0 but is tested and prepared to be upstream in gem5 24.1.
-- gem5 also provides the infrastructure for **ELFies** to be executed in SE mode, but gem5 does not support creating ELFie files and information.
+Note that LoopPoint analysis support is not currently supported in gem5 v24.0 but is tested and prepared to be upstream in gem5 v24.1.
+- gem5 also provides the infrastructure for **ELFies** to be executed in SE mode, but gem5 does not support creating ELFie files and weight information.
 
 ---
 
@@ -191,13 +192,14 @@ gem5 -re --outdir=simpoint-analysis-m5out simpoint-analysis.py
 
 In this exercise, we are trying to create SimPoints for a simple workload.
 The source code of the simple workload can be found in [materials/02-Using-gem5/09-sampling/01-simpoint/workload/simple_workload.c](../../materials/02-Using-gem5/09-sampling/01-simpoint/workload/simple_workload.c).
-It allocates an array of one thousand 64 bit elements, assigns each a number, then sums it all up with one thousand iterations.
+This simple workload allocates an array of one thousand 64 bit elements, assigns each a number, then sums it all up with one thousand iterations.
 We can expect the program behavior of this workload to be really repetitive.
 
 ---
 
 ## 01-simpoint
 
+The script [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-analysis.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-analysis.py) uses the `SimPoint` probe listener object that we introduced earlier to collect basic block information for this simple workload.
 The script [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-analysis.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-analysis.py) uses the `SimPoint` probe listener object that we introduced earlier to collect basic block information for this simple workload.
 It connects the ATOMIC CPU core to the `SimPoint` probe listener using
 
@@ -451,7 +453,7 @@ We provided a runscript to run all three in [materials/02-Using-gem5/09-sampling
 ## 01-simpoint
 
 Let's look at [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py). It has a detailed system that matches the one that is used in our baseline [materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py).
-There are a few key points that we want to look at. Let's start with the ones we are familiar with
+There are a few key points that we want to look at. Let's start with the ones we are familiar with.
 
 ```python
 # key 1:
