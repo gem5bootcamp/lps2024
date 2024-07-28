@@ -14,7 +14,7 @@ author: Jason Lowe-Power
 
 ## About the overall structure of the bootcamp
 
-These slides and are available at <https://gem5bootcamp.gem5.org/> for you to follow along.
+These slides and are available at <https://bootcamp.gem5.org/> for you to follow along.
 
 (Note: They will be archived at <https://gem5bootcamp.github.io/2024>)
 
