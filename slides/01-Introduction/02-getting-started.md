@@ -92,7 +92,7 @@ This guarantees everyone is using the same environment and will make debugging e
 **AFTER** joining the classroom, you can go to the repository and click on the green "Code" button.
 Again, note that this is the repo where the slides are.
 
-<https://github.com/gem5bootcamp-2024/>
+<https://github.com/gem5bootcamp/2024/>
 
 ![Screenshot of starting a codespace](02-getting-started-imgs/codespaces-screenshot-1.drawio.png)
 
@@ -102,7 +102,10 @@ Again, note that this is the repo where the slides are.
 
 > **Step 3:** Wait for the environment to load.
 
-![Screenshot](test.drawio.png)
+You can also open it in your local VS Code if you install the codespaces extension.
+(If you do this, the extensions will not be installed automatically on your local VS Code.)
+
+![Screenshot of the codespace loaded and ready to use width:1100px](02-getting-started-imgs/codespaces-screenshot-2.drawio.png)
 
 ---
 
@@ -171,7 +174,7 @@ Links to the code are available in the slides if you're using VS Code.
 
 ---
 
-## Let’s be lazy and use a prebuild board
+## Let’s be lazy and use a prebuilt board
 
 ```python
 board = X86DemoBoard()
@@ -180,7 +183,7 @@ board = X86DemoBoard()
 The X86DemoBoard has the following properties:
 
 - Single Channel DDR3, 2GB Memory.
-- A 4 core 3GHz processor (using gem5’s ‘timing’ model).
+- A 4 core 3GHz processor (using gem5’s "timing" model).
 - A MESI Two Level Cache Hierarchy, with 32kB data and instruction case and a 1MB L2 Cache.
 - Will be run as a Full-System simulation.
 

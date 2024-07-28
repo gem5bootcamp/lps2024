@@ -110,7 +110,7 @@ Nathan Binkert, Bradford Beckmann, Gabriel Black, Steven K. Reinhardt, Ali Saidi
 
 Code of conduct (see repo)
 
-### _I want to see the community grow!_
+### _We want to see the community grow!_
 
 ![A community of worker bees improving low-level computer hardware bg right](./01-simulation-background-imgs/gem5-community.jpg)
 
