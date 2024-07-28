@@ -33,8 +33,13 @@ from gem5.components.processors.abstract_generator import (
     AbstractGenerator,
     partition_range,
 )
-from gem5.components.processors.linear_generator_core import LinearGeneratorCore
-from gem5.components.processors.random_generator_core import RandomGeneratorCore
+from gem5.components.processors.linear_generator_core import (
+    LinearGeneratorCore,
+)
+from gem5.components.processors.random_generator_core import (
+    RandomGeneratorCore,
+)
+
 
 class HybridGenerator(AbstractGenerator):
     def __init__(
@@ -104,8 +109,8 @@ class HybridGenerator(AbstractGenerator):
             """
             Returns the largest power of two that is smaller than num_cores
             """
-            if (num_cores & (num_cores - 1) == 0):
-                return num_cores//2
+            if num_cores & (num_cores - 1) == 0:
+                return num_cores // 2
             else:
                 return 2 ** int(log(num_cores, 2))
 
@@ -113,7 +118,6 @@ class HybridGenerator(AbstractGenerator):
         Initializing variables
         """
         # (1)
-
 
         """
         partition_range(): Partitions the range of min_addr to max_addr into
@@ -125,7 +129,6 @@ class HybridGenerator(AbstractGenerator):
         """
         # (2)
 
-
         """
         The first n cores (where n is the largest power of 2 that is
         less than num_cores) will be Linear Generator Cores
@@ -135,7 +138,6 @@ class HybridGenerator(AbstractGenerator):
         """
         # (3)
 
-
         """
         The remaining cores will be Random Generator Cores
 
@@ -143,12 +145,10 @@ class HybridGenerator(AbstractGenerator):
         """
         # (4)
 
-
         """
         Return our list of cores
         """
         # (5)
-
 
     @overrides(AbstractGenerator)
     def start_traffic(self) -> None:
