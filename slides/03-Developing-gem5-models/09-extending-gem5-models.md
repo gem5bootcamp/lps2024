@@ -477,6 +477,8 @@ Simulation Done
 
 ---
 
+<!-- _class: center-image two-col -->
+
 ## 01-local-inst-tracker
 
 Congratulation! We now have our LocalInstTracker!
@@ -484,6 +486,7 @@ However, this local instruction exit event can be done with the [scheduleInstSto
 Since each ProbeListener can only attach to one SimObject, we can modify our LocalInstTracker to notify a global object to keep tracking all committed instructions in all ProbeListeners.
 
 <!-- do a visualization here -->
+![](09-extending-gem5-models-imgs/global-listener.drawio.svg)
 
 ---
 
