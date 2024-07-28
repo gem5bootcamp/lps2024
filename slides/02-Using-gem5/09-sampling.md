@@ -62,12 +62,9 @@ Well-known simulation sampling methods that use the targeted sampling approach i
 
 Both methods divide the whole program execution into regions that each execute a fixed number of instructions.
 
-<!-- They record the basic block execution pattern inside each region as the signature of the program behavior for the region. This is known as the **basic block vector**. -->
-
-They use **basic block vectors**, which are recordings of the execution pattern of basic blocks within a region of code and can be used to characterize program behavior.
-Here is an example of a basic block vector.
+They use **basic block vectors**, which are recordings of the execution pattern of basic blocks within a region (period) of execution. A basic block vector can be used as the signature of the program behavior of the region. Here is an example of a basic block vector.
 <!-- _class: center-image -->
-![basic block vector](09-sampling-img/basic_block_vecotr.png)
+![basic block vector ](09-sampling-img/basic_block_vecotr.png)
 
 They use the basic block vectors to cluster and find the representative regions. They will predict the overall performance of the program by collecting only the representative regions' performance and sum them with weights.
 
@@ -608,7 +605,7 @@ Therefore, if we know how to do sampling with the SimPoint method, it should not
 LoopPoint is similar to SimPoint with some key differences.
 
 LoopPoint uses the number of times a loop is executed to mark the regions instead of using instructions executed.
-Therefore, we need to collect the loop execution information in the analysis stage in addition to the basic block execution information. 
+Therefore, we need to collect the loop execution information in the analysis stage in addition to the basic block execution information.
 Other than this, it is very similar to SimPoint in terms of the process (the 3 step process we did in 01-simpoint).
 
 ---
@@ -725,8 +722,8 @@ Before running the simulation, we need to decide a few statistical parameters.
 
 - `n`: the number of the samples. It is a number of count.
 - `k`: the systematic sampling interval. It is a number of count.
-- `U`: the sampling unit size. It is a number of the instructions to execute.
-- `W`: the length of the detailed warm up period. It is a number of the instructions to execute.
+- `U`: the sampling unit size. It is a number of instructions to execute.
+- `W`: the length of the detailed warm up period. It is a number of instructions to execute.
 
 <!-- add a visualization here -->
 
