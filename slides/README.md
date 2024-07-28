@@ -81,10 +81,9 @@ In this case, you cannot have a description of the image, unfortunately.
 
 - 01 Introduction
   - 00: Introduction to bootcamp: (Jason)
-    - A few more little things about admin stuff, schedule, etc. :exclamation:
+    - Slides :white_check_mark:
   - 01: Simulation background: (Jason)
     - Slides :white_check_mark:
-    - Materials :white_check_mark:
   - 02: Getting started: (Jason)
     - Slides :white_check_mark:
     - Materials :white_check_mark:
