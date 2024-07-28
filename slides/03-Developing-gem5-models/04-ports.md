@@ -1205,13 +1205,21 @@ Now, what we have to do is define the constructor of `InspectorGadget`. To do it
 ```cpp
 InspectorGadget::InspectorGadget(const InspectorGadgetParams& params):
     ClockedObject(params),
-    cpuSidePort(this, "cpu_side_port"),
-    memSidePort(this, "mem_side_port"),
+    cpuSidePort(this, name() + ".cpu_side_port"),
+    memSidePort(this, name() + ".mem_side_port"),
     inspectionBufferEntries(params.inspection_buffer_entries),
+    inspectionBuffer(clockPeriod()),
     responseBufferEntries(params.response_buffer_entries),
-    nextReqSendEvent([this]{ processNextReqSendEvent(); }, name()),
-    nextReqRetryEvent([this]{ processNextReqRetryEvent(); }, name()),
-    nextRespSendEvent([this]{ processNextRespSendEvent(); }, name()),
-    nextRespRetryEvent([this]{ processNextRespRetryEvent(); }, name())
+    responseBuffer(clockPeriod()),
+    nextReqSendEvent([this](){ processNextReqSendEvent(); }, name() + ".nextReqSendEvent"),
+    nextReqRetryEvent([this](){ processNextReqRetryEvent(); }, name() + ".nextReqRetryEvent"),
+    nextRespSendEvent([this](){ processNextRespSendEvent(); }, name() + ".nextRespSendEvent"),
+    nextRespRetryEvent([this](){ processNextRespRetryEvent(); }, name() + ".nextRespRetryEvent")
 {}
 ```
+
+---
+
+## Let's Create a Configuration Script
+
+For this step we're going to borrow some of the material from [Running Things in gem5](/slides/02-Using-gem5/03-running-in-gem5.md). We are specifically going to copy the materials for using *TrafficGenerators*. We are going to further expand that material by extending the *ChanneledMemory* class to put an `InspectorGadget` right before the memory controller.
