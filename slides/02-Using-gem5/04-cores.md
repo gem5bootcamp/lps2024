@@ -337,6 +337,9 @@ timing-normal-cache/stats.txt:simOps                                       33954
 timing-small-cache/stats.txt:simOps                                        33954560
 ```
 
+> "Ops" may be different from "Instructions" because gem5 breaks instructions down into "micro-ops."
+> x86 is highly microcoded, all ISAs have some microcoded instructions in gem5.
+
 ---
 
 ## Look at the Number of Execution Cycles
