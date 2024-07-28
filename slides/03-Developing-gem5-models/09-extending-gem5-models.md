@@ -145,4 +145,348 @@ Now that we know what ProbePoint we are targeting, we can set it up for our Loca
 
 ## 01-local-inst-tracker
 
+In the `inst_tracker.hh`, we need to add two things:
+
+1. The type of argument we are going to receive from the ProbePoint. In our case here is a `uint64_t` variable
+
+```cpp
+typedef ProbeListenerArg<LocalInstTracker, uint64_t> LocalInstTrackerListener;
+```
+
+2. We need to have a function to handle the notification from the ProbePoint. Since we are counting the number of instruction committed and wanting to exit when it reaches a certain threshold, let's also create two `uint64_t` variables for this purpose
+
+```cpp
+void checkPc(const uint64_t& inst);
+uint64_t instCount;
+uint64_t instThreshold;
+```
+
+---
+
+## 01-local-tracker
+
+Here comes to a optional part. The Probe Point tool allows dynamic attachment and detachment during the simulation. Therefore, we can create a way to start and stop listening for our LocalInstTracker.
+
+In the `inst_tracker.hh`,
+
+```cpp
+bool listening;
+void stopListening();
+void startListening() {
+  listening = true;
+  regProbeListeners();
+}
+```
+
+---
+
+## 01-local-tracker
+
+In the `inst_tracker.cc`, let's define the constructor fist
+
+```cpp
+LocalInstTracker::LocalInstTracker(const LocalInstTrackerParams &p)
+    : ProbeListenerObject(p),
+      instCount(0),
+      instThreshold(p.inst_threshold),
+      listening(p.start_listening)
+{}
+```
+
+This means that we initialize the `instCount` as 0, `instThreshold` with the parameter `inst_threshold`, and listening with the parameter `start_listening`.
+
+---
+
+## 01-local-tracker
+
+Then, let's define the `regProbeListeners` function, which will be called automatically when the simulation starts, also as we defined above when `startListening` is called.
+
+```cpp
+void
+LocalInstTracker::regProbeListeners()
+{
+    if (listening) {
+        listeners.push_back(new LocalInstTrackerListener(this, "RetiredInsts",
+            &LocalInstTracker::checkPc));
+    }
+}
+```
+
+As we can see, it uses the `LocalInstTrackerListener` type that we defined earlier. It connects our listener with the ProbePoint that is registered with the string variable `"RetiredInsts"`. When the ProbePoint notifies the Manager, it will call our function `checkPc` with the notified variable, a `uint64_t` variable in our case.
+
+---
+
+## 01-local-tracker
+
+For our `checkPc` function, it should count the instruction committed, check if it reaches the threshold, then raises an exit event when it does.
+
+```cpp
+void
+LocalInstTracker::checkPc(const uint64_t& inst)
+{
+    instCount ++;
+    if (instCount >= instThreshold) {
+        exitSimLoopNow("a thread reached the max instruction count");
+    }
+}
+```
+
+The `exitSimLoopNow` will create an event immediately, with the string variable. It will immediately exit the simulation. This string variable is categorized as `ExitEvent.MAX_INSTS` in the standard library.
+
+---
+
+Lastly, let's defined the `stopListening` function for dynamic detachment
+
+```cpp
+void
+LocalInstTracker::stopListening()
+{
+    listening = false;
+    for (auto l = listeners.begin(); l != listeners.end(); ++l) {
+        delete (*l);
+    }
+    listeners.clear();
+}
+```
+
+This is a really rough example of how it can be done. It does not check what ProbPoint the listeners are attaching to, so if our ProbeListener listens to multiple ProbePoints, we will need to check the registered string variables for detaching the correct ProbeListeners.
+For our simple case here, this rough method will serve the purpose.
+For more detailed information about how the dynamic detachment can be done, please refer to [src/sim/probe/probe.hh](https://github.com/gem5/gem5/blob/stable/src/sim/probe/probe.hh)
+
+---
+
+## 01-local-tracker
+
+Additional to the above functionality, we can also add some getter and setter functions, such as
+
+```cpp
+void changeThreshold(uint64_t newThreshold) {
+  instThreshold = newThreshold;
+}
+void resetCounter() {
+  instCount = 0;
+}
+bool ifListening() const {
+  return listening;
+}
+uint64_t getThreshold() const {
+  return instThreshold;
+}
+```
+
+---
+
+<!-- _class: code-60-percent -->
+
+## 01-local-inst-tracker
+
+Now, let's setup the Python object of the LocalInstTracker.
+Let's create a file called `InstTracker.py` under the same directory `src/cpu/probes`.
+
+```python
+from m5.objects.Probe import ProbeListenerObject
+from m5.params import *
+from m5.util.pybind import *
+
+class LocalInstTracker(ProbeListenerObject):
+    type = "LocalInstTracker"
+    cxx_header = "cpu/probes/inst_tracker.hh"
+    cxx_class = "gem5::LocalInstTracker"
+
+    cxx_exports = [
+        PyBindMethod("stopListening"),
+        PyBindMethod("startListening"),
+        PyBindMethod("changeThreshold"),
+        PyBindMethod("resetCounter"),
+        PyBindMethod("ifListening"),
+        PyBindMethod("getThreshold")
+    ]
+
+    inst_threshold = Param.Counter("The instruction threshold to trigger an"
+                                                                " exit event")
+    start_listening = Param.Counter(True, "Start listening for instructions")
+
+```
+
+---
+
+## 01-local-inst-tracker
+
+Like all new objects, we need to register it in scons, so let's modify the [src/cpu/probes/SConscript](../../gem5/src/cpu/probes/SConscript) and add
+
+```python
+SimObject(
+    "InstTracker.py",
+    sim_objects=["LocalInstTracker"],
+)
+Source("inst_tracker.cc")
+```
+
+Now we have everything setup for our `LocalInstTracker`!
+
+Let's build gem5 again
+
+```bash
+cd gem5
+scons build/X86/gem5.fast -j$(nproc)
+```
+
+---
+
+## 01-local-inst-tracker
+
+After it is built, we can test our `LocalInstTracker` with the [materials/03-Developing-gem5-models/09-extending-gem5-models/01-local-inst-tracker/simple-sim.py](../../materials/03-Developing-gem5-models/09-extending-gem5-models/01-local-inst-tracker/simple-sim.py)
+
+```bash
+cd /workspaces/2024/materials/03-Developing-gem5-models/09-extending-gem5-models/01-local-inst-tracker
+/workspaces/2024/gem5/build/X86/gem5.fast -re --outdir=simple-sim-m5out simple-sim.py
+```
+
+This SE script runs a simple openmp workload that sums up an array of numbers. The source code of this workload can be found in [materials/03-Developing-gem5-models/09-extending-gem5-models/simple-omp-workload/simple_workload.c](../../materials/03-Developing-gem5-models/09-extending-gem5-models/simple-omp-workload/simple_workload.c).
+
+```c
+m5_work_begin(0, 0);
+for (j = 0; j < ARRAY_SIZE; j++) {
+    #pragma omp parallel for reduction(+:sum)
+    for (i = 0; i < NUM_ITERATIONS; i++) {
+        sum += array[j];
+    }
+}
+m5_work_end(0, 0);
+```
+
+---
+
+## 01-local-inst-tracker
+
+For our SE script, we first attach a LocalInstTracker to each core object with a threshold of 100,000 instructions. We will not start listening to the core's committed instruction from the start of the simulation.
+
+```python
+from m5.objects import LocalInstTracker
+for core in processor.get_cores():
+    tracker = LocalInstTracker(
+        start_listening = False,
+        inst_threshold = 100000
+    )
+    core.core.probeListener = tracker
+    all_trackers.append(tracker)
+```
+
+---
+
+## 01-local-inst-tracker
+
+We will start listening when the simulation raises an workbegin exit event, so we need a workbegin handler to do that
+
+```python
+def workbegin_handler():
+    print("Reached workbegin, now start listening for instructions")
+    for tracker in all_trackers:
+        tracker.startListening()
+    yield False
+```
+
+Let's make a workend exit event handler for fun:
+
+```python
+def workend_handler():
+    print("Reached workend")
+    yield False
+```
+
+---
+
+## 01-local-inst-tracker
+
+We know that after reaching the threshold, our LocalInstTracker will raise an `ExitEvent.MAX_INSTS` exit event, so we need a handler for it too
+
+```python
+def max_inst_handler():
+    counter = 1
+    while counter < len(processor.get_cores()):
+        print("Max Inst exit event triggered")
+        print(f"Reached {counter}")
+        counter += 1
+        print("Fall back to simulation")
+        yield False
+    print(f"All {counter} cores have reached the max instruction threshold")
+    print("Now stop listening for instructions")
+    for tracker in all_trackers:
+        tracker.stopListening()
+    yield False
+```
+
+---
+
+## 01-local-inst-tracker
+
+After setting these handlers with `simulator`
+
+```python
+simulator = Simulator(
+    board=board,
+    on_exit_event={
+        ExitEvent.MAX_INSTS: max_inst_handler(),
+        ExitEvent.WORKBEGIN: workbegin_handler(),
+        ExitEvent.WORKEND: workend_handler(),
+    }
+)
+```
+
+We should expect 8 `MAX_INSTS` events after the `WORKBEGIN` event.
+
+---
+
+<!-- _class: code-50-percent -->
+
+## 01-local-inst-tracker
+
+We should expect to see below log in `simout.txt`
+
+```bash
+Global frequency set at 1000000000000 ticks per second
+Running with 8 threads
+Reached workbegin, now start listening for instructions
+Max Inst exit event triggered
+Reached 1
+Fall back to simulation
+Max Inst exit event triggered
+Reached 2
+Fall back to simulation
+Max Inst exit event triggered
+Reached 3
+Fall back to simulation
+Max Inst exit event triggered
+Reached 4
+Fall back to simulation
+Max Inst exit event triggered
+Reached 5
+Fall back to simulation
+Max Inst exit event triggered
+Reached 6
+Fall back to simulation
+Max Inst exit event triggered
+Reached 7
+Fall back to simulation
+All 8 cores have reached the max instruction threshold
+Now stop listening for instructions
+Reached workend
+Sum: 332833500000
+Simulation Done
+```
+
+---
+
+## 01-local-inst-tracker
+
+Congratulation! We now have our LocalInstTracker!
+However, this local instruction exit event can be done with the [scheduleInstStop](https://github.com/studyztp/gem5/blob/studyztp/probe-user-inst/src/cpu/BaseCPU.py#L72) function in `BaseCPU`. Our goal is to have an instruction exit event that track the global committed instructions, which does not have an interface to do so easily in gem5 yet.
+Since each ProbeListener can only attach to one SimObject, we can modify our LocalInstTracker to notify a global object to keep tracking all committed instructions in all ProbeListeners.
+
+<!-- do a visualization here -->
+
+---
+
+## 02-global-inst-tracker
+
 
