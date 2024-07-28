@@ -11,13 +11,15 @@ title: Sampled simulation with gem5
 
 ---
 
-
 <!-- _class: center-image -->
 
 ## What if the ROI is large
 
 ### We now know how to skip the "unimportant" part of the simulation, but what if the important part of the simulation is too large?
 ### We now know how to skip the "unimportant" part of the simulation, but what if the important part of the simulation is too large?
+
+What if we are not facing this
+
 
 What if we are not facing this
 
@@ -192,6 +194,7 @@ gem5 -re --outdir=simpoint-analysis-m5out simpoint-analysis.py
 
 In this exercise, we are trying to create SimPoints for a simple workload.
 The source code of the simple workload can be found in [materials/02-Using-gem5/09-sampling/01-simpoint/workload/simple_workload.c](../../materials/02-Using-gem5/09-sampling/01-simpoint/workload/simple_workload.c).
+
 This simple workload allocates an array of one thousand 64 bit elements, assigns each a number, then sums it all up with one thousand iterations.
 We can expect the program behavior of this workload to be really repetitive.
 
@@ -260,6 +263,7 @@ T:1900:222 :1901:222 :1902:999216 :1903:333
 - `:1900:222` means that basic block 1900 executed (committed) 222 instructions. The key here is that 222 is NOT the number of times the basic block has been executed, but the number of times the basic block has been executed multiplied by the total instructions in the basic block . If we sum up all the instructions that have been executed by the basic blocks, we will get roughly the length of the region. $222+222+999216+333=999993$.
 
 The next step is to use this information to cluster the regions and find the representative regions.
+
 There are many methods to do it. In this exercise, we will be using the SimPoint3.2 tool that was provided by the SimPoint paper's authors. [Link](https://cseweb.ucsd.edu/~calder/simpoint/) to the tool.
 
 ---
@@ -453,6 +457,7 @@ We provided a runscript to run all three in [materials/02-Using-gem5/09-sampling
 ## 01-simpoint
 
 Let's look at [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-run.py). It has a detailed system that matches the one that is used in our baseline [materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/full-detailed-run.py).
+
 There are a few key points that we want to look at. Let's start with the ones we are familiar with.
 
 ```python
@@ -602,9 +607,9 @@ Therefore, if we know how to do sampling with the SimPoint method, it should not
 
 LoopPoint is similar to SimPoint with some key differences.
 
-LoopPoint uses the number of times a loop is executed to mark the regions instead of using instructions executed. Therefore, we need to collect the loop execution information in the analysis stage in addition to the basic block execution information. Other than this, it is very similar to SimPoint in terms of the process (the 3 step process we did in 01-simpoint).
-
-We will not do a detailed example on LoopPoint, but there are examples under [configs/example/gem5_library/looppoints](https://github.com/gem5/gem5/tree/stable/configs/example/gem5_library/looppoints). We have the infrastructure ready for LoopPoint checkpointing and running the LoopPoint in gem5 v24.0. The LoopPoint analysis is tested and ready to be upstream in gem5 v24.1.
+LoopPoint uses the number of times a loop is executed to mark the regions instead of using instructions executed.
+Therefore, we need to collect the loop execution information in the analysis stage in addition to the basic block execution information. 
+Other than this, it is very similar to SimPoint in terms of the process (the 3 step process we did in 01-simpoint).
 
 ---
 
@@ -752,6 +757,7 @@ Let's look at the `smarts_generator` with the statistical parameters.
 
 - `n`: the number of the samples. It is a number of count.
 - `k`: the systematic sampling interval. It is a number of count.
+
 - `U`: the sampling unit size. It is a number of instructions executed.
 - `W`: the length of the detailed warm up period. It is a number of instructions executed.
 
