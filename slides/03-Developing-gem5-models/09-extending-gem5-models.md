@@ -83,7 +83,7 @@ Let's try it with a simple example!
 
 ### 01-local-inst-tracker
 
-Currently, in gem5, there is not a straight-forward method to raise an exit event after we executed (committed) a number of instructions. We can easily create one with Probe Point. We will start with creating ProbeListener that listen to each core's `Committed` ProbePoint, then in 02-global-inst-tracker, we will create a SimObject to manage all the ProbeListener to raise an exit event after the simulation executed (committed) a number of instructions.
+Currently, in gem5, there is not a straight-forward method to raise an exit event after we executed (committed) a number of instructions for multi-core simulation. We can easily create one with Probe Point. We will start with creating ProbeListener that listen to each core's `ppRetiredInsts` ProbePoint, then in 02-global-inst-tracker, we will create a SimObject to manage all the ProbeListener to raise an exit event after the simulation executed (committed) a number of instructions.
 
 ### Goal
 
