@@ -12,7 +12,7 @@
 <body>
     <div id="main">
         <div class="sidebar">
-            <div class="sidebar-header" onclick="route('')">
+            <div class="sidebar-header" onclick="route('#')">
                 <img class="sidebar-logo" src="./slides/themes/gem5ColorVert.svg" alt="gem5 logo"/>
                 <div class="sidebar-title">
                     gem5<br/>Bootcamp
@@ -33,6 +33,7 @@
                         <span>Previous Slide Deck</span>
                         <span></span>
                     </button>
+                    <span id="slideName"></span>
                     <button id="nextSlide" onclick="next_slide()">
                         <span>Next Slide Deck</span>
                         <span></span>
