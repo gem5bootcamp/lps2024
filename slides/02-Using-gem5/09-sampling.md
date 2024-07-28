@@ -16,10 +16,6 @@ title: Sampled simulation with gem5
 ## What if the ROI is large
 
 ### We now know how to skip the "unimportant" part of the simulation, but what if the important part of the simulation is too large?
-### We now know how to skip the "unimportant" part of the simulation, but what if the important part of the simulation is too large?
-
-What if we are not facing this
-
 
 What if we are not facing this
 
@@ -140,7 +136,7 @@ As mentioned before, there are three steps to using SimPoint:
 
 1. Analysis
 2. Taking checkpoints
-3. Run the regions
+3. Running the regions
 
 There are two key files related to using SimPoint in gem5:
 1. [src/python/gem5/utils/simpoint.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/utils/simpoint.py)
@@ -182,7 +178,7 @@ We will only work with [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint
 
 ## 01-simpoint
 
-Because the profiling and getting the baseline performance might take a while, we will run the simulation first with the following command.
+Because the profiling and getting the baseline performance might take a while, we will first run the simulation  with the following command.
 
 ```bash
 gem5 -re --outdir=full-detailed-run-m5out full-detailed-run.py
@@ -199,7 +195,6 @@ We can expect the program behavior of this workload to be really repetitive.
 
 ## 01-simpoint
 
-The script [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-analysis.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-analysis.py) uses the `SimPoint` probe listener object that we introduced earlier to collect basic block information for this simple workload.
 The script [materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-analysis.py](../../materials/02-Using-gem5/09-sampling/01-simpoint/simpoint-analysis.py) uses the `SimPoint` probe listener object that we introduced earlier to collect basic block information for this simple workload.
 It connects the ATOMIC CPU core to the `SimPoint` probe listener using
 
@@ -325,7 +320,7 @@ We will not be modifying any scripts.
 
 - Use the output file from the SimPoint3.2 tool to create checkpoints for all 3 SimPoints
 
-Because it might take some time to take the checkpoints, let's start taking checkpoints with the following command:
+Because it might take some time to take the checkpoints, let's start by taking checkpoints with the following command:
 
 ```bash
 gem5 -re --outdir=simpoint-checkpoint-m5out simpoint-checkpoint.py
@@ -784,7 +779,11 @@ With these parameters, we will have about 50 samples. Each sample has a gap $(k-
 ## 03-SMARTS
 
 This SMARTS exit generator only works with SwitchableProcessor.
-When it reaches to the start of the detailed warmup part, it resets the stats; then it switches the core type and schedule for the end of the warmup part and the end of the interval. When it reaches to the end of the detailed warmup part, it resets the stats. When it reaches to the end of the detailed simulation, it dumps the stats; then it switches the core type and schedule for the start of the next detailed warmup part.
+When it reaches the start of the detailed warmup part, it resets the stats; then it switches the core type and schedules for the end of the warmup part and the end of the interval.
+
+When it reaches the end of the detailed warmup part, it resets the stats.
+
+When it reaches the end of the detailed simulation, it dumps the stats; then it switches the core type and schedules for the start of the next detailed warmup part.
 
 ![](09-sampling-img/smarts-generator-model.drawio.svg)
 
