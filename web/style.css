@@ -49,9 +49,10 @@ body {
 }
 
 div.content {
+    position: relative;
     flex: 1;
     padding: 20px;
-    overflow-y: none;
+    overflow-y: hidden;
 }
 
 /* ------------------------------------------------------------------------- *
@@ -59,9 +60,8 @@ div.content {
  * ------------------------------------------------------------------------- */
 
 #home {
-    background-color: var(--body-color);
     position: absolute;
-    width: 70%;
+    max-width: 70%;
 }
 
 /* ------------------------------------------------------------------------- *
@@ -82,6 +82,13 @@ div.content {
     width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+#slideName {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
 }
 
 #slideButtons button {
