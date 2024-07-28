@@ -39,7 +39,7 @@ LocalInstTracker::LocalInstTracker(const LocalInstTrackerParams &p)
 {}
 
 void
-LocalInstTracker::regProbePoints()
+LocalInstTracker::regProbeListeners()
 {
     if (listening) {
         listeners.push_back(new LocalInstTrackerListener(this, "RetiredInsts",
