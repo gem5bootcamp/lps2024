@@ -1219,7 +1219,232 @@ InspectorGadget::InspectorGadget(const InspectorGadgetParams& params):
 ```
 
 ---
+<!-- _class: code-70-percent -->
+
+## SimObject::init
+
+Last step before compilation is to define `init` function. Since `InspectorGadget` is a `Responder` object, the convention is to let `peer` ports that they can ask for their address range when they know the ranges are known. `init` is a `virtual` and `public` function from `SimObject`. Let's go ahead and declare it to override it. To do it add the following declaration to the `public` scope of `InspectorGadget` in `src/bootcamp/inspector-gadget.hh`.
+
+```cpp
+virtual void init() override;
+```
+
+To define it, we need to simply call `sendRangeChange` from `cpuSidePort`. Add the following code under `namespace gem5` to define `init` in `src/bootcamp/inspector-gadget.cc`
+
+```cpp
+void
+InspectorGadget::init()
+{
+    cpuSidePort.sendRangeChange();
+}
+```
+
+---
+
+## Let's Compile
+
+We're ready to compile gem5. Let's do it and while we wait we will work on the configuration scripts. Run the following command in the base gem5 directory to rebuild gem5.
+
+```sh
+scons build/NULL/gem5.opt -j$(nproc)
+```
+
+---
 
 ## Let's Create a Configuration Script
 
 For this step we're going to borrow some of the material from [Running Things in gem5](/slides/02-Using-gem5/03-running-in-gem5.md). We are specifically going to copy the materials for using *TrafficGenerators*. We are going to further expand that material by extending the *ChanneledMemory* class to put an `InspectorGadget` right before the memory controller.
+
+Run the following commands in the base gem5 directory to create a directory for our configurations and copy the materials needed.
+
+```sh
+mkdir configs/bootcamp/inspector-gadget
+cp -r ../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/completed/step-2-hybrid-gen/components gem5/configs/bootcamp/inspector-gadget/
+cp ../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/completed/step-2-hybrid-gen/simple-traffic-generators.py configs/bootcamp/inspector-gadget/
+touch configs/bootcamp/inspector-gadget/components/inspected_memory.py
+```
+
+---
+
+## InspectedMemory
+
+We will need to do the following to extend `ChanneledMemory`.
+
+1- In `InspectedMemory.__init__`, we should create an object of `InspectorGadget` for every memory channel. Let's store all of them in `self.inspectors`. We need to remember to expose `inspection_buffer_entries` and `response_buffer_entries` from `InspectorGadget` to the user. Make sure to also expose the input arguments of `ChanneledMemory.__init__`.
+2- Override `incorporate_memory` from `ChanneledMemory` for first call `ChanneledMemory.incorporate_memory` and after that connect `mem_side_port` from one `InspectorGadget` object to `port` from one `MemCtrl` object.
+3- Override `get_mem_ports` from `ChanneledMemory` to replace `port` from `MemCtrl` objects with `cpu_side_port` from `InspectorGadget` objects.
+
+---
+<!-- _class: two-col code-50-percent -->
+### InspectedMemory: Code
+
+This is how the `configs/bootcamp/inspector-gadget/components/inspected_memory.py` should look.
+
+```python
+from typing import Optional, Sequence, Tuple, Union, Type
+
+from m5.objects import (
+    AddrRange,
+    DRAMInterface,
+    InspectorGadget,
+    Port,
+)
+
+from gem5.components.boards.abstract_board import AbstractBoard
+from gem5.components.memory.memory import ChanneledMemory
+from gem5.utils.override import overrides
+
+class InspectedMemory(ChanneledMemory):
+    def __init__(
+        self,
+        dram_interface_class: Type[DRAMInterface],
+        num_channels: Union[int, str],
+        interleaving_size: Union[int, str],
+        size: Optional[str] = None,
+        addr_mapping: Optional[str] = None,
+        inspection_buffer_entries: int = 16,
+        response_buffer_entries: int = 32,
+    ) -> None:
+```
+
+###
+
+```python
+
+        super().__init__(
+            dram_interface_class,
+            num_channels,
+            interleaving_size,
+            size=size,
+            addr_mapping=addr_mapping,
+        )
+        self.inspectors = [
+            InspectorGadget(
+                inspection_buffer_entries=inspection_buffer_entries,
+                response_buffer_entries=response_buffer_entries,
+            )
+            for _ in range(num_channels)
+        ]
+
+    @overrides(ChanneledMemory)
+    def incorporate_memory(self, board: AbstractBoard) -> None:
+        super().incorporate_memory(board)
+        for inspector, ctrl in zip(self.inspectors, self.mem_ctrl):
+            inspector.mem_side_port = ctrl.port
+
+    @overrides(ChanneledMemory)
+    def get_mem_ports(self) -> Sequence[Tuple[AddrRange, Port]]:
+        return [
+            (ctrl.dram.range, inspector.cpu_side_port)
+            for ctrl, inspector in zip(self.mem_ctrl, self.inspectors)
+        ]
+```
+
+---
+<!-- _class: code-60-percent -->
+
+## simple-traffic-generators.py
+
+Now, let's just simply add the following imports to `configs/bootcamp/inspector-gadget/simple-traffic-generators.py`
+
+```python
+from components.inspected_memory import InspectedMemory
+from m5.objects.DRAMInterface import DDR3_1600_8x8
+```
+
+Let's now create an object of `InspectedMemory` with the following parameters.
+
+```python
+memory = InspectedMemory(
+    dram_interface_class=DDR3_1600_8x8,
+    num_channels=2,
+    interleaving_size=128,
+    size="1GiB",
+)
+```
+
+Now, let's run the following command to simulate our configuration script.
+
+```sh
+./build/NULL/gem5.opt --debug-flags=InspectorGadget configs/bootcamp/inspector-gadget/first-inspector-gadget-example.py
+```
+
+---
+
+## Output: first-inspector-gadget-example.py
+
+Here is a recording of my terminal when running the command above.
+
+[![asciicast](https://asciinema.org/a/9j5QCBXn5098Oa63FpEmoYvLK.svg)](https://asciinema.org/a/9j5QCBXn5098Oa63FpEmoYvLK)
+
+---
+
+## Statistics
+
+In this step, we see how to add statistics to our `SimObjects` so that we can measure things with them. For now let's add statistics to measure the following.
+
+1- The sum of the queueing latency in `inspectionBuffer` experienced by each `Packet`. Let's use the name `totalInspectionBufferLatency` for this statistic.
+2- Total number of `requests` forwarded. Let'use the name `numRequestsFwded`.
+3- The sum of the queueing latency in `responseBuffer` experienced by each `Packet`. Let's use the name `totalResponseBufferLatency` for this statistic.
+4- Total number of `requests` forwarded. Let'use the name `numResponsesFwded`.
+
+---
+<!-- _class: code-50-percent -->
+
+## Statistics:: Header File
+
+gem5 has its own internal classes for measuring statistics (stats for short). Let's go ahead and include the header files for them in `src/bootcamp/inspector-gadget.hh`
+
+```cpp
+#include "base/statistics.hh"
+#include "base/stats/group.hh"
+```
+
+gem5 stats have multiple types, each useful for measuring specific types of data. We will look at using `statistics::Scalar` stats since all the things we want to measure are scalars.
+
+Let's go ahead a declare a new `struct` called `InspectorGadgetStats` inside the `private` scope of `InspectorGadget`. It will inherit from `statistics::Group`. Add the following lines to `src/bootcamp/inspector-gadget.hh` to do this.
+
+```cpp
+  private:
+    struct InspectorGadgetStats: public statistics::Group
+    {
+        statistics::Scalar totalInspectionBufferLatency;
+        statistics::Scalar numRequestsFwded;
+        statistics::Scalar totalResponseBufferLatency;
+        statistics::Scalar numResponsesFwded;
+
+        InspectorGadgetStats(InspectorGadget* inspector_gadget);
+    };
+```
+
+---
+<!-- _class: code-50-percent -->
+
+## Statistics: Source File
+
+Let's define the constructor of `InspectorGadgetStats`. Add the following code under `namespace gem5` to do this.
+
+```cpp
+
+InspectorGadget::InspectorGadgetStats::InspectorGadgetStats(InspectorGadget* inspector_gadget):
+    statistics::Group(inspector_gadget), inspectorGadget(inspector_gadget),
+    ADD_STAT(totalInspectionBufferLatency, statistics::units::Tick::get(), "Total inspection buffer latency."),
+    ADD_STAT(numRequestsFwded, statistics::units::Count::get(), "Number of requests forwarded."),
+    ADD_STAT(totalResponseBufferLatency, statistics::units::Tick::get(), "Total response buffer latency."),
+    ADD_STAT(numResponsesFwded, statistics::units::Count::get(), "Number of responses forwarded.")
+{}
+```
+
+Few things to note:
+
+1- `statistics::Group::Group` takes a pointer to an object of `statistics::Group` that will be its parent. Class `SimObject` inherits from `statistics::Group` so we can use a pointer to `InspectorGadget` as that input.
+2- The macro `ADD_STAT` registers and initializes our statistics that we have defined under the struct. The order of arguments are `name`, `unit`, `description`. To rid yourself of any headache, make sure the order of `ADD_STAT` macros match that of statistic declaration.
+
+
+---
+<!-- _class: start -->
+
+## End of Step 1
+
+---
+
