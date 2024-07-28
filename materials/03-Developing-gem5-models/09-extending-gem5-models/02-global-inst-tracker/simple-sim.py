@@ -97,7 +97,6 @@ board.set_se_binary_workload(
 def workbegin_handler():
     print("Reached workbegin")
     print("Dump and reset stats")
-    m5.stats.dump()
     m5.stats.reset()
     print("Start listening for instructions")
     for tracker in all_trackers:

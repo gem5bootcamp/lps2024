@@ -489,4 +489,265 @@ Since each ProbeListener can only attach to one SimObject, we can modify our Loc
 
 ## 02-global-inst-tracker
 
+All materials about this section can be found under `materials/03-Developing-gem5-models/09-extending-gem5-models/02-global-inst-tracker`.
+
+We can create a new SimObject to help us to keep track of all ProbeListeners.
+Let's start to modify the `inst_tracker.hh` by adding a new SimObject class called `GlobalInstTracker`.
+
+```cpp
+#include "params/GlobalInstTracker.hh"
+class GlobalInstTracker : public SimObject
+{
+  public:
+    GlobalInstTracker(const GlobalInstTrackerParams &params);
+}
+```
+
+---
+
+## 02-global-inst-tracker
+
+Since all the counting and threshold checking will be done by the `GlobalInstTracker`, let's move all the related variables and functions to the `GlobalInstTracker`.
+
+```cpp
+  private:
+  uint64_t instCount;
+  uint64_t instThreshold;
+
+public:
+  void changeThreshold(uint64_t newThreshold) {
+    instThreshold = newThreshold;
+  }
+  void resetCounter() {
+    instCount = 0;
+  }
+  uint64_t getThreshold() const {
+    return instThreshold;
+  }
+```
+
+---
+
+<!-- _class: code-70-percent -->
+
+## 02-global-inst-tracker
+
+So our `LocalInstTracker` now should only be like the following. Note that it has an pointer to a `GlobalInstTracker`. This is how we can notify the `GlobalInstTracker` from the `LocalInstTracker`.
+
+```cpp
+class LocalInstTracker : public ProbeListenerObject
+{
+  public:
+    LocalInstTracker(const LocalInstTrackerParams &params);
+    virtual void regProbeListeners();
+    void checkPc(const uint64_t& inst);
+  private:
+    typedef ProbeListenerArg<LocalInstTracker, uint64_t>
+      LocalInstTrackerListener;
+    bool listening;
+    GlobalInstTracker *globalInstTracker;
+
+  public:
+    void stopListening();
+    void startListening() {
+      listening = true;
+      regProbeListeners();
+    }
+};
+```
+
+---
+
+<!-- _class: code-70-percent -->
+
+## 02-global-inst-tracker
+
+Now, we need to decide how the `GlobalInstTracker` handles the notification from the `LocalInstTracker`.
+We want it to count the number of global committed instruction, check if it reaches the threshold, and raise an exit event if it does.
+Therefore, in `inst_tracker.hh`, let's add a `checkPc` function to the `GlobalInstTracker` too.
+
+```cpp
+void checkPc(const uint64_t& inst);
+```
+
+In `inst_tracker.cc`, let's define it as
+
+```cpp
+void
+GlobalInstTracker::checkPc(const uint64_t& inst)
+{
+    instCount ++;
+    if (instCount >= instThreshold) {
+        exitSimLoopNow("a thread reached the max instruction count");
+    }
+}
+```
+
+---
+
+## 02-global-inst-tracker
+
+Now, we need to modify the original `checkPc` function for the `LocalInstTracker` to notify the `GlobalInstTracker`
+
+```cpp
+void
+LocalInstTracker::checkPc(const uint64_t& inst)
+{
+    globalInstTracker->checkPc(inst);
+}
+```
+
+Don't forget to change the constructor of the `LocalInstTracker`
+
+```cpp
+LocalInstTracker::LocalInstTracker(const LocalInstTrackerParams &p)
+    : ProbeListenerObject(p),
+      globalInstTracker(p.global_inst_tracker),
+      listening(p.start_listening)
+{}
+```
+
+---
+
+## 02-global-inst-tracker
+
+We are almost done with c++ part. Let's don't forget about the `GlobalInstTracker`'s constructor in the `inst_tracker.cc`
+
+```cpp
+GlobalInstTracker::GlobalInstTracker(const GlobalInstTrackerParams &p)
+    : SimObject(p),
+      instCount(0),
+      instThreshold(p.inst_threshold)
+{}
+```
+
+After this, we need to modify the `InstTracker.py` for the new `GlobalInstTracker` and the modified `LocalInstTracker`
+
+---
+
+<!-- _class: two-col  -->
+
+```python
+from m5.objects import SimObject
+from m5.objects.Probe import ProbeListenerObject
+from m5.params import *
+from m5.util.pybind import *
+
+
+class GlobalInstTracker(SimObject):
+    type = "GlobalInstTracker"
+    cxx_header = "cpu/probes/inst_tracker.hh"
+    cxx_class = "gem5::GlobalInstTracker"
+
+    cxx_exports = [
+        PyBindMethod("changeThreshold"),
+        PyBindMethod("resetCounter"),
+        PyBindMethod("getThreshold")
+    ]
+
+    inst_threshold = Param.Counter("The instruction threshold to trigger an"
+                                                                " exit event")
+```
+
+###
+
+```python
+class LocalInstTracker(ProbeListenerObject):
+    type = "LocalInstTracker"
+    cxx_header = "cpu/probes/inst_tracker.hh"
+    cxx_class = "gem5::LocalInstTracker"
+
+    cxx_exports = [
+        PyBindMethod("stopListening"),
+        PyBindMethod("startListening")
+    ]
+
+    global_inst_tracker = Param.GlobalInstTracker("Global instruction tracker")
+    start_listening = Param.Counter(True, "Start listening for instructions")
+
+```
+
+---
+
+## 02-global-inst-tracker
+
+Finally, the [gem5/src/cpu/probes/SConscript](../../gem5/src/cpu/probes/SConscript)
+
+```python
+SimObject(
+    "InstTracker.py",
+    sim_objects=["GlobalInstTracker", "LocalInstTracker"],
+)
+Source("inst_tracker.cc")
+```
+
+Let's build gem5 with our new `GlobalInstTracker`!
+
+```bash
+cd gem5
+scons build/X86/gem5.fast -j$(nproc)
+```
+
+---
+
+## 02-global-inst-tracker
+
+There is a simple SE script in [materials/03-Developing-gem5-models/09-extending-gem5-models/02-global-inst-tracker/simple-sim.py](../../materials/03-Developing-gem5-models/09-extending-gem5-models/02-global-inst-tracker/simple-sim.py).
+
+We can test our `GlobalInstTracker` with it using the command
+
+```bash
+cd /workspaces/2024/materials/03-Developing-gem5-models/09-extending-gem5-models/02-global-inst-tracker
+/workspaces/2024/gem5/build/X86/gem5.fast -re --outdir=simple-sim-m5out simple-sim.py
+```
+
+This script runs the same workload we did in 01-local-inst-tracker, but with the `GlobalInstTracker` setup.
+
+---
+
+## 02-global-inst-tracker
+
+It creates a `GlobalInstTracker` and when each `LocalInstTracker` attaches to the core, it passes itself as a reference to the `global_inst_tracker` parameter
+
+```python
+from m5.objects import LocalInstTracker, GlobalInstTracker
+
+global_inst_tracker = GlobalInstTracker(
+    inst_threshold = 100000
+)
+all_trackers = []
+for core in processor.get_cores():
+    tracker = LocalInstTracker(
+        global_inst_tracker = global_inst_tracker,
+        start_listening = False,
+    )
+    core.core.probeListener = tracker
+    all_trackers.append(tracker)
+```
+
+---
+
+## 02-global-inst-tracker
+
+We start to listen when workbegin is raised, then exit the simulation after 100,000 instructions are committed accumulatively by all cores.
+Also, we reset the stats at workbegin, so we can verify if the `GlobalInstTracker` actually did its job.
+
+If the simulation finished, we can count the stats.
+There is a helper python file [materials/03-Developing-gem5-models/09-extending-gem5-models/02-global-inst-tracker/count_commited_inst.py](../../materials/03-Developing-gem5-models/09-extending-gem5-models/02-global-inst-tracker/count_commited_inst.py) for us to easily calculate the total committed instructions by all 8 cores.
+
+Let's run it with
+```python
+python3 count_commited_inst.py
+```
+We should see the following if the `GlobalInstTracker` works.
+
+```bash
+Total committed instructions: 100000
+```
+
+---
+
+## Summary
+
+The ProbePoint is a useful tool to profile or add helper features for our simulation without adding too much to the components' codebase.
 
