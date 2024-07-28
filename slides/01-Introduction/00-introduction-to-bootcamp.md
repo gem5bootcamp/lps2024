@@ -24,15 +24,21 @@ The source for the slides, and what you'll be using throughout the bootcamp can 
 
 ---
 
-## A bit about us
+<!-- _class: two-col -->
 
-We are the Davis Computer Architecture Research (DArchR) Group.
+## A bit about me
+
+I am **Prof. Jason Lowe-Power** (he/him).
+I am an associate professor in the Computer Science Department and
+the *Project Management Committee chair* for the gem5 project.
+
+I lead the Davis Computer Architecture Research (DArchR) Group.
+
+<https://arch.cs.ucdavis.edu>
 
 ![UC Davis logo width:500px](00-introduction-to-bootcamp-imgs/expanded_logo_gold-blue.png)
 
-![DArchR logo fit](00-introduction-to-bootcamp-imgs/darchr.png)
-
-<https://arch.cs.ucdavis.edu>
+![DArchR logo width:550px](00-introduction-to-bootcamp-imgs/darchr.png)
 
 ---
 
@@ -175,15 +181,13 @@ We are the Davis Computer Architecture Research (DArchR) Group.
 
 ### Day 5
 
-- Other simulators <!-- (Jason?) -->
+- Other simulators (subject to change) <!-- (Jason?) -->
   - [SST](../05-Other-simulators/01-sst.md)
   - [DRAMSim/DRAMSys](../05-Other-simulators/02-dram.md)
   - [SystemC](../05-Other-simulators/03-systemc.md)
 - Contributing to gem5 <!-- (Bobby) -->
   - [gem5 contributing process](../06-Contributing-to-gem5/01-contributing.md)
   - [gem5 testing](../06-Contributing-to-gem5/02-testing.md)
-- Other things to try to fit in
-  - KConfig
 
 ---
 
@@ -206,9 +210,9 @@ We are the Davis Computer Architecture Research (DArchR) Group.
 ## How this is going to work
 
 - We'll be going mostly top-down
-  - First: How to use gem5
-  - Second: How to each model can be used
-  - Third: How to develop your own models and modify existing models
+  1. How to use gem5
+  2. How to each model can be used
+  3. How to develop your own models and modify existing models
 - Highly iterative:
   - You'll see the same thing over and over
   - Each time it will be one level deeper
@@ -219,13 +223,15 @@ We are the Davis Computer Architecture Research (DArchR) Group.
 
 ## Coding examples
 
+You can write the following code
+
 ```python
 print("Hello, world!")
 print("You'll be seeing a lot of Python code")
 print("The slides will be a reference, but we'll be doing a lot of live coding!")
 ```
 
-<!-- Can we make this a asciinema? -->
+And you'll see this output.
 
 ```console
 Hello, world!
@@ -239,11 +245,17 @@ The slides will be a reference, but we'll be doing a lot of live coding!
 
 We'll be here from 9am - 4pm each day.
 
-Lunch will be ~12-1pm.
+Lunch will be ~12 - 1pm.
 
 We'll have a breaks in the morning and afternoon.
 
-Afternoons will have coffee/snacks.
+Afternoon break will have coffee/snacks.
+
+Tonight: Reception at [Dunloe Brewing](https://dunloebrewing.com/) (Olive Drive Brewery)
+5:30pm - 8:00pm. Walking over at 5pm from here.
+
+Wednesday: Social event at UC Davis ["Games Area"](https://memorialunion.ucdavis.edu/games-area) (Bowling, pool, video games, etc.)
+6:30pm - 9:30pm.
 
 ---
 
