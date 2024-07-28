@@ -749,19 +749,29 @@ Re-run the simple pthread test and lets look at some stats!
 ```sh
 build/ALL_MyMSI/gem5.opt configs/learning_gem5/part3/simple_ruby.py
 ```
-- How many forwarded messages did the L1 caches receive?
-`grep -i fwd m5out/stats.txt`
 
+- How many forwarded messages did the L1 caches receive?
+- How many times times did a cache have to upgrade from S -> M?
+- What was the average miss latency for the L1?
+- What was the average miss latency *when another cache had the data*?
+
+---
+
+## Answers
+
+- How many forwarded messages did the L1 caches receive? `grep -i fwd m5out/stats.txt`
   - (`...FwdGetM` + `...FwdGetS`) =  (16+13) = 29
 - How many times times did a cache have to upgrade from S -> M?
-`grep -i system.caches.L1Cache_Controller.SM_AD.DataDirNoAcks::total m5out/stats.txt`          565
+`grep L1Cache_Controller.SM_AD.DataDirNoAcks::total m5out/stats.txt`
+565
 - What was the average miss latency for the L1?
-`grep -i system.caches.MachineType.L1Cache.miss_mach_latency_hist_seqr::mean  m5out/stats.txt` 19.448276
+`grep MachineType.L1Cache.miss_mach_latency_hist_seqr::mean  m5out/stats.txt`
+19.448276
 - What was the average miss latency *when another cache had the data*?
-`grep -i system.caches.RequestTypeMachineType.ST.L1Cache.miss_type_mach_latency_hist_seqr::mean m5out/stats.txt`(18)
-`grep -i system.caches.RequestTypeMachineType.LD.L1Cache.miss_type_mach_latency_hist_seqr::mean`
--multiply by sample size (...::sample) and then add together
-
+`grep RequestTypeMachineType.ST.L1Cache.miss_type_mach_latency_hist_seqr::mean m5out/stats.txt`
+18
+`grep RequestTypeMachineType.LD.L1Cache.miss_type_mach_latency_hist_seqr::mean`
+- multiply by sample size (...::sample) and then add together
 
 ---
 
