@@ -51,11 +51,15 @@ We can do it with the following command:
 gem5 -re --debug-flags=SyscallAll 00-SE-hello-world.py
 ```
 
+> `-re` is an alias for `--stdout-file` and `--stderr-file` to redirect the output to a file.
+> The default output is in `m5out/simout.txt` and m5out/simerr.txt`.
+
 ---
 
 ## 00-SE-hello-world
 
 Then in the [simout.txt](../../materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world/m5out/simout.txt), we should see:
+
 ```bash
 280945000: board.processor.cores.core: T0 : syscall Calling write(1, 21152, 14)...
 Hello, World!
@@ -64,6 +68,8 @@ Hello, World!
 
 On the left, it is the timestamp for the simulation.
 As the timestamp suggests, **SE simulation DOES NOT record the time for the syscall**.
+
+> Note that in the `simout.txt` file the standard out from the *simulator* and the *guest* are mixed together.
 
 ---
 
@@ -90,7 +96,7 @@ As the timestamp suggests, **SE simulation DOES NOT record the time for the sysc
 ## IMPORTANT
 
 - **_Not all of the ops do what they say automatically_**
-- Most of these just only exit the simulation
+- Most of these only exit the simulation
 - For example:
   - exit: Actually exits
   - workbegin: Only exits, if configured in `System`
@@ -108,9 +114,9 @@ As the timestamp suggests, **SE simulation DOES NOT record the time for the sysc
 
 There are three versions of m5ops:
 
-1. Instruction mode: it only works with native CPU models
-2. Address mode: it works with native CPU models and KVM CPU (only supports Arm and X86)
-3. Semihosting: it works with native CPU models and Fast Model
+1. Instruction mode: it only works with simulated CPU models
+2. Address mode: it works with simulated CPU models and KVM CPU (only supports Arm and X86)
+3. Semihosting: it works with simulated CPU models and Fast Model
 
 Different modes should be used depending on the CPU type and ISA.
 
@@ -157,8 +163,6 @@ In order to build the m5ops library,
 2. run ```scons [{TARGET_ISA}.CROSS_COMPILE={TARGET_ISA CROSS COMPILER}] build/{TARGET_ISA}/out/m5​```
 3. the compiled library (`m5` is for command line utility, and `libm5.a` is a C library) will be at ```gem5/util/m5/build/{TARGET_ISA}/out```
 
-
-
 ### Notes
 
 - If the host system ISA does not match with the target ISA, then we will need to use the cross-compiler
@@ -177,6 +181,9 @@ cd /workspaces/2024/gem5/util/m5
 scons build/x86/out/m5
 scons arm64.CROSS_COMPILE=aarch64-linux-gnu- build/arm64/out/m5
 ```
+
+> Note: while building these uses scons, it's a different environment from building gem5 with different targets and options.
+> Don't expect things to be similar (e.g., use `arm64` instead of `ARM`).
 
 ---
 
@@ -259,6 +266,7 @@ std::cout<<std::endl;
 ## 02-annotate-this
 
 For step 4, we can modifiy the [Makefile](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/Makefile) to have it run
+
 ```Makefile
 $(GXX) -o 02-annotate-this 02-annotate-this.cpp \
   -I$(GEM5_PATH)/include \
@@ -266,7 +274,7 @@ $(GXX) -o 02-annotate-this 02-annotate-this.cpp \
   -lm5
 ```
 
-If you are having any troubles, the completed version of everything is under ```materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/complete```.
+If you are having any troubles, the completed version of everything is under `materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/complete`.
 
 ---
 
@@ -416,7 +424,7 @@ def set_se_binary_workload(
 ) -> None:
 ```
 
-For more information, we can look at [src/python/gem5/components/boards/se_binary_workload.p](https://github.com/gem5/gem5/blob/stable/src/python/gem5/components/boards/se_binary_workload.py#L71).
+For more information, we can look at [src/python/gem5/components/boards/se_binary_workload.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/components/boards/se_binary_workload.py#L71).
 
 ---
 
