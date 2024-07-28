@@ -533,43 +533,25 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
   - You may have a multithreaded execution, but there's no context switches & no spin locks​
 
 ---
-
 <!-- _class: start -->
+
 ## Traffic Generator in gem5
 
-<!-- ---
-<!-- _class: center-image -->
-
-## Testing Memory Performance
-As discussed in previous slides, SE Mode only uses the CPU and a memory system. Therefore, in order to find the performance of our memory, we want to use testing mechanisms.
-
-
-There are several types ways we can do this, such as:
-
--
--
--
-
-Today, we will be discussing **traffic generators** because -
-
- -->
-
 ---
 <!-- _class: center-image -->
 
-## Traffic Generator
+## Synthetic Traffic Generation
 
-A **traffic generator** generates synthetic memory traffic in order to test memory for performance. Examples includes creating a sequence of reads and write to/from memory. It can be either hardware or software.
+Synthetic traffic generation is a technique for driven memory subsystems without requiring the simulation of processor models and running workload programs. We have to note the following about synthetic traffic generation.
 
-![Traffic generator center](03-running-in-gem5-imgs/t_gen_diagram.svg)
+- It can be used for the following: measuring maximum theoretical bandwidth, testing correctness of cache coherency protocol
+- It can not be used for: measuring the execution time of workload (even if you have their memory trace)
 
-Some inputs for a traffic generator include:
-- range of memory addresses (min and maximum)
-- step size (or block size) to partition the range of memory addresses
-- duration that requests should be sent to memory.
+Synthetic traffic could follow a certain pattern like `sequential (linear)`, `strided`, and `random`. In this section we will look at tools in gem5 that facilitate synthetic traffic generation.
+
+![Traffic generator center](03-running-in-gem5-imgs/t_gen_diagram.drawio.svg)
 
 ---
-<!-- locked by Mahyar -->
 
 ## gem5: stdlib Components for Synthetic Traffic Generation
 
@@ -664,13 +646,11 @@ class RandomGenerator(AbstractGenerator):
 
 ###
 
-
 ![linear traffic pattern](03-running-in-gem5-imgs/linear_traffic_pattern.drawio.svg)
 
 ![random traffic pattern](03-running-in-gem5-imgs/random_traffic_pattern.drawio.svg)
 
-
------
+----
 
 ## Hands-on Time!
 
@@ -682,13 +662,14 @@ Open the following file.
 [materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py](../../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/simple-traffic-generators.py)
 
 Steps:
+
 1. Run with a Linear Traffic Generator.
 2. Run with a Hybrid Traffic Generator.
 
 ---
 <!-- _class: two-col -->
 
-## 06-traffic-gen: Linear Traffic Generator: Looking at the Code
+## 06-traffic-gen: LinearGenerator: Looking at the Code
 
 
 Go to this section of the code on the right.
@@ -699,9 +680,7 @@ Add a traffic generator right below
 `memory = SingleChannelDDR3_1600()` with the following lines.
 
 ```python
-generator = LinearGenerator(
-    num_cores=1
-)
+generator = LinearGenerator(num_cores=1, rate="1GB/s")
 ```
 
 ###
@@ -722,7 +701,7 @@ motherboard = TestBoard(
 ---
 <!-- _class: two-col code-70-percent -->
 
-## 06-traffic-gen: Linear Traffic Generator: Completed Code
+## 06-traffic-gen: LinearGenerator: Completed Code
 
 The completed code snippet should look like this.
 
@@ -731,9 +710,7 @@ cache_hierarchy = MyPrivateL1SharedL2CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 
-generator = LinearGenerator(
-    num_cores=1
-)
+generator = LinearGenerator(num_cores=1, rate="1GB/s")
 
 motherboard = TestBoard(
     clk_freq="3GHz",
@@ -746,14 +723,14 @@ motherboard = TestBoard(
 ---
 <!-- _class: code-100-percent -->
 
-## 06-traffic-gen: Linear Traffic Generator: Running the Code
+## 06-traffic-gen: LinearGenerator: Running the Code
 
 ### Run the following commands to see a Linear Traffic Generator in action
 
 ```sh
 cd ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/
 
-gem5 --debug-flags=TrafficGen --debug-end=30000 \
+gem5 --debug-flags=TrafficGen --debug-end=1000000 \
 simple-traffic-generators.py
 ```
 
@@ -761,18 +738,18 @@ We will see some of the expected output in the following slide.
 
 ---
 
-## 06-traffic-gen: Linear Traffic Generator Results
+## 06-traffic-gen: LinearGenerator Results
 
 ```sh
-    596: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 0, size 64
-    596: system.processor.cores.generator: Next event scheduled at 1192
-   1192: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 40, size 64
-   1192: system.processor.cores.generator: Next event scheduled at 1788
-   1788: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 80, size 64
-   1788: system.processor.cores.generator: Next event scheduled at 2384
-   ```
+  59605: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 0, size 64
+  59605: system.processor.cores.generator: Next event scheduled at 119210
+ 119210: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 40, size 64
+ 119210: system.processor.cores.generator: Next event scheduled at 178815
+ 178815: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 80, size 64
+ 178815: system.processor.cores.generator: Next event scheduled at 238420
+```
 
-Throughout this output, we see `r to addr --`. This means that the traffic generator is simulating a request to access memory address 0x--.
+Throughout this output, we see `r to addr --`. This means that the traffic generator is simulating a **read** request to access memory address `0x--`.
 
 <!-- Is the sentence above accurate? -->
 
@@ -783,9 +760,24 @@ This is because the Linear Traffic Generator  is simulating requests to access m
 As you can see, the simulated requests are very linear. Each new memory access is 0x0040 bytes above the previous one.
 
 ---
+
+## 06-traffic-gen: Random
+
+We are not going to do this right now, but if you swapped `LinearGenerator` with `RandomGenerator` and kept the parameters the same, the output is going to look like below. Notice how the pattern of addresses is not a linear sequence anymore.
+
+```sh
+  59605: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 2000, size 64
+  59605: system.processor.cores.generator: Next event scheduled at 119210
+ 119210: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 7900, size 64
+ 119210: system.processor.cores.generator: Next event scheduled at 178815
+ 178815: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 33c0, size 64
+ 178815: system.processor.cores.generator: Next event scheduled at 238420
+```
+
+---
 <!-- _class: center-image -->
 
-## Our Focus: `LinearGenerator` and `AbstractGenerator`
+## Our Focus: LinearGenerator and AbstractGenerator
 
 - We will be focusing on `LinearGenerator` and `RandomGenerator` generators (and a new one later!).
   - They are essentially the same, but one performs linear memory accesses and one performs random memory accesses
@@ -793,18 +785,14 @@ As you can see, the simulated requests are very linear. Each new memory access i
 ![Different Generators](03-running-in-gem5-imgs/generator_inheritance.drawio.svg)
 
 ---
-<!-- _class: two-col -->
 
-### Detailed Look on Some Components
+## Detailed Look on Some Components
 
 - Looking at `AbstractGenerator.__init__`, you'll see that this class takes a list of `AbstractGeneratorCore` as the input. Example classes that inherit from `AbstractGenerator` are `LinearGenerator` and `RandomGenerator`.
 - We will look at classes that extend `AbstractGeneratorCore` that will will create **synthetic traffic** by using a `SimObject` called `PyTrafficGen`, for more information you can look at `src/cpu/testers/traffic_gen`.
-- Each `GeneratorCore` (as specified in the generator core) will have a constructor that will define the parameters will have its own implementation of `_create_traffic`.
-- Let's take a look at the constructor and `_create_traffic` for an example generator.
+- `LinearGenerator` can have multiple `LinearGeneratorCores` and `RandomGenerator` can have multiple `RandomGeneratorCores`.
 
-###
-
-<!-- some code -->
+Next we will look at extending `AbstractGenerator` to create `HybridGenerator` that has both `LinearGeneratorCores` and `RandomGeneratorCores`.
 
 ---
 ## Extending AbstractGenerator

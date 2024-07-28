@@ -36,16 +36,14 @@ from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
 
 # Run with the following command
-    # cd ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/completed/step-1-linear-gen
-    # gem5 --debug-flags=TrafficGen --debug-end=1000000 simple-traffic-generators.py
+# cd ./materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/completed/step-1-linear-gen
+# gem5 --debug-flags=TrafficGen --debug-end=1000000 simple-traffic-generators.py
 
 cache_hierarchy = MyPrivateL1SharedL2CacheHierarchy()
 
 memory = SingleChannelDDR3_1600()
 
-generator = LinearGenerator(
-    num_cores=1
-)
+generator = LinearGenerator(num_cores=1, rate="1GB/s")
 
 motherboard = TestBoard(
     clk_freq="3GHz",
