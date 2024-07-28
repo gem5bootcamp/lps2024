@@ -96,8 +96,9 @@ footer img {
 /* For the page number */
 section::after {
     right: -50px;
-    bottom: -50px;
+    bottom: -55px;
     font-size: 80%;
+    color: var(--gem5-light);
 }
 
 a {
@@ -217,6 +218,7 @@ section.start h2 {
     -webkit-text-fill-color: transparent;
 }
 
+/* Remove the triangle */
 section.start h2::before {
     border: none;
 }
@@ -303,13 +305,15 @@ pre {
 code {
     font-family: "Roboto Mono", monospace;
     background-color: #ffffff;
-}
-
-/* Avoids setting font-size for <code> in headers */
-:not(h1, h2, h3, h4) code {
     font-size: var(--code-font-size);
 }
 
+/* Forces inherited height for code in headers */
+:is(h1, h2, h3, h4, h5, h6) code {
+    font-size: inherit !important;
+}
+
+/* Targets only inline code */
 :not(pre) > code {
     font-size: calc(var(--code-font-size) * 0.9);
     padding: 2px 6px;
@@ -317,8 +321,9 @@ code {
     border-radius: 5px;
 }
 
+/* Targets hyperlinks that contain code */
 a:has(code) {
-    /* Removes underlines from hyperlinks in code */
+    /* Removes underlines */
     text-decoration: none;
 }
 

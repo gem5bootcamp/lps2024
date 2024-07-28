@@ -29,6 +29,8 @@ author: Jason Lowe-Power
 
 ---
 
+<!-- _class: center-image -->
+
 ## M5 at ISCA 2005
 
 ![M5 slide from ISCA tutorial height:500px](./01-simulation-background-imgs/m5-isca-2005.png)
@@ -40,6 +42,8 @@ author: Jason Lowe-Power
 ![Logos for M5 and GEMS](./01-simulation-background-imgs/m5-gems.drawio.svg)
 
 ---
+
+<!-- _class: center-image -->
 
 ## GEMS at ISCA 2005
 
@@ -412,7 +416,7 @@ At each timestep, gem5:
 2. The event is executed
 3. New events are scheduled
 
-> ### All SimObjects can enqueue events onto the event queue
+> **All SimObjects can enqueue events onto the event queue**
 
 ![Example of discrete event simulation bg right:55% fit](./01-simulation-background-imgs/des-3.drawio.svg)
 
@@ -456,6 +460,8 @@ Usually this is 1 ps per tick or $10^{12}$ ticks per second
 
 ---
 
+<!-- _class: center-image -->
+
 ## gem5's main abstractions: Memory
 
 ### Memory requests
@@ -468,6 +474,8 @@ Usually this is 1 ps per tick or $10^{12}$ ticks per second
 ![CPU talking to caches with ports](./01-simulation-background-imgs/abstractions-1.drawio.svg)
 
 ---
+
+<!-- _class: center-image -->
 
 ## gem5's main abstractions: CPU
 

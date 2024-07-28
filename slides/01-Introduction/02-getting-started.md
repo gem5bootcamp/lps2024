@@ -35,8 +35,8 @@ I.e., `apt install gem5` will not work.
 The main way gem5 is distributed is as source code that you have to build.
 
 ```sh
-> git clone https://github.com/gem5/gem5
-> cd gem5
+git clone https://github.com/gem5/gem5
+cd gem5
 ```
 
 > There are two main branches in the gem5 repository:
@@ -74,7 +74,7 @@ See [CONTRIBUTING.md](../../gem5/CONTRIBUTING.md#Releases) for more information.
   - Note: That's also where the source for these slides are
   - You will be doing all of your development in the repo found at <https://github.com/gem5bootcamp/2024>.
 
-These slides and are available at <https://gem5bootcamp.gem5.org/> for you to follow along.
+These slides and are available at <https://bootcamp.gem5.org/> for you to follow along.
 (Note: They will be archived at <https://gem5bootcamp.github.io/2024>)
 
 > **Step 1:** Go to the classroom <https://classroom.github.com/a/gCcXlgBs>
@@ -134,7 +134,7 @@ We use numbering to keep them in order.
 > Don't do this right now!
 
 ```sh
-> scons build/ALL/gem5.opt
+scons build/ALL/gem5.opt
 ```
 
 - This takes a while (10-15 minutes with 16 cores, ~1hr on 1 core).
@@ -144,6 +144,7 @@ We use numbering to keep them in order.
 <script src="https://asciinema.org/a/6rAd24brgGqb3Sj8Kmvy1msaG.js" id="asciicast-6rAd24brgGqb3Sj8Kmvy1msaG" async="true"></script>
 
 ---
+<!-- _class: center-image -->
 
 ## Time for a live coding example
 
@@ -207,9 +208,11 @@ See the [gem5 resource page](https://resources.gem5.org/resources/x86-ubuntu-24.
 
 ---
 
+<!-- _class: center-image -->
+
 ## gem5 resources web portal
 
-[Link](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-no-systemd?version=1.0.0)
+### [Link](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-no-systemd?version=1.0.0)
 
 ![Screenshot of gem5 resources webpage](02-getting-started-imgs/resources-screenshot.drawio.png)
 
@@ -241,7 +244,7 @@ sim.run(20_000_000_000) # 20 billion ticks or 20 ms
 To run it:
 
 ```sh
-> gem5 basic.py
+gem5 basic.py
 ```
 
 ---

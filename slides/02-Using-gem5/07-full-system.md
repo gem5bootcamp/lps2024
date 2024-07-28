@@ -200,6 +200,8 @@ Let's go over the packer file.
 
 ---
 
+<!-- _class: no-logo -->
+
 ## Let's use the base ubuntu image to create a diskimage with the gapbs benchmark
 
 Update the [x86-ubuntu.pkr.hcl](../../materials/02-Using-gem5/07-full-system/x86-ubuntu-gapbs/x86-ubuntu.pkr.hcl) file.
@@ -219,6 +221,8 @@ The general structure of the packer file would be the same but with a few key ch
     ```
 
 ---
+
+<!-- _class: code-80-percent  -->
 
 `iso_checksum` is the `sha256sum` of the iso file that we are using. To get the `sha256sum` run the following in the linux terminal.
 
@@ -257,7 +261,7 @@ make
 Let's run the packer script and use this diskimage in gem5!
 
 ```bash
-cd materials/02-Using-gem5/07-full-system
+cd /workspaces/2024/materials/02-Using-gem5/07-full-system
 x86-ubuntu-gapbs/build.sh
 ```
 ---
@@ -289,7 +293,6 @@ def exit_event_handler():
     print("second exit event: In after boot")
     yield False
     print("third exit event: After run script")
-    yield False
     yield False
 ```
 

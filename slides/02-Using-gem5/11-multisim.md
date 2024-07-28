@@ -38,7 +38,7 @@ _If not a singular gem5 process utilizing multiple threads, why not multiple gem
 
 ## People already do this... kind of...
 
-Go to the [02-Using-gem5/11-multisim/01-multiprocessing-via-script](/materials/02-Using-gem5/11-multisim/01-multiprocessing-via-script/) directory to see a completed example of how **NOT** to run multiple gem5 processes.
+Go to the [`materials/02-Using-gem5/11-multisim/01-multiprocessing-via-script`](../../materials/02-Using-gem5/11-multisim/01-multiprocessing-via-script/) directory to see a completed example of how **NOT** to run multiple gem5 processes.
 
 This is typical but not recommended
 
@@ -90,7 +90,7 @@ However, this short tutorial should give you a good idea of how to use it going 
 
 ## Let's go through an example
 
-Start by opening [materials/02-Using-gem5/11-multisim/02-multiprocessing-via-multisim/multisim-experiment.py](/materials/02-Using-gem5/11-multisim/02-multiprocessing-via-multisim/multisim-experiment.py).
+Start by opening [`materials/02-Using-gem5/11-multisim/02-multiprocessing-via-multisim/multisim-experiment.py`](../../materials/02-Using-gem5/11-multisim/02-multiprocessing-via-multisim/multisim-experiment.py).
 
 This configuration script is almost identical to the script in the previous example but with the argparse code removed and the multisim import added:
 
@@ -118,7 +118,7 @@ for data_cache_size in ["8kB","16kB"]:
         )
 ```
 
-Replace the cache hierarchy in [multisim-experiment.py](/materials/02-Using-gem5/11-multisim/02-multiprocessing-via-multisim/multisim-experiment.py) with this  and indent the code after the cache hierarchy so all of it is within the inner for loop (`for instruction_cache_size ...`).
+Replace the cache hierarchy in [`multisim-experiment.py`](../../materials/02-Using-gem5/11-multisim/02-multiprocessing-via-multisim/multisim-experiment.py) with this  and indent the code after the cache hierarchy so all of it is within the inner for loop (`for instruction_cache_size ...`).
 
 ---
 
@@ -144,7 +144,7 @@ The `id` parameter is used to identify the simulation. Setting this is strongly 
 
 ## Execute multiple simulations
 
-A completed example can be found at [/materials/02-Using-gem5/11-multisim/completed/02-multiprocessing-via-multisim/multisim-experiment.py](/materials/02-Using-gem5/11-multisim/completed/02-multiprocessing-via-multisim/multisim-experiment.py).
+A completed example can be found at [`materials/02-Using-gem5/11-multisim/completed/02-multiprocessing-via-multisim/multisim-experiment.py`](../../materials/02-Using-gem5/11-multisim/completed/02-multiprocessing-via-multisim/multisim-experiment.py).
 
 ```shell
 cd /workspaces/2024/materials/02-Using-gem5/11-multisim/completed/02-multiprocessing-via-multisim

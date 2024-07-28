@@ -9,7 +9,7 @@ title: Modeling Memory in gem5
 
 ## Modeling Memory in gem5
 
-DRAM and other memory devices, too!
+DRAM and other memory devices!
 
 ---
 
@@ -150,7 +150,7 @@ def SingleChannelDDR4_2400(
     return ChanneledMemory(DDR4_2400_8x8, 1, 64, size=size)
 ```
 
-- We see the DRAMInterface=DDR4_2400_8x8, the number of channels=1, interleaving_size=64, and the size.
+- We see the `DRAMInterface=DDR4_2400_8x8`, the number of channels=1, interleaving_size=64, and the size.
 
 ---
 
@@ -196,21 +196,18 @@ Somewhat surprising, the memory modeled has enough banks to handle random traffi
 
 - Open [`materials/02-Using-gem5/06-memory/lpddr2.py`](../../materials/02-Using-gem5/06-memory/lpddr2.py)
 - If we wanted to add LPDDR2 as a new memory in the standard library, we first make sure there's a DRAM interface for it in the [`dram_interfaces` directory](../../gem5/src/python/gem5/components/memory/dram_interfaces/lpddr2.py)
-- then we need to make sure we import it by adding
-
+- Then we need to make sure we import it by adding the following to the top of your `lpddr2.py`:
 ```python
 from gem5.components.memory.abstract_memory_system import AbstractMemorySystem
 from gem5.components.memory.dram_interfaces.lpddr2 import LPDDR2_S4_1066_1x32
 from gem5.components.memory.memory import ChanneledMemory
 ```
 
-to the top of your `lpddr2.py`
-
 ---
 
 ## Adding a new channeled memory
 
-Then add the following to the body of `lpddr2.py`
+Then add the following to the body of `lpddr2.py`:
 
 ```python
 def SingleChannelLPDDR2(
@@ -219,7 +216,7 @@ def SingleChannelLPDDR2(
     return ChanneledMemory(LPDDR2_S4_1066_1x32, 1, 64, size=size)
 ```
 
-then we import this new class to our script with
+Then we import this new class to our script with:
 
 ```python
 from lpddr2 import SingleChannelLPDDR2
@@ -246,7 +243,7 @@ LPDDR2 doesn't perform as well as DDR4.
 
 - SimObject monitoring communication happening between two ports
 - Does not have any effect on timing
-- `gem5/src/mem/CommMonitor.py`
+- [`gem5/src/mem/CommMonitor.py`](../../gem5/src/mem/CommMonitor.py)
 
 ---
 
@@ -286,17 +283,19 @@ gem5 comm_monitor.py
 
 ## CommMonitor
 
-- Remove the line ```system.l1cache.mem_side = system.membus.cpu_side_ports```
-- Add the following block under the comment ``` # Insert CommMonitor here```
+- Remove the line:
+```python
+system.l1cache.mem_side = system.membus.cpu_side_ports
+```
 
+- Add the following block under the comment `# Insert CommMonitor here`:
 ```python
 system.comm_monitor = CommMonitor()
 system.comm_monitor.cpu_side_port = system.l1cache.mem_side
 system.comm_monitor.mem_side_port = system.membus.cpu_side_ports
 ```
 
-Run
-
+- Run:
 ```sh
 gem5 comm_monitor.py
 ```
