@@ -38,13 +38,7 @@ We are the Davis Computer Architecture Research (DArchR) Group.
 
 ## The bootcamp team
 
-The bootcamp is a team effort!
-
-### gem5 developers
-
-### Grad students
-
-### Undergrads
+![Bobby Bruce, Ivana Mitrovic, Harshil Patel, and Erin Le width:1200px](00-introduction-to-bootcamp-imgs/devs.drawio.svg)
 
 ---
 
@@ -238,6 +232,18 @@ Hello, world!
 You'll be seeing a lot of Python code
 The slides will be a reference, but we'll be doing a lot of live coding!
 ```
+
+---
+
+## Bootcamp logistics
+
+We'll be here from 9am - 4pm each day.
+
+Lunch will be ~12-1pm.
+
+We'll have a breaks in the morning and afternoon.
+
+Afternoons will have coffee/snacks.
 
 ---
 
