@@ -859,4 +859,36 @@ InspectorGadget::recvTimingReq(PacketPtr pkt)
 
 ---
 
-##
+## We're Not Done Yet!
+
+So far, we have managed to program the movement of `Packets` from `cpuSidePort` into `inspectionBuffer`. Now what we need to do is send the `Packets` that are inside `inspectionBuffer` to `memSidePort`.
+
+One would ask, why not `memSidePort.sendTimingReq` inside `InspectorGadget::recvTimingReq`? The answer is because we want to impose a latency on the movement of the `Packet` through `inspectionBuffer`. Think about how the real hardware would work. If the `Packet` is available on `cpuSidePort` on the rising edge of the clock, it would go inside `inspectionBuffer` by the falling edge of the clock, i.e. time will pass. Now, assuming that `Packet` is at the front of `inspectionBuffer`, it will be available on the rising edge of the next clock cycle. If you remember, we use `events` to make things happen in the future, by defining callback functions.
+
+Now, let's go ahead and declare a `EventFunctionWrapper` for picking the `Packet` at the front of `inspectionBuffer` and sending it through `memSidePort`.
+
+---
+
+## nextReqSendEvent
+
+We're going to declare `EventFunctionWrapper nextReqSendEvent` to send `Packets` through `memSidePort`. Remember what we need to do?
+
+Add the following include statement to include the appropriate header file for class `EventFunctionWrapper`.
+
+```cpp
+#include "sim/eventq.hh"
+```
+
+If you remember from [Event Driven Simulation](/slides/03-Developing-gem5-models/03-event-driven-sim.md), we also need to declare a `std::function<void>()` to pass as the callback function for `nextReqSendEvent`. I would like to name these functions with `process` prefixing the name of the `event`. Let's go ahead and declare `nextReqSendEvent` as well as its callback function in the `private` scope of `InspectorGadget`. Do it by adding the following lines to `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+
+```cpp
+  private:
+    EventFunctionWrapper nextReqSendEvent;
+    void processNextReqSendEvent();
+```
+
+---
+
+## Managing the Schedule of nextReqSendEvent
+
+Now, that we have declared
