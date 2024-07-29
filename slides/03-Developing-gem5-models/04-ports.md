@@ -1258,10 +1258,7 @@ For this step we're going to borrow some of the material from [Running Things in
 Run the following commands in the base gem5 directory to create a directory for our configurations and copy the materials needed.
 
 ```sh
-mkdir configs/bootcamp/inspector-gadget
-cp -r ../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/completed/step-2-hybrid-gen/components gem5/configs/bootcamp/inspector-gadget/
-cp ../materials/02-Using-gem5/03-running-in-gem5/06-traffic-gen/completed/step-2-hybrid-gen/simple-traffic-generators.py configs/bootcamp/inspector-gadget/
-touch configs/bootcamp/inspector-gadget/components/inspected_memory.py
+cp -r ../materials/03-Developing-gem5-models/04-ports/step-1/configs/ configs
 ```
 
 ---
@@ -1402,7 +1399,7 @@ gem5 has its own internal classes for measuring statistics (stats for short). Le
 
 gem5 stats have multiple types, each useful for measuring specific types of data. We will look at using `statistics::Scalar` stats since all the things we want to measure are scalars.
 
-Let's go ahead a declare a new `struct` called `InspectorGadgetStats` inside the `private` scope of `InspectorGadget`. It will inherit from `statistics::Group`. Add the following lines to `src/bootcamp/inspector-gadget.hh` to do this.
+Let's go ahead a declare a new `struct` called `InspectorGadgetStats` inside the `private` scope of `InspectorGadget` and also declare an instance of it. It will inherit from `statistics::Group`. Add the following lines to `src/bootcamp/inspector-gadget.hh` to do this.
 
 ```cpp
   private:
@@ -1412,9 +1409,9 @@ Let's go ahead a declare a new `struct` called `InspectorGadgetStats` inside the
         statistics::Scalar numRequestsFwded;
         statistics::Scalar totalResponseBufferLatency;
         statistics::Scalar numResponsesFwded;
-
         InspectorGadgetStats(InspectorGadget* inspector_gadget);
     };
+    InspectorGadgetStats stats;
 ```
 
 ---
@@ -1427,7 +1424,7 @@ Let's define the constructor of `InspectorGadgetStats`. Add the following code u
 ```cpp
 
 InspectorGadget::InspectorGadgetStats::InspectorGadgetStats(InspectorGadget* inspector_gadget):
-    statistics::Group(inspector_gadget), inspectorGadget(inspector_gadget),
+    statistics::Group(inspector_gadget),
     ADD_STAT(totalInspectionBufferLatency, statistics::units::Tick::get(), "Total inspection buffer latency."),
     ADD_STAT(numRequestsFwded, statistics::units::Count::get(), "Number of requests forwarded."),
     ADD_STAT(totalResponseBufferLatency, statistics::units::Tick::get(), "Total response buffer latency."),
@@ -1437,9 +1434,86 @@ InspectorGadget::InspectorGadgetStats::InspectorGadgetStats(InspectorGadget* ins
 
 Few things to note:
 
-1- `statistics::Group::Group` takes a pointer to an object of `statistics::Group` that will be its parent. Class `SimObject` inherits from `statistics::Group` so we can use a pointer to `InspectorGadget` as that input.
-2- The macro `ADD_STAT` registers and initializes our statistics that we have defined under the struct. The order of arguments are `name`, `unit`, `description`. To rid yourself of any headache, make sure the order of `ADD_STAT` macros match that of statistic declaration.
+1- Initialize our stat object by adding `stats(this)` to the initialization list in the constructor `InspectorGdaget`.
+2- `statistics::Group::Group` takes a pointer to an object of `statistics::Group` that will be its parent. Class `SimObject` inherits from `statistics::Group` so we can use a pointer to `InspectorGadget` as that input.
+3- The macro `ADD_STAT` registers and initializes our statistics that we have defined under the struct. The order of arguments are `name`, `unit`, `description`. To rid yourself of any headache, make sure the order of `ADD_STAT` macros match that of statistic declaration.
 
+---
+<!-- _class: code-70-percent -->
+
+## Counting Things
+
+Now let's go ahead and start counting things with stats. We can simply count `numRequestsFwded` and `numResponsesFwded` in `processNextReqSendEvent` and `processNextRespSendEvent` respectively.
+
+To do it, simply add the following lines inside the body of those functions.
+
+```cpp
+void
+InspectorGadget::processNextReqSendEvent()
+{
+    // ...
+    stats.numRequestsFwded++;
+    PacketPtr pkt = inspectionBuffer.front();
+}
+
+void
+InspectorGadget::processNextReqSendEvent()
+{
+    // ...
+    stats.numResponsesFwded++;
+    PacketPtr pkt = responseBuffer.front();
+}
+```
+
+---
+
+## Measuring Queueing Latencies
+
+To measure the queueing latency in `inspectionBuffer` and `responseBuffer` we need to track the time each `Packet` is inserted in these buffers as well the time they are removed. We already track the insertion time for each `Packet`. We only need to make it accessible from the outside. We can use `curTick()` in `processNextReqSendEvent` and `processNextRespSendEvent` to track the time each `Packet` is removed from `inspectionBuffer` and `responseBuffer` respectively.
+
+Let's go ahead an add the following function inside the `public` scope of `TimedQueue`.
+
+```cpp
+  public:
+    Tick frontTime() { return insertionTimes.front(); }
+```
+
+---
+<!-- _class: code-70-percent -->
+
+## Measuring Queueing Latencies cont.
+
+This is how `processNextReqSendEvent`, `processNextRespSendEvent` would look for measuring all statistics.
+
+```cpp
+void
+InspectorGadget::processNextReqSendEvent()
+{
+    // ...
+    stats.numRequestsFwded++;
+    stats.totalInspectionBufferLatency += curTick() - inspectionBuffer.frontTime();
+    PacketPtr pkt = inspectionBuffer.front();
+}
+
+void
+InspectorGadget::processNextReqSendEvent()
+{
+    // ...
+    stats.numResponsesFwded++;
+    stats.totalResponseBufferLatency += curTick() - responseBuffer.frontTime();
+    PacketPtr pkt = responseBuffer.front();
+}
+```
+
+---
+
+## Let's Rebuild
+
+We're ready to compile gem5. Let's do it and while we wait we will work on the configuration scripts. Run the following command in the base gem5 directory to rebuild gem5.
+
+```sh
+scons build/NULL/gem5.opt -j$(nproc)
+```
 
 ---
 <!-- _class: start -->
