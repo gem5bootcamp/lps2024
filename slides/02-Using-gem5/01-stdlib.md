@@ -378,8 +378,7 @@ gem5/src/python/gem5/components
 ## More on processors
 
 - Processors are made up of cores
-- Cores have a "BaseCPU" as a member
-  - This is the actual CPU model
+- Cores have a "BaseCPU" as a member. This is the actual CPU model
 - `Processor` is what interfaces with `CacheHierarchy` and `Board`
 - Processors are organized, structured, sets of cores, definining how they connect together and with outside components and the board though standard interface.
 
@@ -426,44 +425,43 @@ In addition, we can acccess host resources such as files of liberies to dynamica
 
 ---
 
-#### FS mode
+## FS mode
 
 ![FS mode bg 25%](01-stdlib-imgs/fs-mode.png)
 
 ---
 
-#### SE mode
+## SE mode
 
 ![SE mode bg 45%](01-stdlib-imgs/se-mode.png)
 
 ---
 
-#### FS and SE mode: Common pitfalls
+## FS and SE mode: Common pitfalls
 
-- **Don't treat SE mode as "FS  but faster"**: You must understand what you're simulating and whether it'll impact results.
-- **Syscalls not being implement is 'you probelm'**: We'd love thave all the syscalls implement but it's too much work. We try to over the majory of use-cases but we can't cover everything. If a Syscall is missing, you can implement it yourself or use FS mode.
-- **Sorry, binaries with elevated privilages will never work in SE mode**: If you're running a binary that requires elevated privilages, you'll need to run it FS mode. There's no way around this.
+- **Don't treat SE mode as "FS  but faster"**: You must understand what you're simulating and whether it will impact results.
+- **Not all syscalls will ever be implemented**: We'd love to have all the syscalls implement but Linux changes rapidly. We try to cover common use-cases but we can't cover everything. If a Syscall is missing, you can implement it, ignore it, or use FS mode.
+- **Binaries with elevated privileges do not work in SE mode**: If you're running a binary that requires elevated privileges, you'll need to run it FS mode.
 
 ---
 
-#### SE mode: If in doubt, use FS mode
+## SE mode: If in doubt, use FS mode
 
-FS ode does everything SE mod does (and more!) but much slower due having simulate the OS.
+FS mode does everything SE mod does (and more!) but can take longer to get to the region of interest. You have to wait for the OS to boot each time (unless you [accelerate the simulation](08-accelerating-simulation.md)).
 
-However as SE mode doesn't simulate the OS, you risk missing important events triggered via syscalls which may mean your simulated system doesn't properly reflect the real system.
+However, as SE mode doesn't simulate the OS, you risk missing important events triggered via syscalls, I/O, or the operating system, which may mean your simulated system doesn't properly reflect the real system.
 
 **Think through what SE mode is doing and if it's right for your use-case.** If in doubt, use FS mode. It's (generally) not worth the risk using SE mode if you're not sure.
 
 ---
 
-
-### How to specify FS mode using the standard library
+## How to specify FS mode using the standard library
 
 Go to [`materials/02-Using-gem5/01-stdlib/01-02-fs-mode.py`](../../materials/02-Using-gem5/01-stdlib/01-02-fs-mode.py) and and work on this example.
 
 ---
 
-The following is provided for you:
+## Template code (imports)
 
 ```python
 from gem5.components.boards.x86_board import X86Board
@@ -483,6 +481,10 @@ from gem5.simulate.simulator import Simulator
 
 ---
 
+## More template code
+
+This adds a two-level cache hierarchy and a memory system.
+
 ```python
 cache_hierarchy = MESITwoLevelCacheHierarchy(
     l1d_size="16kB",
@@ -501,7 +503,7 @@ memory = SingleChannelDDR3_1600(size="3GB")
 
 ## Let's add a SimpleSwitchableProcessor
 
-Here we setup the processor. This is a special switchable processor in which a starting core type and a switch core type must be specified. Once a configuration is instantiated a user may call `processor.switch()` to switchfrom the starting core types to the switch core types. In this simulation we start with Timing cores to simulate the OS boot, then switch to the Out-of-order (O3) cores for the command we wish to run after boot.
+Here we setup the processor. This is a special switchable processor in which a starting core type and a switch core type must be specified. Once a configuration is instantiated a user may call `processor.switch()` to switch from the starting core types to the switch core types. In this simulation we start with Timing cores to simulate the OS boot, then switch to the Out-of-order (O3) cores for the command we wish to run after boot.
 
 ```python
 processor = SimpleSwitchableProcessor(
@@ -514,8 +516,11 @@ processor = SimpleSwitchableProcessor(
 
 ---
 
+## Next, plug components into the board
+
+Here we setup the board. The X86Board allows for Full-System X86 simulations.
+
 ```python
-# Here we setup the board. The X86Board allows for Full-System X86 simulations.
 board = X86Board(
     clk_freq="3GHz",
     processor=processor,
@@ -526,17 +531,14 @@ board = X86Board(
 
 ---
 
-```python
-# Here we set the Full System workload.
-# The `set_kernel_disk_workload` function for the X86Board takes a kernel, a
-# disk image, and, optionally, a command to run.
+## What to do when Linux boots
 
-# This is the command to run after the system has booted. The first `m5 exit`
-# will stop the simulation so we can switch the CPU cores from KVM to timing
-# and continue the simulation to run the echo command, sleep for a second,
-# then, again, call `m5 exit` to terminate the simulation. After simulation
-# has ended you may inspect `m5out/system.pc.com_1.device` to see the echo
-# output.
+Here we set the Full System workload.
+The `set_kernel_disk_workload` function for the X86Board takes a kernel, a disk image, and, optionally, a command to run.
+
+This is the command to run after the system has booted. The first `m5 exit` will stop the simulation so we can switch the CPU cores from KVM to timing and continue the simulation to run the echo command, sleep for a second, then, again, call `m5 exit` to terminate the simulation. After simulation has ended you may inspect `m5out/system.pc.com_1.device` to see the echo output.
+
+```python
 command = (
     "m5 exit;"
     + "echo 'This is running on O3 CPU cores.';"
@@ -547,10 +549,12 @@ command = (
 
 ---
 
+## Setting the workload
+
+This a slightly more convoluted way of specifying a workload.
+Here we specifying the kernel, disk image, and the command to run after booting the system.
+
 ```python
-# This a slightly more convoluted way of specifying a workload.
-# Here we specifying the kernel, disk image, and the command to run after
-# booting the system.
 board.set_kernel_disk_workload(
     kernel=obtain_resource("x86-linux-kernel-4.4.186"),
     disk_image=obtain_resource("x86-ubuntu-18.04-img"),
@@ -560,15 +564,13 @@ board.set_kernel_disk_workload(
 
 ---
 
+## Create the simulator object
+
+Here we setup the simulator. We pass the board to the simulator and run it but also specify what to do when the simulation exits with the `EXIT` exit event. In this case we call the `processor.switch` function on the first exit event. For the 2nd the default action will be triggered which exists the simulator.
+
+Warning: This is using a generator expression to create a tuple of functions to call.
+
 ```python
-# Here we setup the simulator. We pass the board to the simulator and run it
-# but also specify what to do when the simulation exits with the `EXIT` exit
-# event. In this case we call the `processor.switch` function on the first
-# exit event. For the 2nd the default action will be triggered which exists
-# the simulator.
-#
-# Warning: This is using a generator expression to create a tuple of functions
-# to call.
 simulator = Simulator(
     board=board,
     on_exit_event={ExitEvent.EXIT: (func() for func in [processor.switch])},
@@ -579,9 +581,9 @@ simulator.run()
 
 ---
 
-### What does this do?
+## What does the exit event generator do?
 
-An equivalent to this would be run the folliwing commands:
+An equivalent to this would be run the following commands:
 
 ```python
 simulator = Simulator(board=board)
@@ -593,13 +595,15 @@ simulator.run()
 
 ---
 
+## The simulation loop
+
 ![Simulation Loop bg 90%](01-stdlib-imgs/simulation-loop.png)
 
 ---
 
-### Exit Events
+## Exit Events
 
-Going back to what we implementeed:
+Going back to what we implemented:
 
 ```python
 simulator = Simulator(
@@ -610,12 +614,12 @@ simulator = Simulator(
 simulator.run()
 ```
 
-We passed tupes to specify exactly what to do on each exit event type via Python generators generator expression. In this case the generator yields `processor.switch` which is called when the exit event `ExitEvent.EXIT` is triggered.
-When the 2nd is triggered the default action is triggered as there is nothing left to yield. The default action is to exit the simulation loop
+We passed objects to specify exactly what to do on each exit event type via Python generators generator expression. In this case the generator yields `processor.switch` which is called when the exit event `ExitEvent.EXIT` is triggered.
+When the 2nd exit is triggered the default action is triggered as there is nothing left to yield. The default action is to exit the simulation loop
 
 ---
 
-#### Exit event types
+## Exit event types
 
 - ExitEvent.EXIT
 - ExitEvent.CHECKPOINT
@@ -645,7 +649,7 @@ We'll see more about this in [Accelerating Simulation](08-accelerating-simulatio
 
 ---
 
-### Simulator parameters
+## Simulator parameters
 
 - **`board`**: The `Board` to simulate (required)
 - **`full_system`**: Whether to simulate a full system (default: `False`, can be infered from the board, not needed specified in most cases)
@@ -750,7 +754,7 @@ And [`src/cpu/o3/BaseO3CPU.py`](../../gem5/src/cpu/o3/BaseO3CPU.py)
 
 ---
 
-## Now the `MuOutOfOrderProcessor`
+## Now the `MyOutOfOrderProcessor`
 
 The `BaseCPUProcessor` assumes a list of cores that are `BaseCPUCores`.
 
@@ -802,9 +806,6 @@ board.processor.cores.core.ipc               1.055705
 O3 CPU takes more than 2x longer to simulate. More fidelity costs more time.
 
 ---
-
-<!-- _class: start -->
-#
 
 ## Summary
 
