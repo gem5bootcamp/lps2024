@@ -50,23 +50,23 @@ The types of components are *boards*, *processors*, *memory systems*, and *cache
 
 - **Board**: The "backbone" of the system. You plug components into the board. The board also contains the system-level things like devices, workload, etc. It's the boards job to negotiate the connections between other components.
 - **Processor**: Processors connect to boards and have one or more *cores*
-- **Cache hiearchy**: A cache hierarchy is a set of caches that can be connected to a processor and memory system.
+- **Cache hierarchy**: A cache hierarchy is a set of caches that can be connected to a processor and memory system.
 - **Memory system**: A memory system is a set of memory controllers and memory devices that can be connected to the cache hierarchy.
 
 ---
 
 ## Quick note on relationship to gem5 models
 
-The C++ code in gem5 specifies *parameterized* **models** (typically refered to "SimObjects" in most gem5 literature).
+The C++ code in gem5 specifies *parameterized* **models** (typically referred to "SimObjects" in most gem5 literature).
 These models are then instantiated in the Python scripts.
 
 The standard library is a way to *wrap* these models in a standard API into, what we call, *components*.
-The standard library are pre-made Python script instiating these models provided by gem5.
+The standard library are pre-made Python script instantiating these models provided by gem5.
 
-The gem5 mode are fine grained concepst which make little sense for us to divide down further into sub-models or hardcore parameters for (for example, a _core_). A component works on courser grained concepts typically containing many models instatiate with sensible parameter ()  (for, example a _processor_ which contains multiple cores, how they are connected buses and eachother with all parameters set ot sensible values.
+The gem5 mode are fine grained concepts which make little sense for us to divide down further into sub-models or hardcore parameters for (for example, a *core*). A component works on courser grained concepts typically containing many models instantiate with sensible parameters. For, example a *processor* which contains multiple cores, how they are connected buses and each other with all parameters set ot sensible values.
 
 
-If you want to create a new compoent you are encouraged to *extend* (i.e., subclass) the components in the standard library or create new components.
+If you want to create a new component you are encouraged to *extend* (i.e., subclass) the components in the standard library or create new components.
 This allows you the models within the component and the value of their parameters.
 We will see some examples of this over the coming lectures.
 
@@ -171,8 +171,8 @@ The `obtain_resource` function downloads the files needed to run the specified w
 
 ### gem5 Resources
 
-We will return to gem5 Resources later in the bootcamp, but for now, you can think of them as a way to download and manage files needed for your simulation but don't acually specify the simulated computer system hardware.
-Typiucally they are used to download and manage workloads, disk images, checkp[oints] needed for the simulation.
+We will return to gem5 Resources later in the bootcamp, but for now, you can think of them as a way to download and manage files needed for your simulation but don't actually specify the simulated computer system hardware.
+Typically they are used to download and manage workloads, disk images, checkpoints needed for the simulation.
 
 Here we can search the available resource: <https://resources.gem5.org/>.
 
@@ -339,7 +339,7 @@ gem5/src/python/gem5/components
 
 ###
 
-- Preconfigured (LP)DDR3/4/5 DIMMs
+- Pre-configured (LP)DDR3/4/5 DIMMs
   - Single and multi channel
 - Integration with DRAMSim and DRAMSys
   - Not needed for accuracy, but useful for comparisons
@@ -380,7 +380,7 @@ gem5/src/python/gem5/components
 - Processors are made up of cores
 - Cores have a "BaseCPU" as a member. This is the actual CPU model
 - `Processor` is what interfaces with `CacheHierarchy` and `Board`
-- Processors are organized, structured, sets of cores, definining how they connect together and with outside components and the board though standard interface.
+- Processors are organized, structured, sets of cores, defining how they connect together and with outside components and the board though standard interface.
 
 ### gem5 has three (or four or five) different processor models
 
@@ -419,9 +419,9 @@ In this example we will create system using multiple cores, on an X86 board, in 
 
 ### First: Let's discuss SE mode and FS mode
 
-SE mode relays application syscalls to the host OS. This means we don't need to simulate an OS for applciations to run.
+SE mode relays application syscalls to the host OS. This means we don't need to simulate an OS for applications to run.
 
-In addition, we can acccess host resources such as files of liberies to dynamically link in.
+In addition, we can access host resources such as files of libraries to dynamically link in.
 
 ---
 
