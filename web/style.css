@@ -82,7 +82,16 @@ div.content {
     width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+
+    margin: 8px 0;
+}
+
+#slideButtonsCenter {
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: space-between;
 }
 
 #slideName {
@@ -91,7 +100,15 @@ div.content {
     text-align: center;
 }
 
-#slideButtons button {
+#slidePdf {
+    margin-top: 8px;
+
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+}
+
+#slideButtons :is(button, a) {
     border: none;
     outline: none;
     background-color: var(--primary-color);
@@ -99,13 +116,14 @@ div.content {
     font-size: 14px;
     color: #F6F5FF;
     cursor: pointer;
-    margin: 8px 0;
+
+    text-decoration: none;
 }
-#slideButtons button:hover {
+#slideButtons :is(button, a):hover {
     background-color: var(--primary-color-dark);
 }
 
-#slideButtons button span {
+#slideButtons :is(button) span {
     display: block;
 }
 #slideButtons button span:first-child {
