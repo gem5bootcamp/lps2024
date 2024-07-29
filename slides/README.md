@@ -100,11 +100,9 @@ In this case, you cannot have a description of the image, unfortunately.
     - Materials :white_check_mark:
   - 03: running: (Zhantong)
     - Slides
-      - Mysore/Saili working on adding some missing slides on traffic gen :white_check_mark:
       - (WIP) Mahyar to take editing pass :exclamation:
-    - Materials
-      - Mysore/Saili to make traffic gen :white_check_mark:
-      - Zhantong to test traffic gen :exclamation:
+      - Zhantong did a quick editing pass :white_check_mark:
+    - Materials :white_check_mark:
   - 04: cores: (Jason)
     - Slides :white_check_mark:
     - Materials :white_check_mark:
@@ -128,10 +126,8 @@ In this case, you cannot have a description of the image, unfortunately.
     - Slides :white_check_mark:
     - Materials :white_check_mark:
   - 09: Sampling: (Zhantong)
-    - Slides
-      - Need an editing pass :exclamation:
-    - Materials
-      - Erin to go through and test :exclamation:
+    - Slides: :white_check_mark:
+    - Materials: :white_check_mark:
   - 10: Modeling power: (Jason) :heavy_exclamation_mark:
     - Slides
       - Need to be started :heavy_exclamation_mark:
@@ -174,12 +170,10 @@ In this case, you cannot have a description of the image, unfortunately.
   - 08: Modeling networks (Jason)
     - Slides :white_check_mark:
     - Materials :white_check_mark:
-  - 09: Extending gem5: (Zhantong) :heavy_exclamation_mark:
+  - 09: Extending gem5: (Zhantong) :exclamation:
     - Slides
-      - WIP :heavy_exclamation_mark:
       - Needs an editing pass :exclamation:
     - Materials
-      - WIP :heavy_exclamation_mark:
       - Someone needs to go through and test :exclamation:
 - 04 GPU
 - 05 Other simulators :heavy_exclamation_mark:
