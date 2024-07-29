@@ -106,15 +106,8 @@ In this case, you cannot have a description of the image, unfortunately.
   - 04: cores: (Jason)
     - Slides :white_check_mark:
     - Materials :white_check_mark:
-  - 05: cache hierarchy: (Jason) :heavy_exclamation_mark:
-    - Plan:
-      - Make an example of specializing/extending a classic cache hierarchy in the stdlib
-      - Make an example of using Ruby
-        - Maybe use the material from assignment 5?
-    - Slides
-      - Mahyar can potentially help.
-      - Need some small changes :exclamation:
-      - Need an editing pass :exclamation:
+  - 05: cache hierarchy: (Jason) :
+    - Slides :white_check_mark:
     - Materials :white_check_mark:
   - 06: memory: (William)
     - Slides :white_check_mark:
@@ -177,7 +170,6 @@ In this case, you cannot have a description of the image, unfortunately.
       - Someone needs to go through and test :exclamation:
 - 04 GPU
 - 05 Other simulators :heavy_exclamation_mark:
-  - NOT DONE AT ALL
 - 06 Contributing
   - 01: Contributing: (Bobby)
     - Slides :white_check_mark:
