@@ -244,7 +244,7 @@ sim.run(20_000_000_000) # 20 billion ticks or 20 ms
 To run it:
 
 ```sh
-gem5 basic.py
+gem5-mesi basic.py
 ```
 
 ---
