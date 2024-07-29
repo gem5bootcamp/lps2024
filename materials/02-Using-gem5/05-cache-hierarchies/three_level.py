@@ -91,7 +91,7 @@ class PrivateL1PrivateL2SharedL3CacheHierarchy(AbstractClassicCacheHierarchy):
     def _setup_io_cache(self, board: AbstractBoard) -> None:
         """Create a cache for coherent I/O connections"""
         self.iocache = Cache(
-            assoc,
+            assoc=8,
             tag_latency=50,
             data_latency=50,
             response_latency=50,
