@@ -185,3 +185,9 @@ In this case, you cannot have a description of the image, unfortunately.
   - 02: Testing (Bobby)
     - Slides :white_check_mark:
     - Materials :white_check_mark:
+
+## To print
+
+```bash
+find . -name "*.md" -exec pandoc {} -o {}.html --self-contained -c ../themes/print-style.css \;
+```
