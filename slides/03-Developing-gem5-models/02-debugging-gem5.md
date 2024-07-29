@@ -18,7 +18,6 @@ title: Debugging and Debug Flags
 - Adding a new debug flag
 - Functions other than DPRINTF
 - Panic/fatal/assert
-- gdb? Mahyar's opinion: does not sound interesting or exclusive to gem5 and hard to teach.
 
 ---
 <!-- _class: title -->
@@ -48,7 +47,12 @@ In the following slide, you will see the expected output.
 
 ---
 
-[![asciicast](https://asciinema.org/a/QYXO2Amv573jfLXvz3xYteP7Y.svg)](https://asciinema.org/a/QYXO2Amv573jfLXvz3xYteP7Y)
+<script src="https://asciinema.org/a/QYXO2Amv573jfLXvz3xYteP7Y.js" id="asciicast-QYXO2Amv573jfLXvz3xYteP7Y" async="true"></script>
+
+---
+<!-- _class: start -->
+
+## Step 1: SimObject with DebugFlags
 
 ---
 <!-- _class: code-70-percent -->
@@ -199,7 +203,7 @@ Now, our `HelloExampleFlag` should be listed whenever we print debug help from g
 
 Below shows the expected output.
 
-[![asciicast](https://asciinema.org/a/J0TmNzOj29N74la4qOxdBLV6H.svg)](https://asciinema.org/a/J0TmNzOj29N74la4qOxdBLV6H)
+<script src="https://asciinema.org/a/J0TmNzOj29N74la4qOxdBLV6H.js" id="asciicast-J0TmNzOj29N74la4qOxdBLV6H" async="true"></script>
 
 ---
 <!-- _class: code-70-percent -->
@@ -251,7 +255,7 @@ Run the following command to simulate `second-hello-example.py` without `DebugFl
 
 Below is a recording of my terminal when doing this.
 
-[![asciicast](https://asciinema.org/a/pKOaIXfzYQUXTsA7VSEvcMHQp.svg)](https://asciinema.org/a/pKOaIXfzYQUXTsA7VSEvcMHQp)
+<script src="https://asciinema.org/a/pKOaIXfzYQUXTsA7VSEvcMHQp.js" id="asciicast-pKOaIXfzYQUXTsA7VSEvcMHQp" async="true"></script>
 
 ---
 
@@ -265,10 +269,16 @@ Run the following command to simulate `second-hello-example.py` with `HelloExamp
 
 Below is a recording of my terminal when doing this.
 
-[![asciicast](https://asciinema.org/a/4c7TuxpxfMNR9i89olMr3HITB.svg)](https://asciinema.org/a/4c7TuxpxfMNR9i89olMr3HITB)
+<script src="https://asciinema.org/a/4c7TuxpxfMNR9i89olMr3HITB.js" id="asciicast-4c7TuxpxfMNR9i89olMr3HITB" async="true"></script>
 
 ---
-<!-- _class: too-much-code -->
+<!-- _class: start -->
+
+## End of Step 1
+
+---
+
+<!-- _class: code-80-percent -->
 
 ## Assertions in gem5
 
