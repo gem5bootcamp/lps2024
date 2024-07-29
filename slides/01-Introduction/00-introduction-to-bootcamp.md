@@ -121,7 +121,7 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
     - How to analyze sampled simulation data
     - Statistical simulation ideas
     - Statistical simulation running and analysis
-  - [Multisim](../02-Using-gem5/10-multisim.md) <!-- (Bobby) (10 minutes) -->
+  - [Multisim](../02-Using-gem5/11-multisim.md) <!-- (Bobby) (10 minutes) -->
     - Example using multisim
   - [Power modeling](../02-Using-gem5/10-modeling-power.md) <!--  (Jason?) -->
 - Developing gem5 models
