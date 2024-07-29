@@ -271,6 +271,11 @@ Later, we'll do the following steps.
 10. Write a second configuration script and run it.
 
 ---
+<!-- _class: start -->
+
+## Step 1: Simple SimObject
+
+---
 
 <!-- _class: border-image -->
 
@@ -403,7 +408,7 @@ Speaker Notes
 - Finalizing header file
  -->
 
-<!-- _class: too-much-code -->
+<!-- _class: code-60-percent -->
 
 ## SimObject Header File: First Few Lines
 
@@ -465,7 +470,7 @@ Speaker Notes
 - Creating and writing source file
  -->
 
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## SimObject Source File: All the Code
 
@@ -707,12 +712,13 @@ Run with the following command in the base **gem5** directory.
 ```sh
 ./build/NULL/gem5.opt ./configs/bootcamp/hello-sim-object/first-hello-example.py
 ```
-<!-- Command copied and pasted -->
-<!-- [![asciicast](https://asciinema.org/a/qRMZn4clYhnYv0ZpOpvPiBNDH.svg)](https://asciinema.org/a/qRMZn4clYhnYv0ZpOpvPiBNDH) -->
 
-<!-- Command typed out -->
-[![asciicast](https://asciinema.org/a/ffjsHBq6mPCR1DPxT15WCkm58.svg)](https://asciinema.org/a/ffjsHBq6mPCR1DPxT15WCkm58)
+<script src="https://asciinema.org/a/ffjsHBq6mPCR1DPxT15WCkm58.js" id="asciicast-ffjsHBq6mPCR1DPxT15WCkm58" async="true"></script>
 
+---
+<!-- _class: start -->
+
+## End of Step 1
 
 ---
 
@@ -728,8 +734,6 @@ Speaker Notes
     - SimObjects created
     - Ports
  -->
-
-<!-- _class: too-much-code -->
 
 ## Detour: m5.instantiate: SimObject Constructors and Connecting Ports
 
@@ -754,7 +758,7 @@ Speaker Notes
  -->
 
 
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## Detour: m5.instantiate: SimObject::init
 
@@ -787,7 +791,7 @@ Speaker Notes
     - initState and loadState
  -->
 
-<!-- _class: too-much-code -->
+<!-- _class: code-80-percent -->
 
 ## Detour: m5.instantiate: SimObject::initState, SimObject::loadState
 
@@ -856,6 +860,11 @@ You might have noticed that we also call `m5.simulate` in our configuration scri
 ## Params
 
 ---
+<!-- _class: start -->
+
+## Step 2: SimObject Params
+
+---
 
 <!--
 Speaker Notes
@@ -865,7 +874,7 @@ Speaker Notes
 - parameter classes/how to add a parameter
 -->
 
-<!-- _class: too-much-code -->
+<!-- _class: code-60-percent -->
 
 ## Let's Talk About Params: Model vs Params
 
@@ -921,7 +930,7 @@ Speaker Notes
 - Recompile
 -->
 
-<!-- _class: too-much-code -->
+<!-- _class: code-50-percent -->
 
 ## Using num_hellos
 
@@ -954,7 +963,7 @@ Speaker Notes
 - Auto-generated param header file
 -->
 
-<!-- _class: two-col too-much-code -->
+<!-- _class: two-col code-60-percent -->
 
 ## params/HelloSimObject.hh
 
@@ -1000,7 +1009,7 @@ Speaker Notes
 - Adding param num_hellos
 -->
 
-<!-- _class: too-much-code -->
+<!-- _class: code-60-percent -->
 
 ## Configuration Script: Second Hello Example
 
@@ -1041,7 +1050,12 @@ Run with the following command in the base **gem5** directory.
 ./build/NULL/gem5.opt ./configs/bootcamp/hello-sim-object/second-hello-example.py
 ```
 
-[![asciicast](https://asciinema.org/a/P1nULfk7VRZGvQURZJryl7mAK.svg)](https://asciinema.org/a/P1nULfk7VRZGvQURZJryl7mAK)
+<script src="https://asciinema.org/a/P1nULfk7VRZGvQURZJryl7mAK.js" id="asciicast-P1nULfk7VRZGvQURZJryl7mAK" async="true"></script>
+
+---
+<!-- _class: start -->
+
+## End of Step 2
 
 ---
 
