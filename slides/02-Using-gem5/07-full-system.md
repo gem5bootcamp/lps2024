@@ -23,7 +23,7 @@ title: Full system simulation in gem5
 
 ## What is Full System Simulation?
 
-Full system simulation (FSS) is a type of simulation that emulates a complete computer system, including the CPU, memory, I/O devices, and system software like operating systems.
+Full-system simulation is a type of simulation that emulates a complete computer system, including the CPU, memory, I/O devices, and system software like operating systems.
 
 It allows for detailed analysis and debugging of hardware and software interactions.
 
@@ -50,6 +50,7 @@ It allows for detailed analysis and debugging of hardware and software interacti
     - Set kernel command line parameters, if necessary.
 4. **Running the Simulation**:
     - Start the simulation and monitor the boot process.
+
 ---
 
 ## Let's run a full system simulation in gem5
@@ -101,6 +102,47 @@ simulator = Simulator(
 )
 simulator.run()
 ```
+
+---
+
+## Viewing the terminal/serial output with m5term
+
+Before booting this workload, let's build the `m5term` application so we can connect to the running system.
+
+```bash
+cd /workspaces/2024/gem5/util/term
+make
+```
+
+Now you have a binary `m5term`.
+
+---
+
+## Watch gem5's output
+
+Now, let's run the workload and connect to the terminal using `m5term`.
+
+```bash
+gem5 x86-fs-kvm-run.py
+```
+
+In another terminal, run the following command to connect to the terminal:
+
+```bash
+m5term 3456
+```
+
+3456 is the port number on which the terminal is running.
+You will see this printed in the gem5 output.
+
+If you run multiple gem5 instances, they will have sequential port numbers.
+If you're running in a non-interactive environment, there will be no ports to connect to.
+
+---
+
+<!-- _class: start -->
+
+## Creating your own disk images
 
 ---
 
@@ -298,17 +340,7 @@ def exit_event_handler():
 
 ---
 
-## Using m5term
-
-First let's make the `m5term` binary.
-
-In [gem5/util/term](/../../gem5/util/term), run
-
-```bash
-make
-```
-
-Now we have the `m5term` binary.
+## Again, let's use m5term
 
 Now let's connect to our simulation by using the `m5term` binary
 
