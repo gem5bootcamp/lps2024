@@ -79,6 +79,7 @@ div.content {
 }
 
 #slideButtons {
+    position: relative;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -88,6 +89,11 @@ div.content {
 }
 
 #slideButtonsCenter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -116,6 +122,7 @@ div.content {
     font-size: 14px;
     color: #F6F5FF;
     cursor: pointer;
+    z-index: 1;
 
     text-decoration: none;
 }
