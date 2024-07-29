@@ -15,11 +15,13 @@ math: mathjax
 
 ---
 
-- Creating a simple callback event [done]
-- Scheduling events [done]
-- Other SimObjects as parameters [done]
-- GoodByeExampleFlag and CompoundFlag(GreetExampleFlag, HelloExampleFlag, GoodByeExampleFlag) [done]
-- Hello/Goodbye example with buffer [why?]
+## We will cover
+
+- Creating a simple callback event
+- Scheduling events
+- Other SimObjects as parameters
+- GoodByeExampleFlag and CompoundFlag(GreetExampleFlag, HelloExampleFlag, GoodByeExampleFlag)
+- Hello/Goodbye example with buffer
 
 ---
 
@@ -205,6 +207,11 @@ By calling `m5.simulate`, gem5 will call the function `startup` from every `SimO
 ```
 
 `startup` is where we schedule the initial `events` that trigger a simulation (`CPU::nextFetch` in our hypothetical scenario).
+
+---
+<!-- _class: start -->
+
+## Step 1: SimObject Events
 
 ---
 <!-- _class: code-70-percent -->
@@ -602,9 +609,11 @@ Now, simulate your configuration by running the following command in the base ge
 ./build/NULL/gem5.opt configs/bootcamp/hello-sim-object/second-hello-example.py
 ```
 
-Below is a recording of what you should expect to see.
+In the next slide, there is recording of what you should expect to see.
 
-[![asciicast](https://asciinema.org/a/UiLAZT0Ryi75nkLQSs0AC0OWI.svg)](https://asciinema.org/a/UiLAZT0Ryi75nkLQSs0AC0OWI)
+---
+
+<script src="https://asciinema.org/a/UiLAZT0Ryi75nkLQSs0AC0OWI.js" id="asciicast-UiLAZT0Ryi75nkLQSs0AC0OWI" async="true"></script>
 
 ---
 <!-- _class: start -->
@@ -668,10 +677,9 @@ CompoundFlag("GreetFlag", ["HelloExampleFlag", "GoodByeExampleFlag"])
 ```
 
 ---
+<!-- _class: code-80-percent -->
 
 ## Current Version: HelloSimObject.py
-
-<!-- _class: code-80-percent -->
 
 This is how [HelloSimObject.py](/materials/03-Developing-gem5-models/03-event-driven-sim/step-2/src/bootcamp/hello-sim-object/HelloSimObject.py) should look after the changes.
 
@@ -713,6 +721,7 @@ CompoundFlag("GreetFlag", ["HelloExampleFlag", "GoodByeExampleFlag"])
 
 ---
 <!-- _class: code-25-percent -->
+
 ## GoodByeSimObject: Specification
 
 In our design, let's have `GoodByeSimObject` debug print a `GoodBye ...` statement. It will do it when the `sayGoodBye` function is called, which will schedule an `event` to say GoodBye.
@@ -1058,9 +1067,11 @@ Run the following command in the base gem5 directory to simulate `third-hello-ex
 ./build/NULL/gem5.opt --debug-flags=GoodByeExampleFlag configs/bootcamp/hello-sim-object/third-hello-example.py
 ```
 
-Below is a recording of my terminal when I run the command above.
+In the next slide, there is a recording of my terminal when I run the command above.
 
-[![asciicast](https://asciinema.org/a/9vTP6wE1Yu0ihlKjA4j7TxEMm.svg)](https://asciinema.org/a/9vTP6wE1Yu0ihlKjA4j7TxEMm)
+---
+
+<script src="https://asciinema.org/a/9vTP6wE1Yu0ihlKjA4j7TxEMm.js" id="asciicast-9vTP6wE1Yu0ihlKjA4j7TxEMm" async="true"></script>
 
 ---
 
@@ -1072,9 +1083,11 @@ Run the following command in the base gem5 directory to simulate `third-hello-ex
 ./build/NULL/gem5.opt --debug-flags=GreetFlag configs/bootcamp/hello-sim-object/third-hello-example.py
 ```
 
-Below is a recording of my terminal when I run the command above.
+In the next slide, there is a recording of my terminal when I run the command above.
 
-[![asciicast](https://asciinema.org/a/2cz336gLt2ZZBysroLhVbqBHs.svg)](https://asciinema.org/a/2cz336gLt2ZZBysroLhVbqBHs)
+---
+
+<script src="https://asciinema.org/a/2cz336gLt2ZZBysroLhVbqBHs.js" id="asciicast-2cz336gLt2ZZBysroLhVbqBHs" async="true"></script>
 
 ---
 <!-- _class: start -->
