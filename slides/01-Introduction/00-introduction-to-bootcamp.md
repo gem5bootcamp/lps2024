@@ -96,8 +96,6 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
     - Tag policies
     - Tradeoffs between classic and Ruby
     - Look at the gem5 generated statistics
-    - Garnet/network-on-chip
-    - CHI protocol
   - [Modeling memory in gem5](../02-Using-gem5/06-memory.md) <!-- 1 hours (Noah / William (Maryam)) -->
     - Memory models in gem5
     - Using the memory models
@@ -167,6 +165,9 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
     - Debugging
     - Ruby network
     - (Note to Jason: could do a whole day here if split like before.)
+  - [Using the CHI protocol](../03-Developing-gem5-models/07-chi-protocol.md) <!-- (Jason) 0.5 hours -->
+    - How is CHI different from other protocols?
+    - Configuring a CHI hierarchy
   - [Modeling the on-chip network with Garnet](../03-Developing-gem5-models/08-ruby-network.md) <!-- (Jason) 1 hours -->
     - Garnet intro
     - Building/running/configuring networks
