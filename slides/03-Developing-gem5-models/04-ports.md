@@ -9,7 +9,7 @@ title: "Modeling memory objects in gem5: Ports"
 
 ## Modeling memory objects in gem5: Ports
 
-**IMPORTANT**: This slide deck builds on top of what has already been developed in [Introduction to SimObjects](01-sim-objects-intro.md), [Debugging gem5](02-debugging-gem5.md), and [Event Driven Simulation](03-event-driven-sim.md).
+**IMPORTANT**: This slide deck builds on top of what has already been developed in [Introduction to SimObjects](./01-sim-objects-intro.md), [Debugging gem5](./02-debugging-gem5.md), and [Event Driven Simulation](./03-event-driven-sim.md).
 
 ---
 
@@ -22,32 +22,34 @@ As their names would suggest:
 - `RequestPorts`  make `requests` and await `responses`.
 - `ResponsePorts` await `requests` and send `responses`.
 
-Make sure to differentiate between `request`/`response` and `data`. Both `requests` and `response` could have `data` with them.
+Make sure to differentiate between `request`/`response` and `data`. Both `requests` and `response` can carry `data` with them.
 
 ---
 <!-- _class: two-col code-50-percent -->
 
 ## Packets
 
-`Packets` are the facility that make communication through port happen. They can be `request` or `response`. **NOTE**: `Packet` in gem5 can change from a `request` to `response`. This happens when the `request` arrives at the `SimObject` that can respond to it.
+`Packets` facilitate communication through ports. They can be either `request` or `response` packets.
+> **NOTE**: `Packet` in gem5 can change from a `request` to a `response`. This happens when the `request` arrives at a `SimObject` that can respond to it.
 
 Every `Packet` has the following fields:
 
 - `Addr`: Address of the memory location being accessed.
-- `Data`: Data associated with the `Packet` (data that `Packet` carries).
-- `MemCmd`: It denotes what the `Packet` should do. Examples include: `readReq`/`readResp`/`writeReq`/`writeResp`.
+- `Data`: Data associated with the `Packet` (the data that `Packet` carries).
+- `MemCmd`: Denotes the kind of `Packet` and what it should do.
+  - Examples include: `readReq`/`readResp`/`writeReq`/`writeResp`.
 - `RequestorID`: ID for the `SimObject` that created the request (requestor).
 
-Class `Packet` is defined in `mem/packet.hh`. ‍Note that in our tutorial we will deal with `Packet` in pointers. `PacketPtr` is a type in gem5 that is equivalent to `Packet*`.
+Class `Packet` is defined in [`src/mem/packet.hh`](../../gem5/src/mem/packet.hh). ‍Note that, in our tutorial, we will deal with `Packet` in pointers. `PacketPtr` is a type in gem5 that is equivalent to `Packet*`.
 
 ---
-<!-- _class: code-50-percent -->
+<!-- _class: no-logo code-50-percent -->
 
 ## Ports in gem5
 
-Let's take a look at `src/mem/port.hh` to see the declaration for `Port` classes.
+Let's take a look at [`src/mem/port.hh`](../../gem5/src/mem/port.hh) to see the declarations for `Port` classes.
 
-Let's focus on the following functions. These functions make the communication possible. Notice how `recvTimingReq` and `recvTimingResp` are `pure virtual` functions. This means that you can **not** instantiate an object of `RequestPort` or `ResponsePort` and have to extend them to implement them based on your use case.
+Let's focus on the following functions. These functions make communication possible. Notice how `recvTimingReq` and `recvTimingResp` are `pure virtual` functions. This means that you can **not** instantiate an object of `RequestPort` or `ResponsePort` and instead you must extend them to fit your use case.
 
 ```cpp
 class RequestPort {
@@ -77,9 +79,9 @@ class ResponsePort {
 
 `Ports` allow 3 modes of accessing the memory.
 
-1- In `timing` mode, accesses advance simulator time. In this mode, `request` propagate down the memory hierarchy while each level imposes its latency and can potentially interleave processing of multiple requests. This mode is the only realistic mode in accessing the memory.
-2- In `atomic` mode, accesses do not directly advance simulator time, rather it's left the **original** `requestor` to move simulator time. Accesses are done atomically (are **not** interleaved). This access mode is useful for fast-forwarding simulation.
-3- In `functional` mode, access to the memory are done through a chain of function calls. `Functional` mode does not advance simulator time. All accesses are done in series and are not interleaved. This access mode is useful for initializing simulation from files, talking from the host to the simulator.
+1: In `timing` mode, accesses advance simulator time. In this mode, `request` propagate down the memory hierarchy while each level imposes its latency and can potentially interleave processing of multiple requests. This mode is the only realistic mode in accessing the memory.
+2: In `atomic` mode, accesses do not directly advance simulator time, rather it's left the **original** `requestor` to move simulator time. Accesses are done atomically (are **not** interleaved). This access mode is useful for fast-forwarding simulation.
+3: In `functional` mode, access to the memory are done through a chain of function calls. `Functional` mode does not advance simulator time. All accesses are done in series and are not interleaved. This access mode is useful for initializing simulation from files, talking from the host to the simulator.
 
 ---
 
