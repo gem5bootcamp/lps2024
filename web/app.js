@@ -1,6 +1,8 @@
 /* Constant parameters */
 const slide_url_base = './slides/'
 const slide_url_ext = '.html'
+const pdf_url_base = './pdf/'
+const pdf_url_ext = '.pdf'
 const slide_link_height = 25;
 
 /* Global references and variables */
@@ -70,6 +72,10 @@ function route(url, push=true) {
         next.classList.remove('hidden');
         next.children[1].textContent = slide_list[slide_id + 1].textContent;
     }
+    /* Configure pdf link */
+    let pdf = document.querySelector('#slidePdf');
+    let pdf_url = pdf_url_base + url.substring(1) + pdf_url_ext;
+    pdf.href = pdf_url;
 }
 
 window.addEventListener('popstate', () => {
