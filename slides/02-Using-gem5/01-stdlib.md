@@ -638,10 +638,10 @@ The Simulator has default behavior for these events, but they can be overridden.
 
 To place our idea of gem5:
 
-- *models (or *SimObjects*) are the fine-grained objects that are conencted together in Pyton scripts to form a simulation.
-- _components_ are the coarse-grained objects that are connected defined as a set of configured models in Python scripts to form and delivered as part of the Stanard Libraryu
-- The standard libary allows users to specify a board and specify the properties of the board by specify the components that are connected to it.
-- The Simulator takes a board and lauches the simulation and gives an api which allows for control of the simulation: specifying the simulation stopping and restarting conditon; replacing components "on the fly"; defining when the simulation is stop and start; etc.
+- *models (or *SimObjects*) are the fine-grained objects that are connected together in Python scripts to form a simulation.
+- *components* are the coarse-grained objects that are connected defined as a set of configured models in Python scripts to form and delivered as part of the Standard Library
+- The standard library allows users to specify a board and specify the properties of the board by specify the components that are connected to it.
+- The Simulator takes a board and launches the simulation and gives an api which allows for control of the simulation: specifying the simulation stopping and restarting condition; replacing components "on the fly"; defining when the simulation is stop and start; etc.
 
 See [`src/python/gem5/simulate/simulator.py`](../../gem5/src/python/gem5/simulate/simulator.py) for the Simulator source.
 
@@ -652,7 +652,7 @@ We'll see more about this in [Accelerating Simulation](08-accelerating-simulatio
 ## Simulator parameters
 
 - **`board`**: The `Board` to simulate (required)
-- **`full_system`**: Whether to simulate a full system (default: `False`, can be infered from the board, not needed specified in most cases)
+- **`full_system`**: Whether to simulate a full system (default: `False`, can be inferred from the board, not needed specified in most cases)
 - **`on_exit_event`**: A complex data structure that allows you to control the simulation. The simulator exits for many reasons, this allows you to customize what happens. We just saw any example
 - **`checkpoint_path`**: If we're restoring from a checkpoint, this is the path to the checkpoint. More on checkpoints later.
 - **`id`**: An optional name for this simulation. Used in multisim. More on this in the future.
@@ -677,7 +677,6 @@ we will be covering much more about how to use the `Simulator` object in other p
 We've seen how to use the standard library components.
 
 Now we haven't seen how to create new components.
-
 
 ### Designed around *Extension* and *Encapsulation*
 
