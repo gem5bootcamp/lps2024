@@ -52,10 +52,11 @@ body {
 }
 
 div.content {
-    position: relative;
+    position: justify;
+    font-size: 20px;
     flex: 1;
-    padding: 20px;
-    padding-bottom: 40px;
+    padding: 30px;
+    padding-bottom: 30px;
 }
 
 /* ------------------------------------------------------------------------- *
