@@ -17,7 +17,7 @@ from m5.objects import MemorySize
 from gem5.components.boards.test_board import TestBoard
 from gem5.components.memory.simple import SingleChannelSimpleMemory
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400
-from lpddr2 import SingleChannelLPDDR2
+# from lpddr2 import SingleChannelLPDDR2
 
 from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
