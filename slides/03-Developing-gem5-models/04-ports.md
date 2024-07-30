@@ -40,7 +40,7 @@ Every `Packet` has the following fields:
   - Examples include: `readReq`/`readResp`/`writeReq`/`writeResp`.
 - `RequestorID`: ID for the `SimObject` that created the request (requestor).
 
-Class `Packet` is defined in [`gem5/src/mem/packet.hh`](../../gem5/src/mem/packet.hh). ‍Note that, in our tutorial, we will deal with `Packet` in pointers. `PacketPtr` is a type in gem5 that is equivalent to `Packet*`.
+Class `Packet` is defined in [`gem5/src/mem/packet.hh`](../../gem5/src/mem/packet.hh). Note that, in our tutorial, we will deal with `Packet` in pointers. `PacketPtr` is a type in gem5 that is equivalent to `Packet*`.
 
 ---
 <!-- _class: no-logo code-50-percent -->
@@ -487,7 +487,7 @@ Here is a deeper look into the declaration of `CPUSidePort`.
 1: `InspectorGadget* owner` is a pointer to the instance of `InspectorGadget` that owns this instance of `CPUSidePort`. We need to access the owner when we receive `requests`, i.e. when `recvTimingReq` is called.
 2: `bool needToSendRetry` tells us if we need to send a `retry request`. This happens when we reject a `request` because we are busy. When we are not busy, we check this before sending a `retry request`.
 3: In addition to all the functions that are used for moving packets, the class `ResponsePort` has another `pure virtual` function that will return an `AddrRangeList` which represents all the address ranges for which the port can respond. Note that, in a system, the memory addresses can be partitioned among ports. Class `RequestPort` has a function with the same name, but it is already implemented and will just ask its peer `ResponsePort` for the ranges by calling `peer::getAddrRanges`.
-4: We will need to implement all of the functions that relate to moving packets -- the ones that start with `recv`. We will use `owner` to implement most of the functionality of these functions within `InspectorGadget`.
+4: We will need to implement all of the functions that relate to moving packets – the ones that start with `recv`. We will use `owner` to implement most of the functionality of these functions within `InspectorGadget`.
 5: We'll talk about `PacketPtr blockedPacket` in the next slides.
 
 ---
@@ -529,7 +529,7 @@ Let's take a deeper look into what we added for class `MemSidePort`.
 2: When `MemSidePort::sendTimingReq` receives false, it means the request was blocked. We track a pointer to this blocked `Packet` in `PacketPtr blockedPacket` so that we can retry the request later.
 3: Function `blocked` tells us if we are blocked by the memory side, i.e. still waiting to receive a `retry request` from memory side.
 4: Function `sendPacket` is a wrapper around `sendTimingReq` to give our code more structure. Notice we don't need to definte `sendTimingReq` as it is already defined by `TimingRequestProtocol`.
-5: We will need to implement all of the functions that relate to moving packets -- the ones that start with `recv`. We will use `owner` to implement most of the functionality of these functions within `InspectorGadget`.
+5: We will need to implement all of the functions that relate to moving packets – the ones that start with `recv`. We will use `owner` to implement most of the functionality of these functions within `InspectorGadget`.
 
 ---
 
@@ -630,7 +630,7 @@ InspectorGadget::getPort(const std::string &if_name, PortID idx)
 }
 ```
 
-If you remember, `getPort` needs to create a mapping between `Port` objects in Python and `Port` objects in C++. In this function when `if_name == "cpu_side_port"` (the name comes from the Python declaration, look at `InspectorGadget.py`) we will retrun `cpuSidePort`. We do the same thing to map the name `"mem_side_port"` to our instance `memSidePort`. For now, you don't have to worry about `idx`. We will talk about it later in the context of `VectorPorts` -- ports that can connect to multiple peers.
+If you remember, `getPort` needs to create a mapping between `Port` objects in Python and `Port` objects in C++. In this function when `if_name == "cpu_side_port"` (the name comes from the Python declaration, look at `InspectorGadget.py`) we will retrun `cpuSidePort`. We do the same thing to map the name `"mem_side_port"` to our instance `memSidePort`. For now, you don't have to worry about `idx`. We will talk about it later in the context of `VectorPorts` – ports that can connect to multiple peers.
 
 ---
 
@@ -807,16 +807,18 @@ Make sure to add the following include statement to the top of the file as well.
 
 ---
 
+<!-- _class: code-60-percent -->
+
 ## inspectionBuffer
 
-Now, let's declare an instance of `TimedQueue` to buffer `PacketPtr` that `InspectorGadget` receives from `InspectorGadget::cpuSidePort::recvTimingReq`. Add the following line to the `private` scope of class `InspectorGadget` to do this.
+Now, let's declare an instance of `TimedQueue` to buffer `PacketPtrs` that `InspectorGadget` receives from `InspectorGadget::cpuSidePort::recvTimingReq`. Add the following lines to the `private` scope of class `InspectorGadget` to do this:
 
 ```cpp
   private:
     TimedQueue<PacketPtr> inspectionBuffer;
 ```
 
-Now that we have declared `inspectionBuffer`, we are ready to define the following functions. **NOTE**: For now we are focusing on the `request` path, i.e. we're not going to define `recvRespRetry` just yet.
+Now that we have declared `inspectionBuffer`, we are ready to define the following functions (these are already declared):
 
 ```cpp
 AddrRangeList getAddrRanges() const;
@@ -825,12 +827,14 @@ Tick recvAtomic(PacketPtr pkt);
 void recvFunctional(PacketPtr pkt);
 ```
 
+> **NOTE**: For now we are focusing on the `request` path, i.e. we're not going to define `recvRespRetry` just yet.
+
 ---
 <!-- _class: code-60-percent -->
 
 ## Let's Get the Easy Ones Out the Way
 
-Between the four functions, `getAddrRanges` and `recvFunctional` are the most straight-forward functions to define. We just need to call the same functions from `memSidePort`. To define these two functions, add the following code under `namespace gem5` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+Between the four functions, `getAddrRanges` and `recvFunctional` are the most straight-forward to define. We just need to call the same functions from `memSidePort`. To define these two functions, add the following code under `namespace gem5` in `inspector_gadget.cc`:
 
 ```cpp
 AddrRangeList
@@ -846,15 +850,17 @@ InspectorGadget::recvFunctional(PacketPtr pkt)
 }
 ```
 
-**NOTE**: These two functions are already defined by `RequestPort` and we don't need to redefine them. Notice, how for `Ports` you only have to define functions that relate to receiving signals.
+> **NOTE**: These two functions are already defined by `RequestPort` and we don't need to redefine them. Notice how, for `Ports`, you only have to define functions that relate to receiving signals.
 
 ---
 
+<!-- _class: no-log code-80-percent -->
+
 ## InspectorGadget::recvAtomic
 
-Looking at the `recvAtomic`, this function returns a value of type `Tick`. This value is supposed to represent the latency of the access if that access was done in singularity, i.e atomically/without being interleaved. **CAUTION**: This latency is not an accurate representation of the actual latency of the access in a real setup. In a real setup there are many accesses happening at the same time and most of the time accesses do not happen atomically.
+Looking at `recvAtomic`, this function returns a value of type `Tick`. This value is supposed to represent the latency of the access if that access was done in singularity, i.e atomically/without being interleaved. **CAUTION**: This latency is not an accurate representation of the actual latency of the access in a real setup. In a real setup there are many accesses happening at the same time and most of the time accesses do not happen atomically.
 
-Let's add *one* cycle of latency to the latency of accesses in the lower level of memory hierarchy. To do this we are going to call `period` method from the parent class of `InspectorGadget` which is `ClockedObject`. This function return the period of the `clk_domain` in `Ticks`. Add the following code for definition of `InspectorGadget::recvAtomic` to `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+Let's add *one* cycle to the latency of accesses from the lower level of memory hierarchy. To do this we are going to call `clockPeriod` from the parent class of `InspectorGadget`, which is `ClockedObject`. This function returns the period of the `clk_domain` in `Ticks`. Add the following code to define of `InspectorGadget::recvAtomic` in `inspector_gadget.cc`.
 
 ```cpp
 Tick
@@ -865,14 +871,15 @@ InspectorGadget::recvAtomic(PacketPtr pkt)
 ```
 
 ---
-<!-- _class: code-80-percent -->
+<!-- _class: no-logo code-70-percent -->
 
 ## On to the Hard Part
 
 As we discussed before, `timing` accesses are the accesses that advance simulator time and represent real setups.
-`InspectorGadget::recvTimingReq` will need check if there is at least one entry available in the `inspectionBuffer`. If there are no entries left, it should return false; otherwise, it should place the `Packet` at the end of the buffer, i.e. call `push` from `inspectionBuffer`, and return true.
 
-To define `InspectorGadget::recvTimingReq`, add the following code under `namespace gem5` to `src/bootcamp/inspector-gadget/inspector-gadget.cc`.
+`InspectorGadget::recvTimingReq` will need to check if there is at least one available entry in the `inspectionBuffer`. If there are no entries left, it should return false; otherwise, it should place the `Packet` at the end of the buffer – i.e. `push` into `inspectionBuffer` – and return true.
+
+To define `InspectorGadget::recvTimingReq`, add the following code to `inspector-gadget.cc`:
 
 ```cpp
 bool
@@ -890,25 +897,27 @@ InspectorGadget::recvTimingReq(PacketPtr pkt)
 
 ## We're Not Done Yet!
 
-So far, we have managed to program the movement of `Packets` from `cpuSidePort` into `inspectionBuffer`. Now what we need to do is send the `Packets` that are inside `inspectionBuffer` to `memSidePort`.
+So far, we have managed to program the movement of `Packets` from `cpuSidePort` into `inspectionBuffer`. Now, what we need to send the `Packets` that are inside `inspectionBuffer` to `memSidePort`.
 
-One would ask, why not `memSidePort.sendTimingReq` inside `InspectorGadget::recvTimingReq`? The answer is because we want to impose a latency on the movement of the `Packet` through `inspectionBuffer`. Think about how the real hardware would work. If the `Packet` is available on `cpuSidePort` on the rising edge of the clock, it would go inside `inspectionBuffer` by the falling edge of the clock, i.e. time will pass. Now, assuming that `Packet` is at the front of `inspectionBuffer`, it will be available on the rising edge of the next clock cycle. If you remember, we use `events` to make things happen in the future, by defining callback functions.
+One would ask, why not call `memSidePort.sendTimingReq` inside `InspectorGadget::recvTimingReq`? The answer is because we want to impose a latency on the movement of the `Packet` through `inspectionBuffer`. Think about how the real hardware would work. If the `Packet` is available on `cpuSidePort` on the rising edge of the clock, it would go inside `inspectionBuffer` by the falling edge of the clock, i.e. time will pass. Now, assuming that `Packet` is at the front of `inspectionBuffer`, it will be available on the rising edge of the next clock cycle. If you remember, we use `events` to make things happen in the future by defining callback functions.
 
-Now, let's go ahead and declare a `EventFunctionWrapper` for picking the `Packet` at the front of `inspectionBuffer` and sending it through `memSidePort`.
+Now, let's go ahead and declare an `EventFunctionWrapper` for picking the `Packet` at the front of `inspectionBuffer` and sending it through `memSidePort`.
 
 ---
 
+<!-- _class: no-logo code-70-percent -->
+
 ## nextReqSendEvent
 
-We're going to declare `EventFunctionWrapper nextReqSendEvent` to send `Packets` through `memSidePort`. Remember what we need to do?
+We're going to declare a function `EventFunctionWrapper nextReqSendEvent` to send `Packets` through `memSidePort`. Remember what we need to do?
 
-Add the following include statement to include the appropriate header file for class `EventFunctionWrapper`.
+Add the following include statement to `inspector_gadget.hh` to include the appropriate header file for the class `EventFunctionWrapper`.
 
 ```cpp
 #include "sim/eventq.hh"
 ```
 
-If you remember from [Event Driven Simulation](/slides/03-Developing-gem5-models/03-event-driven-sim.md), we also need to declare a `std::function<void>()` to pass as the callback function for `nextReqSendEvent`. I would like to name these functions with `process` prefixing the name of the `event`. Let's go ahead and declare `nextReqSendEvent` as well as its callback function in the `private` scope of `InspectorGadget`. Do it by adding the following lines to `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+If you remember from [Event Driven Simulation](./03-event-driven-sim.md), we also need to declare a `std::function<void>()` to pass as the callback function for `nextReqSendEvent`. I would like to name these functions with `process` prefixing the name of the `event`. Let's go ahead and declare `nextReqSendEvent` as well as its callback function in the `private` scope of `InspectorGadget`. Do it by adding the following lines to `inspector_gadget.hh`:
 
 ```cpp
   private:
@@ -918,11 +927,15 @@ If you remember from [Event Driven Simulation](/slides/03-Developing-gem5-models
 
 ---
 
+<!-- _class: no-logo -->
+
 ## Managing the Schedule of nextReqSendEvent
 
-Now, that we have declared `nextReqSendEvent`, we can schedule `nextReqSendEvent` in `InspectorGadget::recvTimingReq`. We will see in a few slides why it is really helpful to have defined a function that decides if and when `nextReqSendEvent` should be scheduled. What I do when I write `SimObjects` is that for every `event`, I create a function to schedule that event. I name these functions with `schedule` prefixing the name of the event. Let's go ahead and a declare `scheduleNextReqSendEvent` under the `private` scope in `InspectorGadget`.
+Now, that we have declared `nextReqSendEvent`, we can schedule `nextReqSendEvent` in `InspectorGadget::recvTimingReq`. We will see in a few slides why it is helpful to have a function that decides if and when `nextReqSendEvent` should be scheduled.
 
-Open `src/bootcamp/inspector-gadget/inspector_gadget.hh` and add the following lines.
+What I do when I write `SimObjects` is that, for every `event`, I create a function to schedule that event. I name these functions with `schedule` prefixing the name of the event. Let's go ahead and a declare `scheduleNextReqSendEvent` under the `private` scope in `InspectorGadget`.
+
+Open `inspector_gadget.hh` and add the following lines:
 
 ```cpp
   private:
@@ -933,11 +946,13 @@ We'll see that one `event` might be scheduled in multiple locations in the code.
 
 ---
 
+<!-- _class: code-80-percent -->
+
 ## Back to InspectorGadget::recvTimingReq
 
 Now, we can finally go ahead and add a function call to `scheduleNextReqSendEvent` in `InspectorGadget::recvTimingReq`. Since we are assuming it will take **one** `cycle` to insert an item to `inspectionBuffer`, we're going to pass `nextCycle()` as `when` argument.
 
-This is how `InspectorGadget::recvTimingReq` should look like after all the changes.
+This is how `InspectorGadget::recvTimingReq` should look after all the changes.
 
 ```cpp
 bool
@@ -953,13 +968,13 @@ InspectorGadget::recvTimingReq(PacketPtr pkt)
 ```
 
 ---
-<!-- _class: code-50-percent -->
+<!-- _class: no-logo code-50-percent -->
 
 ## MemSidePort::sendPacket
 
 As mentioned before, it's a good idea to create a function for sending `Packets` through `memSidePort`. To do this, let's go ahead and define `MemSidePort::sendPacket`. We define this function now since we're going to need it in `processNextReqSendEvent`.
 
-To define `MemSidePort::sendPacket` add the following code to `src/inspector-gadget/inspector_gadget.cc`
+To define `MemSidePort::sendPacket` add the following code to `inspector_gadget.cc`
 
 ```cpp
 void
@@ -975,13 +990,13 @@ InspectorGadget::MemSidePort::sendPacket(PacketPtr pkt)
 }
 ```
 
-**NOTE**: We call `panic` if this function is called when we have a blocked `Packet`. This is because if there is already a `Packet` that is rejected, we expect consequent `Packets` be rejected until we receive a `retry request`. We make sure to follow this by not trying to send `Packets` when blocked prior.
+> **NOTE**: We call `panic` if this function is called when we have a blocked `Packet`. This is because if there is already a `Packet` that is rejected, we expect consequent `Packets` be rejected until we receive a `retry request`. We make sure to follow this by not trying to send `Packets` when blocked prior.
 
 ---
 
 ## InspectorGadget::processNextReqSendEvent cont.
 
-Now that we have defined `sendPacket` we can use it in `processNextReqSendEvent`. Add the following code under `namespace gem5` in `src/bootcamp/inspector-gadget/inspector_gadget.cc` to define it.
+Now that we have defined `sendPacket`, we can use it in `processNextReqSendEvent`. Add the following definition to `inspector_gadget.cc`:
 
 ```cpp
 void
@@ -1000,23 +1015,26 @@ InspectorGadget::processNextReqSendEvent()
 
 ---
 
+<!-- _class: no-logo -->
+
 ## InspectorGadget::processNextReqSendEvent: Deeper Look
 
-Here is a few things to note about `processNextReqSendEvent`.
+Here are a few things to note about `processNextReqSendEvent`:
 
-1- We should not try to send a `Packet` if `memSidePort.blocked()`. We made this design decision and checked for it in `MemSidePort::sendPacket` to prevent `Packets` from being lost or accidentally changing the order of `Packets`.
-2- We should not try to send a `Packet` when there is no `Packet` ready at `curTick()`.
+1: We should not try to send a `Packet` if `memSidePort.blocked()` is true. We made this design decision and checked for it in `MemSidePort::sendPacket` to prevent `Packets` from being lost or accidentally changing the order of `Packets`.
+2: We should not try to send a `Packet` when there is no `Packet` ready at `curTick()`.
+3: When we are done, we need to try to schedule `nextReqSendEvent` in its callback event.
 
-3- When are done, we need to try to schedule `nextReqSendEvent` in its callback event.
+> Let's take a step back...
 
-Let's take a step back. Are we done with `cpuSidePort` yet? If we look at `InspectorGadget::recvTimingReq` we return false, when there is not enough space in `inspectionBuffer`. Also, if you remember, if the `reponsder` (in our case `InspectorGadge`) rejects a `request` because it's busy (in our case because we don't have enough space in `inspectionBuffer`), the `responder` has to send a `request retry` when it becomes available (in our case, when there is room freed in `inspectionBuffer`). So let's go ahead and send a `request retry` to the `peer` of `cpuSidePort`. We need to send that retry **one cycle later**. So, we need another event for that. Let's go ahead and add it.
+Are we done with `cpuSidePort` yet? If we look at `InspectorGadget::recvTimingReq`, we return false when there is not enough space in `inspectionBuffer`. Also, if you remember, if the `reponsder` (in our case `InspectorGadget`) rejects a `request` because it's busy (in our case because we don't have enough space in `inspectionBuffer`), the `responder` has to send a `request retry` when it becomes available (in our case, when there is room freed in `inspectionBuffer`). So let's go ahead and send a `request retry` to the `peer` of `cpuSidePort`. We need to send that retry **one cycle later**. So, we need another event for that. Let's go ahead and add it.
 
 ---
-<!-- _class: code-50-percent -->
+<!-- _class: no-logo code-50-percent -->
 
 ## nextReqRetryEvent
 
-Let's add a declaration for `nextReqRetryEvent` as well as its callback function and its scheduler function. To do it add the following lines to the `private` scope of `InspectorGadget` in `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+Let's add a declaration for `nextReqRetryEvent` as well as its callback function and its scheduler function. To do it add the following lines to the `private` scope of `InspectorGadget` in `inspector_gadget.hh`.
 
 ```cpp
   private:
@@ -1025,7 +1043,7 @@ Let's add a declaration for `nextReqRetryEvent` as well as its callback function
     void scheduleNextReqRetryEvent(Tick when);
 ```
 
-Define the functions by adding the following code under `namespace gem5` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+Define the functions by adding the following code in `inspector_gadget.cc`.
 
 ```cpp
 void
