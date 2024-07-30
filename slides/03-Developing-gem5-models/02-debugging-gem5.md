@@ -10,16 +10,6 @@ title: Debugging and Debug Flags
 ## Debugging and debug flags
 
 ---
-
-## We will cover
-
-- How to enable debug flags (examples of DRAM and Exec) [Not doing this]
-- `--debug-help`
-- Adding a new debug flag
-- Functions other than DPRINTF
-- Panic/fatal/assert
-
----
 <!-- _class: title -->
 
 ## DebugFlags: Debugging and Logging in gem5
