@@ -13,14 +13,6 @@ title: "Modeling memory objects in gem5: Ports"
 
 ---
 
-- Idea of ports (request/response), packets, interface
-- A simple memory object that forwards things
-- Connecting ports and writing config files
-- Adding stats to a SimObject
-- Modeling bandwidth and latency with events
-
----
-
 ## Ports
 
 In gem5, `SimObjects` can use `Ports` to send/request data. `Ports` are gem5's **main interface to the memory**. There are two types of `Ports` in gem5: `RequestPort` and `ResponsePort`.
@@ -106,7 +98,7 @@ Now let's look at 2 scenarios for communication, in these scenarios let's assume
 
 ## Scenario: Everything Goes Smoothly: Diagram
 
-![ports_ladder_no_retry](04-ports-imgs/ports_ladder_no_retry.drawio.svg)
+![port-ladder-no-retry w:500 h:500](04-ports-imgs/port_ladder_no_retry.drawio.svg)
 
 ---
 
@@ -120,8 +112,11 @@ In this scenario:
 4- `Requestor` is not busy and accepts the `response`. In C++ terms `Requestor::RequestPort::recvTimingResp` returns true. Since `Responder` has received true, the transaction is complete.
 
 ---
+<!-- _class: center-image -->
 
 ## Scenario: Responder Is Busy: Diagram
+
+![port-ladder-no-retry w:500 h:500](04-ports-imgs/port_ladder_req_retry.drawio.svg)
 
 ---
 
@@ -148,12 +143,6 @@ There are two other possible scenarios:
 
 **CAUTION**: Scenarios where `Requestor` is busy should not happen normally. In reality, the `Requestor` makes sure it can receive the `response` for a `request` when it sends the request. I have never run into a situation where I had to design my `SimObjects` in a way that the `Requestor` will return false when `recvTimingResp` is called. That's not to say that if you find yourself in a situation like this, you have done something wrong; BUT I would look really hard into my code/design and verify I'm simulating something realistic.
 
-You can find the ladder diagrams for scenario 1 and 2 in the next slide.
-
----
-
-## Other Scenarios: Diagrams
-
 ---
 
 ## InspectorGadget
@@ -161,7 +150,7 @@ You can find the ladder diagrams for scenario 1 and 2 in the next slide.
 In this step, we will implement our new `SimObject` called `InspectorGadget`. `InspectorGadget` will monitor all the traffic to the memory and make sure all the traffic is safe. In this tutorial, we will do this in multiple steps as laid out below.
 
 - Step 1: We will implement `InspectorGadget` to forward traffic from CPU to memory and back, causing latency for queueing traffic.
-- Step 2: We will extend `InspectorGadget` to reject traffic to a certain address. It will return **all zeroes** for read traffic and ignore write traffic. To do this it will have to *inspect* the traffic, causing further delay (for `1 cycle`) for inspection.
+- Step 2: We will extend `InspectorGadget` to *inspect* the traffic, causing further delay (for `1 cycle`) for inspection.
 - Step 3: We will extend `InpsectorGadget` like below:
   - It will do multiple inspection every cycle, resulting in higher traffic throughput.
   - It will expose `inspection_latency` as a parameter.
@@ -626,7 +615,7 @@ If you remember, `getPort` needs to create a mapping between `Port` objects in P
 
 ## Defining Functions from CPUSidePort
 
-Now, that we have implemented `InspectorGadget::getPort`, we can start declaring and the functions that simulate the `request` path (from `cpu_side_port` to `mem_side_port`) in `InspectorGadget`. Here are all the functions that we need to define from `CPUSidePort`.
+Now, that we have implemented `InspectorGadget::getPort`, we can start declaring and the functions that simulate the `request` path (from `cpuSidePort` to `memSidePort`) in `InspectorGadget`. Here are all the functions that we need to define from `CPUSidePort`.
 
 ```cpp
 virtual AddrRangeList getAddrRanges() const override;
@@ -1258,7 +1247,7 @@ For this step we're going to borrow some of the material from [Running Things in
 Run the following commands in the base gem5 directory to create a directory for our configurations and copy the materials needed.
 
 ```sh
-cp -r ../materials/03-Developing-gem5-models/04-ports/step-1/configs/ configs
+cp -r ../materials/03-Developing-gem5-models/04-ports/step-1/configs/bootcamp configs/
 ```
 
 ---
@@ -1506,13 +1495,34 @@ InspectorGadget::processNextReqSendEvent()
 ```
 
 ---
+<!-- _class: no-logo code-50-percent -->
 
-## Let's Rebuild
+## Let's Rebuild and Simulate
 
 We're ready to compile gem5. Let's do it and while we wait we will work on the configuration scripts. Run the following command in the base gem5 directory to rebuild gem5.
 
 ```sh
 scons build/NULL/gem5.opt -j$(nproc)
+```
+
+Now, let's go ahead and run the simulation again. We don't need to make any changes to our configuration script. Run the following command in the base gem5 directory to run the simulation.
+
+```sh
+./build/NULL/gem5.opt configs/bootcamp/inspector-gadget/first-inspector-gadget-example.py
+```
+
+Now if you search for the name of the stats we added in `m5out/stats.txt`. This is what we will see. **NOTE**: I did by searching for the name of the `InspectorGadget` objects in the file using `grep inspectors m5out/stats.txt` in the base gem5 directory.
+
+```sh
+system.memory.inspectors0.totalInspectionBufferLatency         7334                       # Total inspection buffer latency. (Tick)
+system.memory.inspectors0.numRequestsFwded           22                       # Number of requests forwarded. (Count)
+system.memory.inspectors0.totalResponseBufferLatency         8608                       # Total response buffer latency. (Tick)
+system.memory.inspectors0.numResponsesFwded           22                       # Number of responses forwarded. (Count)
+system.memory.inspectors0.power_state.pwrStateResidencyTicks::UNDEFINED   1000000000                       # Cumulative time (in ticks) in various power states (Tick)
+system.memory.inspectors1.totalInspectionBufferLatency         6003                       # Total inspection buffer latency. (Tick)
+system.memory.inspectors1.numRequestsFwded           18                       # Number of requests forwarded. (Count)
+system.memory.inspectors1.totalResponseBufferLatency         7746                       # Total response buffer latency. (Tick)
+system.memory.inspectors1.numResponsesFwded           18                       # Number of responses forwarded. (Count)
 ```
 
 ---
@@ -1522,3 +1532,129 @@ scons build/NULL/gem5.opt -j$(nproc)
 
 ---
 
+## Adding Inspection
+
+In this step, we're going to add an *inspection* step to the process of forwarding requests that we receive. You'll see that we will **not** create any class that models the inspection. For the purposes of this tutorial, the process of *inspection* is completely trivial; we just care about its latency. In this step, let's just assume that inspection takes `1 cycle` to inspect the `request`.
+
+This is how the `request path` will look like after our changes in this step.
+
+`CPUSidePort.recvTimingReq->InspectorGadget.recvTimingReq->[inspection]->InspectorGadget.processNextReqSendEvent->MemSidePort.sendPacket`
+
+Again, we need to model latency. Therefore, we need to declare a new event that moves the time for the process of *inspection*. In addition, we will need to add a `TimedQueue` called the `outputBuffer` to hold the `Packets` that are *inspected* and are not sent yet. We also need to add a parameter to limit the number of entries in `outputBuffer`, let's call that `output_buffer_entries`.
+
+---
+
+## Adding Inspection: Header File
+
+To declare `nextInspectionEvent`, add the following lines under the `private` scope of `InspectorGadget` in `src/bootcamp/inspector-gadget/inspcetor_gadget.hh`.
+
+```cpp
+  private:
+    TimedQueue<PacketPtr> outputBuffer;
+
+    EventFunctionWrapper nextInspectionEvent;
+    void processNextInspectionEvent();
+    void scheduleNextInspectionEvent(Tick when);
+```
+
+Add the following line under the declaration of `InspectorGadget` in `src/bootcamp/inspector-gadget/InspectorGadget.py`
+
+```python
+    output_buffer_entries = Param.Int("Number of entries in output buffer.")
+```
+
+---
+
+## Changing the Request Path
+
+Now, what we want to do is add `nextInspectionEvent` after receiving a `Packet` in `InspectorGadget::recvTimingReq` and before sending a `Packet` in `InspectorGadget::processNextReqSendEvent`.
+
+We also need to be careful to change the `retry path` to account for this change.
+
+We'll go through this process in detail in the next slides.
+
+Let's get rid of the easy things first. Add the lines below to the initialization list in `InspectorGadget::InspectorGadget` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+
+```cpp
+    outputBufferEntries(params.output_buffer_entries),
+    outputBuffer(clockPeriod()),
+    nextInspectionEvent([this]() { processNextInspectionEvent(); }, name() + ".nextInspectionEvent")
+```
+
+---
+<!-- _class: two-col code-50-percent -->
+
+### Changing the Request Path: InspectorGadget::recvTimingReq
+
+The next thing we need to is schedule `nextInspectionEvent` in `InspectorGadget::recvTimingReq`. Currently, we schedule `nextReqSendEvent` in `InspectorGadget::recvTimingReq`. This is how the code in `src/bootcamp/inspector-gadget/inspector_gadget.cc` looks like right now (before our changes).
+
+```cpp
+bool
+InspectorGadget::recvTimingReq(PacketPtr pkt)
+{
+    if (inspectionBuffer.size() >= inspectionBufferEntries) {
+        return false;
+    }
+    inspectionBuffer.push(pkt, curTick());
+    scheduleNextReqSendEvent(nextCycle());
+    return true;
+}
+```
+
+###
+
+We will just simply replace `scheduleNextReqSendEvent(nextCycle());` with `scheduleNextInspectionEvent(nextCycle());` in this function. This is how the function should look like after the changes.
+
+```cpp
+bool
+InspectorGadget::recvTimingReq(PacketPtr pkt)
+{
+    if (inspectionBuffer.size() >= inspectionBufferEntries) {
+        return false;
+    }
+    inspectionBuffer.push(pkt, curTick());
+    scheduleNextInspectionEvent(nextCycle());
+    return true;
+}
+```
+
+---
+<!-- _class: no-logo code-60-percent -->
+
+## Changing the Request Path: InspectorGadget::scheduleNextInspectionEvent
+
+Let's take a step back. Each *inspection* takes a `request` from `inspectionBuffer`, *inspects* the `request` and puts it in `outputBuffer`. To determine whether `nextInspectionEvent` has to be scheduled we need to check **a**) if there is a `Packet` in `inspectionBuffer` and **b**) if there is at least one empty entry in `outputBuffer`. If both conditions are satisfied, we need to calculate the right time it should be scheduled for like we have been doing it already.
+
+Add the following code to `src/bootcamp/inspector-gadget/inspector_gadget.cc` under `namespace gem5` to define `InspectorGadget::scheduleNextInspectionEvent`.
+
+```cpp
+void
+InspectorGadget::scheduleNextInspectionEvent(Tick when)
+{
+    bool have_packet = !inspectionBuffer.empty();
+    bool have_entry = outputBuffer.size() < outputBufferEntries;
+
+    if (have_packet && have_entry && !nextInspectionEvent.scheduled()) {
+        Tick schedule_time = align(std::max(when, inspectionBuffer.firstReadyTime()));
+        schedule(nextInspectionEvent, align(when));
+    }
+}
+```
+
+---
+
+## Changing the Request Path: InspectorGadget::doInspection
+
+As I mentioned before, for the purposes of this tutorial functionality of *inspection* is trivial. Let's take advantage of this and learn about `Packet::SenderState`. We will use `SenderState` to attach a *sequence number* to `requests` that we inspect to count the number of displacements in the order `responses` arrive.
+
+### Packet::SenderState
+
+Class `Packet::SenderState` allows adding additional information to a `Packet` object. This is specifically useful when you want to design a `SimObject` that interacts with the memory (like we are doing right now).
+
+We don't really have to concern ourselves with the details of `Packet::SendedState`. All we need is to extend the class to store a *sequence number*.
+
+---
+
+## Changing the Request Path: SequenceTag
+
+Now, let's declare a new class that inhertis from `Packet::SenderState`. Let's do it under the `private` scope of

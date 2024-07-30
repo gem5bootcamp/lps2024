@@ -41,6 +41,7 @@ from gem5.components.boards.test_board import TestBoard
 cache_hierarchy = MyPrivateL1SharedL2CacheHierarchy()
 
 #### Add your code for inspected memory here.
+## memory = ?
 
 generator = HybridGenerator(
     num_cores=6, rate="1GB/s", duration="1ms", data_limit=128
