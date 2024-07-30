@@ -15,16 +15,6 @@ math: mathjax
 
 ---
 
-## We will cover
-
-- Creating a simple callback event
-- Scheduling events
-- Other SimObjects as parameters
-- GoodByeExampleFlag and CompoundFlag(GreetExampleFlag, HelloExampleFlag, GoodByeExampleFlag)
-- Hello/Goodbye example with buffer
-
----
-
 ## Detour: Let's Take a Look at Other Slides
 
 ```cpp
