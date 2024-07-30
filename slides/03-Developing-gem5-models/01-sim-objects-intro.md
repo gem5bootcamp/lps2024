@@ -15,25 +15,6 @@ author: Mahyar Samani, M. Mysore
 
 <!--
 Speaker Notes
-- Topics to cover
- -->
-
-<!--
-Speaker Notes
-- Topics to cover
- -->
-
-## We will cover
-
-- Development environment, code style, git branches
-- The most simple `SimObject`
-- Simple run script
-- How to add parameters to a `SimObject`
-
----
-
-<!--
-Speaker Notes
 - How to build gem5
  -->
 
