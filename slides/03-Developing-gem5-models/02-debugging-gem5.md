@@ -7,7 +7,7 @@ title: Debugging and Debug Flags
 
 <!-- _class: title -->
 
-## Debugging and debug flags
+## Debugging and DebugFlags
 
 ---
 <!-- _class: title -->
