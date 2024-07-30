@@ -14,12 +14,95 @@ math: mathjax
 **IMPORTANT**: This slide deck builds on top of what has already been developed in [Introduction to SimObjects](01-sim-objects-intro.md) and [Debugging gem5](02-debugging-gem5.md).
 
 ---
+<!-- _class: title -->
 
-## Detour: Let's Take a Look at Other Slides
+## Detour: Refresher On Event Driven Simulation
 
-```cpp
-Jason's event driven slides.
-```
+---
+
+## gem5 architecture: Simulation
+
+gem5 is a **_discrete event simulator_**
+
+At each timestep, gem5:
+
+1. Event at the head is dequeued
+2. The event is executed
+3. New events are scheduled
+
+![Example of discrete event simulation bg right:55% fit](../01-Introduction/01-simulation-background-imgs/des-1.drawio.svg)
+
+---
+
+<!-- _paginate: hold -->
+
+## gem5 architecture: Simulation
+
+gem5 is a **_discrete event simulator_**
+
+At each timestep, gem5:
+
+1. Event at the head is dequeued
+2. The event is executed
+3. New events are scheduled
+
+![Example of discrete event simulation bg right:55% fit](../01-Introduction/01-simulation-background-imgs/des-2.drawio.svg)
+
+---
+
+<!-- _paginate: hold -->
+
+## gem5 architecture: Simulation
+
+gem5 is a **_discrete event simulator_**
+
+At each timestep, gem5:
+
+1. Event at the head is dequeued
+2. The event is executed
+3. New events are scheduled
+
+> **All SimObjects can enqueue events onto the event queue**
+
+![Example of discrete event simulation bg right:55% fit](../01-Introduction/01-simulation-background-imgs/des-3.drawio.svg)
+
+---
+
+## Discrete event simulation example
+
+![Example of discrete event simulation fit](../01-Introduction/01-simulation-background-imgs/des-example-1.drawio.svg)
+
+---
+
+<!-- _paginate: hold -->
+
+## Discrete event simulation example
+
+![Example of discrete event simulation fit](../01-Introduction/01-simulation-background-imgs/des-example-2.drawio.svg)
+
+---
+
+<!-- _paginate: hold -->
+
+## Discrete event simulation example
+
+![Example of discrete event simulation fit](../01-Introduction/01-simulation-background-imgs/des-example-3.drawio.svg)
+
+To model things that take time, schedule the _next_ event in the future (latency of current event).
+Can call functions instead of scheduling events, but they occur _in the same tick_.
+
+---
+
+## Discrete event simulation
+
+"Time" needs a unit
+In gem5, we use a unit called "Tick"
+
+Need to convert a simulation "tick" to user-understandable time
+E.g., seconds
+
+This is the global simulation tick rate
+Usually this is 1 ps per tick or $10^{12}$ ticks per second
 
 ---
 <!-- _class: code-60-percent -->
