@@ -10,6 +10,7 @@
     --primary-color-dark: #265c66;
     --toggle-color: #ddd;
     --text-color: #262626;
+    --link-color: #2a96a9;
 
     /* //transition colors// */
     --tran-03: all 0.2s ease;
@@ -253,6 +254,7 @@ div.content a{
 }
 .category-slides .slide-link:hover {
     text-decoration: underline;
+    color: var(--link-color)
 }
 
 /*.sidebar li .icon {
