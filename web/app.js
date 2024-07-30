@@ -168,9 +168,9 @@ function make_category(cat) {
         })());
         /* Add `dropdown-arrow` */
         elem.append((() => {
-            let elem = document.createElement('span');
+            let elem = document.createElement('img');
             elem.classList.add('dropdown-arrow');
-            elem.textContent = '>';
+            elem.src = 'chevron.svg';
             return elem;
         })());
         return elem;
