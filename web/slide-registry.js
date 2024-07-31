@@ -21,7 +21,7 @@ window.get_slide_registry = function() {
                 "07-full-system",
                 "08-accelerating-simulation",
                 "09-sampling",
-                "10-power-modeling",
+                "10-modeling-power",
                 "11-multisim"
             ]
         },
