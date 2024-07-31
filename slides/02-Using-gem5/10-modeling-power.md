@@ -29,7 +29,7 @@ math: mathjax
 
 For instance
 
-$$P = \frac{N_{cache\_accesses} * 18 uJ + N_{cache\_misses} * 1 uJ}{s}$$
+$$P = \frac{N_{cache\_accesses} * 18 \mu J + N_{cache\_misses} * 1 \mu J}{s}$$
 
 > We are building *power* models, not energy models. So, don't forget to convert to *Watts* not *Joules*.
 
