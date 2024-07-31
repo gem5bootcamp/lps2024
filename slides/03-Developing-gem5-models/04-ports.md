@@ -614,7 +614,7 @@ As we start defining functions, we will likely find the need to declare and defi
 
 ## Defining InspectorGadget::getPort
 
-Let's start by implementing `InspectorGadget::getPort`. Add the following code inside `namespace gem5` in `inspector_gadget.cc` to do this:
+Let's start by implementing `InspectorGadget::getPort`. Add the following code inside `namespace gem5` in `inspector_gadget.cc` to do this  (all code in such definition files should go inside `namespace gem5`):
 
 ```cpp
 Port&
@@ -630,13 +630,13 @@ InspectorGadget::getPort(const std::string &if_name, PortID idx)
 }
 ```
 
-If you remember, `getPort` needs to create a mapping between `Port` objects in Python and `Port` objects in C++. In this function when `if_name == "cpu_side_port"` (the name comes from the Python declaration, look at `InspectorGadget.py`) we will retrun `cpuSidePort`. We do the same thing to map the name `"mem_side_port"` to our instance `memSidePort`. For now, you don't have to worry about `idx`. We will talk about it later in the context of `VectorPorts` – ports that can connect to multiple peers.
+If you remember, `getPort` needs to create a mapping between `Port` objects in Python and `Port` objects in C++. In this function when `if_name == "cpu_side_port"` we will retrun `cpuSidePort` (the name comes from the Python declaration, look at `InspectorGadget.py`) . We do the same thing to map `"mem_side_port"` to our instance `memSidePort`. For now, you don't have to worry about `idx`. We will talk about it later in the context of `VectorPorts` – ports that can connect to multiple peers.
 
 ---
 
 ## Defining Functions from CPUSidePort
 
-Now, that we have implemented `InspectorGadget::getPort`, we can start declaring and defining the functions that simulate the `request` path (from `cpu_side_port` to `mem_side_port`) in `InspectorGadget`. Here are all the functions that we need to define from `CPUSidePort`.
+Now, that we have implemented `InspectorGadget::getPort`, we can start declaring and defining the functions that simulate the `request` path (from `cpu_side_port` to `mem_side_port`) in `InspectorGadget`. Here are all the functions that we need to define from `CPUSidePort`:
 
 ```cpp
 virtual AddrRangeList getAddrRanges() const override;
@@ -734,6 +734,7 @@ To do this add the following code to the `public` scope of `InspectorGadget` in 
 
 ```cpp
   public:
+    AddrRangeList getAddrRanges() const;
     bool recvTimingReq(PacketPtr pkt);
     Tick recvAtomic(PacketPtr pkt);
     void recvFunctional(PacketPtr pkt);
@@ -939,7 +940,7 @@ Open `inspector_gadget.hh` and add the following lines:
 
 ```cpp
   private:
-    void scheduleNextReqEvent(Tick when);
+    void scheduleNextReqSendEvent(Tick when);
 ```
 
 We'll see that one `event` might be scheduled in multiple locations in the code. At every location, we might have a different perspective on when an `event` should be scheduled. `Tick when` denotes the earliest we think that `event` should be scheduled from the perspective of the location.
@@ -1063,10 +1064,10 @@ InspectorGadget::scheduleNextReqRetryEvent(Tick when)
 ```
 
 ---
-<!-- _class: code-70-percent -->
+<!-- _class: code-60-percent -->
 ## Back to processNextReqSendEvent
 
-Now all is left to do in `processNextReqSendEvent` is try to schedule `nextReqRetry` for `nextCycle` after we have sent a `Packet`. Let' go ahead and add that our code. This is how `processNextReqSendEvent` should look like after the changes.
+Now all that is left to do in `processNextReqSendEvent` is to try scheduling `nextReqRetry` for `nextCycle` after we have sent a `Packet`. Let's go ahead and add that our code. This is how `processNextReqSendEvent` should look like after these changes:
 
 ```cpp
 void
@@ -1087,11 +1088,11 @@ InspectorGadget::processNextReqSendEvent()
 Next we will see the details of the scheduler function for `nextReqSendEvent`.
 
 ---
-<!-- _class: code-50-percent -->
+<!-- _class: no-logo code-50-percent -->
 
 ## scheduleNextReqSendEvent
 
-To define `scheduleNextReqSendEvent`, add the following code to `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+To define `scheduleNextReqSendEvent`, add the following code to `inspector_gadget.cc`.
 
 ```cpp
 void
@@ -1107,7 +1108,7 @@ InspectorGadget::scheduleNextReqSendEvent(Tick when)
 }
 ```
 
-You might wonder why we need to calculate `schedule_time` ourself. As we mentioned `Tick when` is passed as the perspective of the call location on when `nextReqSendEvent` should be scheduled. However, we need to make sure that we schedule the event at the time that simulates latencies correctly.
+You might wonder why we need to calculate `schedule_time` ourself. As we mentioned, `Tick when` is passed from the perspective of the caller for when it thinks `nextReqSendEvent` should be scheduled. However, we need to make sure that we schedule the event at the time that simulates latencies correctly.
 
 Make sure to add the following include statement as well since we're using `std::max`.
 
@@ -1121,18 +1122,18 @@ Make sure to add the following include statement as well since we're using `std:
 
 We're almost done with defining the whole `request` path. The only thing that remains is to react to `request retries` we receive from the `peer` of `memSidePort`.
 
-Since we track the last `Packet` that we have tried to send, we can simply try sending that packet again. Let's consider the following for this function.
+Since we tracked the last `Packet` that we have tried to send, we can simply try sending that packet again. Let's consider the following for this function:
 
-1- We shouldn't receive a `request retry` if we're not blocked.
-2- For now, let's accept that there might be scenarios when a `request retry` will arrive but when we try to send `blockedPacket` will be rejected again. So let's account for that when writing `MemSidePort::recvReqRetry`.
-3- If sending `blockedPacket` succeeds, we can now try to schedule `nextReqSendEvent` for `nextCycle` (we have to ask `owner` to do this).
+1: We shouldn't receive a `request retry` if we're not blocked.
+2: For now, let's accept that there might be scenarios when a `request retry` will arrive but when we try to send `blockedPacket`, it will be rejected again. So let's account for that when writing `MemSidePort::recvReqRetry`.
+3: If sending `blockedPacket` succeeds, we can now try to schedule `nextReqSendEvent` for `nextCycle` (we have to ask `owner` to do this).
 
 ---
 <!-- _class: code-60-percent -->
 
 ## MemSidePort::recvReqRetry cont.
 
-Add the following code to `src/bootcamp/inspector-gadget/inspector_gadget.cc` to define `MemSidePort::recvReqRetry`
+Add the following code to `inspector_gadget.cc` to define `MemSidePort::recvReqRetry`
 
 ```cpp
 void
@@ -1151,21 +1152,23 @@ InspectorGadget::MemSidePort::recvReqRetry()
 }
 ```
 
-**DECLARE**:
+> **Declarations**:
 `void InspectorGadget::recvReqRetry();`
 
 ---
 
+<!-- _class: no-logo code-80-percent -->
+
 ## InspectorGadget::recvReqRetry
 
-Let's go ahead and declare and define `recvReqRetry` in the `public` scope of `InspectorGadget`. Add the following lines to `src/bootcamp/inspector-gadget/inspector_gadget.hh` to declare `InpsectorGadget::recvReqRetry`.
+Let's go ahead and declare and define `recvReqRetry` in the `public` scope of `InspectorGadget`. Add the following lines to `inspector_gadget.hh` to declare `InpsectorGadget::recvReqRetry`:
 
 ```cpp
   private:
     void recvReqRetry();
 ```
 
-Now, let's get to defining it. We simply need to try to schedule `nextReqSendEvent` for the `nextCycle`. Add the following code under `namespace gem5` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+Now, let's define it. We simply need to try to schedule `nextReqSendEvent` for the `nextCycle`. Add the following code to `inspector_gadget.cc`:
 
 ```cpp
 void
@@ -1177,23 +1180,35 @@ InspectorGadget::recvReqRetry()
 
 ---
 
+<!-- _class: no-logo code-70-percent -->
+
 ## Let's Do All of This for Response Path
 
-So far, we have completed the functions required for the `request` path (from `cpuSidePort` to `memSidePort`). Now we have to do all of that for the `response` path. I'm not going to go over the details of that in this since they are going to look very similar to the functions for the `request` path.
+So far, we have completed the functions required for the `request` path (from `cpuSidePort` to `memSidePort`). Now we have to do all of that for the `response` path. I'm not going to go over the details of that since they are going to look very similar to the functions for the `request` path.
 
 However, here is a high level representation of both paths.
 
 **Request Path** (without retries)
-`CPUSidePort.recvTimingReq->InspectorGadget.recvTimingReq->InspectorGadget.processNextReqSendEvent->MemSidePort.sendPacket`
+```cpp
+CPUSidePort.recvTimingReq
+    ->InspectorGadget.recvTimingReq
+    ->InspectorGadget.processNextReqSendEvent
+    ->MemSidePort.sendPacket
+```
 
 **Response Path** (without retries)
-`MemSidePort.recvTimingResp->InspectorGadget.recvTimingResp->InspectorGadget.processNextRespSendEvent->CPUSidePort.sendPacket`
+```cpp
+MemSidePort.recvTimingResp
+    ->InspectorGadget.recvTimingResp
+    ->InspectorGadget.processNextRespSendEvent
+    ->CPUSidePort.sendPacket
+```
 
 ---
 
 ## Response Path Additions to Header File
 
-Let's declare the following in `src/bootcamp/inspector-gadget/inspector_gadget.hh` to implement the `response` path.
+Let's declare the following in `inspector_gadget.hh` to implement the `response` path.
 
 ```cpp
   private:
@@ -1201,17 +1216,19 @@ Let's declare the following in `src/bootcamp/inspector-gadget/inspector_gadget.h
 
     EventFunctionWrapper nextRespSendEvent;
     void processNextRespSendEvent();
-    void scheduleNextRespSendEvent();
+    void scheduleNextRespSendEvent(Tick when);
 
     EventFunctionWrapper nextRespRetryEvent;
     void processNextRespRetryEvent();
-    void scheduleNextRespSendEvent();
+    void scheduleNextRespRetryEvent(Tick when);
 
   public:
     bool recvTimingResp(PacketPtr pkt);
 ```
 
 ---
+
+<!-- _class: code-80-percent -->
 
 ## Defining Functions for the Response Path
 
@@ -1229,13 +1246,13 @@ void InspectorGaget::processNextRespRetryEvent();
 void InspectorGaget::scheduleNextRespSendEvent(Tick when);
 ```
 
-To find the definition for all these functions please look at the [complete version](/materials/03-Developing-gem5-models/04-ports/step-1/src/bootcamp/inspector-gadget/inspector_gadget.cc) of `inspector_gadget.cc`. You can search for `Too-Much-Code` to find these functions.
+To find the definition for all these functions please look at the [complete version](../../materials/03-Developing-gem5-models/04-ports/step-1/src/bootcamp/inspector-gadget/inspector_gadget.cc) of `inspector_gadget.cc`. You can search for `Too-Much-Code` to find these functions.
 
 ---
 
 ## InspectorGadget::InspectorGadget
 
-Now, what we have to do is define the constructor of `InspectorGadget`. To do it add the following code under `namespace gem5` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+Now, what we have to do is define the constructor of `InspectorGadget`. To do it add the following code to `inspector_gadget.cc`:
 
 ```cpp
 InspectorGadget::InspectorGadget(const InspectorGadgetParams& params):
@@ -1258,13 +1275,13 @@ InspectorGadget::InspectorGadget(const InspectorGadgetParams& params):
 
 ## SimObject::init
 
-Last step before compilation is to define `init` function. Since `InspectorGadget` is a `Responder` object, the convention is to let `peer` ports that they can ask for their address range when they know the ranges are known. `init` is a `virtual` and `public` function from `SimObject`. Let's go ahead and declare it to override it. To do it add the following declaration to the `public` scope of `InspectorGadget` in `src/bootcamp/inspector-gadget.hh`.
+Last step before compilation is to define the `init` function. Since `InspectorGadget` is a `Responder` object, the convention is to let `peer` ports know that they can ask for their address range when the ranges become known. `init` is a `virtual` and `public` function from `SimObject`. Let's go ahead and declare it to override it. To do this, add the following declaration to the `public` scope of `InspectorGadget` in `inspector-gadget.hh`.
 
 ```cpp
 virtual void init() override;
 ```
 
-To define it, we need to simply call `sendRangeChange` from `cpuSidePort`. Add the following code under `namespace gem5` to define `init` in `src/bootcamp/inspector-gadget.cc`
+To define it, we need to simply call `sendRangeChange` from `cpuSidePort`. Add the following code to define `init` in `inspector-gadget.cc`
 
 ```cpp
 void
@@ -1281,6 +1298,7 @@ InspectorGadget::init()
 We're ready to compile gem5. Let's do it and while we wait we will work on the configuration scripts. Run the following command in the base gem5 directory to rebuild gem5.
 
 ```sh
+cd /workspaces/2024/gem5
 scons build/NULL/gem5.opt -j$(nproc)
 ```
 
@@ -1288,9 +1306,9 @@ scons build/NULL/gem5.opt -j$(nproc)
 
 ## Let's Create a Configuration Script
 
-For this step we're going to borrow some of the material from [Running Things in gem5](/slides/02-Using-gem5/03-running-in-gem5.md). We are specifically going to copy the materials for using *TrafficGenerators*. We are going to further expand that material by extending the *ChanneledMemory* class to put an `InspectorGadget` right before the memory controller.
+For this step, we're going to borrow some of the material from [Running Things in gem5](../02-Using-gem5/03-running-in-gem5.md). We are specifically going to copy the materials for using *TrafficGenerators*. We are going to further expand that material by extending the *ChanneledMemory* class to put an `InspectorGadget` right before the memory controller.
 
-Run the following commands in the base gem5 directory to create a directory for our configurations and copy the materials needed.
+Run the following commands in the base gem5 directory to create a directory for our configurations and copy the materials needed:
 
 ```sh
 cp -r ../materials/03-Developing-gem5-models/04-ports/step-1/configs/bootcamp configs/
@@ -1300,17 +1318,19 @@ cp -r ../materials/03-Developing-gem5-models/04-ports/step-1/configs/bootcamp co
 
 ## InspectedMemory
 
-We will need to do the following to extend `ChanneledMemory`.
+We will need to do the following to extend `ChanneledMemory`:
 
-1- In `InspectedMemory.__init__`, we should create an object of `InspectorGadget` for every memory channel. Let's store all of them in `self.inspectors`. We need to remember to expose `inspection_buffer_entries` and `response_buffer_entries` from `InspectorGadget` to the user. Make sure to also expose the input arguments of `ChanneledMemory.__init__`.
-2- Override `incorporate_memory` from `ChanneledMemory` for first call `ChanneledMemory.incorporate_memory` and after that connect `mem_side_port` from one `InspectorGadget` object to `port` from one `MemCtrl` object.
-3- Override `get_mem_ports` from `ChanneledMemory` to replace `port` from `MemCtrl` objects with `cpu_side_port` from `InspectorGadget` objects.
+1: In `InspectedMemory.__init__`, we should create an object of `InspectorGadget` for every memory channel. Let's store all of them in `self.inspectors`. We need to remember to expose `inspection_buffer_entries` and `response_buffer_entries` from `InspectorGadget` to the user. Make sure to also expose the input arguments of `ChanneledMemory.__init__`.
+2: Override `incorporate_memory` from `ChanneledMemory`. First call `ChanneledMemory.incorporate_memory` and then connect the `mem_side_port` from each `InspectorGadget` object to the `port` from one `MemCtrl` object.
+3: Override `get_mem_ports` from `ChanneledMemory` to replace `port` from `MemCtrl` objects with `cpu_side_port` from `InspectorGadget` objects.
 
 ---
-<!-- _class: two-col code-50-percent -->
+
+<!-- _class: two-col no-logo code-50-percent -->
+
 ### InspectedMemory: Code
 
-This is how the `configs/bootcamp/inspector-gadget/components/inspected_memory.py` should look.
+This is what should be in `gem5/configs/bootcamp/inspector-gadget/components/inspected_memory.py`:
 
 ```python
 from typing import Optional, Sequence, Tuple, Union, Type
@@ -1377,7 +1397,7 @@ class InspectedMemory(ChanneledMemory):
 
 ## simple-traffic-generators.py
 
-Now, let's just simply add the following imports to `configs/bootcamp/inspector-gadget/simple-traffic-generators.py`
+Now, let's just simply add the following imports to `gem5/configs/bootcamp/inspector-gadget/simple-traffic-generators.py`:
 
 ```python
 from components.inspected_memory import InspectedMemory
