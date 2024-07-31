@@ -1393,7 +1393,7 @@ class InspectedMemory(ChanneledMemory):
 ```
 
 ---
-<!-- _class: code-60-percent -->
+<!-- _class: code-60-percent no-logo -->
 
 ## first-inspector-gadget-example.py
 
@@ -1421,13 +1421,13 @@ Now, let's run the following command to simulate our configuration script.
 ./build/NULL/gem5.opt --debug-flags=InspectorGadget configs/bootcamp/inspector-gadget/first-inspector-gadget-example.py
 ```
 
+In the next slide, there is a recording of my terminal when running the command above.
+
 ---
 
 ## Output: first-inspector-gadget-example.py
 
-Here is a recording of my terminal when running the command above.
-
-[![asciicast](https://asciinema.org/a/9j5QCBXn5098Oa63FpEmoYvLK.svg)](https://asciinema.org/a/9j5QCBXn5098Oa63FpEmoYvLK)
+<script src="https://asciinema.org/a/9j5QCBXn5098Oa63FpEmoYvLK.js" id="asciicast-9j5QCBXn5098Oa63FpEmoYvLK" async data-rows=32></script>
 
 ---
 
