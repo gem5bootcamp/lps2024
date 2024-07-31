@@ -25,6 +25,7 @@ As their names would suggest:
 Make sure to differentiate between `request`/`response` and `data`. Both `requests` and `response` could have `data` with them.
 
 ---
+<!-- _class: two-col code-50-percent -->
 
 ## Packets
 
@@ -960,7 +961,7 @@ void
 InspectorGadget::processNextReqSendEvent()
 {
     panic_if(memSidePort.blocked(), "Should never try to send if blocked!");
-    panic_if(!inspectionBuffer.hasReady(curTick()), "Should never try to send if no ready packets!");
+    panic_if(!outputBuffer.hasReady(curTick()), "Should never try to send if no ready packets!");
 
     PacketPtr pkt = inspectionBuffer.front();
     memSidePort.sendPacket(pkt);
@@ -1055,7 +1056,7 @@ InspectorGadget::scheduleNextReqSendEvent(Tick when)
     bool have_items = !inspectionBuffer.empty();
 
     if (port_avail && have_items && !nextReqSendEvent.scheduled()) {
-        Tick schedule_time = align(std::max(when, inspectionBuffer.firstReadyTime()));
+        Tick schedule_time = align(std::max(when, outputBuffer.firstReadyTime()));
         schedule(nextReqSendEvent, schedule_time);
     }
 }
@@ -1169,7 +1170,7 @@ Let's declare the following in `src/bootcamp/inspector-gadget/inspector_gadget.h
 
 ## Defining Functions for the Response Path
 
-Here is a comprehensive list of all the functions we need to define for the `response` path. Let's not forget about `InspectorGadget::recvRespRetry`.
+Here is a comprehensive list of all the functions we need to declare and define for the `response` path. Let's not forget about `InspectorGadget::recvRespRetry`.
 
 ```cpp
 bool MemSidePort::recvTimingResp(PacketPtr pkt);
@@ -1643,18 +1644,341 @@ InspectorGadget::scheduleNextInspectionEvent(Tick when)
 
 ---
 
-## Changing the Request Path: InspectorGadget::doInspection
+## Little Bit About SenderState
 
 As I mentioned before, for the purposes of this tutorial functionality of *inspection* is trivial. Let's take advantage of this and learn about `Packet::SenderState`. We will use `SenderState` to attach a *sequence number* to `requests` that we inspect to count the number of displacements in the order `responses` arrive.
 
 ### Packet::SenderState
 
-Class `Packet::SenderState` allows adding additional information to a `Packet` object. This is specifically useful when you want to design a `SimObject` that interacts with the memory (like we are doing right now).
+Struct `Packet::SenderState` allows adding additional information to a `Packet` object. This is specifically useful when you want to design a `SimObject` that interacts with the memory (like we are doing right now).
 
-We don't really have to concern ourselves with the details of `Packet::SendedState`. All we need is to extend the class to store a *sequence number*.
+We don't really have to concern ourselves with the details of `Packet::SenderState`. All we need is to extend this struct to store a *sequence number*.
 
 ---
 
-## Changing the Request Path: SequenceTag
+## Changing the Request Path: SequenceNumberTag
 
-Now, let's declare a new class that inhertis from `Packet::SenderState`. Let's do it under the `private` scope of
+Now, let's declare a new class that inherits from `Packet::SenderState`. Let's do it under the `private` scope of `InspectorGadget` in `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+
+```cpp
+    struct SequenceNumberTag: public Packet::SenderState
+    {
+        uint64_t sequenceNumber;
+        SequenceNumberTag(uint64_t sequenceNumber):
+            SenderState(), (sequenceNumber)
+        {}
+    };
+```
+
+---
+<!-- _class: code-50-percent -->
+
+## InspectorGadget::inspectRequest: Declaring Additional Members
+
+Now, let's go ahead and declare and define a function that does the inspection for us. To count the number of displacements we need to keep track of the next *sequence number* we expect. We need to increment this variable every time we receive a response. In addition, we need to generate new *sequence numbers* as well. Therefore, we need to keep track of the next available *sequence number*. Lastly, we need to count the number of displacement in a variable. Let's add that to `InspectorGadgetStats`. Add the following lines under the `private` scope of `InspectorGadgetStats` in `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+
+```cpp
+  private:
+    uint64_t nextAvailableSeqNum;
+    uint64_t nextExpectedSeqNum;
+```
+
+```cpp
+  private:
+    struct InspectorGadgetStats: public statistics::Group
+    {
+        // ...
+        statistics::Scalar numReqRespDisplacements;
+        InspectorGadgetStats(InspectorGadget* inspector_gadget);
+    };
+```
+
+---
+
+## InspectorGadget::inspectRequest: Initializing Additional Members
+
+Now, let's go ahead and add the following lines to the initialization list in `InspectorGadget::InspectorGadget` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+
+```cpp
+    nextAvailableSeqNum(0), nextExpectedSeqNum(0)
+```
+
+Add the following line to the initialization list in `InspectorGadget::InspectorGadget::InspectorGadgetStats` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+
+```cpp
+    ADD_STAT(numReqRespDisplacements, statistics::units::Count::get(), "Number of request-response displacements.")
+```
+
+---
+<!-- _class: no-logo code-50-percent -->
+
+## InspectorGadget::inspectRequest
+
+Now, let's go ahead an declare a function that *inspects* `requests` as they are popped from `inspectionBuffer`. To do this, add the following line under the `private` scope of `InspectorGadget` in `src/bootcamp/inspector-gadget/inspector-gadget.hh`.
+
+```cpp
+  private:
+    void inspectRequest(PacketPtr pkt);
+```
+
+Add the following code under `namespace gem5` in `src/bootcamp/inspector-gadget/inspector_gadget.cc` to define `inspectRequest`.
+
+```cpp
+void
+InspectorGadget::inspectRequest(PacketPtr pkt)
+{
+    panic_if(!pkt->isRequest(), "Should only inspect requests!");
+    SequenceNumberTag* seq_num_tag = new SequenceNumberTag(nextAvailableSeqNum);
+    pkt->pushSenderState(seq_num_tag);
+    nextAvailableSeqNum++;
+}
+```
+
+**NOTE**: In this function we call `pushSenderState` from `Packet` to attach our `SequenceNumberTag` to the `pkt`. We can use this tag on the **response path** to identify displacements.
+
+---
+
+## InspectorGadget::processNextInspectionEvent
+
+Now, we need to define the callback function for `nextInspectionEvent`.
+
+To simulate inspection and its latency, we need to pop the first item in `inspectionBuffer`, *inspect* it and push it in the `outputBuffer` for it to be sent to the memory.  Then we can schedule `nextReqSendEvent`  for `nextCycle`.
+
+Now, since `processNextInspectionEvent` is popping items off of `inspectionBuffer`, it now becomes responsible for sending `retry requests` from `cpuSidePort`. This means we need to schedule `nextReqRetryEvent` for `nextCycle` as well.
+
+We also need to schedule `nextInspectionEvent` for `nextCycle`. We discussed why before. So far we have added `nextInspectionEvent` after `recvTimingReq`. In the next slides, we change `nextReqSendEvent` accordingly.
+
+Lastly, we need to measure `totalInspectionBufferLatency` in this function now.
+
+---
+
+## InspectorGadget::processNextInspectionEvent cont.
+
+Add the following code under `namespace gem5` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+
+```cpp
+void
+InspectorGadget::processNextInspectionEvent()
+{
+    panic_if(!inspectionBuffer.hasReady(curTick()), "Should never try to inspect if no ready packets!");
+
+    stats.totalInspectionBufferLatency += curTick() - inspectionBuffer.frontTime();
+    PacketPtr pkt = inspectionBuffer.front();
+    inspectRequest(pkt);
+    outputBuffer.push(pkt, curTick());
+    inspectionBuffer.pop();
+
+    scheduleNextReqSendEvent(nextCycle());
+    scheduleNextReqRetryEvent(nextCycle());
+    scheduleNextInspectionEvent(nextCycle());
+}
+```
+
+---
+<!-- _class: two-col code-50-percent -->
+
+## InspectorGadget::scheduleNextReqSendEvent
+
+Now that we have add `nextInspectionEvent` and `outputBuffer`, we need to change the way we schedule `nextReqSendEvent`.
+
+What we are going to change is that `nextReqSendEvent` is going to pop items off of `outputBuffer` instead of `inspectionBuffer`.
+
+This is how `scheduleNextReqSendEvent` in `src/bootcamp/inspector-gadget/inspector_gadget.cc` looks like before the changes.
+
+```cpp
+void
+InspectorGadget::scheduleNextReqSendEvent(Tick when)
+{
+    bool port_avail = !memSidePort.blocked();
+    bool have_items = !inspectionBuffer.empty();
+
+    if (port_avail && have_items && !nextReqSendEvent.scheduled()) {
+        Tick schedule_time = align(std::max(when, inspectionBuffer.firstReadyTime()));
+        schedule(nextReqSendEvent, schedule_time);
+    }
+}
+```
+
+This is how it should look like after the changes.
+
+```cpp
+void
+InspectorGadget::scheduleNextReqSendEvent(Tick when)
+{
+    bool port_avail = !memSidePort.blocked();
+    bool have_items = !outputBuffer.empty();
+
+    if (port_avail && have_items && !nextReqSendEvent.scheduled()) {
+        Tick schedule_time = align(std::max(when, inspectionBuffer.firstReadyTime()));
+        schedule(nextReqSendEvent, schedule_time);
+    }
+}
+```
+
+---
+<!-- _class: two-col code-50-percent -->
+
+## InspectorGadget::processNextReqSendEvent
+
+Now, let's go ahead and change the definition of `processNextReqSendEvent`. We need to do the following.
+
+1- Pop items off of `outputBuffer` instead of `inspectionBuffer`.
+2- Schedule `nextInspectionEvent` for `nextCycle`.
+3- Remove scheduling of `nextReqRetryEvent`.
+4- Remove measuring of `totalInspectionBufferLatency`.
+
+This is how this function looks like right now.
+
+```cpp
+void
+InspectorGadget::processNextReqSendEvent()
+{
+    panic_if(memSidePort.blocked(), "Should never try to send if blocked!");
+    panic_if(!inspectionBuffer.hasReady(curTick()), "Should never try to send if no ready packets!");
+
+    stats.numRequestsFwded++;
+    stats.totalInspectionBufferLatency += curTick() - inspectionBuffer.frontTime();
+
+    PacketPtr pkt = inspectionBuffer.front();
+    memSidePort.sendPacket(pkt);
+    inspectionBuffer.pop();
+
+    scheduleNextReqRetryEvent(nextCycle());
+    scheduleNextReqSendEvent(nextCycle());
+}
+```
+
+This is how it should look like after the changes.
+
+```cpp
+void
+InspectorGadget::processNextReqSendEvent()
+{
+    panic_if(memSidePort.blocked(), "Should never try to send if blocked!");
+    panic_if(!inspectionBuffer.hasReady(curTick()), "Should never try to send if no ready packets!");
+
+    stats.numRequestsFwded++;
+    PacketPtr pkt = outputBuffer.front();
+    memSidePort.sendPacket(pkt);
+    outputBuffer.pop();
+
+    scheduleNextInspectionEvent(nextCycle());
+    scheduleNextReqSendEvent(nextCycle());
+}
+```
+
+---
+<!-- _class: two-col code-50-percent -->
+
+## InspectorGadget::inspectResponse
+
+We're not going to change anything in the **response path**. However, we are going to add the process of counting displacement when we put `Packets` in the `responseBuffer`.
+
+Let's declare `inspectResponse` under the `private` scope of `InspectorGadget` in `src/bootcamp/inspector-gadget/inspector_gadget.hh`.
+
+```cpp
+  private:
+    void inspectResponse(PacketPtr pkt);
+```
+
+All we need to do is to count the number of the times `pkt` has a different sequence number than what we expect to see. To define `inspectResponse`, add the following code under `namespace gem5` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`.
+
+We will use `Packet::findNextSenderState` to find the `SequenceNumberTag` object we attach to the request. After we're done, we should make sure to release the memory location for the object and remove it from `pkt`.
+
+```cpp
+void
+InspectorGadget::inspectResponse(PacketPtr pkt)
+{
+    panic_if(!pkt->isResponse(), "Should only inspect responses!");
+    SequenceNumberTag* seq_num_tag = pkt->findNextSenderState<SequenceNumberTag>();
+    panic_if(seq_num_tag == nullptr, "There is not tag attached to pkt!");
+    if (seq_num_tag->sequenceNumber != nextExpectedSeqNum) {
+        stats.numReqRespDisplacements++;
+    }
+    delete pkt->popSenderState();
+    nextExpectedSeqNum++;
+}
+```
+
+---
+<!-- _class: no-logo code-50-percent -->
+## InspectorGadget::processNextRespSendEvent
+
+Now, let's go ahead and call `inspectResponse` in the response path. Do it by adding a function call to `inspectResponse` in `processNextRespSendEvent`. This is how the function should look like after the changes.
+
+```cpp
+void
+InspectorGadget::processNextRespSendEvent()
+{
+    panic_if(cpuSidePort.blocked(), "Should never try to send if blocked!");
+    panic_if(!responseBuffer.hasReady(curTick()), "Should never try to send if no ready packets!");
+
+    stats.numResponsesFwded++;
+    stats.totalResponseBufferLatency += curTick() - responseBuffer.frontTime();
+
+    PacketPtr pkt = responseBuffer.front();
+    inspectResponse(pkt);
+    cpuSidePort.sendPacket(pkt);
+    responseBuffer.pop();
+
+    scheduleNextRespRetryEvent(nextCycle());
+    scheduleNextRespSendEvent(nextCycle());
+}
+```
+
+### Let's Rebuild
+
+We are now done with making all the required changes. Let's run the following command in the base gem5 directory to rebuild gem5.
+
+```sh
+scons build/NULL/gem5.opt -j$(nproc)
+```
+
+---
+<!-- _class: two-col code-50-percent -->
+
+## Let's Extend InspectedMemory
+
+Now that we have added a new parameter to class `InspectorGadget`, let's go ahead and extend `InspectedMemory` to expose `output_buffer_entries` as an argument to its constructor (`__init__`).
+
+Open `configs/bootcamp/inspector-gadget/components/inspected_memory.py` and make the appropriate changes. You only need to change `InspecteMemory.__init__`. This is how the function should look like after the changes.
+
+```python
+class InspectedMemory(ChanneledMemory):
+    def __init__(
+        self,
+        dram_interface_class: Type[DRAMInterface],
+        num_channels: Union[int, str],
+        interleaving_size: Union[int, str],
+        size: Optional[str] = None,
+        addr_mapping: Optional[str] = None,
+        inspection_buffer_entries: int = 8,
+        output_buffer_entries: int = 8,
+        response_buffer_entries: int = 32,
+    ) -> None:
+        super().__init__(
+            dram_interface_class,
+            num_channels,
+            interleaving_size,
+            size=size,
+            addr_mapping=addr_mapping,
+        )
+        self.inspectors = [
+            InspectorGadget(
+                inspection_buffer_entries=inspection_buffer_entries,
+                output_buffer_entries=output_buffer_entries,
+                response_buffer_entries=response_buffer_entries,
+            )
+            for _ in range(num_channels)
+        ]
+```
+
+---
+
+## Let's Simulate
+
+After the compilation is over, run the following command in the base gem5 directory to simulate the new version of `InspectorGadget`. You should now see a stat for `numReqRespDisplacements`.
+
+```sh
+./build/NULL/gem5.opt configs/bootcamp/inspector-gadget/first-inspector-gadget-example.py
+```
