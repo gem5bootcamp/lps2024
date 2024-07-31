@@ -2244,4 +2244,7 @@ Let's take a deeper look at how we process `nextInspectionEvent`. It's important
 
 Compile your gem5 and make the appropriate changes to your configuration script to make simulation possible.
 
+---
+<!-- _class: start -->
 
+## End of Step 3
