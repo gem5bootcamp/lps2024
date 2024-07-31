@@ -2190,6 +2190,7 @@ InspectorGadget::processNextInspectionEvent()
 {
     panic_if(!inspectionBuffer.hasReady(curTick()), "Should never try to inspect if no ready packets!");
 
+    int insp_window_left = inspectionWindow;
     for (int i = 0; i < numInspectionUnits; i++) {
         if (inspectionUnitAvailableTimes[i] > curTick()) {
             DPRINTF(InspectorGadget, "%s: Inspection unit %d is busy.\n", __func__,  i);
@@ -2209,6 +2210,10 @@ InspectorGadget::processNextInspectionEvent()
         outputBuffer.push(pkt, curTick());
         inspectionBuffer.pop();
         inspectionUnitAvailableTimes[i] = clockEdge(totalInspectionLatency);
+        insp_window_left--;
+        if (insp_window_left == 0) {
+            break;
+        }
     }
 
     for (int i = 0; i < numInspectionUnits; i++) {
@@ -2220,3 +2225,23 @@ InspectorGadget::processNextInspectionEvent()
     scheduleNextInspectionEvent(nextCycle());
 }
 ```
+
+---
+<!-- _class: no-logo -->
+
+## Changing the Behavior: processNextInspectionEvent: Deeper Look
+
+Let's take a deeper look at how we process `nextInspectionEvent`. It's important to note the following.
+
+1- We want to impose a limit on the number of entries at the front we will look at each time we process `nextInspectionEvent`. So we keep a copy of `inspectionWindow` and decrement each time we inspect a `request`. We break out of the loop as soon as `insp_window_left == 0`
+2- Iterations of the for-loop represent assignment of inspection to one inspection unit. Therefore, we need to check the following: **a**) if the inspection unit is available at `curTick`, **b**) if `inspectionBuffer` has items, and **c**) if there is an entry available in `outputBuffer`. We skip the inspection units that are busy and will break out of the loop when **b** or **c** do not hold.
+3- If every check has passed, we can now do the actual inspection and impose the latency. Now that we have a parameter for the latency of inspection, we will push `pkt` with a timestamp that is equivalent to `curTick + totalInspectionLatency` (this is what `clockEdge(totalInspectionLatency)` returns). We also need to make the inspection unit that we just assigned work to until the same time.
+4- After all the assignment of work is done, we need to make sure that the available time of all inspection units are bigger than or equal to `nextCycle`. Why?
+
+---
+
+## Practice
+
+Compile your gem5 and make the appropriate changes to your configuration script to make simulation possible.
+
+
