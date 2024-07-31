@@ -61,8 +61,11 @@ div.content {
 }
 
 div.content a{
+    color: #2a96a9;
     text-decoration: none;
 }
+
+
 
 /* ------------------------------------------------------------------------- *
  * Splash Page
@@ -111,7 +114,7 @@ div.content a{
 }
 
 #slideName {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
     text-align: center;
 }
