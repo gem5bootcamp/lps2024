@@ -250,7 +250,7 @@ InspectorGadget::scheduleNextInspectionEvent(Tick when)
 
     if (have_packet && have_entry && !nextInspectionEvent.scheduled()) {
         Tick schedule_time = align(std::max(when, inspectionBuffer.firstReadyTime()));
-        schedule(nextInspectionEvent, align(when));
+        schedule(nextInspectionEvent, schedule_time);
     }
 }
 

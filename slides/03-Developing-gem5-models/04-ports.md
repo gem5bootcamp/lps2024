@@ -1102,13 +1102,13 @@ InspectorGadget::scheduleNextReqSendEvent(Tick when)
     bool have_items = !inspectionBuffer.empty();
 
     if (port_avail && have_items && !nextReqSendEvent.scheduled()) {
-        Tick schedule_time = align(std::max(when, outputBuffer.firstReadyTime()));
+        Tick schedule_time = align(inspectionBuffer.firstReadyTime());
         schedule(nextReqSendEvent, schedule_time);
     }
 }
 ```
 
-You might wonder why we need to calculate `schedule_time` ourself. As we mentioned, `Tick when` is passed from the perspective of the caller for when it thinks `nextReqSendEvent` should be scheduled. However, we need to make sure that we schedule the event at the time that simulates latencies correctly.
+You might wonder why we need to calculate `schedule_time` ourselves. As we mentioned, `Tick when` is passed from the perspective of the caller for when it thinks `nextReqSendEvent` should be scheduled. However, we need to make sure that we schedule the event at the time that simulates latencies correctly.
 
 Make sure to add the following include statement as well since we're using `std::max`.
 
@@ -1395,9 +1395,9 @@ class InspectedMemory(ChanneledMemory):
 ---
 <!-- _class: code-60-percent -->
 
-## simple-traffic-generators.py
+## first-inspector-gadget-example.py
 
-Now, let's just simply add the following imports to `gem5/configs/bootcamp/inspector-gadget/simple-traffic-generators.py`:
+Now, let's just simply add the following imports to `gem5/configs/bootcamp/inspector-gadget/first-inspector-gadget-example.py`:
 
 ```python
 from components.inspected_memory import InspectedMemory
@@ -1441,7 +1441,7 @@ In this step, we see how to add statistics to our `SimObjects` so that we can me
 4- Total number of `requests` forwarded. Let'use the name `numResponsesFwded`.
 
 ---
-<!-- _class: code-50-percent -->
+<!-- _class: no-logo code-50-percent -->
 
 ## Statistics:: Header File
 
@@ -1470,7 +1470,7 @@ Let's go ahead a declare a new `struct` called `InspectorGadgetStats` inside the
 ```
 
 ---
-<!-- _class: code-50-percent -->
+<!-- _class: no-logo code-50-percent -->
 
 ## Statistics: Source File
 
@@ -1494,7 +1494,7 @@ Few things to note:
 3- The macro `ADD_STAT` registers and initializes our statistics that we have defined under the struct. The order of arguments are `name`, `unit`, `description`. To rid yourself of any headache, make sure the order of `ADD_STAT` macros match that of statistic declaration.
 
 ---
-<!-- _class: code-70-percent -->
+<!-- _class: no-logo code-70-percent -->
 
 ## Counting Things
 
@@ -1595,6 +1595,11 @@ system.memory.inspectors1.numResponsesFwded           18                       #
 <!-- _class: start -->
 
 ## End of Step 1
+
+---
+<!-- _class: start -->
+
+## Step 2: Inspecting Traffic
 
 ---
 
@@ -1702,7 +1707,7 @@ InspectorGadget::scheduleNextInspectionEvent(Tick when)
 
     if (have_packet && have_entry && !nextInspectionEvent.scheduled()) {
         Tick schedule_time = align(std::max(when, inspectionBuffer.firstReadyTime()));
-        schedule(nextInspectionEvent, align(when));
+        schedule(nextInspectionEvent, schedule_time);
     }
 }
 ```
@@ -2039,11 +2044,179 @@ class InspectedMemory(ChanneledMemory):
 ```
 
 ---
-
+<!-- _class: two-col code-50-percent -->
 ## Let's Simulate
+
+Now, let's remove `data_limit` when configuring `HybridGenerator` in `configs/inspector-gadget/first-inspector-gadget-example.py`. This is how I configured it in my code.
+
+```python
+generator = HybridGenerator(
+    num_cores=6,
+    rate="1GB/s",
+    duration="1ms",
+)
+```
 
 After the compilation is over, run the following command in the base gem5 directory to simulate the new version of `InspectorGadget`. You should now see a stat for `numReqRespDisplacements`.
 
 ```sh
 ./build/NULL/gem5.opt configs/bootcamp/inspector-gadget/first-inspector-gadget-example.py
+```
+
+Now, if you do `grep numReqRespDisplacements m5out/stats.txt` in the base gem5 directory, this is what you'll see.
+
+```sh
+system.memory.inspectors0.numReqRespDisplacements           14                       # Number of request-response displacements. (Count)
+system.memory.inspectors1.numReqRespDisplacements            6                       # Number of request-response displacements. (Count)
+```
+
+**PRACTICE**: Add as stat for `totalOutputBufferLatency`.
+
+---
+<!-- _class: start -->
+
+## End of Step 2
+
+---
+<!-- _class: start -->
+
+## Step 3: More Inspection Throughput, More Latency
+
+---
+<!-- _class: no-logo code-70-percent -->
+
+## InspectorGadget: New Parameters: Modeling Bandwidth
+
+In this step, let's go ahead and add three more parameters to `InspectorGadget`. Here is what they represent.
+
+- `insp_window`: Number of entries in front of `inspectionBuffer` to try to inspect every cycle.
+- `num_insp_units`: Number of inspection units.
+- `insp_tot_latency`: Latency to complete one inspection (latency of an inspection unit).
+
+Now, let's go ahead and add their declarations under class `InspectorGadget` in `src/bootcamp/inspector-gadget/InspectorGadget.py`.
+
+```python
+    insp_window = Param.Int(
+        "Number of entries in front of inspectionBuffer "
+        "to try to inspect every cycle."
+    )
+    num_insp_units = Param.Int("Number of inspection units.")
+    insp_tot_latency = Param.Cycles(
+        "Latency to complete one inspection (latency of an inspection unit)."
+    )
+```
+
+---
+<!-- _class: two-col code-50-percent -->
+
+## InspectorGadget: New Parameters: Header File
+
+Now let's go ahead and declare counterparts for these parameters in C++. Add the following lines under the `private` scope of `InspectorGadget` in `src/bootcamp/inspector-gadget/inspector-gadget.hh`.
+
+```cpp
+  private:
+    int inspectionWindow;
+    int numInspectionUnits;
+    Cycles totalInspectionLatency;
+```
+
+As we mentioned we do **not** create a class for inspection units. However, now that we are going to make it possible to have multiple inspection units that might take more than `1 cycle` to complete inspection, we need to keep track of the availability of each inspection unit. To do this we will create an array with `numInspectionUnits` elements of type `Tick` that stores when each inspection unit is available. Let's go ahead and declare that array. Add the following lines under the `private` scope of `InspectorGadget` to declare it.
+
+```cpp
+  private:
+    std::vector<Tick> inspectionUnitAvailableTimes;
+```
+
+**NOTE**: Since we're using `std::vector`, let's go ahead and include its header file by adding the line below to `src/bootcamp/inspector-gadget/inspector-gadget.hh`.
+
+```cpp
+#include <vector>
+```
+
+---
+
+## InspectorGadget: New Parameters: Source File
+
+Now, let's add the following lines to the initialization list in `InspectorGadget::InspectorGadget` in `src/bootcamp/inspector-gadget/inspector_gadget.cc` to initialize our params.
+
+```cpp
+    inspectionWindow(params.insp_window),
+    numInspectionUnits(params.num_insp_units),
+    totalInspectionLatency(params.insp_tot_latency),
+    inspectionUnitAvailableTimes((size_t) params.num_insp_units, 0),
+```
+
+---
+<!-- _class: no-logo code-50-percent -->
+
+## Changing the Behavior: scheduleNextInspectionEvent
+
+Now, we need to account for inspection units being available when scheduling `nextInspectionEvent`. To do this we will need to find the first available inspection unit. We should not schedule `nextInspectionEvent` earlier than that.
+
+Let's go ahead and change `scheduleNextInspectionEvent` in `src/bootcamp/inspector-gadget/inspector_gadget.cc`. This is how the function should look like after the changes.
+
+```cpp
+void
+InspectorGadget::scheduleNextInspectionEvent(Tick when)
+{
+    bool have_packet = !inspectionBuffer.empty();
+    bool have_entry = outputBuffer.size() < outputBufferEntries;
+
+    if (have_packet && have_entry && !nextInspectionEvent.scheduled()) {
+        Tick first_avail_insp_unit_time = \
+            std::min_element(
+                            inspectionUnitAvailableTimes.begin(),
+                            inspectionUnitAvailableTimes.end()
+                            );
+        Tick schedule_time = align(std::max({when,
+                                            inspectionBuffer.firstReadyTime(),
+                                            first_avail_insp_unit_time
+                                            }));
+        schedule(nextInspectionEvent, schedule_time);
+    }
+}
+```
+
+---
+<!-- _class: two-col code-50-percent -->
+
+## Changing the Behavior: processNextInspectionEvent
+
+Change `processNextInspectionEvent` in `src/bootcamp/inspector-gadget/inspector_gadget.cc` to look like this.
+
+```cpp
+void
+InspectorGadget::processNextInspectionEvent()
+{
+    panic_if(!inspectionBuffer.hasReady(curTick()), "Should never try to inspect if no ready packets!");
+
+    for (int i = 0; i < numInspectionUnits; i++) {
+        if (inspectionUnitAvailableTimes[i] > curTick()) {
+            DPRINTF(InspectorGadget, "%s: Inspection unit %d is busy.\n", __func__,  i);
+            continue;
+        }
+        if (inspectionBuffer.empty()) {
+            DPRINTF(InspectorGadget, "%s: Inspection buffer is empty.\n", __func__);
+            break;
+        }
+        if (outputBuffer.size() >= outputBufferEntries) {
+            DPRINTF(InspectorGadget, "%s: Output buffer is full.\n", __func__);
+            break;
+        }
+        stats.totalInspectionBufferLatency += curTick() - inspectionBuffer.frontTime();
+        PacketPtr pkt = inspectionBuffer.front();
+        inspectRequest(pkt);
+        outputBuffer.push(pkt, curTick());
+        inspectionBuffer.pop();
+        inspectionUnitAvailableTimes[i] = clockEdge(totalInspectionLatency);
+    }
+
+    for (int i = 0; i < numInspectionUnits; i++) {
+        inspectionUnitAvailableTimes[i] = std::max(inspectionUnitAvailableTimes[i], nextCycle());
+    }
+
+    scheduleNextReqSendEvent(nextCycle());
+    scheduleNextReqRetryEvent(nextCycle());
+    scheduleNextInspectionEvent(nextCycle());
+}
 ```
