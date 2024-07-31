@@ -11,45 +11,81 @@ title: gem5/SST Integration
 
 ---
 
-## (Optional) gem5 as a Library: Hello, World!
+## First step: Install SST
 
-*  Compiling gem5 as a library
-```bash
-scons build/RISCV/libgem5_opt.so -j17 --without-tcmalloc
-```
-* Compiling gem5 component,
-```bash
-cd ext/sst
+We're not going to do this today.
+
+What we'll do instead is use a docker container with sst installed.
+
+Run the following to go into the docker container.
+Note: You shouldn't use a container interactively like this, but I'm lazy.
+
+```sh
+cd /workspaces/2024
 docker run --rm --volume
-/var/lib/docker/codespacemount/workspace/:/workspaces -w `pwd` -it ---entrypoint /bin/bash/ grc.io/gem5-test/sst-env
-make -j4
-```
-*  Running the simulation,
-```bash
-sst --add-lib-path=./sst/example.py
+/workspaces/:/workspaces -w `pwd` ghcr.io/gem5/sst-env
 ```
 
 ---
 
-## gem5 as a Library: instatiation
+## gem5 as a Library: Hello, World!
+
+To use gem5 as a "component" in SST, you need to build it as a library.
+This is yet another unique build target...
+Note: if you're building on a Mac, it's not ".so" it's ".dynlib"
+
+Compiling gem5 as a library
+
+```bash
+cd gem5/
+scons defconfig build/for_sst build_opts/RISCV
+scons build/for_sst/libgem5_opt.so -j8 --without-tcmalloc --duplicate-sources
+```
+
+---
+
+## Building the gem5 component in gem5
+
+Compiling gem5 component
+
+```bash
+cd ext/sst
+cp Makefile.linux Makefile
+```
+
+Change the line with `ARCH=RISCV` to `ARCH=for_sst`
+
+```sh
+make -j8
+```
+
+Running the simulation,
+
+```bash
+sst --add-lib-path=. sst/example.py
+```
+
+---
+
+## gem5 as a Library: instantiation
 
 ![Diagram showing how gem5 interacts with other simulators w:900px](01-sst/instantiation-1.drawio.svg)
 
 ---
 
-## gem5 as a Library: instatiation
+## gem5 as a Library: instantiation
 
 ![Diagram showing how gem5 interacts with other simulators w:900px](01-sst/instantiation-2.drawio.svg)
 
 ---
 
-## gem5 as a Library: instatiation
+## gem5 as a Library: instantiation
 
 ![Diagram showing how gem5 interacts with other simulators w:900px](01-sst/instantiation-3.drawio.svg)
 
 ---
 
-## gem5 as a Library: instatiation
+## gem5 as a Library: instantiation
 
 ![Diagram showing how gem5 interacts with other simulators w:900px](01-sst/instantiation-4.drawio.svg)
 
@@ -67,8 +103,8 @@ How to set up gem5 in another simulator?
 
 
 * Notes:
-    * m5.instatiate() must be called before any simulation.
-    * m5.simluate(K) runs the gem5 simulation for K ticks.
+    * `m5.instantiate()` must be called before any simulation.
+    * `m5.simulate(K)` runs the gem5 simulation for `K` ticks.
 
 ---
 
@@ -87,7 +123,7 @@ external_simulator.advance_to_next_event()
 gem5_system.advance(n_ticks)
 ```
 
-where ```n_ticks =``` time difference between this event and previous event of the external simulator
+where `n_ticks =` time difference between this event and previous event of the external simulator
 
 ---
 
