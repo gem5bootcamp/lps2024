@@ -24,8 +24,8 @@ math: mathjax
 
 - gem5 supports "activation count" based power models
 - This is kind of like McPAT/Wattch/etc. but it can be done from gem5
-- The correct contants are difficult to find
-  - CACTI is one possilibity, but...
+- The correct constants are difficult to find
+  - CACTI is one possibility, but...
 
 For instance
 
