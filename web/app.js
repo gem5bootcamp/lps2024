@@ -120,6 +120,37 @@ function sidebar_category_onclick(e) {
 }
 
 /* ========================================================================= *
+ * Relative Link to Git Translation !!TEMPORARY!!
+ * ========================================================================= */
+
+const bootcamp_base = 'https://github.com/gem5bootcamp/2024/tree/main/';
+const gem5_base = 'https://github.com/gem5/gem5/tree/stable/';
+const gem5_resources_base = 'https://github.com/gem5/gem5-resources/tree/stable/';
+function translate_rel_link(base_url, link) {
+    if (!link.includes(window.location.origin)) {
+        /* All non-relative links, just return the original */
+        return link;
+    }
+    /* Determine which location to translate to */
+    link = link.replace(window.location.origin + '/', '');
+    let g;
+    if ((g = /^gem5\/(.+)/.exec(link))) {
+        /* gem5 repo */
+        return gem5_base + g[1];
+    }
+    if ((g = /^gem5-resources\/(.+)/.exec(link))) {
+        /* gem5 resources repo */
+        return gem5_resources_base + g[1];
+    }
+    if (g = /^slides\/(.+)\.md/.exec(link)) {
+        /* local slides */
+        return '/#' + g[1];
+    }
+    /* Everything else, send to bootcamp repo */
+    return bootcamp_base + link;
+}
+
+/* ========================================================================= *
  * Slide Augmentation
  * ========================================================================= */
 
@@ -129,6 +160,11 @@ function slide_onload(event) {
     let links = frame.contentDocument.querySelectorAll('a');
     for (const a of links) {
         a.setAttribute('target', '_blank');
+    }
+    /* Translate links to github repos */
+    let base_url = location.hash.substring(1);
+    for (const a of links) {
+        a.href = translate_rel_link(base_url, a.href);
     }
 }
 
