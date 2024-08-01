@@ -48,7 +48,9 @@ window.get_slide_registry = function() {
         {
             "name": "05-Other-simulators",
             "slides": [
-
+                "01-sst",
+                "02-dram",
+                "03-systemc"
             ]
         },
         {
