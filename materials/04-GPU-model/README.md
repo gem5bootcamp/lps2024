@@ -18,7 +18,7 @@ scons build/x86/out/m5
 
 ```sh
 cd /workspaces/2024/gem5-resources/src/gpu/square
-cp /workspaces/2024/materials/isca24/04-GPU-model/Makefile ./
+cp /workspaces/2024/materials/04-GPU-model/Makefile ./
 docker run --rm -v /workspaces/2024:/workspaces/2024 -w ${PWD} ghcr.io/gem5/gpu-fs:latest make
 ```
 
