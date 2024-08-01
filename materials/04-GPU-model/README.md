@@ -75,8 +75,7 @@ cd /workspaces/2024
 # PyTorch example
 ```sh
 cd /workspaces/2024/
-git clone https://github.com/abmerop/gem5-pytorch
-/usr/local/bin/gem5-vega -d pytorch-out gem5/configs/example/gpufs/mi200.py --disk-image ./x86-ubuntu-gpu-ml-isca --kernel ./vmlinux-gpu-ml-isca --no-kvm-perf --app gem5-pytorch/pytorch_test.py
+/usr/local/bin/gem5-vega -d pytorch-out gem5/configs/example/gpufs/mi200.py --disk-image ./x86-ubuntu-gpu-ml-isca --kernel ./vmlinux-gpu-ml-isca --no-kvm-perf --app materials/04-GPU-model/pytorch/pytorch_test.py
 ```
 # util in gem5 -- for PyTorch example
 ```sh
@@ -90,7 +89,7 @@ cd /workspaces/2024/gem5/
 ```
 # run MNIST
 ```sh
-/usr/local/bin/gem5-vega -d mnist-out gem5/configs/example/gpufs/mi200.py --disk-image ./x86-ubuntu-gpu-ml-isca --kernel ./vmlinux-gpu-ml-isca --no-kvm-perf --app gem5-pytorch/MNIST/test_1batch/pytorch_qs_mnist.py
+/usr/local/bin/gem5-vega -d mnist-out gem5/configs/example/gpufs/mi200.py --disk-image ./x86-ubuntu-gpu-ml-isca --kernel ./vmlinux-gpu-ml-isca --no-kvm-perf --app materials/04-GPU-model/pytorch/MNIST/test_1batch/pytorch_qs_mnist.py
 ```
 
 # NanoGPT
@@ -98,17 +97,7 @@ cd /workspaces/2024/gem5/
 ```sh
 mkdir mnt
 mount -o loop,offset=$((2048*512)) ./x86-ubuntu-gpu-ml-isca mnt
-cp -r gem5-pytorch/nanoGPT/nanoGPT-ff/ mnt/root/
+cp -r materials/04-GPU-model/pytorch/nanoGPT/nanoGPT-ff/ mnt/root/
 umount mnt
-/usr/local/bin/gem5-vega -d tutorial_nanogpt --debug-flags=GPUCommandProc gem5/configs/example/gpufs/mi200.py --disk-image ./x86-ubuntu-gpu-ml-isca --kernel ./vmlinux-gpu-ml-isca --app gem5-pytorch/nanoGPT/train-ff.sh --skip-until-gpu-kernel=8 --exit-after-gpu-kernel=9 --no-kvm-perf
-```
-
-# Runnning GPUSE
-```sh
-docker pull ghcr.io/gem5/gcn-gpu:v24-0
-cd gem5-resources/src/gpu/square
-docker run --rm -v ${PWD}:${PWD} -w ${PWD} ghcr.io/gem5/gcn-gpu:v24-0 make
-cd gem5
-docker run --rm --volume $(pwd):$(pwd) -w $(pwd) ghcr.io/gem5/gcn-gpu:v24-0 scons build/VEGA_X86/gem5.opt -j <num cores>
-docker run --rm --volume $(pwd):$(pwd) -w $(pwd) ghcr.io/gem5/gcn-gpu:v24-0 gem5/build/VEGA_X86/gem5.opt gem5/configs/example/apu_se.py -n 3  --gpu --gfx-version=gfx900 -c gem5-resources/src/gpu/square/bin/square
+/usr/local/bin/gem5-vega -d tutorial_nanogpt --debug-flags=GPUCommandProc gem5/configs/example/gpufs/mi200.py --disk-image ./x86-ubuntu-gpu-ml-isca --kernel ./vmlinux-gpu-ml-isca --app materials/04-GPU-model/pytorch/nanoGPT/train-ff.sh --skip-until-gpu-kernel=8 --exit-after-gpu-kernel=9 --no-kvm-perf
 ```
