@@ -291,23 +291,9 @@ By calling `m5.simulate`, gem5 will call the function `startup` from every `SimO
 
 ## Exercise 1: nextHelloEvent
 
-For the exercises in this tutorial, we will be working in [gem5/src/bootcamp/hello-sim-object](/gem5/src/bootcamp/hello-sim-object). If this directory does not exist, run the following command in the gem5 directory:
-
-```sh
-mkdir -p src/bootcamp/hello-sim-object
-```
-
-We will also be storing the configuration scripts in [gem5/configs/bootcamp/hello-sim-object](../../gem5/configs/bootcamp/hello-sim-object). If this directory does not exist, run the following command in the gem5 directory.
-
-```sh
-mkdir -p configs/bootcamp/hello-sim-object
-```
+## nextHelloEvent
 
 The completed files for exercise 1 are under the directory [materials/03-Developing-gem5-models/03-event-driven-sim/step-1](/materials/03-Developing-gem5-models/03-event-driven-sim/step-1/).
-
----
-
-## nextHelloEvent
 
 Now, let's add an `event` to our `HelloSimObject` to print `Hello ...` periodically for a certain number of times (i.e. `num_hellos`). Let's add it to the header file for `HelloSimObject` in [src/bootcamp/hello-sim-object.hh](/gem5/src/bootcamp/hello-sim-object/hello_sim_object.hh).
 
@@ -703,8 +689,6 @@ In the next slide, there is recording of what you should expect to see.
 
 ## Exercise 2: GoodByeSimObject
 
-For this exercise, we will continue working in [gem5/src/bootcamp/hello-sim-object](/gem5/src/bootcamp/hello-sim-object).
-
 In this step, we will learn about adding a `SimObject` as a parameter. To do this, let's first build our second `SimObject` called `GoodByeSimObject`. As you remember, we need to declare `GoodByeSimObject` in Python. Let's open `src/bootcamp/hello-sim-object/HelloSimObject.py` and add the following code to it.
 
 ```python
@@ -907,7 +891,7 @@ We can use that parameter to initialize a pointer to an object of `GoodByeSimObj
 First, let's include the header file for `GoodByeSimObject` in `src/bootcamp/hello-sim-object/hello_sim_object.hh` by adding the following line. **REMEMBER**: Follow gem5's convention for including order.
 
 ```cpp
-#include "bootcamp/hello-sim-object/goodbye_sim_object.hh
+#include "bootcamp/hello-sim-object/goodbye_sim_object.hh"
 ```
 
 Now, let's add a new member to `HelloSimObject` that is a pointer to `GoodByeSimObject`. Add the following line to `src/bootcamp/hello-sim-object/hello_sim_object.hh`.
@@ -1102,7 +1086,7 @@ from m5.objects.HelloSimObject import HelloSimObject, GoodByeSimObject
 Now, let's add the following line to give a value to `goodbye_object` from `root.hello`.
 
 ```python
-root.hello.goodbye_object = GoodByeObject()
+root.hello.goodbye_object = GoodByeSimObject()
 ```
 
 This is how `configs/bootcamp/hello-sim-object/third-hello-example.py` should look after the changes.
