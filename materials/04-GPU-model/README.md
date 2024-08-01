@@ -14,7 +14,7 @@ cd /workspaces/2024/gem5/util/m5
 scons build/x86/out/m5
 ```
 
-#To compile square for MI200
+# To compile square for MI200
 
 ```sh
 cd /workspaces/2024/gem5-resources/src/gpu/square
@@ -22,7 +22,7 @@ cp /workspaces/2024/materials/isca24/04-GPU-model/Makefile ./
 docker run --rm -v /workspaces/2024:/workspaces/2024 -w ${PWD} ghcr.io/gem5/gpu-fs:latest make
 ```
 
-#To run square in FS mode
+# To run square in FS mode
 
 ```sh
 cd /workspaces/2024
@@ -45,6 +45,17 @@ cd gem5-resources/src/gpu/square
 ```sh
 docker run --rm -v /workspaces/2024:/workspaces/2024 -w ${PWD} ghcr.io/gem5/gpu-fs:latest make clean
 docker run --rm -v /workspaces/2024:/workspaces/2024 -w ${PWD} ghcr.io/gem5/gpu-fs:latest make
+```
+
+# MFMA example
+```sh
+cd /workspaces/2024/
+cp –r materials/04-GPU-model/mfma_fp32/ gem5-resources/src/gpu/mfma_fp32
+cd gem5-resources/src/gpu/mfma_fp32
+docker run --rm -v /workspaces/2024:/workspaces/2024 -w ${PWD} ghcr.io/gem5/gpu-fs:latest make
+cd /workspaces/2024/
+/usr/local/bin/gem5-vega -d mfma-outdyn gem5/configs/example/gpufs/mi200.py --reg-alloc-policy=dynamic --kernel ./vmlinux-gpu-ml-isca --disk-image ./x86-ubuntu-gpu-ml-isca --app ./gem5-resources/src/gpu/mfma_fp32/mfma_fp32_32x32x2fp32 --no-kvm-perf
+/usr/local/bin/gem5-vega -d mfma-outsimple gem5/configs/example/gpufs/mi200.py --reg-alloc-policy=simple --kernel ./vmlinux-gpu-ml-isca --disk-image ./x86-ubuntu-gpu-ml-isca --app ./gem5-resources/src/gpu/mfma_fp32/mfma_fp32_32x32x2fp32 --no-kvm-perf
 ```
 
 # To create checkpoint

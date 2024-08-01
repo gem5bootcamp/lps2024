@@ -75,32 +75,19 @@ __global__ void sgemm_32x32x32(const float* A, const float* B, float* D, size_t*
   This kernel is called with a single wavefront in dim3(32, 2) layout
   */
 
-  size_t start, end;
-  size_t &total = cycles[threadIdx.x+threadIdx.y*4];
   int a_idx = LDA * threadIdx.x + threadIdx.y;
   int b_idx = threadIdx.x + LDB * threadIdx.y;
 
-#pragma unroll 1
   for(int i = 0; i < 16; ++i){
     const float a = A[a_idx];
     const float b = B[b_idx];
 
-    // d = __builtin_amdgcn_mfma_f32_32x32x2f32(a, b, d, 0, 0, 0);
-
-    asm volatile("s_waitcnt lgkmcnt(0) & vmcnt(0)\n\t"
-                 "s_memtime %[start]\n\t"
-                 "s_waitcnt lgkmcnt(0)\n\t"
-                 "v_mfma_f32_32x32x2f32 %[D] %[A] %[B] %[C]\n\t"
-                 "s_memtime %[end]\n\t"
-                 "s_waitcnt lgkmcnt(0)\n\t"
-                 : [start] "=r"(start), [end] "=r"(end), [D] "=v"(d)
-                 : [A] "v"(a), [B] "v"(b), [C] "v"(d)); // just change "v" to "a"
-    //                                       ^  ^  ^
-    //D(=C)                                  |  |  C(=D)
-    //                    two columns of A---|  |--- two rows of B
+     d = __builtin_amdgcn_mfma_f32_32x32x2f32(a, b, d, 0, 0, 0);
+     //                                       ^  ^  ^
+     //D(=C)                                  |  |  C(=D)
+     //                    two columns of A---|  |--- two rows of B
     a_idx += 2;     // move two columns to the right
     b_idx += 2*LDB; // move two rows down
-    total += end - start;
   }
 
   /*
@@ -115,9 +102,7 @@ __global__ void sgemm_32x32x32(const float* A, const float* B, float* D, size_t*
     first 32 lanes of d[2] cover row 2 -  last 32 lanes of d[2] cover row 6
     first 32 lanes of d[3] cover row 3 -  last 32 lanes of d[3] cover row 7
   */
-#pragma unroll 1
   for(int j = 0; j < 4; ++j){
-#pragma unroll 1
     for(int i = 0; i < 4; ++i){
       const int d_idx =  threadIdx.x            // consecutive threads cover 32 consecutive columns
                        + i * LDD                // consecutive registers take consecutive rows of 32 floats
@@ -172,15 +157,11 @@ if (!gpuArchCheck("gfx90a") && !gpuArchCheck("gfx908")) {
   // Copy result back to host
   std::vector<float> D_h(D_size);
   HIP_CHECK(hipMemcpy(D_h.data(), D_d, D_size * sizeof(float), hipMemcpyDeviceToHost));
-  HIP_CHECK(hipMemcpy(cycles, cycles_d, 64 * sizeof(size_t), hipMemcpyDeviceToHost));
+  //HIP_CHECK(hipMemcpy(cycles, cycles_d, 64 * sizeof(size_t), hipMemcpyDeviceToHost));
 
   std::cout << "Sum of squared differences of host/device result matrices: "
             << compute_l2_error(Dref_h, D_h, M, N, LDD, LDD)
             << std::endl;
-
-  for (int i = 0; i < 32 * 2; i++) {
-    std::cout << "Cycles[" << i << "]: " << cycles[i] << std::endl;
-  }
 
   delete [] cycles;
   HIP_CHECK(hipFree(D_d));
