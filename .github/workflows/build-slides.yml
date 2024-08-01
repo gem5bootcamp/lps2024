@@ -33,7 +33,7 @@ jobs:
           run: sudo find slides \( -name "*.png" -or -name "*.svg" -or -name "*.css" -or -name "*.jpg" \) -exec sh -c 'mkdir -p web/"$(dirname "{}")"' \; -exec cp {} web/{} \; -exec cp {} web/{} \;
 
         - name: copy gpu pdf
-          run: cp slides/04-GPU-model/gpu-slides.pdf web/slides/04-GPU-model/gpu-slides.pdf; cp slides/04-GPU-model/gpu-slides.pdf web/pdf/04-GPU-model/gpu-slides.pdf
+          run: sudo cp slides/04-GPU-model/gpu-slides.pdf web/slides/04-GPU-model/gpu-slides.pdf; sudo cp slides/04-GPU-model/gpu-slides.pdf web/pdf/04-GPU-model/gpu-slides.pdf
 
         - name: Deploy 🚀
           uses: JamesIves/github-pages-deploy-action@v4
