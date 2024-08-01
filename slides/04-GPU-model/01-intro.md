@@ -9,4 +9,6 @@ title: gem5's GPU model
 
 ## gem5's GPU model
 
+See [the pdf slides](./gpu-slides.pdf)
+
 ---
