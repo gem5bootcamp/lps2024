@@ -47,13 +47,13 @@ More on Ruby in [Modeling Cache Coherence in gem5](../03-Developing-gem5-models/
 
 ## Outline
 
-* Background on cache coherency
-* Simple Cache
-  * Coherency protocol in simple cache
-  * How to use simple cache
-* Ruby cache
-  * Ruby components
-  * Example of MESI two level protocol
+- Background on cache coherency
+- Simple Cache
+  - Coherency protocol in simple cache
+  - How to use simple cache
+- Ruby cache
+  - Ruby components
+  - Example of MESI two level protocol
 
 ---
 
@@ -312,17 +312,17 @@ This has both full-system (with x86) and SE mode (with Arm).
 
 ## Classic Cache: Parameters
 
-* src/mem/cache/Cache.py
-  * src/mem/cache/cache.cc
-  * src/mem/cache/noncoherent_cache.cc
+- src/mem/cache/Cache.py
+  - src/mem/cache/cache.cc
+  - src/mem/cache/noncoherent_cache.cc
 
 Parameters:
 
-* size
-* associativity
-* number of miss status handler register (MSHR) entries
-* prefetcher
-* replacement policy
+- size
+- associativity
+- number of miss status handler register (MSHR) entries
+- prefetcher
+- replacement policy
 
 ---
 
@@ -350,10 +350,10 @@ Parameters:
 
 ## Ruby Components
 
-* **Controller models** (cache controller, directory controller)
-* **Controller topology** (Mesh, all-to-all, etc.)
-* **Network models**
-* **Interface** (classic ports)
+- **Controller models** (cache controller, directory controller)
+- **Controller topology** (Mesh, all-to-all, etc.)
+- **Network models**
+- **Interface** (classic ports)
 
 ### Ruby Cache: Controller Models
 
@@ -425,8 +425,8 @@ Compare the following stats:
 
 The time it took in simulation and the read/write sharing
 
-* `board.cache_hierarchy.ruby_system.L1Cache_Controller.Fwd_GETS`: Number of times things were read-shared
-* `board.cache_hierarchy.ruby_system.L1Cache_Controller.Fwd_GETX`: Number of times things were write-shared
+- `board.cache_hierarchy.ruby_system.L1Cache_Controller.Fwd_GETS`: Number of times things were read-shared
+- `board.cache_hierarchy.ruby_system.L1Cache_Controller.Fwd_GETX`: Number of times things were write-shared
 
 (Note: Ignore the first thing in the array for these stats. It's a long story...)
 
@@ -436,8 +436,8 @@ We'll cover more about how to configure Ruby in [Modeling Cache Coherence in gem
 
 ## Summary
 
-* Cache hierarchies are a key part of gem5
-* Classic caches are simpler and faster
-* Classic caches are straightforward to configure and use
-* Ruby caches are more detailed and can model cache coherence
-* We can use Ruby to compare different cache behaviors
+- Cache hierarchies are a key part of gem5
+- Classic caches are simpler and faster
+- Classic caches are straightforward to configure and use
+- Ruby caches are more detailed and can model cache coherence
+- We can use Ruby to compare different cache behaviors

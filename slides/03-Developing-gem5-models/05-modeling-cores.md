@@ -17,10 +17,10 @@ The _Instuction Set Architecture_ (ISA) is the interface between the software an
 
 An ISA defines:
 
-* The instructions that a processesor can exectue.
-* The registers that are available
-* The memory model
-* Exception and interrupt handling
+- The instructions that a processesor can exectue.
+- The registers that are available
+- The memory model
+- Exception and interrupt handling
 
 ---
 
@@ -30,11 +30,11 @@ An ISA defines:
 
 ## ISA's gem5 can simulate
 
-* ARM
-* RISC-V
-* x86
-* MIPS
-* SPARC
+- ARM
+- RISC-V
+- x86
+- MIPS
+- SPARC
 
 Realistically you'll probably only use ARM, RISC-V, and x86.
 
@@ -70,14 +70,14 @@ A `StaticInst` is an object containing static information about a particular ISA
 
 It contains information on
 
-* The operation class
-* Source and destination registers
-* Flags to show if the instruction has micro-ops
-* Functions defining the instruction's behavior
-  * `execute()`
-  * `initiateAcc()`
-  * `completeAcc()`
-  * `dissasemble()`
+- The operation class
+- Source and destination registers
+- Flags to show if the instruction has micro-ops
+- Functions defining the instruction's behavior
+  - `execute()`
+  - `initiateAcc()`
+  - `completeAcc()`
+  - `dissasemble()`
 
 ---
 
@@ -88,12 +88,12 @@ They are constructed from information in the `StaticInst` objects.
 
 They contains information on:
 
-* PC and predicated next-PC
-* Instruction result
-* Thread number
-* CPU
-* Renamed register indices
-* Provides the `ExecContext` interface
+- PC and predicated next-PC
+- Instruction result
+- Thread number
+- CPU
+- Renamed register indices
+- Provides the `ExecContext` interface
 
 ---
 
@@ -409,12 +409,12 @@ The base instruction formats are the R, I, S, B, U, and J types which use thye f
 
 ---
 
-* R type: for register-register operations.
-* I type: for immediate and load operations.
-* S type: for store operations.
-* B type: for branch operations.
-* U type: for upper immediate operations.
-* J type: for jump operations.
+- R type: for register-register operations.
+- I type: for immediate and load operations.
+- S type: for store operations.
+- B type: for branch operations.
+- U type: for upper immediate operations.
+- J type: for jump operations.
 
 ---
 
@@ -427,10 +427,10 @@ It is defined by the folowing format:
 LW rd,offset(rs1) # rd = mem[rs1+imm]
 ```
 
-* `lw` is the mnemonic for the instruction.
-* `rd` is the destination register.
-* `imm` immediate value: termines the offset (can be used to access sub-word data).
-* `rs1` is the source register.
+- `lw` is the mnemonic for the instruction.
+- `rd` is the destination register.
+- `imm` immediate value: termines the offset (can be used to access sub-word data).
+- `rs1` is the source register.
 
 It loads the value of source register  `rs1` into the destination register `rd + imm`. If `imm` is zero, the full word (32-bits) of `rs1` is loaded into `rd`. This `imm` value is used to load subword data. However, if non-zero, `imm` is used to load subword data. `imm` shifts the bits in the `rs1` register prior to loading to `rd`. So, if `imm = 15`, the value of `rs1` is shifted by 15 bits before being loaded into `rd`.
 
@@ -763,10 +763,10 @@ Let's work backwards and specify each bit field in the instruction format.
 |  funct7  |          |          |  funct3  |         |  opcode  |
 ```
 
-* quadrant: 0x3
-* opcode5: 0x1d
-* funct3: 0x0
-* funct7: 0x20
+- quadrant: 0x3
+- opcode5: 0x1d
+- funct3: 0x0
+- funct7: 0x20
 
 ---
 
