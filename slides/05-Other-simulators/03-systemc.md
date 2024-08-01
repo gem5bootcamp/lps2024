@@ -9,8 +9,4 @@ title: Extending gem5 with SystemC
 
 ## Extending gem5 with SystemC
 
----
-
-- What is SystemC
-- SystemC in gem5
-- gem5 in SystemC
+See [`gem5/src/systemc`](../../gem5/src/systemc/)
