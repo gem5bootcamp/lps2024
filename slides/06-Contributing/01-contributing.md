@@ -57,7 +57,6 @@ However, please keep the following in mind:
 There will always exist a pull-request on the gem5 GitHub so the changes are never "gone".
 The reasons for rejection are not personal, but are often concerns about how it will affect users or long term maintainability.
 If a change would be a lot of time to implement, try contacting the community to see if it'd be welcome before starting.
-
 2. The gem5 devs are nice people and are not trying to be mean.
 We have to critique code contributed but we try our best to ensure it's constructive. Where possible we'll suggest how address our concerns.
 Again, nothing is personal.
@@ -66,7 +65,6 @@ Again, nothing is personal.
 
 3. Very very few changes of any magnitude are accepted without some back and forth requests.
 Everyone who's worked on gem5 long enough has changes that needed 5 or 6 iterations before they were accepted. It shouldn't be feared or seen as a bad thing.
-
 4. No one fully understands the gem5 codebase.
 There are parts of gem5 no one understands. It's ok to feel you don't understand the codebase completely, but it's not a reason to not contribute to the parts you do.
 
@@ -83,14 +81,11 @@ If you just want to try contributing, but don't have a specific idea, try lookin
 
 ## What can't I contribute?
 
-1. _Anything that'll be a burden for the community to maintain_ : If you've developed something complex that would be seen to require significant updates as gem5 chances, it's unlikely to be accepted.
+1. _Anything that'll be a burden for the community to maintain_: If you've developed something complex that would be seen to require significant updates as gem5 changes, it's unlikely to be accepted.
 A large part of avoiding or fixing changes to get around this regards testing.
-
-2. _Something for which we can't validate correctness, now or in the future_ : If you've developed something that's hard to test, or that we can't easily validate is correct, it's unlikely to be accepted. We can't just read the code and always understand that it's functional. **To avoid this provide tests with your changes** (more of this later).
-
-3. _Features that are overly niche and lack general applicability to the typical gem5 user_ : If it's something you and only one or two other people will use, it's unlikely to be accepted. In these cases it's probably better to maintain a fork of gem5 with your changes.
-
-4. _It doesn't conform our standards_ :  (typically style guidelines) the code is fine, it works, but you need to make some changes to make it conform to our style guidelines. This is a common reason for changes to be rejected, but it's also one of the easiest to fix.
+2. _Something for which we can't validate correctness, now or in the future_: If you've developed something that's hard to test, or that we can't easily validate is correct, it's unlikely to be accepted. We can't just read the code and always understand that it's functional. **To avoid this provide tests with your changes** (more of this later).
+3. _Features that are overly niche and lack general applicability to the typical gem5 user_: If it's something you and only one or two other people will use, it's unlikely to be accepted. In these cases it's probably better to maintain a fork of gem5 with your changes.
+4. _It doesn't conform our standards_:  (typically style guidelines) the code is fine, it works, but you need to make some changes to make it conform to our style guidelines. This is a common reason for changes to be rejected, but it's also one of the easiest to fix.
 
 ---
 
@@ -104,14 +99,14 @@ When you've finished implementing changes in your forked repo, you can submit a 
 
 ---
 
+## Let's get started: Forking the repo
+
 You can go to the gem5 GitHub page and click the "Fork" button to create a fork of the gem5 repo.
 
 ![right:40%](01-contributing-img/gem5-fork.png)
 
 **Uncheck "Copy the stable branch only"**. We don't use the stable branch for development, so you'll want to fork the `develop` branch.
 
-
-Once done, you can clone and alter this repository as you would any other.
 You can clone it locally:
 
 ```shell
@@ -141,35 +136,36 @@ git switch new-branch
 
 ---
 
+## Your forked repo: Some tips and good housekeeping
+
 - Never make changes on the `stable` branch, make them on the `develop` branch.
 In gem5, developers' changes are only merged into the `develop` branch. The `develop` branch is periodically merged into the `stable` branch to create a new gem5 release.
-
-
-
 - Keep your forked repo's `stable` and `develop` branches up to date with the main gem5 repo.
-There are multiple ways to do this.
-
-  1. Via the web interface: Go to your forked repo on GitHub go to the `stable` or `develop` branch and click the "Fetch upstream" button "sync fork" (note: you have to do this for each branch). Then pull the changes into your local repo with `git pull origin stable` and/or `git pull origin develop`.
 
 ---
 
-  2. Use the GitHub CLI: `gh repo sync {username}/gem5 -b develop && gh repo sync {username}/gem5 -b stable` will sync your forked repo (on GitHub) with the main gem5 repo.
-  You can then pull the changes into your local repo with `git switch stable && git pull && git switch develop && git pull`.
-  **Note**: We will not cover this in this tutorial.
-  The GitHub CLI is a powerful tool but requires a bit setup.
-  You can find out more about it here: (https://cli.github.com/)
+## Keeping your repo up to date
 
-  3. Through the git tool in your local repo by fetching the (the main gem5 repo) and merge the upstream into your local repo.
+There are multiple ways to do this.
+
+1. Via the web interface: Go to your forked repo on GitHub go to the `stable` or `develop` branch and click the "Fetch upstream" button "sync fork" (note: you have to do this for each branch). Then pull the changes into your local repo with `git pull origin stable` and/or `git pull origin develop`.
+2. Use the GitHub CLI: `gh repo sync {username}/gem5 -b develop && gh repo sync {username}/gem5 -b stable` will sync your forked repo (on GitHub) with the main gem5 repo.
+You can then pull the changes into your local repo with `git switch stable && git pull && git switch develop && git pull`.
+
+> **Note**: We will not cover this in this tutorial. See (https://cli.github.com/)
+
+3. Through the git tool in your local repo by fetching the (the main gem5 repo) and merge the upstream into your local repo.
+
+---
+
+## Syncing your local repo
 
 ```shell
 git remote -v
 ```
-
-   Typically you'll have an `origin` which is your GitHub repo you pulled this from.
+Typically you'll have an `origin` which is your GitHub repo you pulled this from.
 GitHub will also add a remote called `upstream`, for forked repos, which is the main gem5 repo.
 We'll keep with this naming convention, but please be aware these "remotes" can be named anything.
-
----
 
 If you need to add the upstream you can do with
 
@@ -181,18 +177,13 @@ Then you can fetch the changes from the main gem5 repo with:
 
 ```bash
 git fetch upstream
-
-# Go to your stable branch and merge the
-# changes into your local repo.
-git switch stable
-git merge upstream/stable
-
-# Go to your develop branch and do the same.
 git switch develop
 git merge upstream/develop
 ```
 
 ---
+
+## More syncing your local repo
 
 You can then push this update to your repo on GitHub with:
 
@@ -205,6 +196,14 @@ git push origin develop
 
 **Please note:** To push to your GitHub you'll need to authenticate yourself on the system you're using.
 There's a few ways to do this and may be dependent on how you've setup your GitHub account. We won't cover this here, but you can find out more here: <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github>. Pushing in this tutorial isn't important. You can figure this out in your own time.
+
+> [More on github's help page](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)
+
+---
+
+<!-- _class: start -->
+
+## Making changes and submitting
 
 ---
 
@@ -220,6 +219,8 @@ git switch -c my-change
 ```
 
 ---
+
+## Making changes and submitting them (basic flow)
 
 2. Make your changes. If it's a big change, break it up over multiple commits.
 
@@ -238,6 +239,8 @@ This will be explained later.
 
 ---
 
+## Making changes and submitting them (basic flow)
+
 3. Push your changes to your forked repo on GitHub.
 The first time you'll likely need to set the upstream branch with:
 
@@ -252,11 +255,15 @@ There's a chain of upstreams: your local repo contributes upstream to your GitHu
 
 ---
 
+## Making changes and submitting them (basic flow)
+
 4. Create a pull request. Look for the contribute button in the GitHub repo for your fork of gem5.
 
 ![30% bg](01-contributing-img/create-pr.png)
 
 ---
+
+## Making changes and submitting them (basic flow)
 
 ![70% bg](01-contributing-img/pr-create-screen.png)
 
@@ -268,13 +275,12 @@ Make sure you select the `develop` branch instead.
 ## The PR review process and making updates
 
 Once you've submitted a PR, the gem5 devs will review it.
-You can see PRs currently under review at <https://github.com/gem5/gem5/pull>.
+You can see PRs currently under review at <https://github.com/gem5/gem5/pulls>.
 
 There are two things that must happen before the PR is merged into the `develop` branch:
 
 1. The PR must pass the Continuous Integration (CI) tests.
 These are run automatically by GitHub when you submit a PR.
-
 2. Reviewers must approve the PR.
 
 When both these conditions have been met, a member of the gem5 maintainer team will merge the PR into the `develop` branch. The gem5 maintainer therefore has the final say on whether a PR is merged.
@@ -306,7 +312,7 @@ git push origin my-change
 
 ---
 
-### Rebase
+## Rebasing when gem5 is updated
 
 You can _rebase_ your branch to make changes to existing commits in it.
 This is useful if you need to change a commit message or change the order of commits, change contents of commits, merge commits, or delete commits.
@@ -327,6 +333,8 @@ pick a1b2c3d misc: Adding bla to hello.txt
 ```
 
 ---
+
+## Rebasing
 
 Using this you can reorder commits:
 
@@ -351,6 +359,8 @@ reword a1b2c3d misc: Adding bla to hello.txt
 ```
 
 ---
+
+## Rebasing
 
 Tag a commit to be edited (this allows the commit to be changed in the same way as when you're making a commit):
 
@@ -384,7 +394,7 @@ The following are basic requirements for a PR to be accepted:
 
 ---
 
-### `pre-commit`
+## Using `pre-commit`
 
 Fortunately there's a tool which can help with _most_ of this: Python `pre-commit`.
 `pre-commit` is a tool that runs a series of checks on your code before you commit it.
@@ -406,7 +416,7 @@ For now CPP formatting is a manual process.
 
 ---
 
-#### Installing pre-commit
+## Installing pre-commit
 
 `pre-commit` triggers a series of checks when `git commit` is run. It is a git hook which is executed before the commit is made.
 
@@ -418,7 +428,7 @@ To install `pre-commit` execute the following:
 
 ---
 
-### Running pre-commit
+## Running pre-commit
 
 Try doing the following and see how it works.
 
@@ -430,7 +440,7 @@ Use `git log` to observe the addition of a `Change-Id` to the commit message.
 
 ---
 
-### Formatting a commit message
+## Formatting a commit message
 
 A commit message should be in the following format to avoid complaint by `pre-commit` and our CI system:
 
@@ -449,6 +459,8 @@ Issue: https://github.com/gem5/gem5/issues/123
 
 ---
 
+## Formatting a commit message
+
 A description may spawn multiple paragraphs if desired. It can be useful to add metadata about the change at the end. In particular, a link to the Issue it addresses is helpful.
 
 **Important**:
@@ -465,7 +477,7 @@ A description may spawn multiple paragraphs if desired. It can be useful to add 
 
 ---
 
-### Style Guide
+## gem5's Code Style Guide
 
 For Python we simply recommend whatever `pre-commit` suggests and formats your code to.
 It uses the Black formatter which is a widely used Python formatter.
@@ -477,7 +489,7 @@ Despite the formality of the style guide we advise **conforming to the style of 
 
 ---
 
-### High level CPP style guide points
+## High level CPP style guide points
 
 **Lines, indentation, and braces**:
 
@@ -494,6 +506,8 @@ Despite the formality of the style guide we advise **conforming to the style of 
 
 ---
 
+## Code style example
+
 ```cpp
 class ExampleClass
 {
@@ -506,8 +520,7 @@ class ExampleClass
         if (condition) {
            this->exampleVar = 5;
         } else {
-           if (another_condition)
-               this->exampleVar;
+           if (another_condition) this->exampleVar;
         }
     }
 };
@@ -515,7 +528,7 @@ class ExampleClass
 
 ---
 
-**Spacing**:
+## Spacing
 
 - One space between keywords (if, for, while, etc.) and opening parentheses
 - One space around binary operators (+, -, <, >, etc.) including assignment operators (=, +=, etc.)
@@ -525,7 +538,7 @@ class ExampleClass
 
 ---
 
-**Naming**:
+## Naming
 
 - Class and Type names are CamelCase starting with a capital letter (e.g., `MyClass`).
 - Class member variables are camelCase starting with a lowercase letter (e.g. `classVar`).
@@ -536,6 +549,8 @@ class ExampleClass
 This includes function arguments (e.g., `myFunction(int arg_one, int arg_two)`).
 
 ---
+
+## Another code example
 
 ```cpp
 class FooBarCPU
@@ -558,15 +573,17 @@ class FooBarCPU
 
 ---
 
-For `include` statements we split them into blocks, each separated by a blank line.
-Each block is ordered alphabetically.
+<!-- _class: code-60-percent -->
+
+## Include blocks
+
+For `include` statements we split them into blocks, each separated by a blank line. Each block is ordered alphabetically.
 
 ```cpp
 // Include Python.h first if you need it.
 #include <Python.h>
 
-// Include your main header file before any other non-Python
-// headers (i.e., the one with the same name as your cc source file)
+// Include your main header file before any other non-Python headers
 #include "main_header.hh"
 
 // C includes in sorted order
@@ -575,14 +592,8 @@ Each block is ordered alphabetically.
 
 // C++ includes
 #include <cerrno>
-#include <cstdio>
 #include <string>
-#include <vector>
-```
 
----
-
-```cpp
 // Shared headers living in include/.
 // These are used both in the simulator and utilities such as the m5 tool.
 #include <gem5/asm/generic/m5ops.h>
