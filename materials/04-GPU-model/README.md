@@ -1,13 +1,16 @@
 ## Note on running GPU FS
 
-You need not use docker to run simulations in GPU FS mode. We will be simulating AMD's latest GPU, MI200, in FS mode
+You need not use docker to run simulations in GPUFS mode. We will be simulating AMD's latest GPU, MI200, in FS mode.
+However, you do need docker support for compiling GPUFS applications.  To do so:
+
+```sh
+docker pull ghcr.io/gem5/gpu-fs:latest
+```
 
 #If you haven't built m5ops yet, then
 
 ```sh
 cd /workspaces/2024/gem5/util/m5
-```
-```sh
 scons build/x86/out/m5
 ```
 
@@ -15,12 +18,8 @@ scons build/x86/out/m5
 
 ```sh
 cd /workspaces/2024/gem5-resources/src/gpu/square
-```
-```sh
 cp /workspaces/2024/materials/isca24/04-GPU-model/Makefile ./
-```
-```sh
-make
+docker run --rm -v /workspaces/2024:/workspaces/2024 -w ${PWD} ghcr.io/gem5/gpu-fs:latest make
 ```
 
 #To run square in FS mode
@@ -44,7 +43,8 @@ cp materials/2024/04-GPU-model/mi300.py gem5/configs/example/gpufs/
 cd gem5-resources/src/gpu/square
 ```
 ```sh
-make clean && make
+docker run --rm -v /workspaces/2024:/workspaces/2024 -w ${PWD} ghcr.io/gem5/gpu-fs:latest make clean
+docker run --rm -v /workspaces/2024:/workspaces/2024 -w ${PWD} ghcr.io/gem5/gpu-fs:latest make
 ```
 
 # To create checkpoint
@@ -65,7 +65,7 @@ cd /workspaces/2024
 ```sh
 cd /workspaces/2024/
 git clone https://github.com/abmerop/gem5-pytorch
-/usr/local/bin/gem5-vega gem5/configs/example/gpufs/mi200.py --disk-image ./x86-ubuntu-gpu-ml-isca --kernel ./vmlinux-gpu-ml-isca --no-kvm-perf --app gem5-pytorch/pytorch_test.py
+/usr/local/bin/gem5-vega -d pytorch-out gem5/configs/example/gpufs/mi200.py --disk-image ./x86-ubuntu-gpu-ml-isca --kernel ./vmlinux-gpu-ml-isca --no-kvm-perf --app gem5-pytorch/pytorch_test.py
 ```
 # util in gem5 -- for PyTorch example
 ```sh
@@ -79,7 +79,7 @@ cd /workspaces/2024/gem5/
 ```
 # run MNIST
 ```sh
-/usr/local/bin/gem5-vega gem5/configs/example/gpufs/mi200.py --disk-image ./x86-ubuntu-gpu-ml-isca --kernel ./vmlinux-gpu-ml-isca --no-kvm-perf --app gem5-pytorch/MNIST/test_1batch/pytorch_qs_mnist.py
+/usr/local/bin/gem5-vega -d mnist-out gem5/configs/example/gpufs/mi200.py --disk-image ./x86-ubuntu-gpu-ml-isca --kernel ./vmlinux-gpu-ml-isca --no-kvm-perf --app gem5-pytorch/MNIST/test_1batch/pytorch_qs_mnist.py
 ```
 
 # NanoGPT
