@@ -7,7 +7,7 @@ However, you do need docker support for compiling GPUFS applications.  To do so:
 docker pull ghcr.io/gem5/gpu-fs:latest
 ```
 
-#If you haven't built m5ops yet, then
+# If you haven't built m5ops yet, then build here
 
 ```sh
 cd /workspaces/2024/gem5/util/m5
