@@ -162,7 +162,7 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
   - [Extending gem5](../03-Developing-gem5-models/09-extending-gem5-models.md) <!-- (Zhantong) 1 hours -->
     - Probe points
     - Generic cache object
-    - Base utilites (e.g., bitset)
+    - Base utilities (e.g., bitset)
     - Random numbers
     - Signal ports?
 - [GPU modeling](../04-GPU-model/01-intro.md) <!-- (Matt S.) -->
