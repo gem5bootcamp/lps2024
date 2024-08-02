@@ -8,45 +8,61 @@ author: Bobby R. Bruce
 
 <!-- _class: title -->
 
-# gem5 Tests
+## gem5 Tests
 
 To check that your changes to gem5 work, you should run some of our gem5 tests.
+
+---
+
+## Contributing and testing
+
+In general, we would like to ask that all contributions come with tests.
+
+In practice, if we asked for tests this way we would receive no contributions.
+
+### Our outlook on testing
+
+- If a feature isn't tested, we don't "support it" (e.g., DRAMSim3).
+- If the "gem5 developers" want to add a supported feature, we are usually the ones to add a test.
+- Adding tests takes time away from fixing bugs, adding new features, etc.
 
 ---
 
 ## gem5 Test Categories
 
 We run tests on the gem5 codebases regularly to ensure that changes do not break the code.
-These tests exist in 4 main categories;
+These tests exist in four main categories;
 
 1. **CPP Unit tests**: These are tests that run C++ code. In gem5, we use the Google Test framework.
 2. **Python Unit tests**: These are tests that run Python code. In gem5, we use the Python unittest framework.
 3. **TestLib Tests**: These are tests that run gem5 simulations, verify exit codes, and compare output to expected output ("testlib" is the name of the framework used to do this).
 4. **Compilation Tests**: Tests which compile gem5 under different configurations with different compilers/environments.
 
-**Note:** There are some tests we run which don't fit into these categories, but these are the main ones.
+> There are some tests we run which don't fit into these categories, but these are the main ones.
 
 ---
 
 ## gem5 Test Schedule
 
-1. **CI Tests**: These tests are run on every pull request to gem5, and every update to any pull request. The CI tests consist of the CPP and Python unit tests and a subset of the TestLib tests and Compilation tests.
-These are designed to run "quickly" (by gem5 standards), in under 4 hours.
+1. **CI Tests**: These tests are run on every pull request to gem5, and every update to any pull request. The CI tests consist of the CPP and Python unit tests and a subset of the TestLib tests and Compilation tests. These are designed to run "quickly" (by gem5 standards), in under 4 hours.
 2. **Daily Tests**: These tests are run every day on the gem5 codebase.
-These tests consist of the larger Testlib tests.
-They typically take 12 hours or more to complete.
+These tests consist of the larger Testlib tests. They typically take 12 hours or more to complete.
 3.  **Weekly Tests**: These tests are run weekly on the gem5 codebase.
-These tests consist of the largest Testlib test suite and the Compilation tests.
-These tests typically take 1 to 2 days to complete.
+These tests consist of the largest Testlib test suite and the Compilation tests. These tests typically take 1 to 2 days to complete.
 4. **Compiler Tests**: These tests are run every week.
-These run a cross product of gem5 compilation targets and compilers the project currently supports.
-These tests usually take around 12 hours to complete.
+These run a cross product of gem5 compilation targets and compilers the project currently supports. These tests usually take around 12 hours to complete.
 
 ---
+
+## GitHub Actions
 
 The complete GitHub Actions workflow for these tests can be found in the [.github/workflows/](https://github.com/gem5/gem5/blob/v24.0/.github/workflows) in the gem5 repository.
 
 We not go over these in this session but you can look over these yaml files and see how GitHub Actions is triggered to run these the gem5 tests.
+
+These tests run on "self-hosted" runners. There is a machine at Wisconsin (loupe) which runs these tests.
+
+> Bonus points if you know what a "loupe" is
 
 ---
 
@@ -88,7 +104,7 @@ More information on Python's unittest framework can be found at <https://docs.py
 The tests are run with `gem5 tests/run_pyunit.py` command.
 In our case, any file in the "tests/pyunit" directory with the prefix "pyunit_" is considered a test by the test runner.
 
-Individual subdirectories in 'tests/pyunit" can be specified and run separately by passing those subdirectories as arguments to "tests/run_pytests.py". E.g.: `gem5 tests/run_pyunit.py --directory tests/pyunit/util`.
+Individual subdirectories in "tests/pyunit" can be specified and run separately by passing those subdirectories as arguments to "tests/run_pytests.py". E.g.: `gem5 tests/run_pyunit.py --directory tests/pyunit/util`.
 
 ---
 
@@ -96,17 +112,29 @@ Individual subdirectories in 'tests/pyunit" can be specified and run separately 
 
 Compiler tests are run weekly on the gem5 codebase.
 
-These tests are specified directly in a GitHub Action workflow: [.github/workflows/compilers-tests.yaml](https://github.com/gem5/gem5/blob/v24.0/.github/workflows/compiler-tests.yaml)
+These tests are specified directly in a GitHub Action workflow: [.github/workflows/compiler-tests.yaml](https://github.com/gem5/gem5/blob/v24.0/.github/workflows/compiler-tests.yaml)
 
-These tests use a series of Docker images to test compilation of various gem5 conifgurations with different compilers.
+These tests use a series of Docker images to test compilation of various gem5 configurations with different compilers.
+
+If your system deviates from what we test in the compiler-tests, we do not support that compiler.
 
 ---
 
 ## TestLib Tests
 
+TestLib is a library we developed to help run gem5 integration tests.
+
+> There is some regret on rolling our own testing framework. It increases the maintenance burden and doesn't provide much benefit.
+
 TestLib tests are the most important tests in gem5.
 These tests run gem5 simulations and verify the output of the simulation.
 The tests are written in Python and use the "testlib" framework to run the simulations and verify the output.
+
+We do not have very good coverage of unittests, so most of our testing is in integration tests via the TestLib.
+
+---
+
+## Using TestLib
 
 The tests are run using the `./main.py` command in the `test` directory of the gem5 repository.
 
@@ -121,6 +149,8 @@ The "quick" tests are the testlib tests run in the CI pipeline. To run the tests
 
 ---
 
+## Using TestLib
+
 The `./main.py list` command can be used to list all the tests in a directory, which we'll demonstrate here:
 
 ```shell
@@ -133,7 +163,7 @@ The `./main.py list` command can be used to list all the tests in a directory, w
 
 ---
 
-### How TestLib Tests are declared
+## How TestLib Tests are declared
 
 Let's look at ["tests/gem5/m5_util"](https://github.com/gem5/gem5/blob/v24.0/tests/gem5/m5_util) to see how a test is declared.
 
