@@ -26,7 +26,6 @@ gem5 has lots of resources to get help:
       - [gem5-announce@gem5.org : For general gem5 announcements](https://harmonylists.io/list/gem5-announce.gem5.org)
 3. [Youtube videos](https://www.youtube.com/@gem5)
 
-
 These links and more information are also available at [https://www.gem5.org/ask-a-question/](https://www.gem5.org/ask-a-question/)
 
 > We do our best to get to questions, but they often go unanswered. This isn't because it's not a good question, but because we don't have enough volunteers.
@@ -100,3 +99,26 @@ The source will be at [`gem5/utils/dockerfiles/devcontainer`](https://github.com
 - Create branches off of stable.
 - Don't modify parameters of python files in `src/`. Instead create *extensions* of stdlib types or SimObjects.
 - Don't be afraid to read the code. The code is the best documentation.
+
+---
+
+<!-- _class: start -->
+
+## Final things
+
+---
+
+## Big thanks
+
+![Everyone who has contributed to the bootcamp width:1200px](../01-Introduction/00-introduction-to-bootcamp-imgs/devs.drawio.svg)
+
+---
+
+## Big thanks to you all!
+
+![Group photo](03-gem5-at-home-imgs/group.jpg)
+
+Please let us know how we did:
+
+<https://forms.gle/ZLZdv9h126d8GFrS7>
+

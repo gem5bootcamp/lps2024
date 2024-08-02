@@ -44,7 +44,7 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
 
 ## The bootcamp team
 
-![Bobby Bruce, Ivana Mitrovic, Harshil Patel, and Erin Le width:1200px](00-introduction-to-bootcamp-imgs/devs.drawio.svg)
+![Everyone who has contributed to the bootcamp width:1200px](00-introduction-to-bootcamp-imgs/devs.drawio.svg)
 
 ---
 
