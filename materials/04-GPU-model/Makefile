@@ -13,7 +13,7 @@ LDFLAGS+=-lm5
 square: $(BIN_DIR)/square
 
 $(BIN_DIR)/square: square.cpp $(BIN_DIR)
-	$(HIPCC) --amdgpu-target=gfx900,gfx902,gfx90a $(CXXFLAGS) square.cpp -o $(BIN_DIR)/square $(CXXFLAGS) $(LDFLAGS)
+	$(HIPCC) --offload-arch=gfx900,gfx902,gfx90a $(CXXFLAGS) square.cpp -o $(BIN_DIR)/square $(CXXFLAGS) $(LDFLAGS)
 
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)

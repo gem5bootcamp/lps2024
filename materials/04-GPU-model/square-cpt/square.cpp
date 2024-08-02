@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 
     printf ("info: launch 'vector_square' kernel\n");
     hipLaunchKernelGGL(vector_square, dim3(blocks), dim3(threadsPerBlock), 0, 0, C_h, A_h, N);
-    hipDeviceSynchronize();
+    CHECK(hipDeviceSynchronize());
 
 
     printf ("info: check result\n");
