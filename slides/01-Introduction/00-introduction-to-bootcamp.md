@@ -144,12 +144,6 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
     - Other SimObjects as parameters
     - Hello/Goodbye example with buffer
     - Clock domains?
-  - [Ports and memory-based SimObjects](../03-Developing-gem5-models/04-ports.md) <!-- (Mahyar) 1 hours -->
-    - Idea of ports (request/response), packets, interface
-    - A simple memory object that forwards things
-    - Connecting ports and writing config files
-    - Adding stats to a SimObject
-    - Adding latency and and modeling buffers/computing time
 
 ### Day 4
 
@@ -165,13 +159,6 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
     - Debugging
     - Ruby network
     - (Note to Jason: could do a whole day here if split like before.)
-  - [Using the CHI protocol](../03-Developing-gem5-models/07-chi-protocol.md) <!-- (Jason) 0.5 hours -->
-    - How is CHI different from other protocols?
-    - Configuring a CHI hierarchy
-  - [Modeling the on-chip network with Garnet](../03-Developing-gem5-models/08-ruby-network.md) <!-- (Jason) 1 hours -->
-    - Garnet intro
-    - Building/running/configuring networks
-    - Debugging
   - [Extending gem5](../03-Developing-gem5-models/09-extending-gem5-models.md) <!-- (Zhantong) 1 hours -->
     - Probe points
     - Generic cache object
@@ -182,7 +169,21 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
 
 ### Day 5
 
-- Other simulators (subject to change) <!-- (Jason?) -->
+- Developing gem5 models
+  - [Ports and memory-based SimObjects](../03-Developing-gem5-models/04-ports.md) <!-- (Mahyar) 1 hours -->
+    - Idea of ports (request/response), packets, interface
+    - A simple memory object that forwards things
+    - Connecting ports and writing config files
+    - Adding stats to a SimObject
+    - Adding latency and and modeling buffers/computing time
+  - [Using the CHI protocol](../03-Developing-gem5-models/07-chi-protocol.md) <!-- (Jason) 0.5 hours -->
+    - How is CHI different from other protocols?
+    - Configuring a CHI hierarchy
+  - [Modeling the on-chip network with Garnet](../03-Developing-gem5-models/08-ruby-network.md) <!-- (Jason) 1 hours -->
+    - Garnet intro
+    - Building/running/configuring networks
+    - Debugging
+- Other simulators <!-- (Jason?) -->
   - [SST](../05-Other-simulators/01-sst.md)
   - [DRAMSim/DRAMSys](../05-Other-simulators/02-dram.md)
   - [SystemC](../05-Other-simulators/03-systemc.md)
