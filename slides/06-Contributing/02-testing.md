@@ -168,7 +168,7 @@ The `./main.py list` command can be used to list all the tests in a directory, w
 Let's look at ["tests/gem5/m5_util"](https://github.com/gem5/gem5/blob/v24.0/tests/gem5/m5_util) to see how a test is declared.
 
 In this directory there is "test_exit.py".
-Any file with the prefix "test_" is considered a test by the testlib framework and will be run when the tests are executed.
+Any file with the prefix "test_" is considered a test by the testlib framework and will be automatically run when the tests are executed.
 
 "configs" is a directory of configuration scripts that are used to run the tests defined in "test_exit.py".
 
@@ -176,27 +176,32 @@ Now, let's look into "test_exit.py" and see how the tests are declared.
 
 ---
 
-```python
-import re
+## Declaring how to test
 
-# Import the testlib framework. This is required.
+Import testlib library (found in `gem5/ext/testlib`)
+
+```python
 from testlib import *
 ```
 
-```py
-# Here we define a regular expression to match the output of the simulation.
+Many of the tests use regex matching. For example, we check to see if the `m5_exit` instruction is encountered below and then create a *verifier*.
 
+**`verifier`** is used by the testlib to check the output.
+
+```py
 m5_exit_regex = re.compile(
     r"Exiting @ tick \d* because m5_exit instruction encountered"
 )
-
-# ...
-
-# Here we define the verifier using the regular expression.
 a = verifier.MatchRegex(m5_exit_regex)
 ```
 
 ---
+
+<!-- _class: code-80-percent -->
+
+## Declaring the test
+
+Now, we use a special function `gem5_verify_config` to run gem5 and then apply our verifier.
 
 ```py
 gem5_verify_config(
@@ -205,36 +210,33 @@ gem5_verify_config(
     fixtures=(),
     config=joinpath( # The path to the config file to run.
         config.base_dir,
-        "tests",
-        "gem5",
-        "m5_util",
-        "configs",
-        "simple_binary_run.py",
+        "tests", "gem5", "m5_util", "configs", "simple_binary_run.py",
     ),
-    # ... continued on next slide...
-```
-
----
-
-```py
     config_args=[ # The arguments to pass to the config file.
         "x86-m5-exit",
         "--resource-directory",
         resource_path,
     ],
-    # The ISAs to run on this test. In this cases "ALL/gem5.opt" is used.
-    # `constants.arg_tag`: "ARM/gem5.opt"
-    # `constants.x86_tag`: "X86/gem5.opt"
-    # `constants.riscv_tag`: "RISCV/gem5.opt"
     valid_isas=(constants.all_compiled_tag,),
 )
 ```
+
+---
+
+## Valid ISAs parameter
+
+The ISAs to run on this test. In this cases "ALL/gem5.opt" is used.
+
+- `constants.arg_tag`: "ARM/gem5.opt"
+- `constants.x86_tag`: "X86/gem5.opt"
+- `constants.riscv_tag`: "RISCV/gem5.opt"
+
 
 While not specified directly we could determine whether the tests runs as `quick`, `long`, or `very-long` with a `length` which accepts `constants.quick_tag`, `constants.long_tag`, or `constants.very_long_tag` as arguments (default is `constants.quick_tag`).
 
 ---
 
-View these tests with:
+## Viewing the tests
 
 ```shell
 ./main.py list gem5/m5_util
@@ -257,6 +259,8 @@ TestUID:tests/gem5/m5_util/test_exit.py:m5_exit_test-ALL-x86_64-opt:m5_exit_test
 
 ---
 
+## Running the tests
+
 Then run with
 
 ```shell
@@ -271,15 +275,13 @@ If you want/need to build at this step, pass `-j$(nproc)` to the `./main.py run`
 
 ---
 
-### Exercise: Creating a TestLib Test
+## Exercise: Creating a TestLib Test
 
 Go to [materials/06-Contributing/02-testing/01-testlib-example](../../materials/06-Contributing/).
 
 Move "01-testlib-example" to "tests/gem5/" in the gem5 repository.
 
 Provided in "test_example.py" is the `gem5_verify_config` function which is used to define testlib tests.
-
----
 
 ```python
 gem5_verify_config(
@@ -295,7 +297,7 @@ gem5_verify_config(
 
 ---
 
-In this exercise we will do the following:
+## In this exercise we will do the following:
 
 1. Create a test that runs the `example_config.py` script without any arguments and verifies it runs correctly.
 2. Have this test use the `--to-print` argument to print "Arm Simulation Completed." at the end of the simulation.
@@ -307,7 +309,7 @@ After each step run the tests to verify the changes:
 
 ---
 
-### Hints and tips
+## Hints and tips
 
 - Adding `-vvv` to the end of the test command will give you more information about the test, particularly if an error occurs.
 - Look at the other tests in "tests/gem5" for examples of how to write tests.
