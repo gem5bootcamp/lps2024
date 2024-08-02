@@ -121,3 +121,6 @@ The source will be at [`gem5/utils/dockerfiles/devcontainer`](https://github.com
 Please let us know how we did:
 
 <https://forms.gle/ZLZdv9h126d8GFrS7>
+
+![QR code for google form bg right 60%](03-gem5-at-home-imgs/qr-code.png)
+
