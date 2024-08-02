@@ -57,7 +57,8 @@ window.get_slide_registry = function() {
             "name": "06-Contributing",
             "slides": [
                 "01-contributing",
-                "02-testing"
+                "02-testing",
+                "03-gem5-at-home"
             ]
         }
     ];
