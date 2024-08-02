@@ -11,10 +11,6 @@ title: Modeling the on-chip network with Garnet
 
 ---
 
-## What we'll cover
-
----
-
 ## Review of Ruby
 
 - **Controller Models** *(e.g, caches)*: Manage coherence state and issue requests
@@ -118,7 +114,7 @@ Note that netifs is only used for Garnet. Also, the `ruby_system` has to be set 
 
 ---
 
-## The `connectControllers` metho
+## The `connectControllers` method
 
 This is where the meat of the topology is created.
 In our case, we are going to make this topology very specific.

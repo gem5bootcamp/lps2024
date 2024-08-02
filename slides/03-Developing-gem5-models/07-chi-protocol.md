@@ -16,8 +16,8 @@ title: Using gem5's implementation of the CHI Protocol
 - Let's build a simple two-level cache hiearchy
   - Private L1 caches
   - Shared L2/directory (home node)
-- Extend this to allow for multiple L2s (banked by address)
-- Multiple memory controllers as well
+<!-- - Extend this to allow for multiple L2s (banked by address) -->
+<!-- - Multiple memory controllers as well -->
 
 Code in [`materials/03-Developing-gem5-models/07-chi-protocol`](../../materials/03-Developing-gem5-models/07-chi-protocol/).
 
