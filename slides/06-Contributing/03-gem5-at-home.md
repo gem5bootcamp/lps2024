@@ -116,9 +116,8 @@ The source will be at [`gem5/utils/dockerfiles/devcontainer`](https://github.com
 
 ## Big thanks to you all!
 
-![Group photo](03-gem5-at-home-imgs/group.jpg)
+![Group photo height:300px](03-gem5-at-home-imgs/group.jpg)
 
 Please let us know how we did:
 
 <https://forms.gle/ZLZdv9h126d8GFrS7>
-
