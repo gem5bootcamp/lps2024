@@ -10,7 +10,7 @@ author: [Jason Lowe-Power, Bobby R. Bruce]
 
 ## Getting started with gem5
 
-In this section, we will get familiar the tutorial's codespace environment and run our first gem5 simulation.
+In this section, we will get familiar with the tutorial's codespace environment and run our first gem5 simulation.
 
 ---
 
@@ -40,10 +40,10 @@ cd gem5
 ```
 
 > There are two main branches in the gem5 repository:
-> **stable**: The default branch for gem5. Updated at stable releases. Currently v24.0.
+> **stable**: The default branch for gem5. Updated at stable releases. Currently v24.0 (As of August 2024).
 > **develop**: The branch in which new features, improvements, etc. are added regularly for the next release.
 
-In this tutorial we’re going to use codespaces with a repo which includes some example materials. Though all the gem5 code is v24.0
+In this tutorial we’re going to use codespaces with a repo which includes some example materials. Though all the gem5 code is v24.0.
 
 ---
 
@@ -79,7 +79,7 @@ These slides and are available at <https://bootcamp.gem5.org/> for you to follow
 
 > **Step 1:** Go to the classroom <https://classroom.github.com/a/gCcXlgBs>
 
-You need to be in the github organization (via the classroom) to get free codespaces.
+You need to be in the GitHub organization (via the classroom) to get free codespaces.
 
 ### We strongly recommend using codespaces for the bootcamp.
 
@@ -102,7 +102,7 @@ Again, note that this is the repo where the slides are.
 
 > **Step 3:** Wait for the environment to load.
 
-You can also open it in your local VS Code if you install the codespaces extension.
+You can also open it in your local VS Code if you install the Codespaces extension.
 (If you do this, the extensions will not be installed automatically on your local VS Code.)
 
 ![Screenshot of the codespace loaded and ready to use width:1100px](02-getting-started-imgs/codespaces-screenshot-2.drawio.png)
@@ -117,12 +117,12 @@ You can also open it in your local VS Code if you install the codespaces extensi
   - Source code for gem5's resources (workloads, disks, etc.). Also a sub-repository
 - **`slides/`**
   - Markdown version of these slides. Used to build the website/slides.
-  - You can also preview the slides in vs code.
+  - You can also preview the slides in VS Code.
 - **`materials/`**
   - Python scripts and other materials for the tutorial.
   - Most of the live coding examples will be here.
   - Completed examples are in the `completed` directories.
-- A few other things for the website, automatic building, vs code configurations, etc.
+- A few other things for the website, automatic building, VS Code configurations, etc.
 
 Both the slides and materials are broken down into sections and lessons.
 We use numbering to keep them in order.
@@ -134,7 +134,7 @@ We use numbering to keep them in order.
 > Don't do this right now!
 
 ```sh
-scons build/ALL/gem5.opt
+scons build/ALL/gem5.opt -j [number of cores]
 ```
 
 - This takes a while (10-15 minutes with 16 cores, ~1hr on 1 core).
@@ -204,7 +204,7 @@ board.set_workload(
   - Boots Ubuntu without systemd then exits the simulation
   - Downloads disk image, kernel, and sets default parameters
 
-See the [gem5 resource page](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-no-systemd?version=1.0.0)
+See the [gem5 resource page](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-no-systemd?version=1.0.0).
 
 ---
 
@@ -277,5 +277,5 @@ In `m5out/` you'll see:
   - Details of configuration
   - Other output
   - **Statistics** (the most important part)
-- The codespaces environment is configured to make things easy.
+- The Codespaces environment is configured to make things easy.
   - You'll need to do some work to set up your own environment.

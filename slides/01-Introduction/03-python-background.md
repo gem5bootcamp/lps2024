@@ -15,7 +15,7 @@ The purpose of this session is to introduce you to Python programming and how it
 
 ## Key idea: gem5 Interprets Python
 
-The gem5 simulator can be thought of as a C++ program that interprets a Python script which defines the simulation. `gem5` *is a Python interpreter* that includes the gem5 python libraries.
+The gem5 simulator can be thought of as a C++ program that interprets a Python script which defines the simulation. `gem5` *is a Python interpreter* that includes the gem5 Python libraries.
 
 > **WARNING**: This is a simplification.
 > Some simulation configuration information is present in the C++ code.
@@ -164,7 +164,7 @@ z = y - x
 print(f"Value of z: {z}")
 ```
 
-> In Python3 (the version gem5 uses), division of two integers will return a float.
+> In Python 3 (the version gem5 uses), division of two integers will return a float.
 
 ---
 
@@ -205,11 +205,9 @@ print(y)
 
 ## Printing strings
 
-We use the "f-string" syntax to insert the value strings inside other
-strings. The contents between the curly braces are evaluated as Python.
-In the following we concatenate x with " GoodBye " and the value of x + y
-("Hello World! GoodBye!"). This z will be set to
-"Hello World! GoodBye Hello World! Goodbye!"
+We use the "f-string" syntax to insert the value strings inside otherstrings. The contents between the curly braces are evaluated as Python.
+
+In the following we concatenate x with " GoodBye " and the value of x + y ("Hello World! GoodBye!"). This z will be set to "Hello World! GoodBye Hello World! Goodbye!"
 
 ```python
 z = f"{x} GoodBye {x + y}"
@@ -293,10 +291,10 @@ g = (1 + 1) >= 2
 
 Python has many built-in collection types though the most commonly used are
 lists, dictionaries, and sets. In all cases they serve to store multiple
-variables within the single collection variable
+variables within the single collection variable.
 
 Lists are ordered collections of variables. Duplicates allowed.
-The are set in square brackets.
+They use square brackets.
 
 ```python
 a_list = [1, 1, 2]
@@ -307,7 +305,7 @@ More on lists can be found at [`materials/01-Introduction/03-python-background/0
 ### Sets
 
 Sets are unordered collections of variables. Duplicates are not allowed.
-They are set in curly braces.
+They use curly braces.
 
 ```python
 a_set = {"one", "two", "three", "four", "five"}
@@ -608,8 +606,7 @@ for value in my_generator():
     print(value)
 ```
 
-The difference in syntax is the `yield` keyword.
-This is used to return a value from the generator.
+The difference in syntax is the `yield` keyword. This is used to return a value from the generator.
 
 ---
 
@@ -617,7 +614,6 @@ This is used to return a value from the generator.
 
 In addition to being more memory efficient, generators are useful for creating infinite sequences.
 
-The advantage of generators is you can create infinite sequences.
 
 ```python
 def infinite_flip_flop() -> Generator[bool]:
@@ -803,7 +799,7 @@ toot_horn(dog)
 
 ## Overriding Methods
 
-Finally subclasses can override methods of the parent class. This is useful when the method of the parent class does not make sense for the subclass. For example, the Elephant class could override the eat method of the Animal class to print a different message when an Elephant eats.
+Finally subclasses can override methods of the parent class. This is useful when the method of the parent class does not make sense for the subclass. For example, the Elephant class could override the `eat` method of the Animal class to print a different message when an Elephant eats.
 
 ```python
 class Elephant(Animal):
@@ -833,8 +829,7 @@ feed_animal(elephant)
 ```
 
 To return to everyday Object Oriented Design terminology, the `Animal` class is the base class and the `Elephant` class is the derived class.
-The derived class can override the methods of the base class.
-This means a function which expects a base class object can execute completely different code depending on the type of the object passed to it.
+The derived class can override the methods of the base class. This means a function which expects a base class object can execute completely different code depending on the type of the object passed to it.
 
 ---
 
@@ -903,8 +898,7 @@ class LazyCat(Cat):
         print("Cat is sleeping")
 ```
 
-We can instantiate these classes and call their methods, everything except
-the abstract base class.
+We can instantiate these classes and call their methods, everything except the abstract base class.
 
 ###
 
@@ -1068,7 +1062,7 @@ example.whatever = 5
 print(f"{example.hello} {example.whatever} {example.bye}")
 ```
 
-Here we've added another variable the object.
+Here we've added another variable to the object.
 
 However, gem5 will throw an error if you try to do this with a SimObject.
 
@@ -1098,10 +1092,10 @@ This is not a traditional `=` assignment and is instead calling a `connect` func
 ## SimObject Vector parameters are immutable
 
 Vector parameters are vectors of parameter values of other SimObjects.
-They are a special type of SimObject parameter.
-They are used to store multiple values in a single parameter.
-However, unlike typical Python Lists once created, they cannot be changed.
-You can't add or remove SimObjects from a vector after it has been created.
+
+They are a special type of SimObject parameter and are used to store multiple values in a single parameter.
+
+However, unlike typical Python Lists, they cannot be changed once created. You can't add or remove SimObjects from a vector after it has been created.
 
 ```python
 simobject = ASimObject()

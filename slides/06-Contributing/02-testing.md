@@ -321,6 +321,8 @@ scons build/ARM/gem5.opt -j$(nproc)
 
 Then, when running `./main.py run gem5/02-testing`, add the `--skip-build` flag to skip the build step.
 
+The completed examples can be found at [materials/06-Contributing/02-testing/01-testlib-example/completed](/materials/06-Contributing/02-testing/01-testlib-example/completed).
+
 ---
 
 ## Congratulations!

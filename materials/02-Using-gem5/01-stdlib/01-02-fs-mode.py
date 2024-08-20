@@ -12,7 +12,7 @@ from gem5.resources.resource import obtain_resource
 from gem5.simulate.exit_event import ExitEvent
 from gem5.simulate.simulator import Simulator
 
-# Here we setup a MESI Two Level Cache Hierarchy.
+# Here we set up a MESI Two Level Cache Hierarchy.
 cache_hierarchy = MESITwoLevelCacheHierarchy(
     l1d_size="16kB",
     l1d_assoc=8,
@@ -23,5 +23,5 @@ cache_hierarchy = MESITwoLevelCacheHierarchy(
     num_l2_banks=1,
 )
 
-# Setup the system memory.
+# Set up the system memory.
 memory = SingleChannelDDR3_1600(size="3GB")

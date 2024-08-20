@@ -133,7 +133,7 @@ We will make it 64 Bytes wide (as wide as the cache line) so that it's maximum b
 
 ## Implement the hierarchy interface
 
-The board needs to be able to get the port to connect memory
+The board needs to be able to get the port to connect to memory.
 
 ```python
 def get_mem_side_port(self):
@@ -179,7 +179,7 @@ self.l3_bus = L2XBar()
 
 ## Creating core clusters
 
-Since each core is going to have a many private caches, let's create a cluster.
+Since each core is going to have many private caches, let's create a cluster.
 In this cluster, we will create L1I/D and L2 caches, the L2 crossbar and connect things.
 
 ```python

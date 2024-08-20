@@ -16,9 +16,9 @@ title: Modeling CPU cores in gem5
 - **Learn about CPU models in gem5​**
   - AtomicSimpleCPU, TimingSimpleCPU, O3CPU, MinorCPU, KvmCPU​
 - Using the CPU models​
-  - Set-up a simple system with two cache sizes and three CPU models​
+  - Set up a simple system with two cache sizes and three CPU models​
 - Look at the gem5 generated statistics​
-  - To understand differences among CPU models
+  - To understand the differences between CPU models
 - Create a custom processor
   - Change parameters of a processor based on O3CPU
 
@@ -40,7 +40,7 @@ title: Modeling CPU cores in gem5
 
 ### Atomic
 
-Sequency of nested calls
+Sequence of nested calls
 Use: Warming up, fast-forwarding
 
 ### Functional
@@ -159,7 +159,7 @@ We will do this soon.
 - Learn about CPU models in gem5
   - AtomicSimpleCPU, TimingSimpleCPU, O3CPU, MinorCPU, KvmCPU​
 - **Using the CPU models​**
-  - Set-up a simple system with two cache sizes and three CPU models​
+  - Set up a simple system with two cache sizes and three CPU models​
 - Look at the gem5 generated statistics​
   - To understand differences among CPU models
 - Create a custom processor
@@ -175,7 +175,7 @@ We will do this soon.
 
 ## Material to use
 
-### Start by opening the following file.
+### Start by opening the following file
 
 [materials/02-Using-gem5/04-cores/cores.py](../../materials/02-Using-gem5/04-cores/cores.py)
 

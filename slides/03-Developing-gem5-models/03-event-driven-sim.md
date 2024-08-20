@@ -95,14 +95,13 @@ Can call functions instead of scheduling events, but they occur _in the same tic
 
 ## Discrete event simulation
 
-"Time" needs a unit
-In gem5, we use a unit called "Tick"
+"Time" needs a unit.
+In gem5, we use a unit called "Tick".
 
-Need to convert a simulation "tick" to user-understandable time
-E.g., seconds
+Need to convert a simulation "tick" to user-understandable time, e.g. seconds.
 
-This is the global simulation tick rate
-Usually this is 1 ps per tick or $10^{12}$ ticks per second
+This is the global simulation tick rate.
+Usually this is 1 ps per tick or $10^{12}$ ticks per second.
 
 ---
 <!-- _class: code-60-percent -->

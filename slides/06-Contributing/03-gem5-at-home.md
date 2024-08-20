@@ -17,7 +17,7 @@ author: William Shaddix
 gem5 has lots of resources to get help:
 
 1. Documentation at [gem5 doxygen](http://doxygen.gem5.org/)
-2. Ways to reachout for help:
+2. Ways to reach out for help:
    - [Github discussions](https://github.com/orgs/gem5/discussions) **This is the main place for questions**
    - [gem5 Slack channel](https://join.slack.com/t/gem5-workspace/shared_invite/zt-2e2nfln38-xsIkN1aRmofRlAHOIkZaEA)
    - Join our mailing lists:

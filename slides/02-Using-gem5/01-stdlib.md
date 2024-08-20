@@ -13,26 +13,26 @@ title: gem5's Standard Library
 
 ## Why a Standard Library?
 
-When done without the library you must define *every part* of your simulation: Every Simobject, connected correctly to every port, for every part, no matter now small.
-This can result in scripts of hundreds of lines of code even for the most basic of simulations.
+When done without the library you must define *every part* of your simulation: Every SimObject, connected correctly to every port, for every part, no matter now small.
+This can result in scripts with hundreds of lines of code even for the most basic of simulations.
 
-This resulted in:
+This causes:
 
 - A lot of duplicated code.
 - Error-prone configurations.
-- A lock of portability between different simulations setups.
+- A lack of portability between different simulation setups.
 
-In addition, while there is no "one size fits all" for gem5 users, most users have similar needs and requirements for their simulations; requiring only a few modifications off some commonly used configuration systems.
-Prior to the creation of the standard library users would regularly circulte long complex scripts and hack at them endlessly.
+In addition, while there is no "one size fits all" for gem5 users, most users have similar needs and requirements for their simulations, requiring only a few modifications off of some commonly used configuration systems.
+Prior to the creation of the standard library users would regularly circulate long, complex scripts and hack at them endlessly.
 Such practices inspired the creation of the gem5 Standard Library.
 
 ---
 
 ## What is the Standard Library?
 
-The purpose of the gem5 Standard library is to provide a set of pre-defined components that can be used to build a simulation that does the majority of the work for you.
+The purpose of the gem5 Standard Library is to provide a set of predefined components that can be used to build a simulation that does the majority of the work for you.
 
-The the remainder not supported by the standard library, APIs are provided that make it easy to extend the library for your own use.
+For the remainder that is not supported by the standard library, APIs are provided that make it easy to extend the library for your own use.
 
 ---
 
@@ -44,12 +44,12 @@ The the remainder not supported by the standard library, APIs are provided that 
 
 ## Main idea
 
-Due to is modular, object-oriented design, gem5 can be thought of as a set of components that can be plugged together to form a simulation.
+Due to its modular, object-oriented design, gem5 can be thought of as a set of components that can be plugged together to form a simulation.
 
 The types of components are *boards*, *processors*, *memory systems*, and *cache hierarchies*:
 
 - **Board**: The "backbone" of the system. You plug components into the board. The board also contains the system-level things like devices, workload, etc. It's the boards job to negotiate the connections between other components.
-- **Processor**: Processors connect to boards and have one or more *cores*
+- **Processor**: Processors connect to boards and have one or more *cores*.
 - **Cache hierarchy**: A cache hierarchy is a set of caches that can be connected to a processor and memory system.
 - **Memory system**: A memory system is a set of memory controllers and memory devices that can be connected to the cache hierarchy.
 
@@ -57,18 +57,13 @@ The types of components are *boards*, *processors*, *memory systems*, and *cache
 
 ## Quick note on relationship to gem5 models
 
-The C++ code in gem5 specifies *parameterized* **models** (typically referred to "SimObjects" in most gem5 literature).
-These models are then instantiated in the Python scripts.
+The C++ code in gem5 specifies *parameterized* **models** (typically referred to "SimObjects" in most gem5 literature). These models are then instantiated in the Python scripts.
 
-The standard library is a way to *wrap* these models in a standard API into, what we call, *components*.
-The standard library are pre-made Python script instantiating these models provided by gem5.
+The standard library is a way to *wrap* these models in a standard API into, what we call, *components*. The standard library consists of pre-made Python scripts instantiating these models provided by gem5.
 
-The gem5 mode are fine grained concepts which make little sense for us to divide down further into sub-models or hardcore parameters for (for example, a *core*). A component works on courser grained concepts typically containing many models instantiate with sensible parameters. For, example a *processor* which contains multiple cores, how they are connected buses and each other with all parameters set ot sensible values.
+The gem5 models are fine grained concepts which make little sense for us to divide down further into sub-models or hardcore parameters for (for example, a *core*). A component works on coarser grained concepts typically containing many models instantiated with sensible parameters. For, example a *processor* which contains multiple cores and specifies how they are connected to buses and each other with all parameters set to sensible values.
 
-
-If you want to create a new component you are encouraged to *extend* (i.e., subclass) the components in the standard library or create new components.
-This allows you the models within the component and the value of their parameters.
-We will see some examples of this over the coming lectures.
+If you want to create a new component you are encouraged to *extend* (i.e., subclass) the components in the standard library or create new components. This allows you to choose the models within the component and the value of their parameters. We will see some examples of this over the coming lectures.
 
 ---
 
@@ -117,7 +112,7 @@ The component for the cache hierarchy is parameterized with the sizes and associ
 ## Next, let's add a memory system
 
 ```python
-memory = SingleChannelDDR3_1600()
+memory = SingleChannelDDR4_2400()
 ```
 
 This component represents a single-channel DDR3 memory system.
@@ -145,7 +140,7 @@ The `cpu_type` parameter specifies the type of CPU model to use.
 
 A `SimpleBoard` is a board which can run any ISA in Syscall Emulation (SE) mode.
 It is "Simple" due the relative simplicity of SE mode.
-Most board are tied to a specific ISA and require more complex designs do running Full System (FS) simulation.
+ Most boards are tied to a specific ISA and require more complex designs to run Full System (FS) simulation.
 
 ```python
 board = SimpleBoard(
@@ -158,7 +153,7 @@ board = SimpleBoard(
 
 ---
 
-## Next Setup the workload
+## Next, set up the workload
 
 ```python
 board.set_workload(obtain_resource("arm-gapbs-bfs-run"))
@@ -166,23 +161,22 @@ board.set_workload(obtain_resource("arm-gapbs-bfs-run"))
 
 The `obtain_resource` function downloads the files needed to run the specified workload. In this case "arm-gapbs-bfs-run" is a BFS workload from the GAP Benchmark Suite.
 
-
 ---
 
 ### gem5 Resources
 
-We will return to gem5 Resources later in the bootcamp, but for now, you can think of them as a way to download and manage files needed for your simulation but don't actually specify the simulated computer system hardware.
-Typically they are used to download and manage workloads, disk images, checkpoints needed for the simulation.
+We will return to gem5 Resources later in the bootcamp, but for now, you can think of it as a way to download and manage files needed for your simulation but don't actually specify the simulated computer system hardware.
+Typically it is used to download and manage workloads, disk images, checkpoints needed for the simulation.
 
-Here we can search the available resource: <https://resources.gem5.org/>.
+Here we can search the available resources: <https://resources.gem5.org/>.
 
 Here is the arm-gabps-bss-run resource: <https://resources.gem5.org/resources/arm-gapbs-bfs-run?version=1.0.0>.
 
 ---
 
-## Next Setup the Simulation
+## Next, set up the simulation
 
-Setup the simulation:
+Set up the simulation:
 
 ```python
 simulator = Simulator(board=board)
@@ -253,7 +247,7 @@ gem5/src/python/gem5/prebuilt
   - Components: Components to build systems
 - Prebuilt
   - Demo: Just examples to build off of
-  - riscvmatched: Models SiFive Unmatched
+  - riscvmatched: Model of SiFive Unmatched
 
 ---
 
@@ -277,7 +271,7 @@ gem5/src/python/gem5/components
 
 - Boards: Things to plug into
   - Have "set_workload" and "connect_things"
-  - Simple: SE-only, configurable
+- Simple: SE-only, configurable
 - Arm, RISC-V, and X86 versions for full system simulation
 
 ---
@@ -306,7 +300,7 @@ gem5/src/python/gem5/components
 
 ---
 
-## A bit more about cache hiearchies
+## A bit more about cache hierarchies
 
 - Quick caveat: You need different gem5 binaries for different protocols
 - Any binary can use classic caches
@@ -364,31 +358,31 @@ gem5/src/python/gem5/components
 
 ###
 
-- Mostly "configurable" processors to build off
+- Mostly "configurable" processors to build off of.
 - Generators
-  - Synthetic traffic, but act like processors
-  - Have linear, random, and more interesting
+  - Synthetic traffic, but act like processors.
+  - Have linear, random, and more interesting patterns
 - Simple
-  - Only default parameters, one ISA
+  - Only default parameters, one ISA.
 - Switchable
-  - We'll see this later, but you can switch from one to another during simulation
+  - We'll see this later, but you can switch from one to another during simulation.
 
 ---
 
 ## More on processors
 
-- Processors are made up of cores
-- Cores have a "BaseCPU" as a member. This is the actual CPU model
+- Processors are made up of cores.
+- Cores have a "BaseCPU" as a member. This is the actual CPU model.
 - `Processor` is what interfaces with `CacheHierarchy` and `Board`
-- Processors are organized, structured, sets of cores, defining how they connect together and with outside components and the board though standard interface.
+- Processors are organized, structured sets of cores. They define how cores connect with each other and with outside components and the board though standard interface.
 
 ### gem5 has three (or four or five) different processor models
 
 More details coming in the [CPU Models](04-cpu-models.md) section.
 
 - `CPUTypes.TIMING`: A simple in-order CPU model
-  - This is a "single cycle" CPU. Each instructions takes the time to fetch and executes immediately.
-  - Memory operations take the latency of the memory system
+  - This is a "single cycle" CPU. Each instruction takes the time to fetch and executes immediately.
+  - Memory operations take the latency of the memory system.
   - OK for doing memory-centric studies, but not good for most research.
 
 ---
@@ -412,10 +406,10 @@ Other options for CPU types
 
 ## A slightly more complex example
 
-We have went over basic "getting started" example then went over the various components we offer.
-Let's create more complex example, incorporating more features delivered by the standard library.
+We have went over a basic "getting started" example, then went over the various components we offer.
+Let's create a more complex example, incorporating more features delivered by the standard library.
 
-In this example we will create system using multiple cores, on an X86 board, in Full System mode.
+In this example we will create a system using multiple cores, on an X86 board, in Full System mode.
 
 ### First: Let's discuss SE mode and FS mode
 
@@ -440,14 +434,14 @@ In addition, we can access host resources such as files of libraries to dynamica
 ## FS and SE mode: Common pitfalls
 
 - **Don't treat SE mode as "FS  but faster"**: You must understand what you're simulating and whether it will impact results.
-- **Not all syscalls will ever be implemented**: We'd love to have all the syscalls implement but Linux changes rapidly. We try to cover common use-cases but we can't cover everything. If a Syscall is missing, you can implement it, ignore it, or use FS mode.
-- **Binaries with elevated privileges do not work in SE mode**: If you're running a binary that requires elevated privileges, you'll need to run it FS mode.
+- **Not all syscalls will ever be implemented**: We'd love to have all the syscalls implemented but Linux changes rapidly. We try to cover common use-cases but we can't cover everything. If a Syscall is missing, you can implement it, ignore it, or use FS mode.
+- **Binaries with elevated privileges do not work in SE mode**: If you're running a binary that requires elevated privileges, you'll need to run it in FS mode.
 
 ---
 
 ## SE mode: If in doubt, use FS mode
 
-FS mode does everything SE mod does (and more!) but can take longer to get to the region of interest. You have to wait for the OS to boot each time (unless you [accelerate the simulation](08-accelerating-simulation.md)).
+FS mode does everything SE mode does (and more!) but can take longer to get to the region of interest. You have to wait for the OS to boot each time (unless you [accelerate the simulation](08-accelerating-simulation.md)).
 
 However, as SE mode doesn't simulate the OS, you risk missing important events triggered via syscalls, I/O, or the operating system, which may mean your simulated system doesn't properly reflect the real system.
 
@@ -503,7 +497,7 @@ memory = SingleChannelDDR3_1600(size="3GB")
 
 ## Let's add a SimpleSwitchableProcessor
 
-Here we setup the processor. This is a special switchable processor in which a starting core type and a switch core type must be specified. Once a configuration is instantiated a user may call `processor.switch()` to switch from the starting core types to the switch core types. In this simulation we start with Timing cores to simulate the OS boot, then switch to the Out-of-order (O3) cores for the command we wish to run after boot.
+Here we set up the processor. This is a special switchable processor in which a starting core type and a switch core type must be specified. Once a configuration is instantiated a user may call `processor.switch()` to switch from the starting core types to the switch core types. In this simulation we start with Timing cores to simulate the OS boot, then switch to the Out-of-order (O3) cores for the command we wish to run after boot.
 
 ```python
 processor = SimpleSwitchableProcessor(
@@ -518,7 +512,7 @@ processor = SimpleSwitchableProcessor(
 
 ## Next, plug components into the board
 
-Here we setup the board. The X86Board allows for Full-System X86 simulations.
+Here we set up the board. The X86Board allows for Full-System X86 simulations.
 
 ```python
 board = X86Board(
@@ -552,7 +546,7 @@ command = (
 ## Setting the workload
 
 This a slightly more convoluted way of specifying a workload.
-Here we specifying the kernel, disk image, and the command to run after booting the system.
+Here we specify the kernel, disk image, and the command to run after booting the system.
 
 ```python
 board.set_kernel_disk_workload(
@@ -566,7 +560,7 @@ board.set_kernel_disk_workload(
 
 ## Create the simulator object
 
-Here we setup the simulator. We pass the board to the simulator and run it but also specify what to do when the simulation exits with the `EXIT` exit event. In this case we call the `processor.switch` function on the first exit event. For the 2nd the default action will be triggered which exists the simulator.
+Here we set up the simulator. We pass the board to the simulator and run it but also specify what to do when the simulation exits with the `EXIT` exit event. In this case we call the `processor.switch` function on the first exit event. For the 2nd the default action will be triggered which exits the simulator.
 
 Warning: This is using a generator expression to create a tuple of functions to call.
 
@@ -615,7 +609,7 @@ simulator.run()
 ```
 
 We passed objects to specify exactly what to do on each exit event type via Python generators generator expression. In this case the generator yields `processor.switch` which is called when the exit event `ExitEvent.EXIT` is triggered.
-When the 2nd exit is triggered the default action is triggered as there is nothing left to yield. The default action is to exit the simulation loop
+When the 2nd exit is triggered the default action is triggered as there is nothing left to yield. The default action is to exit the simulation loop.
 
 ---
 
@@ -638,10 +632,10 @@ The Simulator has default behavior for these events, but they can be overridden.
 
 To place our idea of gem5:
 
-- *models (or *SimObjects*) are the fine-grained objects that are connected together in Python scripts to form a simulation.
+- *models* (or *SimObjects*) are the fine-grained objects that are connected together in Python scripts to form a simulation.
 - *components* are the coarse-grained objects that are connected defined as a set of configured models in Python scripts to form and delivered as part of the Standard Library
 - The standard library allows users to specify a board and specify the properties of the board by specify the components that are connected to it.
-- The Simulator takes a board and launches the simulation and gives an api which allows for control of the simulation: specifying the simulation stopping and restarting condition; replacing components "on the fly"; defining when the simulation is stop and start; etc.
+- The Simulator takes a board and launches the simulation and gives an API which allows for control of the simulation: specifying the simulation stopping and restarting condition, replacing components "on the fly", defining when the simulation should stop and start, etc.
 
 See [`src/python/gem5/simulate/simulator.py`](../../gem5/src/python/gem5/simulate/simulator.py) for the Simulator source.
 
@@ -653,7 +647,7 @@ We'll see more about this in [Accelerating Simulation](08-accelerating-simulatio
 
 - **`board`**: The `Board` to simulate (required)
 - **`full_system`**: Whether to simulate a full system (default: `False`, can be inferred from the board, not needed specified in most cases)
-- **`on_exit_event`**: A complex data structure that allows you to control the simulation. The simulator exits for many reasons, this allows you to customize what happens. We just saw any example
+- **`on_exit_event`**: A complex data structure that allows you to control the simulation. The simulator exits for many reasons, this allows you to customize what happens. We just saw an example.
 - **`checkpoint_path`**: If we're restoring from a checkpoint, this is the path to the checkpoint. More on checkpoints later.
 - **`id`**: An optional name for this simulation. Used in multisim. More on this in the future.
 
@@ -668,7 +662,7 @@ We'll see more about this in [Accelerating Simulation](08-accelerating-simulatio
 
 See [`src/python/gem5/simulate/simulator.py`](../../gem5/src/python/gem5/simulate/simulator.py) for more details.
 
-we will be covering much more about how to use the `Simulator` object in other parts of the bootcamp.
+We will be covering much more about how to use the `Simulator` object in other parts of the bootcamp.
 
 ---
 
@@ -683,17 +677,17 @@ Now we haven't seen how to create new components.
 > NOT designed for "parameterization"
 
 If you want to create a processor/cache hierarchy/etc. with different parameters:
-Extend using object-oriented semantics
+Extend using object-oriented semantics.
 
-Let's see an example
+Let's see an example.
 
 ---
 
 ## Quick reminder of gem5's architecture
 
-We will now create a new component
+We will now create a new component.
 
-Specialize/extend the "BaseCPUProcessor" to create an ARM processor which a singlatr out-of-order core.
+We will specialize/extend the "BaseCPUProcessor" to create an ARM processor with a singular out-of-order core.
 
 ![diagram of models, stdlib, and simulation control bg right:60% fit](./01-stdlib-imgs/gem5-software-arch.drawio.svg)
 

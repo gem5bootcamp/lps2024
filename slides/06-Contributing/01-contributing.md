@@ -195,7 +195,7 @@ git push origin develop
 ```
 
 **Please note:** To push to your GitHub you'll need to authenticate yourself on the system you're using.
-There's a few ways to do this and may be dependent on how you've setup your GitHub account. We won't cover this here, but you can find out more here: <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github>. Pushing in this tutorial isn't important. You can figure this out in your own time.
+There's a few ways to do this and may be dependent on how you've set up your GitHub account. We won't cover this here, but you can find out more here: <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github>. Pushing in this tutorial isn't important. You can figure this out in your own time.
 
 > [More on github's help page](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)
 

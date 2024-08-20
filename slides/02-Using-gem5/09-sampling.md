@@ -76,7 +76,7 @@ Statistical sampling, as the name suggests, statistically selects its sampling u
 
 ---
 
-## More about Statistical Sampling
+## More About Statistical Sampling
 
 The representative simulation sampling methods in statistical sampling include **SMARTS** and **FSA**.
 
@@ -86,9 +86,9 @@ They use the performance of the randomly distributed samples to predict the over
 
 ---
 
-## What should we know before we apply the techniques
+## What we should know before we apply the techniques
 
-<!-- warn people that different types of samplings guarentee different things -->
+<!-- warn people that different types of samplings guarantee different things -->
 ### No matter how great a tool or a technique is, misusing it can be DANGEROUS
 
 Before using any of the sampling techniques, we need to make sure the sampling technique works for our experiments.
@@ -204,7 +204,7 @@ processor.get_cores()[0].core.addSimPointProbe(1_000_000)
 
 The definition of this `addSimPointProbe()` function can be found under [src/cpu/simple/BaseAtomicSimpleCPU.py](https://github.com/gem5/gem5/blob/stable/src/cpu/simple/BaseAtomicSimpleCPU.py#L65).
 
-In this example, we set the `interval_length` as 1,000,000, which means that we define a region as 1,000,000 instruction executed (committed).
+In this example, we set the `interval_length` as 1,000,000, which means that we define a region as 1,000,000 instructions executed (committed).
 
 ---
 
@@ -343,7 +343,7 @@ simpoint_info = SimPoint(
     weight_file_path=Path("/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/results.weights"),
     warmup_interval=1_000_000
 )
-# key 2: pss in the SimPoint object to set up the workload
+# key 2: pass in the SimPoint object to set up the workload
 board.set_se_simpoint_workload(
     binary=BinaryResource(local_path=Path("/workspaces/2024/materials/02-Using-gem5/09-sampling/01-simpoint/workload/simple_workload").as_posix()),
     simpoint=simpoint_info
@@ -524,7 +524,7 @@ print("Simulation Done")
 print(f"Ran SimPoint {args.sid} with weight {board.get_simpoint().get_weight_list()[args.sid]}")
 ```
 
-Before the starting the simulation, we need to set up an exit event to indicates the end of the warm up period.
+Before the starting the simulation, we need to set up an exit event to indicate the end of the warm up period.
 We use the `simulator.schedule_max_insts()` function to do so.
 We can use `get_warmup_list()` from the `SimPoint` object to get the warm up period length for each SimPoint.
 Here is one limitation of the `simulator.schedule_max_insts()` function. If it gets the value `0`, there won't be any exit event scheduled, so if the warm up period length is `0`, we have to set it to `1`.
@@ -647,7 +647,7 @@ board.set_se_binary_workload(
 )
 ```
 
-Then, we can set up the beginning and end marker with
+Then, we can set up the beginning and end markers with
 
 ```python
 from gem5.resources.elfie import ELFieInfo
@@ -731,7 +731,7 @@ Before running the simulation, we need to decide a few statistical parameters.
 All materials can be found under [materials/02-Using-gem5/09-sampling/03-SMARTS](../../materials/02-Using-gem5/09-sampling/03-SMARTS). The completed version is under [materials/02-Using-gem5/09-sampling/03-SMARTS/complete](../../materials/02-Using-gem5/09-sampling/03-SMARTS/complete).
 We will not modify any scripts.
 
-[materials/02-Using-gem5/09-sampling/03-SMARTS/SMARTS.py](../../materials/02-Using-gem5/09-sampling/03-SMARTS/SMARTS.py) is an example of how to use exit event handler to perform SMARTS.
+[materials/02-Using-gem5/09-sampling/03-SMARTS/SMARTS.py](../../materials/02-Using-gem5/09-sampling/03-SMARTS/SMARTS.py) is an example of how to use exit event handlers to perform SMARTS.
 
 We can run it with the following command
 
@@ -781,7 +781,7 @@ With these parameters, we will have about 50 samples. Each sample has a gap $(k-
 This SMARTS exit generator only works with SwitchableProcessor.
 When it reaches the start of the detailed warmup part, it resets the stats; then it switches the core type and schedules for the end of the warmup part and the end of the interval.
 
-When it reaches the end of the detailed warmup part, it resets the stats.
+When it reaches the end of the detailed warmup, it resets the stats.
 
 When it reaches the end of the detailed simulation, it dumps the stats; then it switches the core type and schedules for the start of the next detailed warmup part.
 

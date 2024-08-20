@@ -5,11 +5,7 @@ theme: gem5
 title: Debugging and Debug Flags
 ---
 
-<!-- _class: title -->
 
-## Debugging and DebugFlags
-
----
 <!-- _class: title -->
 
 ## DebugFlags: Debugging and Logging in gem5
@@ -86,7 +82,7 @@ Now let's add a simple `DPRINTF` statement inside the constructor of `HelloSimOb
 
 ## DebugFlags: How Files Look Like
 
-Below is how `src/bootcamp/hello-sim-object/SConscript` should look like after the changes.
+Below is how `src/bootcamp/hello-sim-object/SConscript` should look after the changes.
 
 ```python
 Import("*")
@@ -98,7 +94,7 @@ Source("hello_sim_object.cc")
 DebugFlag("HelloExampleFlag")
 ```
 
-Below is how `src/bootcamp/hello-sim-object/hello_sim_object.cc` looks like with changes
+To the right is how `src/bootcamp/hello-sim-object/hello_sim_object.cc` should look after the changes.
 
 ### Continued
 
@@ -191,7 +187,7 @@ Now, our `HelloExampleFlag` should be listed whenever we print debug help from g
 ./build/NULL/gem5.opt --debug-help
 ```
 
-Below shows the expected output.
+Below is the expected output.
 
 <script src="https://asciinema.org/a/J0TmNzOj29N74la4qOxdBLV6H.js" id="asciicast-J0TmNzOj29N74la4qOxdBLV6H" async="true"></script>
 
@@ -297,33 +293,37 @@ You should use `panic`, and `panic_if` to catch developer mistakes. We will see 
 ```cpp
 DPRINTF(Flag, __VA_ARGS__)
 ```
+
 - Takes a flag, and a format string +  format parameters.
 - Prints the formatted string only when the `Flag` is enabled.
 
 ```cpp
 DPRINTFR(Flag, __VA_ARGS__)
 ```
-- Outputs debug statements without printing a name
+
+- Outputs debug statements without printing a name.
 - Useful for using debug statements in object that are not `SimObjects` that do not have a `name()` function.
 
 -----
 ### Other Debugging Facilities in gem5
 
-
 ```cpp
 DPRINTFS(Flag, SimObject, __VA_ARGS__)
 ```
+
 - Useful for debugging from private subclass of a `SimObject` that has a pointer to its owner.
 
 ```cpp
 DPRINTFN(__VA_ARGS__)
 DPRINTFNR(__VA_ARGS__)
 ```
+
 - These don't take a flag as a parameter, will always print whenever debugging is enabled.
 
 ```cpp
 DDUMP(Flag, data, count)
 ```
+
 - Prints binary `data` of length `count` bytes.
 - Formatted in user-readable hex.
 

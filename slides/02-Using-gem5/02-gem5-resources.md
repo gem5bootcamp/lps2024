@@ -28,7 +28,7 @@ title: gem5 Resources
 **binary**: A program that is used to test the performance of a computer system.
 **bootloader**: A small program that is responsible for loading the operating system into memory when a computer starts up.
 **checkpoint**: A snapshot of a simulation.
-**simpoint**: This resource stores all information required to perform a Simpoint creation and restore.
+**simpoint**: This resource stores all information required to create and restore a Simpoint.
 **file**: A resource consisting of a single file.
 **workload**: Bundles of resources and any input parameters that can be run directly in gem5.
 **suite**: A collection of workloads.
@@ -82,9 +82,9 @@ gem5 01-hello-example.py
 
 ## Workloads
 
-Workload is a package of one or more resources that can have pre-defined parameters.
+A workload is a package of one or more resources that can have pre-defined parameters.
 
-let's see the `x86-npb-is-size-s-run` workload.
+Let's see the `x86-npb-is-size-s-run` workload.
 
 This workload runs the NPB IS benchmark in SE mode.
 
@@ -108,9 +108,9 @@ Let's see the `x86-ubuntu-24.04-boot-with-systemd` workload, you can see the [ra
 
 ## Suites
 
-Suites are a collection of workloads, that can be run in parallel using multiprocessing (this will be shown later).
+Suites are a collection of workloads that can be run in parallel using multiprocessing (this will be shown later).
 
-All workloads in the suite have something called `input_groups` that can be used to filter the suite.
+All workloads in a suite have something called `input_groups` that can be used to filter the suite.
 
 Let's do an example where we will:
 
@@ -126,7 +126,7 @@ Let's do an example where we will:
 
 The `SuiteResource` class acts as a generator so we can iterate through the workloads.
 
-Let's print some worklaod information from  the `x86-getting-started-benchmark-suite` suite.
+Let's print some workload information from  the `x86-getting-started-benchmark-suite` suite.
 
 Let's modify [02-suite-workload-example.py](../../materials/02-Using-gem5/02-gem5-resources/02-suite-workload-example.py). Below, we get the resource and iterate through the suite, printing the `id` and `version` of each workload. Add this to the bottom of the script:
 
@@ -188,12 +188,12 @@ simulator.run()
 
 You can also use resources that you have created locally in gem5.
 
-You can create a local JSON file to use as a data source by setting the:
+You can create a local JSON file to use as a data source, then set the:
 
 - `GEM5_RESOURCE_JSON` environment variable to point to the JSON, if you want to just use the resources in the JSON.
 - `GEM5_RESOURCE_JSON_APPEND` environment variable to point to the JSON, if you want to use local resources along with gem5 resources.
 
-For more details on how to use local resources, read [local resources documentation](https://www.gem5.org/documentation/gem5-stdlib/using-local-resources)
+For more details on how to use local resources, read the [local resources documentation](https://www.gem5.org/documentation/gem5-stdlib/using-local-resources)
 
 ---
 
@@ -208,7 +208,7 @@ gem5 has two main ways to use local resources.
   - With this method we can use `obtain_resource`.
   - This method makes the simulations more reproducible and consistent.
 
-Let's do an example that creates a local binary and runs that binary on gem5.
+Let's do an example that creates a local binary and runs that binary in gem5.
 
 ---
 
