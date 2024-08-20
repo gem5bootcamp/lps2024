@@ -28,7 +28,7 @@ Made up of both **topology** and **interconnect** model
 
 ### Topology
 
-Specified in the python configuration with how routers/switches are connected
+Specified in the Python configuration with how routers/switches are connected
 
 ### Interconnect
 
@@ -94,7 +94,7 @@ Building off of [CHI protocol](07-chi-protocol.md)
 
 ## Create the topology file
 
-Open [../../materials/07-chi-protocol/ring.py](../../materials/07-chi-protocol/ring.py)
+Open [../../materials/03-Developing-gem5-models/08-ruby-network/ring.py](../../materials/03-Developing-gem5-models/08-ruby-network/ring.py)
 
 Note: There are a lot off oddities in this code. Most of it, you'll just have to take my word for it...
 
@@ -135,7 +135,7 @@ def connectControllers(
 
 ---
 
-## Create routers caches
+## Create routers for the L1D and L1I caches
 
 L1I and L1D can share the same router. L2s get their own routers.
 

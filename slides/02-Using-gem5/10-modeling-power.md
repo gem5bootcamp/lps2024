@@ -118,7 +118,7 @@ We also divide by the number of seconds simulated to calculate the *watts* inste
 
 ## Adding the power model
 
-Add the following code to you `cache_hierarchy`.
+Add the following code to your `cache_hierarchy`.
 
 ```python
     def add_power_model(self):

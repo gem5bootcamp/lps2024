@@ -73,7 +73,7 @@ DRAM and other memory devices!
   - `tCAS`, `tRAS`, etc. are tracked *per bank* in the memory interface
   - Use gem5 *events* ([more later](../03-Developing-gem5-models/03-event-driven-sim.md)) to schedule when banks are free
 
-The models isn't "cycle accurate," but it's *cycle level* and quite accurate compared to other DRAM simulators such as DRAMSim and DRAMSys.
+The model isn't "cycle accurate," but it's *cycle level* and quite accurate compared to other DRAM simulators such as DRAMSim and DRAMSys.
 
 You can extend the interface for new kinds of memory devices (e.g., DDR6), but usually you will use interfaces that have already been implemented.
 
@@ -91,10 +91,10 @@ See [`gem5/src/python/gem5/components/memory/multi_channel.py`](../../gem5/src/p
 
 Additionally,
 
-- `SimpleMemory()` allows the user to not worry about timing parameters and instead, just give the desired latency. bandwidth, and latency variation
-- `ChanneledMemory()` encompasses a whole memory system (both the controller and the interface)
-- ChanneledMemory provides a simple way to use multiple memory channels
-- ChanneledMemory handles things like scheduling policy and interleaving for you
+- `SimpleMemory()` allows the user to not worry about timing parameters and instead, just give the desired latency, bandwidth, and latency variation.
+- `ChanneledMemory()` encompasses a whole memory system (both the controller and the interface).
+- ChanneledMemory provides a simple way to use multiple memory channels.
+- ChanneledMemory handles things like scheduling policy and interleaving for you.
 
 ---
 

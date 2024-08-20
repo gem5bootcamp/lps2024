@@ -40,14 +40,14 @@ _If not a singular gem5 process utilizing multiple threads, why not multiple gem
 
 Go to the [`materials/02-Using-gem5/11-multisim/01-multiprocessing-via-script`](../../materials/02-Using-gem5/11-multisim/01-multiprocessing-via-script/) directory to see a completed example of how **NOT** to run multiple gem5 processes.
 
-This is typical but not recommended
+This is typical but not recommended.
 
 Writing a script to run multiple gem5 processes:
 
-1. Requires the user write the script.
+1. Requires the user to write the script.
     1. Increases the barrier to entry.
     2. Increases the likelihood of errors.
-    3. Requires user to manage output files.
+    3. Requires the user to manage output files.
 2. Non-standard (everyone does it differently).
     1. Hard to share with others.
     2. Hard to reproduce.
@@ -69,7 +69,7 @@ Via the Python `multiprocessing` module, the parent gem5 process queues up simul
 Multisim has several advantages over simply writing a script to run multiple gem5 processes:
 
 1. We (the gem5 devs) handle this for you.
-    1. Less barrier to entry.
+    1. Lower barrier to entry.
     2. Lower likelihood of errors.
     3. Multisim will handle the output files automatically.
 2. Standardized.

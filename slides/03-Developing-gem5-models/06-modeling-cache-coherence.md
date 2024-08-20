@@ -134,7 +134,7 @@ Single-Writer Multiple-Reader (SWMR) invariant
 - **Actions**: Execute single operations on cache structures
 - **Transitions**: Move from state to state and execute actions
 
-**In ports** read **Cache memory** then *triggers* **Events**.
+**In ports** read **Cache memory** then *trigger* **Events**.
 **Events** cause **Transitions** based on the **State** which execute **Actions**.
 **Actions** can update **Cache memory** and send **Messages** via **Message buffers**.
 
@@ -556,7 +556,7 @@ transition(IS_D, {DataDirNoAcks, DataOwner}, S) {
 
 - Fill in the "write data to cache" action
   - Get the data out of the message (how to get the message?)
-  - set the cache entry's data (how? where does `cache_entry` come from?)
+  - Set the cache entry's data (how? where does `cache_entry` come from?)
   - Make sure to have `assert(is_valid(cache_entry))`
 
 ```c++
@@ -602,7 +602,7 @@ build/ALL_MyMSI/gem5.opt --debug-flags=ProtocolTrace configs/learning_gem5/part3
 
 **At some point it might be taking while to get to new errors, so...**
 
-Run the ruby random tester. This is a special "CPU" which exercises coherence corner cases.
+Run the Ruby random tester. This is a special "CPU" which exercises coherence corner cases.
 
 - Modify the `test_caches.py` the same way as `msi_caches.py`
 
@@ -651,7 +651,8 @@ transition(I, Store,IM_AD) {}
 }
 
 ```
-Runs scons and python script
+
+Run Scons and the Python script again
 
 
 ------
@@ -680,9 +681,10 @@ action(loadHit, "Lh", desc="Load hit") {
 }
 ```
 
-Try again (scons and python script)
+Try again (Scons and Python script)
 
 ```sh
+scons build/ALL_MyMSI/gem5.opt -j$(nproc) PROTOCOL=MYMSI
 build/ALL_MyMSI/gem5.opt --debug-flags=ProtocolTrace configs/learning_gem5/part3/ruby_test.py
 ```
 
@@ -710,7 +712,8 @@ build/ALL_MyMSI/gem5.opt --debug-flags=ProtocolTrace configs/learning_gem5/part3
     }
   }
 ```
-Run scons and python script
+
+Run Scons and Python script
 
 ---
 
@@ -734,7 +737,7 @@ transition(S, GetM, M_m) {
     popRequestQueue;
 }
 ```
-Try again (scons and python script): (note: no protocol trace this time since it is mostly working)
+Try again (Scons and Python script): (note: no protocol trace this time since it is mostly working)
 
 ```sh
 build/ALL_MyMSI/gem5.opt configs/learning_gem5/part3/ruby_test.py

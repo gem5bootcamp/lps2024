@@ -123,7 +123,7 @@ external_simulator.advance_to_next_event()
 gem5_system.advance(n_ticks)
 ```
 
-where `n_ticks =` time difference between this event and previous event of the external simulator
+where `n_ticks` = time difference between this event and previous event of the external simulator
 
 ---
 

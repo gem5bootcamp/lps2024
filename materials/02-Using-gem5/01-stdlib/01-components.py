@@ -18,3 +18,6 @@ from gem5.components.processors.cpu_types import CPUTypes
 from gem5.isas import ISA
 from gem5.resources.resource import obtain_resource
 from gem5.simulate.simulator import Simulator
+
+
+# Your code goes below

@@ -89,7 +89,7 @@ Nathan Binkert, Bradford Beckmann, Gabriel Black, Steven K. Reinhardt, Ali Saidi
 
 ## gem5's goals
 
-### Anyone (including non-architect) can download and use gem5
+### Anyone (including non-architects) can download and use gem5
 
 ### Used for cross-stack research:
 
@@ -304,7 +304,7 @@ $$ L = \lambda W $$
 - Often "event-driven" (we'll see this soon)
 - Can be highly accurate
   - Not the exact same cycle-by-cycle as the ASIC, but similar timing
-- Easily parameterizeable
+- Easily parameterizable
   - No need for a full hardware design
 - Faster than cycle-accurate
   - Can "cheat" and functionally emulate some things
@@ -337,7 +337,7 @@ In SimObject declaration file
 ### Instance or Configuration
 
 A particular choice for the parameters
-In standard library, your extension, or python runscript
+In standard library, your extension, or Python runscript
 
 ---
 
@@ -345,8 +345,8 @@ In standard library, your extension, or python runscript
 
 - **Model:** The `C++` code that does the timing simulation
   - Generic
-- Expose **parameters** to python
-- Set **parameters** and connections in python
+- Expose **parameters** to Python
+- Set **parameters** and connections in Python
 
 ![Picture of Sunny Cove architecture from wikichip bg right fit](./01-simulation-background-imgs/Sunny_cove_block_diagram.png)
 
@@ -449,13 +449,13 @@ Can call functions instead of scheduling events, but they occur _in the same tic
 
 ## Discrete event simulation
 
-"Time" needs a unit
-In gem5, we use a unit called "Tick"
+"Time" needs a unit.
+In gem5, we use a unit called a "Tick".
 
 Need to convert a simulation "tick" to user-understandable time
-E.g., seconds
+E.g., seconds.
 
-This is the global simulation tick rate
+This is the global simulation tick rate.
 Usually this is 1 ps per tick or $10^{12}$ ticks per second
 
 ---
@@ -466,10 +466,10 @@ Usually this is 1 ps per tick or $10^{12}$ ticks per second
 
 ### Memory requests
 
-- **Ports** allow you to send requests and receive responses
-- Ports are unidirectional (two types, request/response)
-- Anything* with a Request port can be connected to any Response port
-- More on this in [Ports and memory-based SimObjects](../03-Developing-gem5-models/04-ports.md)
+- **Ports** allow you to send requests and receive responses.
+- Ports are unidirectional (two types, request/response).
+- Anything* with a Request port can be connected to any Response port.
+- More on this in [Ports and memory-based SimObjects](../03-Developing-gem5-models/04-ports.md).
 
 ![CPU talking to caches with ports](./01-simulation-background-imgs/abstractions-1.drawio.svg)
 
@@ -484,6 +484,6 @@ Usually this is 1 ps per tick or $10^{12}$ ticks per second
 - ISAs and CPU models are orthogonal.
 - Any ISA should work with any CPU model.
 - "Execution Context" is the interface.
-- More on this in [modeling cores](../03-Developing-gem5-models/05-modeling-cores.md)
+- More on this in [modeling cores](../03-Developing-gem5-models/05-modeling-cores.md).
 
 ![ISA-CPU interactions and CPU talking to caches with ports](./01-simulation-background-imgs/abstractions-2.drawio.svg)

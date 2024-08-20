@@ -8,7 +8,7 @@ title: Running Things on gem5
 
 <!-- _class: title -->
 
-## Running Things on gem5
+## Running Things in gem5
 
 ---
 
@@ -42,8 +42,8 @@ However, if the experiment needs to model the OS interaction, or needs to model 
 ### 00-SE-hello-world
 
 Under `materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world`, there is a small example of an SE simulation.
-[00-SE-hello-world.py](../../materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world/00-SE-hello-world.py) will run [00-SE-hello-world](../../materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world/00-SE-hello-world.c) binary with a simply X86 configuration.
-This binary does a print of the string `Hello, Worlds!`.
+[00-SE-hello-world.py](../../materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world/00-SE-hello-world.py) will run the [00-SE-hello-world](../../materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world/00-SE-hello-world.c) binary with a simple X86 configuration.
+This binary prints the string `Hello, World!`.
 If we use the debug flag `SyscallAll` with it, we will able to see what syscalls are simulated.
 We can do it with the following command:
 
@@ -58,7 +58,7 @@ gem5 -re --debug-flags=SyscallAll 00-SE-hello-world.py
 
 ## 00-SE-hello-world
 
-Then in the [simout.txt](../../materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world/m5out/simout.txt), we should see:
+Then in [simout.txt](../../materials/02-Using-gem5/03-running-in-gem5/00-SE-hello-world/m5out/simout.txt), we should see:
 
 ```bash
 280945000: board.processor.cores.core: T0 : syscall Calling write(1, 21152, 14)...
@@ -66,7 +66,7 @@ Hello, World!
 280945000: board.processor.cores.core: T0 : syscall Returned 14.
 ```
 
-On the left, it is the timestamp for the simulation.
+On the left is the timestamp for the simulation.
 As the timestamp suggests, **SE simulation DOES NOT record the time for the syscall**.
 
 > Note that in the `simout.txt` file the standard out from the *simulator* and the *guest* are mixed together.
@@ -84,7 +84,7 @@ As the timestamp suggests, **SE simulation DOES NOT record the time for the sysc
 - The **m5ops** (short for m5 opcodes) provide different functionalities that can be used to communicate between ​the simulated workload and the simulator.
 - The commonly used functionalities are below. More can be found in [the m5ops documentation](https://www.gem5.org/documentation/general_docs/m5ops/):
   - exit [delay]: Stop the simulation in delay nanoseconds
-  - workbegin: Cause an exit event of type "workbegin" that can be used to mark the begining of an ROI
+  - workbegin: Cause an exit event of type "workbegin" that can be used to mark the beginning of an ROI
   - workend: Cause and exit event of type "workend" that can be used to mark the ending of an ROI
   - resetstats [delay[period]]: Reset simulation statistics in delay nanoseconds; repeat this every period nanoseconds
   - dumpstats [delay[period]]: Save simulation statistics to a file in delay nanoseconds; repeat this every period nanoseconds
@@ -99,14 +99,14 @@ As the timestamp suggests, **SE simulation DOES NOT record the time for the sysc
 - Most of these only exit the simulation
 - For example:
   - exit: Actually exits
-  - workbegin: Only exits, if configured in `System`
-  - workend: Only exits, if configured in `System`
+  - workbegin: Only exits if configured in `System`
+  - workend: Only exits if configured in `System`
   - resetstats: Resets the stats
   - dumpstats: Dumps the stats
   - checkpoint: Only exits
   - switchcpu: Only exits
-- See [gem5/src/sim/pseudo_inst.cc](https://github.com/gem5/gem5/blob/stable/src/sim/pseudo_inst.cc) for details
-- The gem5 standard library might have default behaviors for some of the  m5ops. See [src/python/gem5/simulate/simulator.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/simulate/simulator.py#L301) for the default behaviors
+- See [gem5/src/sim/pseudo_inst.cc](https://github.com/gem5/gem5/blob/stable/src/sim/pseudo_inst.cc) for details.
+- The gem5 standard library might have default behaviors for some of the m5ops. See [src/python/gem5/simulate/simulator.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/simulate/simulator.py#L301) for the default behaviors.
 
 ---
 
@@ -115,8 +115,8 @@ As the timestamp suggests, **SE simulation DOES NOT record the time for the sysc
 There are three versions of m5ops:
 
 1. Instruction mode: it only works with simulated CPU models
-2. Address mode: it works with simulated CPU models and KVM CPU (only supports Arm and X86)
-3. Semihosting: it works with simulated CPU models and Fast Model
+2. Address mode: it works with simulated CPU models and the KVM CPU (only supports Arm and X86)
+3. Semihosting: it works with simulated CPU models and the Fast Model
 
 Different modes should be used depending on the CPU type and ISA.
 
@@ -139,7 +139,7 @@ In this session, we will focus on learning how to use the m5ops to annotate work
 ## How to use m5ops
 
 m5ops provides a library of functions for different functionalities. All functions can be found in [gem5/include/gem5/m5ops.h](https://github.com/gem5/gem5/blob/stable/include/gem5/m5ops.h).
-The commonly used functions (they are matched with the commonly used functionailites above):
+The commonly used functions (they are matched with the commonly used functionalities above):
 
 - `void m5_exit(uint64_t ns_delay)`
 - `void m5_work_begin(uint64_t workid, uint64_t threadid)`
@@ -165,8 +165,8 @@ In order to build the m5ops library,
 
 ### Notes
 
-- If the host system ISA does not match with the target ISA, then we will need to use the cross-compiler
-- `TARGET_ISA` has to be in lower case
+- If the host system ISA does not match with the target ISA, then we will need to use the cross-compiler.
+- `TARGET_ISA` has to be in lower case.
 
 ---
 
@@ -182,7 +182,7 @@ scons build/x86/out/m5
 scons arm64.CROSS_COMPILE=aarch64-linux-gnu- build/arm64/out/m5
 ```
 
-> Note: while building these uses scons, it's a different environment from building gem5 with different targets and options.
+> Note: although we are using Scons to build these, it's a different environment from building gem5 with different targets and options.
 > Don't expect things to be similar (e.g., use `arm64` instead of `ARM`).
 
 ---
@@ -191,14 +191,14 @@ scons arm64.CROSS_COMPILE=aarch64-linux-gnu- build/arm64/out/m5
 
 After building the m5ops library, we can link them to our workload by:​
 
-1. Include **gem5/m5ops.h** in the workload's source file(s) (`<gem5/m5ops.h>`)
+1. Including **gem5/m5ops.h** in the workload's source file(s) (`<gem5/m5ops.h>`)
 
-2. Add **gem5/include** to the compiler's include search path (`-Igem5/include`)
+2. Adding **gem5/include** to the compiler's include search path (`-Igem5/include`)
 
-3. Add **gem5/util/m5/build/{TARGET_ISA}/out** to the linker search path
+3. Adding **gem5/util/m5/build/{TARGET_ISA}/out** to the linker search path
 (`-Lgem5/util/m5/build/{TARGET_ISA}/out`)
 
-4. Link against **libm5.a** with (`-lm5`)
+4. Linking against **libm5.a** with (`-lm5`)
 
 ---
 
@@ -208,7 +208,7 @@ After building the m5ops library, we can link them to our workload by:​
 
 ### Let's annotate the workload with `m5_work_begin` and `m5_work_end`
 
-In `materials/02-Using-gem5/03-running-in-gem5/02-annotate-this`, there is a workload source file [02-annotate-this.cpp](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/02-annotate-this.cpp) and a [Makefile](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/Makefile).
+In `materials/02-Using-gem5/03-running-in-gem5/02-annotate-this`, there is a workload source file called [02-annotate-this.cpp](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/02-annotate-this.cpp) and a [Makefile](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/Makefile).
 
 The workload mainly does two things:
 
@@ -256,7 +256,7 @@ std::cout<<std::endl;
 1. Include the m5ops header file with ```#include <gem5/m5ops.h>```
 2. Call ```m5_work_begin(0, 0);``` right before ```write(1, "This will be output to standard out\n", 36);```.
 3. Call ```m5_work_end(0, 0);``` right after ```write(1, "This will be output to standard out\n", 36);```
-4. Compile the workload with the following requirments
+4. Compile the workload with the following requirements:
     1. Add **gem5/include** to the compiler's include search path
     2. Add **gem5/util/m5/build/x86/out** to the linker search path
     3. Link against **libm5.a**
@@ -265,7 +265,7 @@ std::cout<<std::endl;
 
 ## 02-annotate-this
 
-For step 4, we can modifiy the [Makefile](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/Makefile) to have it run
+For step 4, we can modify the [Makefile](../../materials/02-Using-gem5/03-running-in-gem5/02-annotate-this/Makefile) to have it run
 
 ```Makefile
 $(GXX) -o 02-annotate-this 02-annotate-this.cpp \
@@ -294,6 +294,7 @@ Illegal instruction (core dumped)
 ```
 
 This is because the host does not recognize the instruction version of m5ops.
+
 This is also the reason why we will need to use the address version of m5ops if we use the KVM CPU for our simulation.
 
 ---
@@ -304,7 +305,7 @@ This is also the reason why we will need to use the address version of m5ops if 
 
 ### Let's write a handler to handle the m5 exit events
 
-<!-- What I want to do in this exercies:
+<!-- What I want to do in this exercise:
 1. Have people run ```gem5 -re 03-run-x86-SE.py``` without any modification and show them what is the default handler for workbegin and workend in stdlib.
 2. Have people to add a workbegin handler and a workend handler that uses debug.flags["ExecAll] to enable and disable debug flag to see the execution trace of the syscall.
 3. Point out that SE mode do not time the syscall and it can read/write the host directory -->
@@ -317,7 +318,7 @@ gem5 -re 03-run-x86-SE.py
 
 After running the simulation, we should see a directory called `m5out` in `materials/02-Using-gem5/03-running-in-gem5/03-run-x86-SE`. Open the file `simerr.txt` in `m5out`. We should see two lines that look like this:
 
-```bash
+```text
 warn: No behavior was set by the user for work begin. Default behavior is resetting the stats and continuing.
 
 warn: No behavior was set by the user for work end. Default behavior is dumping the stats and continuing.
@@ -328,18 +329,18 @@ warn: No behavior was set by the user for work end. Default behavior is dumping 
 ## 03-run-x86-SE
 
 As mentioned before, the gem5 standard library might have default behaviors for some of the m5ops. In here, we can see that it has default behaviors for `m5_work_begin` and `m5_work_end`.
-Let's detour a bit to see how the gem5 standard library recognize the exit event and assign it a default exit event.
-All standard library defined exit events can be found in [src/python/gem5/simulate/exit_event.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/simulate/exit_event.py). It uses the exit string of exit events to categories exit events. For example, both `"workbegin"` and `"m5_workend instruction encountered"` exit strings are categorized as `ExitEvent.WORKBEGIN`.
-All pre-defined exit event handler can be found in [src/python/gem5/simulate/exit_event_generators.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/simulate/exit_event_generators.py).
+Let's detour a bit to see how the gem5 standard library recognizes the exit event and assigns it a default exit handler.
+All standard library defined exit events can be found in [src/python/gem5/simulate/exit_event.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/simulate/exit_event.py). It uses the exit string of exit events to categorize exit events. For example, both `"workbegin"` and `"m5_workend instruction encountered"` exit strings are categorized as `ExitEvent.WORKBEGIN`.
+All pre-defined exit event handlers can be found in [src/python/gem5/simulate/exit_event_generators.py](https://github.com/gem5/gem5/blob/stable/src/python/gem5/simulate/exit_event_generators.py).
 
-For example, the `ExitEvent.WORKBEGIN` defaults to use the `reset_stats_generator`. It means that when we are using the standard library `Simulator` object, if there is an exit with exit string `"workbegin"` or `"m5_workbegin instruction encountered"`, it will automatically execute `m5.stats.reset()` unless we over-write the default behavior using the `on_exit_event` parameter in the gem5 stdlib `Simulator` parameter.
+For example, `ExitEvent.WORKBEGIN` defaults to using the `reset_stats_generator`. It means that when we are using the standard library's `Simulator` object, if there is an exit with exit string `"workbegin"` or `"m5_workbegin instruction encountered"`, it will automatically execute `m5.stats.reset()` unless we overwrite the default behavior using the `on_exit_event` parameter in the gem5 stdlib `Simulator` parameter.
 
 ---
 <!-- _class: two-col code-70-percent -->
 
 ## 03-run-x86-SE
 
-Let's add custom workbegin and workend handlers, and use the `on_exit_event` parameter in `Simulator` parameter to over-write the default behaviors. To do this, add the following into [03-run-x86-SE.py](../../materials/02-Using-gem5/03-running-in-gem5/03-run-x86-SE/03-run-x86-SE.py):
+Let's add custom workbegin and workend handlers, and use the `on_exit_event` parameter in `Simulator` parameter to overwrite the default behavior. To do this, add the following into [03-run-x86-SE.py](../../materials/02-Using-gem5/03-running-in-gem5/03-run-x86-SE/03-run-x86-SE.py):
 
 ```python
 # define a workbegin handler
@@ -357,7 +358,7 @@ def workend_handler():
 
 ###
 
-Also, register the handlers using the `on_exit_event` parameter in the `Simulator` object construction
+Also, register the handlers using the `on_exit_event` parameter in the `Simulator` object construction.
 
 ```python
 # setup handler for ExitEvent.WORKBEGIN and ExitEvent.WORKEND
@@ -386,7 +387,7 @@ This will be output to standard out
 3757180000: board.processor.cores.core: A0 T0 : 0x7ffff7c82574 @_end+140737350460444    : cmp	rax, 0xfffffffffffff000
 ```
 
-This shows the log of the debug flag `ExecAll` that we enabled for our ROI using the `m5.debug.flags["ExecAll"].enable()`, it shows all the execution trace for our ROI. As the timestamp on the left suggested again, SE mode **DOES NOT** time the emulated system calls. Also, as the log suggested, we over-wrote the default behavior of the `m5_work_begin` and `m5_work_end`.
+This shows the log of the debug flag `ExecAll` that we enabled for our ROI using `m5.debug.flags["ExecAll"].enable()`. It shows the entire execution trace for our ROI. As the timestamp on the left suggests again, SE mode **DOES NOT** time the emulated system calls. Also, as the log suggests, we overwrote the default behavior of `m5_work_begin` and `m5_work_end`.
 
 ---
 
@@ -408,7 +409,7 @@ However, again, SE mode is **NOT** able to time the emulated system calls.
 
 ## Tips on SE mode
 
-With the gem5 stdlib, we usually use the `set_se_binary_workload` function in the `board` object to setup the workloads. We can pass in files, arguments, enviornment variables, and output file paths to the `set_se_binary_workload` function using the corresponding parameters.
+With the gem5 stdlib, we usually use the `set_se_binary_workload` function in the `board` object to set up the workloads. We can pass in files, arguments, environment variables, and output file paths to the `set_se_binary_workload` function using the corresponding parameters.
 
 ```python
 def set_se_binary_workload(
@@ -448,7 +449,7 @@ For more information, we can look at [src/python/gem5/components/boards/se_binar
 
 ### Let's cross compile the workload to arm64 statically and dynamically
 <!--
-What I want to do in this execerise:
+What I want to do in this exercise:
 
 1. have people to cross compile the workload statically and dynamically by modifying the Makefile
 2. point out the cross compiler and "-static" -->
@@ -485,7 +486,7 @@ Also note that the the static compilation command has the flag `-static`, while 
 
 ### Let's run the compiled arm64 workloads and see what happens
 
-<!-- What I want to do in this execerise:
+<!-- What I want to do in this exercise:
 1. first let people run the static one, and let them know this is arm
 2. then let people run the dynamic one which will lead to errors
 3. show people how to redirect lib -->
@@ -531,7 +532,7 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 ### SE mode does NOT implement many things!​
 
 - Filesystem​
-- Most of systemcalls
+- Most system calls
 - I/O devices
 - Interrupts
 - TLB misses
@@ -553,7 +554,7 @@ board.redirect_paths = [RedirectPath(app_path=f"/lib",
 Synthetic traffic generation is a technique for driven memory subsystems without requiring the simulation of processor models and running workload programs. We have to note the following about synthetic traffic generation.
 
 - It can be used for the following: measuring maximum theoretical bandwidth, testing correctness of cache coherency protocol
-- It can not be used for: measuring the execution time of workload (even if you have their memory trace)
+- It can not be used for: measuring the execution time of workloads (even if you have their memory trace)
 
 Synthetic traffic could follow a certain pattern like `sequential (linear)`, `strided`, and `random`. In this section we will look at tools in gem5 that facilitate synthetic traffic generation.
 
@@ -797,8 +798,8 @@ We are not going to do this right now, but if you swapped `LinearGenerator` with
 ## Detailed Look on Some Components
 
 - You can find all generator related standard library components under [`src/python/gem5/components/processors`](https://github.com/gem5/gem5/tree/stable/src/python/gem5/components/processors).
-- Looking at [`AbstractGenerator.__init__`](https://github.com/gem5/gem5/blob/stable/src/python/gem5/components/processors/abstract_generator.py#L53), you'll see that this class takes a list of `AbstractGeneratorCore` as the input. Example classes that inherit from `AbstractGenerator` are `LinearGenerator` and `RandomGenerator`.
-- We will look at classes that extend `AbstractGeneratorCore` that will will create **synthetic traffic** by using a `SimObject` called `PyTrafficGen`, for more information you can look at `src/cpu/testers/traffic_gen`.
+- Looking at [`AbstractGenerator.__init__`](https://github.com/gem5/gem5/blob/stable/src/python/gem5/components/processors/abstract_generator.py#L53), you'll see that this class takes a list of `AbstractGeneratorCores` as the input. Example classes that inherit from `AbstractGenerator` are `LinearGenerator` and `RandomGenerator`.
+- We will look at classes that extend `AbstractGeneratorCore` that will will create **synthetic traffic** by using a `SimObject` called `PyTrafficGen`. For more information you can look at `src/cpu/testers/traffic_gen`.
 - `LinearGenerator` can have multiple `LinearGeneratorCores` and `RandomGenerator` can have multiple `RandomGeneratorCores`.
 
 Next we will look at extending `AbstractGenerator` to create `HybridGenerator` that has both `LinearGeneratorCores` and `RandomGeneratorCores`.
@@ -806,7 +807,7 @@ Next we will look at extending `AbstractGenerator` to create `HybridGenerator` t
 ---
 ## Extending AbstractGenerator
 
-gem5 has a lot of tools in its standard library, but in your research, if you want to simulate specific memory accesses patterns, there might not be anything in the standard library to do this.
+gem5 has a lot of tools in its standard library, but if you want to simulate specific memory accesses patterns in your research, there might not be anything in the standard library to do this.
 
 In this case, you would have to extend `AbstractGenerator` to create a concrete generator that is tailored to your needs.
 
@@ -893,7 +894,7 @@ There are many correct ways to do this, but we will use the following function t
                 return 2 ** int(log(num_cores, 2))
 ```
 
-The rest of the cores will be `RandomGeneratorCores`
+The rest of the cores will be `RandomGeneratorCores`.
 
 ---
 
@@ -1000,7 +1001,7 @@ addr_ranges=
 
 For the `i`'th `LinearGeneratorCore`, we take the `i`'th entry in `addr_ranges`. `min_addr` is the first value that entry, and `max_addr` is the second value in that entry.
 
-In this example, `LinearGeneratorCore` 0 gets initialized with `min_addr=0` and `max_addr=4096`, `LinearGeneratorCore` 2 gets initialized with `min_addr=4096` and `max_addr=8192`, etc.
+In this example, `LinearGeneratorCore` 0 gets initialized with `min_addr=0` and `max_addr=4096`, `LinearGeneratorCore` 1 gets initialized with `min_addr=4096` and `max_addr=8192`, etc.
 
 ---
 <!-- _class: two-col -->
@@ -1283,7 +1284,7 @@ Traffic generator can abstract away the details of a data requestor such as CPU 
 
 ## Summary
 
-Overall, we discussed two diffent types of traffic generators: **Linear** and **Random**.
+Overall, we discussed two different types of traffic generators: **Linear** and **Random**.
 
 `LinearGenerators` simulate linear memory accesses, and `RandomGenerators` simulate random memory accesses.
 
@@ -1291,4 +1292,4 @@ We looked into how to configure a board that uses these traffic generators.
 
 We also extended the `AbstractGenerator` class to create a `HybridGenerator`, which simulates linear and random memory accesses simultaneously.
 
-Finally, we saw some of the statistical differences `LinearGeneratorCores` and `RandomGeneratorCores`.
+Finally, we saw some of the statistical differences between`LinearGeneratorCores` and `RandomGeneratorCores`.

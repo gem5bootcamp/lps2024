@@ -17,7 +17,7 @@ The _Instuction Set Architecture_ (ISA) is the interface between the software an
 
 An ISA defines:
 
-- The instructions that a processesor can exectue.
+- The instructions that a processor can execute
 - The registers that are available
 - The memory model
 - Exception and interrupt handling
@@ -44,15 +44,15 @@ The remainder, though available, are not as well tested or maintained.
 
 ## gem5's ISA-CPU Independence
 
-Unlike in real hardware, where the CPU is tightly coupled to the ISA it is designed to run, gem5 simplfies things by defoupling the two.
-In doing so gem5 CPU models become ISA aignostic (or ISAs become CPU model agnostic).
+Unlike in real hardware, where the CPU is tightly coupled to the ISA it is designed to run, gem5 simplifies things by decoupling the two.
+In doing so gem5's CPU models become ISA agnostic (or ISAs become CPU model agnostic).
 
-While there are limits to this independence, the goal is to allow for the easy addition, and extension  of new ISAs and CPU models without dealing with massive code changes and rewrites.
-As a high level summary, this independence is achieved by having a seperate "decoder" for each ISA, which is convert instructions to objects desribing their behavior.
+While there are limits to this independence, the goal is to allow for the easy addition and extension  of new ISAs and CPU models without dealing with massive code changes and rewrites.
+As a high level summary, this independence is achieved by having a separate "decoder" for each ISA, which converts instructions to objects describing their behavior.
 
-**Note**: I will use the word "decoder" here broadly to describe the process of parsing bits and bytes of an instruction to determine its behavior and how it is to interact with the CPU model. In gem5 this is part of the ISA definition to be "plugged-in" to the CPU model.
+**Note**: I will use the word "decoder" here broadly to describe the process of parsing bits and bytes of an instruction to determine its behavior and how it should interact with the CPU model. In gem5 this is part of the ISA definition to be "plugged-in" to the CPU model.
 
-It doesn't funciton or have the same responsibilities as a decoder in a real CPU.
+It doesn't function or have the same responsibilities as a decoder in a real CPU.
 
 ---
 
@@ -64,9 +64,9 @@ It doesn't funciton or have the same responsibilities as a decoder in a real CPU
 
 ## The important part: StaticInst
 
-The important take away of this complex design is the Decoder, regardless of the ISA is created for, parses an instruction received by the CPU into a `StaticInst` object.
+The important take away of this complex design is that the decoder, regardless of the ISA is created for, parses an instruction received by the CPU into a `StaticInst` object.
 
-A `StaticInst` is an object containing static information about a particular ISA instruction for all instances of that instruciton.
+A `StaticInst` is an object containing static information about a particular ISA instruction for all instances of that instruction.
 
 It contains information on
 
@@ -77,16 +77,16 @@ It contains information on
   - `execute()`
   - `initiateAcc()`
   - `completeAcc()`
-  - `dissasemble()`
+  - `disassemble()`
 
 ---
 
 ## DynamicInst
 
-`DynamicInst` objects contains the information that is specific to a particular instance of an instruction.
-They are constructed from information in the `StaticInst` objects.
+A `DynamicInst` object contains information specific to a particular instance of an instruction.
+It is constructed from information in the `StaticInst` object.
 
-They contains information on:
+It contains information on:
 
 - PC and predicated next-PC
 - Instruction result
@@ -99,7 +99,7 @@ They contains information on:
 
 ## ExecContext
 
-The `ExecContext` interface provides methods in which a instruction may interface with a CPU model in a standardized way.
+The `ExecContext` interface provides methods through which a instruction may interface with a CPU model in a standardized way.
 
 `DynamicInst` objects implement the `ExecContext` interface.
 
@@ -113,26 +113,27 @@ To start we will run the script in [materials/03-Developing-gem5-models/05-model
 
 Using GDB we will add breakpoints to the `Add::Add` function and the `Add::execute` function.
 
-To start run gem5 with gbd.
+To start, run gem5 with gbd.
 
 ```shell
 gdb gem5
 ```
 
-The, add breakpoints to for functions in `StaticInst` object representing the `Add`instruction.
+Then, add breakpoints to functions in `StaticInst` object representing the `Add` instruction.
 
 ---
 
+## Journey of an Instruction in gem5
+
 Add breakpoints to the `Add::Add` function.
-This is just the constructor for the `Add` class. It created the `StaticInst`
-object that represents the `Add` instruction.
+This is just the constructor for the `Add` class. It creates the `StaticInst` object that represents the `Add` instruction.
 
 ```shell
 (gdb) break Add::Add
 ```
 
 Then add breakpoints to the `Add::execute` function.
-This is function called to execute the `Add` instruction.
+This is the function called to execute the `Add` instruction.
 
 ```shell
 (gdb) break Add::execute
@@ -179,7 +180,7 @@ Output:
 ```
 
 Here the 0th function call is the `Add::Add` function.
-and each subsequent index is the function that called the previous (i.e., the 1st function called the 0th function, the 2nd function called the 1st function, etc.)
+Each subsequent index is the function that called the previous (i.e., the 1st function called the 0th function, the 2nd function called the 1st function, etc.)
 
 ---
 
@@ -190,7 +191,7 @@ The functions at indexes > 6 are gem5's internal functions called prior to the i
 4 {PC} in gem5:: BaseSimpleCPU:: preExecute ()
 ```
 
-The `preExecute` is a function called in the CPU model before the instruction is executed. It is used to perform any necessary setup..
+`preExecute` is a function called in the CPU model before the instruction is executed. It is used to perform any necessary setup..
 
 You can go to ["src/cpu/simple/base.cc"](https://github.com/gem5/gem5/blob/v24.0/src/cpu/simple/base.cc#L328) in the gem5 repo to see the `BaseSimpleCPU`'s `preExecute` function.
 
@@ -210,7 +211,7 @@ This function is called from the following line in the `BaseSimpleCPU`'s `preExe
         instPtr = decoder->decode(pc_state);
 ```
 
-You can follow this call through to `Decoder:: decode` which can be found in [src/arch/riscv/decoder.cc](https://github.com/gem5/gem5/blob/v24.0/src/arch/riscv/decoder.cc#110) in the gem5 repository
+You can follow this call through to `Decoder:: decode` which can be found in [src/arch/riscv/decoder.cc](https://github.com/gem5/gem5/blob/v24.0/src/arch/riscv/decoder.cc#110) in the gem5 repository.
 
 ---
 
@@ -242,7 +243,7 @@ Decoder::decode(PCStateBase &_next_pc)
 }
 ```
 
-This function loads the next instruction into the decoder before calling calling [`Decoder::decode(ExtMachInst mach_inst, Addr addr)`](https://github.com/gem5/gem5/blob/v24.0/src/arch/riscv/decoder.cc#93).
+This function loads the next instruction into the decoder before calling [`Decoder::decode(ExtMachInst mach_inst, Addr addr)`](https://github.com/gem5/gem5/blob/v24.0/src/arch/riscv/decoder.cc#93).
 
 ---
 
@@ -278,7 +279,7 @@ A copy of these generated files has been added for your reference in [materials/
 
 ---
 
-Here is a snippet of "decode-method.cc.inc", removing supurflous lines, to show the path to the statement returning `Add` instruction:
+Here is a snippet of "decode-method.cc.inc", removing superfluous lines, to show the path to the statement returning `Add` instruction:
 
 ```cpp
 // ...
@@ -295,7 +296,7 @@ case 0xc:
 ```
 
 This decode function takes the machine instruction and returns the appropriate `StaticInst` object (`Add(machInst)`).
-It is just a gaint map.
+It is just a giant map.
 
 ---
 
@@ -341,7 +342,7 @@ Then follows through to:
 ```
 
 This is the function that calls the `execute` function of the `StaticInst` object which will carry out all the work for the instruction.
-**Note:** This is because `Add` non-memory instructiion. Memory instructions are immediately executed. Without memory accesses instrctions are simulated as being instantaneous.
+**Note:** This is because `Add` non-memory instruction. Memory instructions are immediately executed. Without memory accesses instructions are simulated as being instantaneous.
 
 ---
 
@@ -350,12 +351,12 @@ This is the function that calls the `execute` function of the `StaticInst` objec
 The `StaticInst` object has three functions that are used to execute an instruction: `execute()`, `initiateAcc()`, and `completeAcc()`.
 
 `execute()` is used to execute the instruction via single function call.
-This is used two circumstances: when running atomic mode and when the instruction is a non-memory instruction.
+This is used under two circumstances: when running atomic mode and when the instruction is a non-memory instruction.
 
 `initiateAcc()` is used to initiate a memory access through the memory system.
-It does everyhitng right up to the actual instruciton operation access before requesting the memory system to perform the access. The memory system will then, eventually, call `completeAcc()` to complete the access and trigger the exectuon of the instruction.
+It does everything right up to the actual instruction operation access before requesting the memory system to perform the access. The memory system will then, eventually, call `completeAcc()` to complete the access and trigger the execution of the instruction.
 
-The latter two functions are used for memory instructions such as Timed memory accesses mode and when the instruction is a memory instruction (i.e., the instruction loads from meory and therefore timing information is needed).
+The latter two functions are used for memory instructions such as Timed memory accesses mode and when the instruction is a memory instruction (i.e., the instruction loads from memory and therefore timing information is needed).
 
 ---
 
@@ -376,9 +377,9 @@ This is where it gets complicated...
 The "src/arch/*/isa directory contains the ISA definition.
 This is written in bespoke language we refer to as the ISA Domain Specific Language (ISA DSL)
 
-When gem5 is built the build system parses these files using the ["src/arch/isa/isa_parser/isa_parser.py"](https://github.com/gem5/gem5/blob/v24.0/src/arch/isa_parser/isa_parser.py) script which generates  the necessary CPP code.
+When gem5 is built the build system parses these files using the [src/arch/isa/isa_parser/isa_parser.py](https://github.com/gem5/gem5/blob/v24.0/src/arch/isa_parser/isa_parser.py) script which generates  the necessary CPP code.
 These generated files can be found in "build/ALL/arch/*/generated/".
-The gem5 build system then compiles thes generated files into the gem5 binary.
+The gem5 build system then compiles these generated files into the gem5 binary.
 
 ---
 
@@ -386,11 +387,11 @@ The gem5 build system then compiles thes generated files into the gem5 binary.
 
 ![bg right fit](05-modeling-cores-img/isa-definition-translation.svg)
 
-The problem with the ISA definition is it's very indirect and you can get lost in trying to understand the little details of how the CPP code is generated.
+The problem with the ISA definition is that it's very indirect and you can get lost in trying to understand the little details of how the CPP code is generated.
 
 Keeping the high-level ideas in mind is more important to understanding how the ISA is defined and how the instructions are decoded and executed.
 
-The painfull truth is that to extend or add to an ISA most developers will `grep` for similar instructions and attempt to understand the templates involed without fully understanding all parts.
+The painful truth is that to extend or add to an ISA most developers will `grep` for similar instructions and attempt to understand the templates involved without fully understanding all parts.
 
 ---
 
@@ -403,7 +404,7 @@ In the following we are going to look at the `LW` instruction in the RISC-V and 
 ## The RISC-V instruction formats
 
 To understand the RISC-V ISA, and how the gem5 RISC-V decoder works, we need to understand the base instruction formats.
-The base instruction formats are the R, I, S, B, U, and J types which use thye following formats:
+The base instruction formats are the R, I, S, B, U, and J types which use the following formats:
 
 ![55% bg](05-modeling-cores-img/riscv-32bit-inst-format.png)
 
@@ -421,7 +422,7 @@ The base instruction formats are the R, I, S, B, U, and J types which use thye f
 ## RISC-V's "Load word" (LW) instruction
 
 Load Word (instruction: `LW`) is an I-type instruction which loads a 32-bit value from memory into a register.
-It is defined by the folowing format:
+It is defined by the following format:
 
 ```shell
 LW rd,offset(rs1) # rd = mem[rs1+imm]
@@ -457,14 +458,14 @@ In this example the register with address 2 (`rs1`, `00010`) is loaded into the 
 
 ---
 
-**Note**: In gem5 we additionally refer to `QUANDRANT` or `QUAD` which is the last two bits of the opcode (`11` in this case), and `OPCODE5` which refers to the `opcode` bit shift right by 2 (basically `opcode` without `QUAD`, `0000` in this case).
+**Note**: In gem5 we additionally refer to `QUADRANT` or `QUAD` which is the last two bits of the opcode (`11` in this case), and `OPCODE5` which refers to the `opcode` bit shift right by 2 (basically `opcode` without `QUAD`, `0000` in this case).
 Ergo `opcode` = (`OPCODE5` << 2 )+ `QUAD`.
 
 ---
 
 ## Understanding the decoding of LW
 
-What the ISA definition does is define how the instruction is decoded is broken down and how the "parts" (bitfields) of the instruction are used to decode the instruction.
+What the ISA definition does is define how the instruction is broken down and how the "parts" (bitfields) of the instruction are used to decode the instruction.
 
 Go to the "src/arch/riscv/isa/bitfields.hsh directory"  in the gem5 repository.
 Below is a snippet.
@@ -478,8 +479,8 @@ def bitfield QUADRANT <1:0>;
 def bitfield OPCODE5 <6:2>;
 ```
 
-This defines the bitfields, like those decribed on the previous slide.
-THe decoder uses these bitfirelds to decode the instruction.
+This defines the bitfields, like those described on the previous slide.
+The decoder uses these bitfields to decode the instruction.
 
 ---
 
@@ -492,7 +493,7 @@ The following shows the path to the instruction definition via parsing of the in
 decode QUADRANT default Unknown::unknown() {
     0x3: decode OPCODE5 { # if QUADRANT == 0x03; then decode OPCODE5
         0x00: decode FUNCT3 { # if OPCODE5 == 0x00; then decode FUNCT3
-            format Load { # This tells use to use the `Load` format whewn decoding (more on this later)
+            format Load { # This tells use to use the `Load` format when decoding (more on this later)
                 0x2: lw({{ # if QU # if FUNCT3 == 0x02 then declare lw instruction
                     Rd_sd = Mem_sw;
                 }});
@@ -579,7 +580,7 @@ case 0x2:
 
 ---
 
-The compelte translation is :
+The complete translation is :
 
 ```cpp
 using namespace gem5;
@@ -663,9 +664,9 @@ As previously mentioned, the ISA definition is a rabbit hole and can be difficul
 
 The templates are complex and typically build on other templates and specialized translation code in the `isa_parser.py` script.
 
-By analysing the ISA definition and the `isa_parser.py` script you can get a better understanding of how the ISA is defined and how the instructions are decoded and executed.
+By analyzing the ISA definition and the `isa_parser.py` script you can get a better understanding of how the ISA is defined and how the instructions are decoded and executed.
 
-The generated is valid CPP code and can understood by trying to  understanding the generated code.
+The generated CPP code can be understood by comparing it against the ISA definition.
 
 Using breakpoints in GDB to trace the execution of an instruction in gem5 is a good way to understand how the generated code is used to decode and execute an instruction.
 
@@ -675,7 +676,7 @@ Using breakpoints in GDB to trace the execution of an instruction in gem5 is a g
 
 ## Exercise: Implement `ADD16` instruction
 
-In this inxercise you're going to implement `ADD16` to the gem5 RISC-V ISA.
+In this exercise you're going to implement `ADD16` to the gem5 RISC-V ISA.
 
 The `ADD16` instruction is a 16-bit addition instruction that adds two 16-bit values and stores the result in a 16-bit register.
 
@@ -696,15 +697,13 @@ ADD16, Rs1, Rs2
 
 **Purpose**: Perform 16-bit integer element additions in parallel.
 
-**Description**: This instruction adds the 16-bit ingeger elements in `Rs1` with the 16-bit integer elements in `Rs2`, and then writes the 16-bit element to the `Rd` register.
+**Description**: This instruction adds the 16-bit integer element in `Rs1` with the 16-bit integer element in `Rs2`, and then writes the 16-bit element to the `Rd` register.
 
 ---
 
 Lets run the [materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction](../../materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction/add16_test.py)
 
-This file runs the binary [add16_test.c](../../materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction/src/add16_test.c).
-
-Lets `add16_test.c` is a c program that executes the `add 16` instruction.
+This file runs the binary for [add16_test.c](../../materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction/src/add16_test.c). This is a C program that executes the `add 16` instruction.
 
 We have not implemented this instruction in gem5. Lets run this script to see the output.
 
@@ -723,13 +722,14 @@ if (output == 0xFFFEFFFEFFFEFFFE) {
     printf("Test Passed! \n");
 }
 ```
-The Above snippet of codes has two numbers set to `-1` and then we run the `add16` instruction.
+
+The above snippet of code has two numbers set to `-1` and then we run the `ADD16` instruction.
 
 We test that the output is `-2` after the instruction is run and we print the result.
 
 ---
 
-As we can see we get an unkown instruction error when we run
+As we can see we get an unknown instruction error when we run
 
 ```bash
  gem5 ./add16_test.py
@@ -744,7 +744,7 @@ Program aborted at tick 18616032
 
 ---
 
-Try implementing the `ADD16` instruction to gem5 byself.
+Try implementing the `ADD16` instruction to gem5 by yourself.
 The best advice when getting stuck is to find similar instructions and try figure out how they work.
 
 Resources to get you started can be found [materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction](../../materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction/).
@@ -787,7 +787,7 @@ decode QUADRANT default Unknown::unknown() {
 ```
 
 **Note**: The `ROp` format is used for register-register operations.
-I figured out which format to use for you butr you can find this in the ISA definition.
+I figured out which format to use for you but you can find this in the ISA definition.
 
 ---
 
@@ -795,7 +795,7 @@ Next, let's add this to the RISC-V "decoder.isa" file.
 
 Lets add this at line 2057 at [decoder.isa](../../gem5/src/arch/riscv/isa/decoder.isa)
 
-The important thing to note is they are already other insturctions defined in this file which share the same QUADRANT and OPCODE5 values. Ergo, we just need to insert:
+The important thing to note is they are already other instructions defined in this file which share the same QUADRANT and OPCODE5 values. Ergo, we just need to insert:
 
 ```txt
         0x1d: decode FUNCT3 {
@@ -816,13 +816,13 @@ Next let's add the instruction name:
                     }});
 ```
 
-The space space between the curly braces is where the  instruction's behavior is declared.
+The space between the curly braces is where the instruction's behavior is declared.
 
 ---
 
 Finally we add the code.
 This is just a matter of understanding the operations and doing the appropriate operations.
-In out case, we're mkeeping this as close to CPP as possible.
+In our case, we're keeping this as close to CPP as possible.
 
 ```txt
     0x20: add16({{
@@ -846,14 +846,15 @@ In out case, we're mkeeping this as close to CPP as possible.
 
 Now lets run the [materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction/add16_test.py](../../materials/03-Developing-gem5-models/05-modeling-cores/02-add16-instruction/add16_test.py) script again and see the output.
 
-First lets build gem5 with our changes
+First lets build gem5 with our changes.
 
 In the gem5 directory, execute the following
 
 ```bash
 scons build/RISCV/gem5.opt -j 8
 ```
-not lets run the `add16_test.py` script
+
+now lets run the `add16_test.py` script
 
 ```bash
 ../../../../gem5/build/RISCV/gem5.opt ./add16_test.py

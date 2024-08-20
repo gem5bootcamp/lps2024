@@ -29,16 +29,16 @@ scons build/NULL/gem5.opt -j$(nproc)
 
 ---
 
-## Some Basics on gem5's build system
+## Some basics on gem5's build system
 
-gem5's build system is *complicated*
+gem5's build system is *complicated*.
 
 As we'll see in the coming sections, gem5 has a number of domain-specific languages and source-to-source compilers.
 
 This means two things:
 
-1. It's not always obvious what the final code is going to look like
-2. Setting up the gem5 is build has many, many options.
+1. It's not always obvious what the final code is going to look like.
+2. There are many, many options for setting up the gem5 build.
 
 ---
 
@@ -46,12 +46,12 @@ This means two things:
 
 As we've seen, there are multiple ways to configure the gem5 build and this results in different binaries.
 
-There are to categories of options:
+There are two categories of options:
 
 1. Build-time configuration (e.g., what models to include in the binary)
 2. Compiler configuration (e.g., optimizations, debug flags, etc.)
 
-If you forget any of this
+If you forget any of this,
 
 > `scons --help` will explain the targets and Kconfig tools.
 
@@ -63,13 +63,13 @@ This is specified by the *suffix* of the gem5 binary you build. For example, `ge
 
 - `fast`: All optimizations, no debug symbols, most assertions are disabled.
   - Use this only after you have fully debugged your models.
-  - Significant speedup over `opt` because the binary is smaller (~50 MiB)
+  - Significant speedup over `opt` because the binary is smaller (~50 MiB).
 - `opt`: Optimized build with debug symbols and all panics, assertions, etc. enabled.
-  - This is the most common build target, but it's very large (~500 MiB)
-  - Can use this with `gdb` but sometimes it will say "that variable is optimized away"
+  - This is the most common build target, but it's very large (~500 MiB).
+  - Can use this with `gdb` but sometimes it will say "that variable is optimized away".
 - `debug`: Minimal optimizations (`-O1`) and all debug symbols.
   - Use this when you need to debug the gem5 code itself and `opt` doesn't work for you.
-  - *Much, much* slower than `opt` (order 5-10x slower)
+  - *Much, much* slower than `opt` (order 5-10x slower).
 
 > Remember, these options are for the *gem5* binary, not the simulated system. Choosing *fast* or *debug* will not affect the output of the simulator (unless there are bugs, of course).
 
@@ -79,7 +79,7 @@ This is specified by the *suffix* of the gem5 binary you build. For example, `ge
 
 There are many options for configuring the gem5 build.
 
-Two ways to do this
+Two ways to do this:
 
 1. Use the defaults found in `gem5/build_opts`
 2. Configure with `Kconfig` (the same tool the Linux kernel uses)
@@ -118,7 +118,7 @@ Common practice is to create a directory called `build` in the gem5 source direc
 scons defconfig build/my_gem5/ build_opts/ALL
 ```
 
-In this case, we are using `build/m5_gem5` as the build directory and `build_opts/ALL` as the default configuration.
+In this case, we are using `build/my_gem5` as the build directory and `build_opts/ALL` as the default configuration.
 
 ---
 
@@ -155,7 +155,7 @@ You may want to use fewer cores if you're doing other things on your system.
 
 There are two main types of files used to set up gem5's build:
 
-- `SConsctruct`: Contains definitions of types of build targets.
+- `SConstruct`: Contains definitions of types of build targets.
   - All of the `SConstruct` files are executed first.
   - Some code is also in `gem5/build_tools`
   - To be honest, this code is confusing and not easy to trace.
@@ -336,7 +336,7 @@ class HelloSimObject(SimObject):
     cxx_class = "gem5::HelloSimObject"
 ```
 
-- `type` is the type name for the `SimObject` in python.
+- `type` is the type name for the `SimObject` in Python.
 - `cxx_header` denotes the path to the C++ header file that declares the `SimObject` in C++. **IMPORTANT**: This path should be specified relative to `gem5/src`.
 - `cxx_class` is the name of your `SimObject` class in C++.
 
@@ -380,7 +380,7 @@ touch src/bootcamp/hello-sim-object/hello_sim_object.hh
 ```
 
 **VERY IMPORTANT**: If a `SimObject` class inherits from another `SimObject` class in Python, it should do the same in C++. For example, `HelloSimObject` inherits from `SimObject` in Python, so in C++, `HelloSimObject` should inherit from `SimObject`.
-**VERY IMPORTANT**: `SimObject` parameter structs are inherited in the same way as the `SimObject` itself. For example, if `HelloSimObject` inherits from `SimObject`, `HelloSimObjectParams` inherits from `SimObjectParams`
+**VERY IMPORTANT**: `SimObject` parameter structs are inherited in the same way as the `SimObject` itself. For example, if `HelloSimObject` inherits from `SimObject`, `HelloSimObjectParams` inherits from `SimObjectParams`.
 
 ---
 
@@ -728,7 +728,7 @@ Below is a snippet of code from the definition of `m5.instantiate`:
         obj.connectPorts()
 ```
 
-When you call `m5.instantiate`, first, all the `SimObjects` are created (i.e. their C++ constructors are called). Then, all the `port` connections are created. If you don't know what a `Port` is, don't worry. We will get to that in the later slides. For now, think of `ports` as a facility for `SimObjects` to send each other data.
+When you call `m5.instantiate`, first, all the `SimObjects` are created (i.e. their C++ constructors are called). Then, all the `port` connections are created. If you don't know what a `Port` is, don't worry. We will get to that in the later slides. For now, think of `ports` as a way for `SimObjects` to send each other data.
 
 ---
 

@@ -233,7 +233,7 @@ Now, inside `InspectorGadget.py`, let's define `InspectorGadget` as a `ClockedOb
 from m5.objects.ClockedObject import ClockedObject
 ```
 
-The remaining part of the declaration is for now similar to that of `HelloSimObject` in [Introduction to SimOjbects](01-sim-objects-intro.md). Do that part on your own. When you are done, you can find my version of the code in the next slide.
+The remaining part of the declaration is for now similar to that of `HelloSimObject` in [Introduction to SimObjects](01-sim-objects-intro.md). Do that part on your own. When you are done, you can find my version of the code in the next slide.
 
 ---
 
@@ -264,7 +264,7 @@ Our next step is to define a `RequestPort` and a `ResponsePort` for `InspectorGa
 from m5.params import *
 ```
 
-**NOTE**: My personal preference in python is to import modules very explicitly. However, when importing `m5.params`, I think it's ok to do import `*`. This is mainly because, when I'm creating `SimObjects`, I might need different kinds of parameters that I might not know about in advance.
+**NOTE**: My personal preference in Python is to import modules very explicitly. However, when importing `m5.params`, I think it's ok to do import `*`. This is mainly because, when I'm creating `SimObjects`, I might need different kinds of parameters that I might not know about in advance.
 
 ---
 
@@ -278,7 +278,7 @@ Before looking at the answer, try to answer the question for yourself.
 
 **Answer**: `cpu_side_port` should be a `ResponsePort` and `mem_side_port` should be a `RequestPort`.
 
-Make sure this answer makes sense to you, before moving on to the next slide.
+Make sure this answer makes sense to you before moving on to the next slide.
 
 ---
 
@@ -293,7 +293,7 @@ cpu_side_port = ResponsePort("ResponsePort to receive requests from CPU side.")
 mem_side_port = RequestPort("RequestPort to send received requests to memory side.")
 ```
 
-To buffer traffic, we need two FIFOs: one for `requests` (from `cpu_side_port` to `mem_side_port`) and one for `responses` (from `mem_side_port` to `cpu_side_port`). For the the FIFO in the `request` path, we know that in the future we want to *inspect* the requests. Therefore, let's call it `inspectionBuffer`; we need a parameter to determine the the number of entries in this buffer so let's call that parameter `inspection_buffer_entries`. For the `response` path, we will simply call the buffer `response_buffer` and add a parameter for its entries named `response_buffer_entries`. Do it by adding the following lines under the declaration of `InspectorGadget`:
+To buffer traffic, we need two FIFOs: one for `requests` (from `cpu_side_port` to `mem_side_port`) and one for `responses` (from `mem_side_port` to `cpu_side_port`). For the the FIFO in the `request` path, we know that in the future we want to *inspect* the requests. Therefore, let's call it `inspectionBuffer`. We also need a parameter to determine the the number of entries in this buffer so let's call that parameter `inspection_buffer_entries`. For the `response` path, we will simply call the buffer `response_buffer` and add a parameter for its entries named `response_buffer_entries`. Do it by adding the following lines under the declaration of `InspectorGadget`:
 
 ```python
 inspection_buffer_entries = Param.Int("Number of entries in the inspection buffer.")
@@ -433,7 +433,7 @@ Make sure to add the following include statement to the top of the file since we
 
 ## Extending Ports
 
-Recall, `RequestPort` and `ResponsePort` classes were abstract classes, i.e. they had `pure virtual` functions which means objects can not be instantiated from that class. Therefore, for us to use `Ports` we need to extend the classes and implement their `pure virtual` functions.
+Recall, `RequestPort` and `ResponsePort` classes were abstract classes, i.e. they had `pure virtual` functions which means objects cannot be instantiated from that class. Therefore, for us to use `Ports` we need to extend the classes and implement their `pure virtual` functions.
 
 Before anything, let's go ahead and import the header file that contains the declaration for `Port` classes. We also need to include [`mem/packet.hh`](../../gem5/src/mem/packet.hh) since we will be dealing with and moving around `Packets` a lot. Do it by adding the following lines to `inspector_gadget.hh`:
 
@@ -586,7 +586,7 @@ This function is used for connecting ports to each other. As far as we are conce
 
 For now, let's implement this function to return a `Port&` when we recognize `if_name` (which would be the name that we gave to a `Port` in Python) and, otherwise, we will pass this up to the parent class `ClockedObject` to handle the function call.
 
-Let's go ahead an add the declaration for this function to `inspector_gadget.hh`.
+Let's go ahead and add the declaration for this function to `inspector_gadget.hh`.
 
 ```cpp
   public:
@@ -630,7 +630,7 @@ InspectorGadget::getPort(const std::string &if_name, PortID idx)
 }
 ```
 
-If you remember, `getPort` needs to create a mapping between `Port` objects in Python and `Port` objects in C++. In this function when `if_name == "cpu_side_port"` we will retrun `cpuSidePort` (the name comes from the Python declaration, look at `InspectorGadget.py`) . We do the same thing to map `"mem_side_port"` to our instance `memSidePort`. For now, you don't have to worry about `idx`. We will talk about it later in the context of `VectorPorts` – ports that can connect to multiple peers.
+If you remember, `getPort` needs to create a mapping between `Port` objects in Python and `Port` objects in C++. In this function when `if_name == "cpu_side_port"` we will return `cpuSidePort` (the name comes from the Python declaration, look at `InspectorGadget.py`) . We do the same thing to map `"mem_side_port"` to our instance `memSidePort`. For now, you don't have to worry about `idx`. We will talk about it later in the context of `VectorPorts` – ports that can connect to multiple peers.
 
 ---
 
@@ -746,7 +746,7 @@ To do this add the following code to the `public` scope of `InspectorGadget` in 
 
 ## TimedQueue
 
-As we mentioned, in this first step, all `InspectorGadget` does is buffer the traffic, forwarding `requests` and `responses`. To do that, let's create a "first in first out" (FIFO) structure for `inspectionBuffer` and `responseBuffer`. We will wrap `std::queue` to expose the following functionalities, the purpose of this structure is impose a minimum latency between the times when items are pushed to the queue and when they can be accessed. We will add a member variable called `latency` to make this delay configurable.
+As we mentioned, in this first step, all `InspectorGadget` does is buffer the traffic, forwarding `requests` and `responses`. To do that, let's create a "first in first out" (FIFO) structure for `inspectionBuffer` and `responseBuffer`. The purpose of this structure is impose a minimum latency between the times when items are pushed to the queue and when they can be accessed. We will add a member variable called `latency` to make this delay configurable. We will wrap `std::queue` to expose the following functionalities.
 
 1: Method `front` that will return a reference to the oldest item in the queue, similar to `std::queue`.
 2: Method `pop` that will remove the oldest item in the queue, similar to `std::queue`.
@@ -835,7 +835,7 @@ void recvFunctional(PacketPtr pkt);
 
 ## Let's Get the Easy Ones Out the Way
 
-Between the four functions, `getAddrRanges` and `recvFunctional` are the most straight-forward to define. We just need to call the same functions from `memSidePort`. To define these two functions, add the following code under `namespace gem5` in `inspector_gadget.cc`:
+Between the four functions, `getAddrRanges` and `recvFunctional` are the most straightforward to define. We just need to call the same functions from `memSidePort`. To define these two functions, add the following code under `namespace gem5` in `inspector_gadget.cc`:
 
 ```cpp
 AddrRangeList
@@ -898,7 +898,7 @@ InspectorGadget::recvTimingReq(PacketPtr pkt)
 
 ## We're Not Done Yet!
 
-So far, we have managed to program the movement of `Packets` from `cpuSidePort` into `inspectionBuffer`. Now, what we need to send the `Packets` that are inside `inspectionBuffer` to `memSidePort`.
+So far, we have managed to program the movement of `Packets` from `cpuSidePort` into `inspectionBuffer`. Now, we need to send the `Packets` that are inside `inspectionBuffer` to `memSidePort`.
 
 One would ask, why not call `memSidePort.sendTimingReq` inside `InspectorGadget::recvTimingReq`? The answer is because we want to impose a latency on the movement of the `Packet` through `inspectionBuffer`. Think about how the real hardware would work. If the `Packet` is available on `cpuSidePort` on the rising edge of the clock, it would go inside `inspectionBuffer` by the falling edge of the clock, i.e. time will pass. Now, assuming that `Packet` is at the front of `inspectionBuffer`, it will be available on the rising edge of the next clock cycle. If you remember, we use `events` to make things happen in the future by defining callback functions.
 
