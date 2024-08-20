@@ -6,12 +6,12 @@ It has been built with the assumption users will utilize [Codespaces](https://gi
 
 The repository contains the following directories:
 
-**Note:** 'gem5' and 'gem5-resources' are submodules though the [.devcontainer/devcontainer.json](.devcontainer/devcontainer.json) file specifies that a `git submodule update --init --recursive` command is executed when the Codespace Docker container is created.
-
-**Note:** The `.devcontainer/on_create.sh` script is executed the first time the codespace is created.
-This will pre-download much of the resources (disk images, etc.) that are used in the gem5 tutorials.
-It can take a while to do this.
-A pre-built devcontainer is set up for the bootcamp and should be used to avoid this delay.
+> **Note:** 'gem5' and 'gem5-resources' are submodules though the [.devcontainer/devcontainer.json](.devcontainer/devcontainer.json) file specifies that a `git submodule update --init --recursive` command is executed when the Codespace Docker container is created.
+>
+> **Note:** The `.devcontainer/on_create.sh` script is executed the first time the codespace is created.
+> This will pre-download much of the resources (disk images, etc.) that are used in the gem5 tutorials.
+> It can take a while to do this.
+> A pre-built devcontainer is set up for the bootcamp and should be used to avoid this delay.
 
 The container used by Codespaces is built from [Dockerfile](gem5/util/dockerfiles/devcontainer/Dockerfile).
 It contains:
