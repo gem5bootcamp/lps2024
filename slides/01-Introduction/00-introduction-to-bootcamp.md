@@ -14,11 +14,9 @@ author: Jason Lowe-Power
 
 ## About the overall structure of the bootcamp
 
-These slides and are available at <https://bootcamp.gem5.org/> for you to follow along.
+These slides and are available at <https://gem5bootcamp.github.io/lps2024> for you to follow along.
 
-(Note: They will be archived at <https://gem5bootcamp.github.io/2024>)
-
-The source for the slides, and what you'll be using throughout the bootcamp can be found on github at <https://github.com/gem5bootcamp/2024>
+The source for the slides, and what you'll be using throughout the bootcamp can be found on github at <https://github.com/gem5bootcamp/lps2024>
 
 > Note: Don't clone that repo, yet. We'll do that in a bit.
 
@@ -26,7 +24,7 @@ The source for the slides, and what you'll be using throughout the bootcamp can 
 
 <!-- _class: two-col -->
 
-## A bit about me
+## A bit about us
 
 I am **Prof. Jason Lowe-Power** (he/him).
 I am an associate professor in the Computer Science Department and
@@ -35,6 +33,12 @@ the *Project Management Committee chair* for the gem5 project.
 I lead the Davis Computer Architecture Research (DArchR) Group.
 
 <https://arch.cs.ucdavis.edu>
+
+I am **Dr. Bobby Bruce** (he/him).
+I am a project scientist in the Computer Science Department at UC Davis.
+I am the *lead maintainer* of the gem5 project.
+
+###
 
 ![UC Davis logo width:500px](00-introduction-to-bootcamp-imgs/expanded_logo_gold-blue.png)
 
@@ -52,7 +56,7 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
 
 ## Plan for the week
 
-### Day 1
+### Tuesday
 
 - Introduction
   - [Background on simulation](01-simulation-background.md) <!-- 1 hour (Jason) -->
@@ -61,10 +65,6 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
   - [Getting started with gem5](02-getting-started.md) <!-- 30 minutes (Jason) -->
     - Getting into the codespace environment
     - Running your first simulation
-  - [Background on Python and gem5](03-python-background.md) <!--  1.5 hours (Bobby) -->
-    - Python basics
-    - Python in gem5
-    - Object-oriented programming in Python
 - Using gem5
   - [gem5's standard library](../02-Using-gem5/01-stdlib.md) <!--  2 hours (Bobby) -->
   - [gem5 resources](../02-Using-gem5/02-gem5-resources.md) <!--  1 hour (Harshil) -->
@@ -73,10 +73,6 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
     - How to use resources
     - Workloads and suites
     - Local resources
-
-### Day 2
-
-- Using gem5
   - [Running things in gem5](../02-Using-gem5/03-running-in-gem5.md) <!--  2 hours (Erin / Zhantong) -->
     - Intro to syscall emulation mode
     - The gem5-bridge utility and library
@@ -101,16 +97,16 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
     - Using the memory models
     - Testing memory with traffic generators
     - Comm Monitor
+
+### Wednesday
+
+- Using gem5
   - [Full system simulation](../02-Using-gem5/07-full-system.md) <!--(Harshil) 1 hour -->
     - What is full system simulation?
     - Basics of booting up a real system in gem5
     - Creating disk images using packer and qemu
     - Extending/modifying a gem5 disk image
     - m5term to interact with a running system
-
-### Day 3
-
-- Using gem5
   - [Accelerating simulation](../02-Using-gem5/08-accelerating-simulation.md) <!--  (Zhantong) 0.5 hours -->
     - KVM fast forwarding
     - Checkpointing
@@ -124,6 +120,8 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
   - [Power modeling](../02-Using-gem5/10-modeling-power.md) <!--  (Jason?) -->
   - [Multisim](../02-Using-gem5/11-multisim.md) <!-- (Bobby) (10 minutes) -->
     - Example using multisim
+- Other simulators <!-- (Jason?) -->
+  - [SST](../05-Other-simulators/01-sst.md)
 - Developing gem5 models
   - [SimObject intro](../03-Developing-gem5-models/01-sim-objects-intro.md) <!-- (Mahyar) 0.5 hours -->
     - Development environment, code style, git branches
@@ -144,8 +142,14 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
     - Other SimObjects as parameters
     - Hello/Goodbye example with buffer
     - Clock domains?
+  - [Ports and memory-based SimObjects](../03-Developing-gem5-models/04-ports.md) <!-- (Mahyar) 1 hours -->
+    - Idea of ports (request/response), packets, interface
+    - A simple memory object that forwards things
+    - Connecting ports and writing config files
+    - Adding stats to a SimObject
+    - Adding latency and and modeling buffers/computing time
 
-### Day 4
+### Thursday
 
 - Developing gem5 models
   - [Modeling Cores](../03-Developing-gem5-models/05-modeling-cores.md) <!-- (Bobby) 1.5 hours -->
@@ -159,23 +163,6 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
     - Debugging
     - Ruby network
     - (Note to Jason: could do a whole day here if split like before.)
-  - [Extending gem5](../03-Developing-gem5-models/09-extending-gem5-models.md) <!-- (Zhantong) 1 hours -->
-    - Probe points
-    - Generic cache object
-    - Base utilities (e.g., bitset)
-    - Random numbers
-    - Signal ports?
-- [GPU modeling](../04-GPU-model/01-intro.md) <!-- (Matt S.) -->
-
-### Day 5
-
-- Developing gem5 models
-  - [Ports and memory-based SimObjects](../03-Developing-gem5-models/04-ports.md) <!-- (Mahyar) 1 hours -->
-    - Idea of ports (request/response), packets, interface
-    - A simple memory object that forwards things
-    - Connecting ports and writing config files
-    - Adding stats to a SimObject
-    - Adding latency and and modeling buffers/computing time
   - [Using the CHI protocol](../03-Developing-gem5-models/07-chi-protocol.md) <!-- (Jason) 0.5 hours -->
     - How is CHI different from other protocols?
     - Configuring a CHI hierarchy
@@ -183,13 +170,6 @@ I lead the Davis Computer Architecture Research (DArchR) Group.
     - Garnet intro
     - Building/running/configuring networks
     - Debugging
-- Other simulators <!-- (Jason?) -->
-  - [SST](../05-Other-simulators/01-sst.md)
-  - [DRAMSim/DRAMSys](../05-Other-simulators/02-dram.md)
-  - [SystemC](../05-Other-simulators/03-systemc.md)
-- Contributing to gem5 <!-- (Bobby) -->
-  - [gem5 contributing process](../06-Contributing-to-gem5/01-contributing.md)
-  - [gem5 testing](../06-Contributing-to-gem5/02-testing.md)
 
 ---
 
@@ -245,24 +225,6 @@ The slides will be a reference, but we'll be doing a lot of live coding!
 
 ## Bootcamp logistics
 
-We'll be here from 9am - 4pm each day.
-
-Lunch will be ~12 - 1pm.
-
-We'll have a breaks in the morning and afternoon.
-
-Afternoon break will have coffee/snacks.
-
-Tonight: Reception at [Dunloe Brewing](https://dunloebrewing.com/) (Olive Drive Brewery)
-5:30pm - 8:00pm. Walking over at 5pm from here.
-
-Wednesday: Social event at UC Davis ["Games Area"](https://memorialunion.ucdavis.edu/games-area) (Bowling, pool, video games, etc.)
-6:30pm - 9:30pm.
-
----
-
-## Other admin things
-
 ---
 
 ## Important resources
@@ -270,8 +232,8 @@ Wednesday: Social event at UC Davis ["Games Area"](https://memorialunion.ucdavis
 ### Bootcamp links
 
 - [Bootcamp website](https://gem5bootcamp.gem5.org/) (Maybe you're here now)
-  - [Bootcamp archive](https://gem5bootcamp.github.io/2024) (If you're coming to this later)
-- [Source for bootcamp materials](https://github.com/gem5bootcamp/2024) (You'll work here)
+  - [Bootcamp archive](https://gem5bootcamp.github.io/lps2024) (If you're coming to this later)
+- [Source for bootcamp materials](https://github.com/gem5bootcamp/lps2024) (You'll work here)
 - [GitHub Classroom](https://classroom.github.com/a/gCcXlgBs) (Needed to use codespaces)
 
 ### gem5 links
