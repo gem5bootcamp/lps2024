@@ -13,5 +13,9 @@
          "pageScale": "1",
          "pageWidth": "1160",
          "pageHeight": "440"
+    },
+
+    "workbench.editorAssociations": {
+        "*.svg": "hediet.vscode-drawio-text",
     }
 }
