@@ -11,19 +11,43 @@ title: gem5/SST Integration
 
 ---
 
+## What is SST?
+
+The structural simulator toolkit (SST) is another computer archoitecture simulator though, unlike gem5, SST was developed to explore _large_,  _highly concurrent_ systems.
+
+Simulations in SST typically model nodes in a network which communicate with eachother through a communication system. SST is highlightly parallelized due to the inherent parallelism in these systems and is therefore relatively fast at simulating these system
+
+![A very basic distributed system SST could simulate w:400px](01-sst/dist-sst-system.svg)
+
+---
+
+## Compared to gem5
+
+In comparison gem5 lacks any real support for distributed systems. The focus of gem5 is on accurately simulating a single. In addition, it a single threaded and simply does not scale well when attempting to model large systems (e.g., super computers).
+
+However, the fidelity of a singlular node is considerably higher gem5 than SST.
+
+
+
+---
+
+## Why would you want gem5/SST integration?
+
+
+
+---
+
 ## First step: Install SST
 
 We're not going to do this today.
 
-What we'll do instead is use a docker container with sst installed.
+What we'll do instead is use a docker container with sst installed. The Dockerfile for this container can be found at [util/dockerfiles/sst/Dockerfile](https://github.com/gem5/gem5/blob/v24.0.0.0/util/dockerfiles/sst/Dockerfile). This describes how to build an environment with SST installed.
 
-Run the following to go into the docker container.
-Note: You shouldn't use a container interactively like this, but I'm lazy.
+To enter the container, run the following command:
 
 ```sh
-cd /workspaces/2024
-docker run --rm --volume
-/workspaces/:/workspaces -w `pwd` ghcr.io/gem5/sst-env
+cd /workspaces/lpos2024
+docker run --volume `pwd`:`pwd` -w `pwd` -it --rm ghcr.io/gem5/sst-env:latest
 ```
 
 ---
@@ -32,15 +56,29 @@ docker run --rm --volume
 
 To use gem5 as a "component" in SST, you need to build it as a library.
 This is yet another unique build target...
-Note: if you're building on a Mac, it's not ".so" it's ".dynlib"
 
-Compiling gem5 as a library
+
+First we use `defconfig` to define the build:
 
 ```bash
 cd gem5/
 scons defconfig build/for_sst build_opts/RISCV
+```
+
+Here we are saying we want standard RISC-V build and for the sources and binary to be build in `build/for_sst` (this keeps is separate from the standard build).
+
+---
+
+We can then build gem5 as library by specifying `libgem5_opt.so` as the target. (If you're building on a Mac, it's not `.so` it's `.dynlib`).
+
+
+```bash
 scons build/for_sst/libgem5_opt.so -j8 --without-tcmalloc --duplicate-sources
 ```
+
+
+**Note**: There are some funny build requirements here.
+Notably we must build the gem5 library without tcmalloc and with "duplicate sources". Please remember these when building gem5 as a library.
 
 ---
 
@@ -53,7 +91,9 @@ cd ext/sst
 cp Makefile.linux Makefile
 ```
 
-Change the line with `ARCH=RISCV` to `ARCH=for_sst`
+Change the line with `ARCH=RISCV` to `ARCH=for_sst`. This sets the target "architecture" to the we just built.
+
+We then build with:
 
 ```sh
 make -j8
