@@ -24,7 +24,9 @@ An ISA defines:
 
 ---
 
-![40% bg](05-modeling-cores-img/layers-of-abstraction.png)
+ The ISA is the interface between the software and the hardware.
+
+![35% bg](05-modeling-cores-img/layers-of-abstraction.png)
 
 ---
 
@@ -193,7 +195,7 @@ The functions at indexes > 6 are gem5's internal functions called prior to the i
 
 `preExecute` is a function called in the CPU model before the instruction is executed. It is used to perform any necessary setup..
 
-You can go to ["src/cpu/simple/base.cc"](https://github.com/gem5/gem5/blob/v24.0/src/cpu/simple/base.cc#L328) in the gem5 repo to see the `BaseSimpleCPU`'s `preExecute` function.
+You can go to [src/cpu/simple/base.cc](https://github.com/gem5/gem5/blob/v24.0/src/cpu/simple/base.cc#L328) in the gem5 repo to see the `BaseSimpleCPU`'s `preExecute` function.
 
 ---
 
@@ -323,6 +325,7 @@ Next, we'll do a backtrace to see the functions that have been called to reach t
 As you can see, the execute function is called via the `TimingSimpleCPU` model's `process` function.
 
 ---
+<!-- _class: code-80-percent -->
 
 The following code can be found in ["src/cpu/simple/timing.cc](https://github.com/gem5/gem5/blob/v24.0/src/cpu/simple/timing.cc):
 
@@ -338,10 +341,11 @@ Then follows through to:
 
 ```cpp
 // non-memory instruction: execute completely now
-        Fault fault = curStaticInst->execute(&t_info, traceData);
+Fault fault = curStaticInst->execute(&t_info, traceData);
 ```
 
 This is the function that calls the `execute` function of the `StaticInst` object which will carry out all the work for the instruction.
+
 **Note:** This is because `Add` non-memory instruction. Memory instructions are immediately executed. Without memory accesses instructions are simulated as being instantaneous.
 
 ---
@@ -385,7 +389,7 @@ The gem5 build system then compiles these generated files into the gem5 binary.
 
 ## The important high-level ideas
 
-![bg right fit](05-modeling-cores-img/isa-definition-translation.svg)
+![bg right fit 75%](05-modeling-cores-img/isa-definition-translation.svg)
 
 The problem with the ISA definition is that it's very indirect and you can get lost in trying to understand the little details of how the CPP code is generated.
 
