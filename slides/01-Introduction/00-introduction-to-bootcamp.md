@@ -152,10 +152,6 @@ I am the *lead maintainer* of the gem5 project.
 ### Thursday
 
 - Developing gem5 models
-  - [Modeling Cores](../03-Developing-gem5-models/05-modeling-cores.md) <!-- (Bobby) 1.5 hours -->
-    - New instructions
-    - How the execution model works
-    - Debugging
   - [Modeling cache coherence with Ruby and SLICC](../03-Developing-gem5-models/06-modeling-cache-coherence.md) <!--  (Jason) 1.5 hours -->
     - Ruby intro
     - Structure of SLICC
@@ -169,6 +165,10 @@ I am the *lead maintainer* of the gem5 project.
   - [Modeling the on-chip network with Garnet](../03-Developing-gem5-models/08-ruby-network.md) <!-- (Jason) 1 hours -->
     - Garnet intro
     - Building/running/configuring networks
+    - Debugging
+  - [Modeling Cores](../03-Developing-gem5-models/05-modeling-cores.md) <!-- (Bobby) 1.5 hours -->
+    - New instructions
+    - How the execution model works
     - Debugging
 
 ---
