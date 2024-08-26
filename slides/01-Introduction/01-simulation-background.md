@@ -108,7 +108,7 @@ Nathan Binkert, Bradford Beckmann, Gabriel Black, Steven K. Reinhardt, Ali Saidi
 
 ### Aim to meet the needs of
 
-- Academic research (most of you all!)
+- Academic research
 - Industry research and development
 - Classroom use
 

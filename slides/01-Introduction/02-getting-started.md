@@ -77,7 +77,7 @@ See [CONTRIBUTING.md](../../gem5/CONTRIBUTING.md#Releases) for more information.
 These slides and are available at <https://bootcamp.gem5.org/> for you to follow along.
 (Note: They will be archived at <https://gem5bootcamp.github.io/2024>)
 
-> **Step 1:** Go to the classroom <https://classroom.github.com/a/gCcXlgBs>
+> **Step 1:** Go to the classroom <https://classroom.github.com/a/gvkIGF9t>
 
 You need to be in the GitHub organization (via the classroom) to get free codespaces.
 
@@ -92,7 +92,7 @@ This guarantees everyone is using the same environment and will make debugging e
 **AFTER** joining the classroom, you can go to the repository and click on the green "Code" button.
 Again, note that this is the repo where the slides are.
 
-<https://github.com/gem5bootcamp/2024/>
+<https://github.com/gem5bootcamp/lps2024/>
 
 ![Screenshot of starting a codespace](02-getting-started-imgs/codespaces-screenshot-1.drawio.png)
 
