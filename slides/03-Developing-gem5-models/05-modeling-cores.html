@@ -113,7 +113,9 @@ Typically this "required" baseline CSS is added by `makestuff.js` during build.
 <li>Exception and interrupt handling</li>
 </ul>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="3" style="--paginate:true;--theme:gem5;" data-marpit-pagination-total="52" data-marpit-advanced-background="background"><div data-marpit-advanced-background-container="true" data-marpit-advanced-background-direction="horizontal"><figure style="background-image:url(&quot;05-modeling-cores-img/layers-of-abstraction.png&quot;);background-size:40%;"></figure></div></section></foreignObject><foreignObject width="1280" height="720"><section id="3" data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="3" style="--paginate:true;--theme:gem5;" data-marpit-pagination-total="52" data-marpit-advanced-background="content"></section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="3" style="--paginate:true;--theme:gem5;" data-marpit-pagination-total="52" data-marpit-advanced-background="background"><div data-marpit-advanced-background-container="true" data-marpit-advanced-background-direction="horizontal"><figure style="background-image:url(&quot;05-modeling-cores-img/layers-of-abstraction.png&quot;);background-size:35%;"></figure></div></section></foreignObject><foreignObject width="1280" height="720"><section id="3" data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="3" style="--paginate:true;--theme:gem5;" data-marpit-pagination-total="52" data-marpit-advanced-background="content">
+<p>The ISA is the interface between the software and the hardware.</p>
+</section>
 </foreignObject><foreignObject width="1280" height="720" data-marpit-advanced-background="pseudo"><section data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="3" style="" data-marpit-pagination-total="52" data-marpit-advanced-background="pseudo"></section></foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="4" data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="4" style="--paginate:true;--theme:gem5;" data-marpit-pagination-total="52">
 <h2 id="isas-gem5-can-simulate">ISA's gem5 can simulate</h2>
 <ul>
@@ -232,7 +234,7 @@ The functions at indexes &gt; 6 are gem5's internal functions called prior to th
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-shell">4 {PC} in gem5:: BaseSimpleCPU:: preExecute ()
 </code></pre>
 <p><code>preExecute</code> is a function called in the CPU model before the instruction is executed. It is used to perform any necessary setup..</p>
-<p>You can go to <a href="https://github.com/gem5/gem5/blob/v24.0/src/cpu/simple/base.cc#L328">&quot;src/cpu/simple/base.cc&quot;</a> in the gem5 repo to see the <code>BaseSimpleCPU</code>'s <code>preExecute</code> function.</p>
+<p>You can go to <a href="https://github.com/gem5/gem5/blob/v24.0/src/cpu/simple/base.cc#L328">src/cpu/simple/base.cc</a> in the gem5 repo to see the <code>BaseSimpleCPU</code>'s <code>preExecute</code> function.</p>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="15" data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="15" style="--paginate:true;--theme:gem5;" data-marpit-pagination-total="52">
 <p>The next function in the backtrace is the RISC-V ISA's decoder.</p>
@@ -327,7 +329,7 @@ It is just a giant map.</p>
 </code></pre>
 <p>As you can see, the execute function is called via the <code>TimingSimpleCPU</code> model's <code>process</code> function.</p>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="21" data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="21" style="--paginate:true;--theme:gem5;" data-marpit-pagination-total="52">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="21" data-paginate="true" data-class="code-80-percent" data-theme="gem5" lang="en-US" class="code-80-percent" data-marpit-pagination="21" style="--paginate:true;--class:code-80-percent;--theme:gem5;" data-marpit-pagination-total="52">
 <p>The following code can be found in <a href="https://github.com/gem5/gem5/blob/v24.0/src/cpu/simple/timing.cc">&quot;src/cpu/simple/timing.cc</a>:</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-cpp"><span class="hljs-type">void</span>
 TimingSimpleCPU::IcachePort::ITickEvent::<span class="hljs-built_in">process</span>()
@@ -337,10 +339,10 @@ TimingSimpleCPU::IcachePort::ITickEvent::<span class="hljs-built_in">process</sp
 </code></pre>
 <p>Then follows through to:</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-cpp"><span class="hljs-comment">// non-memory instruction: execute completely now</span>
-        Fault fault = curStaticInst-&gt;<span class="hljs-built_in">execute</span>(&amp;t_info, traceData);
+Fault fault = curStaticInst-&gt;<span class="hljs-built_in">execute</span>(&amp;t_info, traceData);
 </code></pre>
-<p>This is the function that calls the <code>execute</code> function of the <code>StaticInst</code> object which will carry out all the work for the instruction.<br />
-<strong>Note:</strong> This is because <code>Add</code> non-memory instruction. Memory instructions are immediately executed. Without memory accesses instructions are simulated as being instantaneous.</p>
+<p>This is the function that calls the <code>execute</code> function of the <code>StaticInst</code> object which will carry out all the work for the instruction.</p>
+<p><strong>Note:</strong> This is because <code>Add</code> non-memory instruction. Memory instructions are immediately executed. Without memory accesses instructions are simulated as being instantaneous.</p>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="22" data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="22" style="--paginate:true;--theme:gem5;" data-marpit-pagination-total="52">
 <h2 id="different-memory-accesses-and-instruction-execution">Different memory accesses and instruction execution</h2>
@@ -366,7 +368,7 @@ This is written in bespoke language we refer to as the ISA Domain Specific Langu
 These generated files can be found in &quot;build/ALL/arch/*/generated/&quot;.<br />
 The gem5 build system then compiles these generated files into the gem5 binary.</p>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="25" style="--paginate:true;--theme:gem5;--marpit-advanced-background-split:50%;" data-marpit-pagination-total="52" data-marpit-advanced-background="background" data-marpit-advanced-background-split="right"><div data-marpit-advanced-background-container="true" data-marpit-advanced-background-direction="horizontal"><figure style="background-image:url(&quot;05-modeling-cores-img/isa-definition-translation.svg&quot;);background-size:contain;"></figure></div></section></foreignObject><foreignObject width="50%" height="720"><section id="25" data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="25" style="--paginate:true;--theme:gem5;--marpit-advanced-background-split:50%;" data-marpit-pagination-total="52" data-marpit-advanced-background="content" data-marpit-advanced-background-split="right">
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="25" style="--paginate:true;--theme:gem5;--marpit-advanced-background-split:50%;" data-marpit-pagination-total="52" data-marpit-advanced-background="background" data-marpit-advanced-background-split="right"><div data-marpit-advanced-background-container="true" data-marpit-advanced-background-direction="horizontal"><figure style="background-image:url(&quot;05-modeling-cores-img/isa-definition-translation.svg&quot;);background-size:75%;"></figure></div></section></foreignObject><foreignObject width="50%" height="720"><section id="25" data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="25" style="--paginate:true;--theme:gem5;--marpit-advanced-background-split:50%;" data-marpit-pagination-total="52" data-marpit-advanced-background="content" data-marpit-advanced-background-split="right">
 <h2 id="the-important-high-level-ideas">The important high-level ideas</h2>
 
 <p>The problem with the ISA definition is that it's very indirect and you can get lost in trying to understand the little details of how the CPP code is generated.</p>
