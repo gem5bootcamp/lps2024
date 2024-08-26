@@ -530,7 +530,7 @@ board = X86Board(
 Here we set the Full System workload.
 The `set_kernel_disk_workload` function for the X86Board takes a kernel, a disk image, and, optionally, a command to run.
 
-This is the command to run after the system has booted. The first `m5 exit` will stop the simulation so we can switch the CPU cores from KVM to timing and continue the simulation to run the echo command, sleep for a second, then, again, call `m5 exit` to terminate the simulation. After simulation has ended you may inspect `m5out/system.pc.com_1.device` to see the echo output.
+This is the command to run after the system has booted. The first `m5 exit` will stop the simulation so we can switch the CPU cores from KVM to timing and continue the simulation to run the echo command, sleep for a second, then, again, call `m5 exit` to terminate the simulation. After simulation has ended you may inspect `m5out/board.pc.com_1.device` to see the echo output.
 
 ```python
 command = (
@@ -658,7 +658,7 @@ We'll see more about this in [Accelerating Simulation](08-accelerating-simulatio
 - **`run()`**: Run the simulation
 - **`get/set_max_ticks(max_tick)`**: Set the absolute tick to stop simulation. Generates a `MAX_TICK` exit event that can be handled.
 - **`schedule_max_insts(inst_number)`**: Set the number of instructions to run before stopping. Generates a `MAX_INSTS` exit event that can be handled. Note that if running multiple cores, this happens if *any* core reaches this number of instructions.
-- **`get_stats()``**: Get the statistics from the simulation. Returns a dictionary of statistics.
+- **`get_stats()`**: Get the statistics from the simulation. Returns a dictionary of statistics.
 
 See [`src/python/gem5/simulate/simulator.py`](../../gem5/src/python/gem5/simulate/simulator.py) for more details.
 
