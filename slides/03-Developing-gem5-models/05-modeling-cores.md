@@ -46,15 +46,18 @@ The remainder, though available, are not as well tested or maintained.
 
 ## gem5's ISA-CPU Independence
 
-Unlike in real hardware, where the CPU is tightly coupled to the ISA it is designed to run, gem5 simplifies things by decoupling the two.
-In doing so gem5's CPU models become ISA agnostic (or ISAs become CPU model agnostic).
+- Unlike in real hardware, where the CPU is tightly coupled to the ISA it is designed to run, gem5 simplifies things by decoupling the two.
+- gem5's CPU models become ISA agnostic (or ISAs become CPU model agnostic).
 
-While there are limits to this independence, the goal is to allow for the easy addition and extension  of new ISAs and CPU models without dealing with massive code changes and rewrites.
-As a high level summary, this independence is achieved by having a separate "decoder" for each ISA, which converts instructions to objects describing their behavior.
+### How?
 
-**Note**: I will use the word "decoder" here broadly to describe the process of parsing bits and bytes of an instruction to determine its behavior and how it should interact with the CPU model. In gem5 this is part of the ISA definition to be "plugged-in" to the CPU model.
+- The goal is to allow for the easy addition and extension of new ISAs and CPU models
+- The ISA `Decoder` accepts bytes from the CPU and generates a `StaticInst` object
+- ISAs include functions to "execute" instructions and specify how to interact with memory
+- ISAs also include functions to translate virtual to physical addresses, miscelaneous registers, etc.
 
-It doesn't function or have the same responsibilities as a decoder in a real CPU.
+<!-- **Note**: I will use the word "decoder" here broadly to describe the process of parsing bits and bytes of an instruction to determine its behavior and how it should interact with the CPU model. In gem5 this is part of the ISA definition to be "plugged-in" to the CPU model.
+It doesn't function or have the same responsibilities as a decoder in a real CPU. -->
 
 ---
 
@@ -62,24 +65,24 @@ It doesn't function or have the same responsibilities as a decoder in a real CPU
 
 ![45% bg](05-modeling-cores-img/isa-independence.png)
 
+<!--Jason: I'm not sure this picture is 100% correct with the current architecture -->
+
 ---
 
 ## The important part: StaticInst
 
 The important take away of this complex design is that the decoder, regardless of the ISA is created for, parses an instruction received by the CPU into a `StaticInst` object.
 
-A `StaticInst` is an object containing static information about a particular ISA instruction for all instances of that instruction.
-
-It contains information on
+A `StaticInst` is an object containing static information about a particular ISA instruction for all instances of that instruction. It contains information on
 
 - The operation class
 - Source and destination registers
 - Flags to show if the instruction has micro-ops
 - Functions defining the instruction's behavior
-  - `execute()`
-  - `initiateAcc()`
-  - `completeAcc()`
-  - `disassemble()`
+  - `execute()`: Read physical register operands, do the instruction, and write physical registers with result
+  - `initiateAcc()`: Read physical register operands, compute effective address, and send a request into the memory system (usually to TLB)
+  - `completeAcc()`: Write result from memory into physical register
+  - `disassemble()`: (For debugging) show the instruction
 
 ---
 
@@ -87,6 +90,7 @@ It contains information on
 
 A `DynamicInst` object contains information specific to a particular instance of an instruction.
 It is constructed from information in the `StaticInst` object.
+The `DynamicInst` is specific to the CPU model, since it understands register renaming, etc.
 
 It contains information on:
 
@@ -104,6 +108,8 @@ It contains information on:
 The `ExecContext` interface provides methods through which a instruction may interface with a CPU model in a standardized way.
 
 `DynamicInst` objects implement the `ExecContext` interface.
+
+In the ISA's instruction implementations (e.g., `execute()`) the functions interact with the CPU state via the `ExecContext` interface.
 
 ---
 
@@ -166,19 +172,19 @@ Let's see the last 10 functions that have been called:
 
 ---
 
-Output:
+## RISC-V `Add::Add` Backtrace (beginning)
 
 ```shell
-0 {PC} in gem5:: RiscvISAInst::Add: :Add(unsigned int) ()
-1 {PC} in gem5:: RiscvISA:: Decoder: :decodeInst(unsigned long) ()
-2 {PC} in gems:: RiscvISA: :Decoder: : decode(unsigned long, unsigned long)
-3 {PC} in gem5:: RiscvISA: :Decoder:: decode (gem5:: PCStateBase&) ()
+0 {PC} in gem5:: RiscvISAInst::Add::Add(unsigned int) ()
+1 {PC} in gem5:: RiscvISA:: Decoder::decodeInst(unsigned long) ()
+2 {PC} in gems:: RiscvISA: :Decoder::decode(unsigned long, unsigned long)
+3 {PC} in gem5:: RiscvISA: :Decoder::decode (gem5::PCStateBase&) ()
 4 {PC} in gem5:: BaseSimpleCPU:: preExecute ()
-5 {PC} in gem5:: TimingSimpleCPU:: IcachePort:: ITickEvent:: process () ()
+5 {PC} in gem5:: TimingSimpleCPU:: IcachePort::ITickEvent::process () ()
 6 {PC} in gem5:: EventQueue:: serviceone() ()
 7 {PC] in gem5: :doSimLoop (gem5:: EventQueue*) ()
 8 {PC} in gem5:: simulate(unsigned long) ()
-9 {PC} in pybind11::pp_function:: initialize<gem5: :GlobalSimLoopExitEve ...
+9 {PC} in pybind11::pp_function:: initialize<gem5::GlobalSimLoopExitEve ...
 ```
 
 Here the 0th function call is the `Add::Add` function.
@@ -186,8 +192,21 @@ Each subsequent index is the function that called the previous (i.e., the 1st fu
 
 ---
 
+## RISC-V `Add::Add` Backtrace (where it starts)
+
+```shell
+0 {PC} in gem5:: RiscvISAInst::Add::Add(unsigned int) ()
+1 {PC} in gem5:: RiscvISA:: Decoder::decodeInst(unsigned long) ()
+2 {PC} in gems:: RiscvISA: :Decoder::decode(unsigned long, unsigned long)
+3 {PC} in gem5:: RiscvISA: :Decoder::decode (gem5::PCStateBase&) ()
+4 {PC} in gem5:: BaseSimpleCPU:: preExecute ()
+5 {PC} in gem5:: TimingSimpleCPU:: IcachePort::ITickEvent::process () ()
+```
+
 The 5th function is the `TimingSimpleCPU` model's `process` function, the function used to process an instruction.
-The functions at indexes > 6 are gem5's internal functions called prior to the instruction execution which we needn't concern ourselves with here.
+There is an event (the instruction fetch tick event) which calls this function each time its executed.
+
+## RISC-V `Add::Add` Backtrace (starting to execute)
 
 ```shell
 4 {PC} in gem5:: BaseSimpleCPU:: preExecute ()
@@ -198,6 +217,8 @@ The functions at indexes > 6 are gem5's internal functions called prior to the i
 You can go to [src/cpu/simple/base.cc](https://github.com/gem5/gem5/blob/v24.0/src/cpu/simple/base.cc#L328) in the gem5 repo to see the `BaseSimpleCPU`'s `preExecute` function.
 
 ---
+
+## RISC-V `Add::Add` Backtrace (decoding)
 
 The next function in the backtrace is the RISC-V ISA's decoder.
 
@@ -216,6 +237,8 @@ This function is called from the following line in the `BaseSimpleCPU`'s `preExe
 You can follow this call through to `Decoder:: decode` which can be found in [src/arch/riscv/decoder.cc](https://github.com/gem5/gem5/blob/v24.0/src/arch/riscv/decoder.cc#110) in the gem5 repository.
 
 ---
+
+## Digging deeper into decode
 
 <!-- _class: code-60-percent -->
 
@@ -249,6 +272,8 @@ This function loads the next instruction into the decoder before calling [`Decod
 
 ---
 
+## One level deeper into decode
+
 ```cpp
 StaticInstPtr
 Decoder::decode(ExtMachInst mach_inst, Addr addr)
@@ -276,10 +301,12 @@ This function mostly serves as a simple wrapper to call the `Decoder::decodeInst
 
 The `decodeInst` function is the next function on the backtrace but it's _generated_.
 
-The `decideInst` function is generated code and will only be available to you if you build gem5 (`scons build/ALL/gem5.opt -j$(nproc)`).
+The `decodeInst` function is generated code and will only be available to you if you build gem5 (`scons build/ALL/gem5.opt -j$(nproc)`).
 A copy of these generated files has been added for your reference in [materials/03-Developing-gem5-models/05-modeling-cores/build-riscv-generated-files](../../materials/03-Developing-gem5-models/05-modeling-cores/build-riscv-generated-files/).
 
 ---
+
+## How gem5 decodes instructions
 
 Here is a snippet of "decode-method.cc.inc", removing superfluous lines, to show the path to the statement returning `Add` instruction:
 
@@ -325,6 +352,9 @@ Next, we'll do a backtrace to see the functions that have been called to reach t
 As you can see, the execute function is called via the `TimingSimpleCPU` model's `process` function.
 
 ---
+
+## RISC-V `Add::Execute` Backtrace
+
 <!-- _class: code-80-percent -->
 
 The following code can be found in ["src/cpu/simple/timing.cc](https://github.com/gem5/gem5/blob/v24.0/src/cpu/simple/timing.cc):
