@@ -528,7 +528,7 @@ memory = SingleChannelDDR3_1600(size=<span class="hljs-string">&quot;3GB&quot;</
 <h2 id="what-to-do-when-linux-boots">What to do when Linux boots</h2>
 <p>Here we set the Full System workload.<br />
 The <code>set_kernel_disk_workload</code> function for the X86Board takes a kernel, a disk image, and, optionally, a command to run.</p>
-<p>This is the command to run after the system has booted. The first <code>m5 exit</code> will stop the simulation so we can switch the CPU cores from KVM to timing and continue the simulation to run the echo command, sleep for a second, then, again, call <code>m5 exit</code> to terminate the simulation. After simulation has ended you may inspect <code>m5out/system.pc.com_1.device</code> to see the echo output.</p>
+<p>This is the command to run after the system has booted. The first <code>m5 exit</code> will stop the simulation so we can switch the CPU cores from KVM to timing and continue the simulation to run the echo command, sleep for a second, then, again, call <code>m5 exit</code> to terminate the simulation. After simulation has ended you may inspect <code>m5out/board.pc.com_1.device</code> to see the echo output.</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-python">command = (
     <span class="hljs-string">&quot;m5 exit;&quot;</span>
     + <span class="hljs-string">&quot;echo &#x27;This is running on O3 CPU cores.&#x27;;&quot;</span>
@@ -628,7 +628,7 @@ When the 2nd exit is triggered the default action is triggered as there is nothi
 <li><strong><code>run()</code></strong>: Run the simulation</li>
 <li><strong><code>get/set_max_ticks(max_tick)</code></strong>: Set the absolute tick to stop simulation. Generates a <code>MAX_TICK</code> exit event that can be handled.</li>
 <li><strong><code>schedule_max_insts(inst_number)</code></strong>: Set the number of instructions to run before stopping. Generates a <code>MAX_INSTS</code> exit event that can be handled. Note that if running multiple cores, this happens if <em>any</em> core reaches this number of instructions.</li>
-<li><strong>`get_stats()``</strong>: Get the statistics from the simulation. Returns a dictionary of statistics.</li>
+<li><strong><code>get_stats()</code></strong>: Get the statistics from the simulation. Returns a dictionary of statistics.</li>
 </ul>
 <p>See <a href="../../gem5/src/python/gem5/simulate/simulator.py"><code>src/python/gem5/simulate/simulator.py</code></a> for more details.</p>
 <p>We will be covering much more about how to use the <code>Simulator</code> object in other parts of the bootcamp.</p>
