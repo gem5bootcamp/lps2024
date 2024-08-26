@@ -163,14 +163,14 @@ The `obtain_resource` function downloads the files needed to run the specified w
 
 ---
 
-### gem5 Resources
+## gem5 Resources
 
 We will return to gem5 Resources later in the bootcamp, but for now, you can think of it as a way to download and manage files needed for your simulation but don't actually specify the simulated computer system hardware.
 Typically it is used to download and manage workloads, disk images, checkpoints needed for the simulation.
 
 Here we can search the available resources: <https://resources.gem5.org/>.
 
-Here is the arm-gabps-bss-run resource: <https://resources.gem5.org/resources/arm-gapbs-bfs-run?version=1.0.0>.
+Here is the arm-gabps-bfs-run resource: <https://resources.gem5.org/resources/arm-gapbs-bfs-run?version=1.0.0>.
 
 ---
 
