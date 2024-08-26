@@ -100,7 +100,7 @@ Here we are saying we want standard RISC-V build and for the sources and binary 
 
 ---
 
-### Building the gem5 library
+## Building the gem5 library
 
 We  then build gem5 as library by specifying `libgem5_opt.so` as the target. (If you're building on a Mac, it's not `.so` it's `.dynlib`).
 
@@ -113,7 +113,9 @@ We must build the gem5 library without tcmalloc and with "duplicate sources". Th
 
 ---
 
-## While we wait for that complication, let's get to know SST better
+## Let's get to know SST better
+
+While we wait for that complication...
 
 SST and gem5 share a lot similar ideas and, sometimes confusingly, nomenclature.
 Please keep in mind that SST components are more like gem5 SimObjects than gem5 components; events are more like gem5 packets sent over gem5 ports, and ports in gem5 are not like-for-like ports in SST. SST requires "links" between ports to connect them.
@@ -180,7 +182,7 @@ This is creating two  `example0` components with names `c0` and `c1`. It should 
 
 ---
 
-### Add SST components' parameters
+## Add SST components' parameters
 
 Next we need to set the components' parameters with their `addParam()` methods:
 
@@ -194,7 +196,7 @@ In this case each component is set simulate the sending of 20 events of size 32 
 
 ---
 
-### Link the SST components
+## Link the SST components
 
 Finally, we need to create a link between the two components' ports.
 
@@ -209,7 +211,7 @@ We can already infer what this will simulate: each component will send 20 events
 
 ---
 
-### Running the SST simulation
+## Running the SST simulation
 
 At this stage you can run your  SST simulator with the following command:
 
@@ -241,6 +243,8 @@ cp Makefile.linux Makefile
 ```
 
 ---
+
+## Building the gem5 component for SST
 
 We then change  `ARCH=RISCV` to `ARCH=for_sst` in the Makefile. This sets the target "architecture" to the we just built.
 
@@ -320,7 +324,7 @@ Finally we have `SST_ELI_DOCUMENT_PORTS` which is used to document the ports of 
 
 ## How does this gem5 simulation inside SST keep in-sync with SST?
 
-This is an important question. For gem5 to work with SST they ,must be simulating with some common understanding of time to exchange information between one another at the right time. The short answer here is gem5 keeps in lockstep with the SST clock but let's look at the code that does so in `ext/sst/gem5.cc`:
+For gem5 to work with SST they must be simulating with some common understanding of time to exchange information between one another at the right time. The short answer here is gem5 keeps in lockstep with the SST clock but let's look at the code that does so in `ext/sst/gem5.cc`:
 
 ```cpp
 bool
@@ -361,7 +365,6 @@ This code figures out the gem5 `Tick` it will have simulate to to finish at the 
 ---
 
 The process is as follows:
-
 
 1. SST lets gem5 know the current cycle.
 2. gem5 Figures out the tick it should be at for the next SST cycle.
