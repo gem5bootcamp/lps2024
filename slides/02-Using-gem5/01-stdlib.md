@@ -22,7 +22,7 @@ This causes:
 - Error-prone configurations.
 - A lack of portability between different simulation setups.
 
-In addition, while there is no "one size fits all" for gem5 users, most users have similar needs and requirements for their simulations, requiring only a few modifications off of some commonly used configuration systems.Prior to the creation of the standard library users would regularly circulate long, complex scripts and hack at them endlessly. Such practices inspired the creation of the gem5 Standard Library.
+In addition, while there is no "one size fits all" for gem5 users, most users have similar needs and requirements for their simulations, requiring only a few modifications off of some commonly used configuration systems. Prior to the creation of the standard library users would regularly circulate long, complex scripts and hack at them endlessly. Such practices inspired the creation of the gem5 Standard Library.
 
 ---
 
