@@ -69,7 +69,7 @@ command = (
 # booting the system.
 board.set_kernel_disk_workload(
     kernel=obtain_resource("x86-linux-kernel-4.4.186"),
-    disk_image=obtain_resource("x86-ubuntu-18.04-img"),
+    disk_image=obtain_resource("x86-ubuntu-22.04-img"),
     readfile_contents=command,
 )
 

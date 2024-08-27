@@ -22,9 +22,7 @@ This causes:
 - Error-prone configurations.
 - A lack of portability between different simulation setups.
 
-In addition, while there is no "one size fits all" for gem5 users, most users have similar needs and requirements for their simulations, requiring only a few modifications off of some commonly used configuration systems.
-Prior to the creation of the standard library users would regularly circulate long, complex scripts and hack at them endlessly.
-Such practices inspired the creation of the gem5 Standard Library.
+In addition, while there is no "one size fits all" for gem5 users, most users have similar needs and requirements for their simulations, requiring only a few modifications off of some commonly used configuration systems.Prior to the creation of the standard library users would regularly circulate long, complex scripts and hack at them endlessly. Such practices inspired the creation of the gem5 Standard Library.
 
 ---
 
@@ -530,7 +528,7 @@ board = X86Board(
 Here we set the Full System workload.
 The `set_kernel_disk_workload` function for the X86Board takes a kernel, a disk image, and, optionally, a command to run.
 
-This is the command to run after the system has booted. The first `m5 exit` will stop the simulation so we can switch the CPU cores from KVM to timing and continue the simulation to run the echo command, sleep for a second, then, again, call `m5 exit` to terminate the simulation. After simulation has ended you may inspect `m5out/board.pc.com_1.device` to see the echo output.
+This is the command to run after the system has booted. The first `m5 exit` will stop the simulation so we can switch the CPU cores from timing to o3 and continue the simulation to run the echo command, sleep for a second, then, again, call `m5 exit` to terminate the simulation. After simulation has ended you may inspect `m5out/board.pc.com_1.device` to see the echo output.
 
 ```python
 command = (
