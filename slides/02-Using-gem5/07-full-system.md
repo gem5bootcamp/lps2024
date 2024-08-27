@@ -9,139 +9,72 @@ title: Full system simulation in gem5
 
 ## Full system simulation in gem5
 
----
-
-## What we will cover
-
-- What is full system simulation?
-- Basics of booting up a real system in gem5
-- Creating disk images using Packer and QEMU
-- Extending/modifying a gem5 disk image
-- Using m5term to interact with a running system
-
----
-
 ## What is Full System Simulation?
 
-Full-system simulation is a type of simulation that emulates a complete computer system, including the CPU, memory, I/O devices, and system software like operating systems.
-
-It allows for detailed analysis and debugging of hardware and software interactions.
-
-**Components Simulated**:
-
-- CPUs (multiple types and configurations)
-- Memory hierarchy (caches, main memory)
-- I/O devices (disk, network interfaces)
-- Entire software stack (OS, drivers, applications)
+Gem5's **Full System (FS) mode** simulates an entire computer system. While SE mode is _partially simulated_ in that the host operating system and only application instructions simulated, FS mode simulates everything.
 
 ---
 
 ## Basics of Booting Up a Real System in gem5
 
-**Overview**: gem5 can simulate the process of booting up a real system, providing insights into the behavior of the hardware and software during startup.
+Unlike in SE mode where we can just provide a binary, in FS mode we need to provide much more information to boot up a real system. In particular we need:
 
-### Steps Involved
+1. A disk image containing the operating system and any necessary software or data. This disk image serves as the virtual hard drive for the simulated system.
 
-1. **Setting Up the Simulation Environment**:
-    - Choose the ISA (e.g., x86, ARM).
-    - Configure the system components (CPU, memory, caches).
-2. **Getting the correct resources such as kernel, bootloader, diskimages, etc.**
-3. **Configuring the Boot Parameters**:
-    - Set kernel command line parameters, if necessary.
-4. **Running the Simulation**:
-    - Start the simulation and monitor the boot process.
+2. A kernel binary compatible with the simulated architecture is needed to boot the operating system.
+
+Beyond these essentials, you might need to provide other files like a bootloader, depending on the complexity of the simulation.
 
 ---
 
-## Let's run a full system simulation in gem5
+## Interacting with gem5 via m5term
 
-The incomplete code already has a board built.
+In FS mode, gem5 provides a terminal interface to interact with the simulated system. This is useful for debugging and monitoring the system as it runs. It is just like connection to a real-world computer via a terminal.
 
-Let's run a full-system workload in gem5.
+Once the simulation is running gem5 will open a port on your host machine that you can connect to using a terminal emulator.
 
-This workload is an Ubuntu 24.04 boot. It will throw three m5 exits at:
-
-- Kernel Booted
-- When `after_boot.sh` runs
-- After run script runs
-
----
-
-## Obtain the workload and set exit event
-
-To set the workload, we add the following to
-[materials/02-Using-gem5/07-full-system/x86-fs-kvm-run.py](../../materials/02-Using-gem5/07-full-system/x86-fs-kvm-run.py):
-
-```python
-workload = obtain_resource("x86-ubuntu-24.04-boot-with-systemd", resource_version="1.0.0")
-board.set_workload(workload)
-```
-
----
-
-<!-- _class: code-80-percent -->
-
-## Obtain the workload and set exit event (conti.)
-
-Let's make the exit event handler and set it in our simulator's object.
-
-```python
-def exit_event_handler():
-    print("first exit event: Kernel booted")
-    yield False
-    print("second exit event: In after boot")
-    yield False
-    print("third exit event: After run script")
-    yield True
-
-simulator = Simulator(
-    board=board,
-    on_exit_event={
-        ExitEvent.EXIT: exit_event_handler(),
-    },
-)
-simulator.run()
-```
-
----
-
-## Viewing the terminal/serial output with m5term
-
-Before booting this workload, let's build the `m5term` application so we can connect to the running system.
+We provide `m5term` to connect to this port and interact with the simulated system. To build it:
 
 ```bash
-cd /workspaces/2024/gem5/util/term
+cd gem5/util/term
 make
 ```
 
-Now you have a binary `m5term`.
+Now you have a binary `m5term`. This accepts one argument: the port number to connect to.
 
 ---
 
-## Watch gem5's output
+## Getting `m5term`'s port number
 
-Now, let's run the workload and connect to the terminal of the disk image boot using `m5term`.
+When you run a gem5 simulation in FS mode, gem5 will print the port number that `m5term` should connect to. This is usually the last line of the output.
+Near the start of an FS mode simulation you'll see a line printed in the terminal output that specifies the port number. E.g.:
 
-Run gem5 with:
-
-```bash
-gem5 x86-fs-kvm-run.py
+```shell
+board.pc.com_1.device: Listening for connections on port 3456
 ```
 
-In another terminal window, run the following command to connect to the disk image boot's terminal:
+Please note, there is also a similar statement for the GDB port. Make sure you are connecting to the correct port. (the GDB port statement is usually 7000 and started with `board.remote_gdb: Listening for...`)
 
-```bash
+---
+
+## An example of using `m5term`
+
+```shell
+gem5-mesi materials/02-Using-gem5/07-full-system/m5-term-run.py
+```
+
+Then look at the output for the port number (Let's say it's "3456"). Then
+**open a new terminal** and run:
+
+```shell
 m5term 3456
 ```
 
-3456 is the port number on which the terminal is running.
-You will see this printed in the gem5 output.
+This will connect you to the terminal of the simulated system.
 
-If you run multiple gem5 instances, they will have sequential port numbers.
-If you are running in a non-interactive environment, there will be no ports to connect to.
+**Notes**: `m5-term-run.py` runs `/bin/sh` on boot. This allows m5term to connect to this shell.
 
----
-
+**Note:** look at the scri
 <!-- _class: start -->
 
 ## Creating your own disk images
