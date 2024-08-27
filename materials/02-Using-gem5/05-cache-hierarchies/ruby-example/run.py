@@ -19,7 +19,7 @@ from gem5.simulate.simulator import Simulator
 
 workloads = {
     "naive": NaiveArraySumWorkload,
-    "false_sharing": NoCacheBlockRaceArraySumWorkload,
+    "false_sharing": NoResultRaceArraySumWorkload,
     "blocking": NoCacheBlockRaceArraySumWorkload,
 }
 
