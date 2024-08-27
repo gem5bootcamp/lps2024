@@ -72,10 +72,9 @@ See [CONTRIBUTING.md](../../gem5/CONTRIBUTING.md#Releases) for more information.
 
 - We will be using the "bootcamp environment"
   - Note: That's also where the source for these slides are
-  - You will be doing all of your development in the repo found at <https://github.com/gem5bootcamp/2024>.
+  - You will be doing all of your development in the repo found at <https://github.com/gem5bootcamp/lps2024>.
 
-These slides and are available at <https://bootcamp.gem5.org/> for you to follow along.
-(Note: They will be archived at <https://gem5bootcamp.github.io/2024>)
+These slides and are available at <https://gem5bootcamp.github.io/lps2024> for you to follow along.
 
 > **Step 1:** Go to the classroom <https://classroom.github.com/a/gvkIGF9t>
 
