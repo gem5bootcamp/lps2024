@@ -112,9 +112,7 @@ This can result in scripts with hundreds of lines of code even for the most basi
 <li>Error-prone configurations.</li>
 <li>A lack of portability between different simulation setups.</li>
 </ul>
-<p>In addition, while there is no &quot;one size fits all&quot; for gem5 users, most users have similar needs and requirements for their simulations, requiring only a few modifications off of some commonly used configuration systems.<br />
-Prior to the creation of the standard library users would regularly circulate long, complex scripts and hack at them endlessly.<br />
-Such practices inspired the creation of the gem5 Standard Library.</p>
+<p>In addition, while there is no &quot;one size fits all&quot; for gem5 users, most users have similar needs and requirements for their simulations, requiring only a few modifications off of some commonly used configuration systems.Prior to the creation of the standard library users would regularly circulate long, complex scripts and hack at them endlessly. Such practices inspired the creation of the gem5 Standard Library.</p>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="3" data-paginate="true" data-theme="gem5" lang="en-US" data-marpit-pagination="3" style="--paginate:true;--theme:gem5;" data-marpit-pagination-total="51">
 <h2 id="what-is-the-standard-library">What is the Standard Library?</h2>
@@ -528,7 +526,7 @@ memory = SingleChannelDDR3_1600(size=<span class="hljs-string">&quot;3GB&quot;</
 <h2 id="what-to-do-when-linux-boots">What to do when Linux boots</h2>
 <p>Here we set the Full System workload.<br />
 The <code>set_kernel_disk_workload</code> function for the X86Board takes a kernel, a disk image, and, optionally, a command to run.</p>
-<p>This is the command to run after the system has booted. The first <code>m5 exit</code> will stop the simulation so we can switch the CPU cores from KVM to timing and continue the simulation to run the echo command, sleep for a second, then, again, call <code>m5 exit</code> to terminate the simulation. After simulation has ended you may inspect <code>m5out/board.pc.com_1.device</code> to see the echo output.</p>
+<p>This is the command to run after the system has booted. The first <code>m5 exit</code> will stop the simulation so we can switch the CPU cores from timing to o3 and continue the simulation to run the echo command, sleep for a second, then, again, call <code>m5 exit</code> to terminate the simulation. After simulation has ended you may inspect <code>m5out/board.pc.com_1.device</code> to see the echo output.</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-python">command = (
     <span class="hljs-string">&quot;m5 exit;&quot;</span>
     + <span class="hljs-string">&quot;echo &#x27;This is running on O3 CPU cores.&#x27;;&quot;</span>
