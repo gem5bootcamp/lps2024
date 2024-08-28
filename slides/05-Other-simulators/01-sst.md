@@ -29,16 +29,22 @@ Properties of these connections between ports are defined here (e.g., latency).
 
 ---
 
+<!-- _class: two-col -->
+
 ## SST's design
 
 In terms of software design and build considerations, the SST simulator is split between the **SST core** and the **SST elements library**. The core is the simulator itself but without any Components to. The elements library contains the components that can be loaded and run, in an SST simulation.
 
 This design allows SST to be highly parallelized: a very nice feature that allows it to scale to larger systems.
 
+###
+
 <!-- This needs moved around and probably resized -->
-![A very basic distributed system SST could simulate w:400px](01-sst/dist-sst-system.svg)
+![A very basic distributed system SST could simulate w:550px](01-sst/dist-sst-system.svg)
 
 ---
+
+<!-- _class: two-col -->
 
 ## SST, in comparison to gem5
 
@@ -48,12 +54,13 @@ This design allows SST to be highly parallelized: a very nice feature that allow
 
 * gem5 is a single threaded application. While a user is always able create more more gem5 processes (one per simulated system), there's no framework allowing them to communicate with one another.
 
+###
 
-
-
-![A very basic distributed system SST could simulate w:400px](01-sst/gem5-strong.svg)
+![A very basic distributed system SST could simulate w:550px](01-sst/gem5-strong.svg)
 
 ---
+
+<!-- _class: two-col -->
 
 ## Why would you want gem5/SST integration?
 
@@ -66,11 +73,13 @@ The idea is to have _gem5 as a SST compoent_.
 **Note**: At present this is just one gem5 component per SST simulation.
 This is ok if you design your simulations well!
 
-![A high fidelity gem5 simulation running in an SST simulation w:400px](01-sst/gem5-in-sst.svg)
+###
+
+![A high fidelity gem5 simulation running in an SST simulation w:550px](01-sst/gem5-in-sst.svg)
 
 ---
 
-## Ok then! Let's do it! To start, let's (not) install SST
+## To start, let's (not) install SST
 
 Before using SST you must first install it... though this isn't very interesting so we'll use a docker container with sst already installed to save us the hassle.
 
@@ -114,12 +123,9 @@ scons build/for_sst/libgem5_opt.so -j8 --without-tcmalloc --duplicate-sources
 ```
 
 **Note**: There are some funny build requirements here.
-We must build the gem5 library without tcmalloc and with "duplicate sources". The reasons for this isn't important.
+We must build the gem5 library without tcmalloc and with "duplicate sources". The reasons for this aren't important.
 
 ---
-
-
-
 
 ## Making a toy SST simulation
 
@@ -189,7 +195,7 @@ This is creating two  `example0` components with names `c0` and `c1`. It should 
 
 ---
 
-## Add SST components' parameters
+## Add the SST components' parameters
 
 Next we need to set the components' parameters with their `addParam()` methods:
 
@@ -241,7 +247,7 @@ While this configuration is very basic, it demonstrates how SST can be used to s
 
 ---
 
-## Now back to to incorporating gem5
+## Now back to incorporating gem5
 
 Hopefully your `libgem5_opt.so` has finished building by now. If so, we can now compile a gem5 component for SST and register it with SST.
 
@@ -358,12 +364,9 @@ The most important question here is regarding timing: How does gem5 know when to
 gem5 simulates at the granularity of ticks (picoseconds).
 SST simulates at the granularity of cycles (nanoseconds).
 
-In short: **SST schedules a gem5 simulation at every cycle
+---
 
-
-
-
-The short answer here is gem5 keeps in lockstep with the SST clock but let's look at the code that does so in `ext/sst/gem5.cc`:
+The answer is gem5 is kept in lockstep with the SST clock. Let's look at the code to see exactly how in `ext/sst/gem5.cc`
 
 ```cpp
 bool
@@ -372,6 +375,8 @@ gem5Component::clockTick(SST::Cycle_t currentCycle)
     // what to do in a SST's cycle
     gem5::GlobalSimLoopExitEvent *event = simulateGem5(currentCycle);
 ```
+
+
 
 `clockTick` is a virtual method  part of the `SST::Component` class and is called on every SST clock tick. We use this to keep gem5 in sync with SST.
 
@@ -457,6 +462,9 @@ cache_bus = sst.Component("cache_bus", "memHierarchy.Bus")
 cache_bus.addParams( { "bus_frequency" : cpu_clock_rate } )
 ```
 
+---
+
+
 ```python
 system_port = gem5_node.setSubComponent(port_list[0], "gem5.gem5Bridge", 0)
 system_port.addParams({ "response_receiver_name": sst_ports["system_port"]})
@@ -466,6 +474,10 @@ cache_port.addParams({ "response_receiver_name": sst_ports["cache_port"]})
 ```
 
 The above maps the SubComponent to the corresponding simobject.
+
+---
+
+<!-- _class: code-60-percent -->
 
 We then add an L1 Cache and a Memory System, both SST components.
 
@@ -490,6 +502,10 @@ memory.addParams({
 })
 ```
 
+---
+
+<!-- _class: code-70-percent -->
+
 We then connect the component's ports.
 
 Start with connecting CPU to the L1 cache.
@@ -512,6 +528,8 @@ cache_bus_cache_link.connect(
 )
 ```
 
+---
+
 Then the L1 Cache to the Memory:
 
 ```python
@@ -523,6 +541,8 @@ cache_mem_link.connect(
 )
 ```
 
+
+
 Then we enable our stats
 
 ```python
@@ -533,12 +553,10 @@ sst.enableAllStatisticsForComponentName("l1_cache", stat_params)
 sst.enableAllStatisticsForComponentName("memory", stat_params)
 ```
 
+---
+
 ## Running our example
 
 ```bash
 sst materials/05-Other-simulators/01-sst/02-gem5-in-sst.py
 ```
-
-
-
-## Appending
