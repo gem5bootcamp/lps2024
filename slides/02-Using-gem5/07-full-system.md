@@ -9,9 +9,13 @@ title: Full system simulation in gem5
 
 ## Full system simulation in gem5
 
+---
+
 ## What is Full System Simulation?
 
-Gem5's **Full System (FS) mode** simulates an entire computer system. While SE mode is _partially simulated_ in that the host operating system and only application instructions simulated, FS mode simulates everything.
+gem5's **Full System (FS) mode** simulates an entire computer system. This is in contrast to SE mode which uses the host OS.
+
+This is in contrast to SE mode which uses the host OS, thus side-stepping the need to simulate the entire system; a costly process.
 
 ---
 
@@ -27,54 +31,79 @@ Beyond these essentials, you might need to provide other files like a bootloader
 
 ---
 
-## Interacting with gem5 via m5term
+<!-- _class: code-60-percent -->
 
-In FS mode, gem5 provides a terminal interface to interact with the simulated system. This is useful for debugging and monitoring the system as it runs. It is just like connection to a real-world computer via a terminal.
+## How does gem5 know it's in FS mode or SE mode?
 
-Once the simulation is running gem5 will open a port on your host machine that you can connect to using a terminal emulator.
+In `simulator.py` the root object is created, in which the `full_system` parameter is set to `True` or `False` depending on whether the full system is being simulated.
 
-We provide `m5term` to connect to this port and interact with the simulated system. To build it:
-
-```bash
-cd gem5/util/term
-make
+```python
+root = Root(
+    full_system=(
+        self._full_system
+        if self._full_system is not None
+        else self._board.is_fullsystem()
+    ),
+    board=self._board,
+)
 ```
 
-Now you have a binary `m5term`. This accepts one argument: the port number to connect to.
+In `abstract_board.py`:
+
+```python
+def is_fullsystem(self) -> bool:
+    # ...
+    if self._is_fs == None:
+        raise Exception(
+            "The workload for this board not ..."
+        )
+    return self._is_fs
+```
 
 ---
 
-## Getting `m5term`'s port number
+<!-- _class: code-60-percent -->
 
-When you run a gem5 simulation in FS mode, gem5 will print the port number that `m5term` should connect to. This is usually the last line of the output.
-Near the start of an FS mode simulation you'll see a line printed in the terminal output that specifies the port number. E.g.:
+## Ultimately determined by what `set_workload` function is called
 
-```shell
-board.pc.com_1.device: Listening for connections on port 3456
+In `kernel_disk_workload.py`:
+
+```python
+class KernelDiskWorkload:
+
+    # ...
+
+    def set_kernel_disk_workload(
+        self,
+        kernel: KernelResource,
+        disk_image: DiskImageResource,
+        bootloader: Optional[BootloaderResource] = None,
+        disk_device: Optional[str] = None,
+        readfile: Optional[str] = None,
+        readfile_contents: Optional[str] = None,
+        kernel_args: Optional[List[str]] = None,
+        exit_on_work_items: bool = True,
+        checkpoint: Optional[Union[Path, CheckpointResource]] = None,
+    ) -> None:
+
+        # ...
+
+        self._set_fullsystem(True)
 ```
-
-Please note, there is also a similar statement for the GDB port. Make sure you are connecting to the correct port. (the GDB port statement is usually 7000 and started with `board.remote_gdb: Listening for...`)
 
 ---
 
-## An example of using `m5term`
+## These `set_workload` classes mixin with the boards
 
-```shell
-gem5-mesi materials/02-Using-gem5/07-full-system/m5-term-run.py
+```python
+class X86Board(AbstractSystemBoard, KernelDiskWorkload):
+    #...
 ```
 
-Then look at the output for the port number (Let's say it's "3456"). Then
-**open a new terminal** and run:
+So, in short, **the `set_workload` function called determines whether the simulation is in FS mode or SE mode**.
 
-```shell
-m5term 3456
-```
+---
 
-This will connect you to the terminal of the simulated system.
-
-**Notes**: `m5-term-run.py` runs `/bin/sh` on boot. This allows m5term to connect to this shell.
-
-**Note:** look at the scri
 <!-- _class: start -->
 
 ## Creating your own disk images
@@ -190,22 +219,23 @@ The general structure of the Packer file would be the same but with a few key ch
 - Remove the `http_directory   = "http"` directory as we no longer need to use autoinstall.
 - Change the `iso_checksum` and `iso_urls` to that of our base image.
 
-    Let's get the base Ubuntu 24.04 image from gem5 resources and unzip it.
-
-    ```bash
-    wget https://storage.googleapis.com/dist.gem5.org/dist/develop/images/x86/ubuntu-24-04/x86-ubuntu-24-04.gz
-    gzip -d x86-ubuntu-24-04.gz
-    ```
-
 ---
 
-<!-- _class: code-80-percent  -->
+
+Let's get the base Ubuntu 24.04 image from gem5 resources and unzip it.
+
+```bash
+wget https://storage.googleapis.com/dist.gem5.org/dist/develop/images/x86/ubuntu-24-04/x86-ubuntu-24-04.gz
+gzip -d x86-ubuntu-24-04.gz
+```
 
 `iso_checksum` is the `sha256sum` of the iso file that we are using. To get the `sha256sum` run the following in the linux terminal.
 
 ```bash
-sha256sum ./x86-ubuntu-24-04.gz
+sha256sum ./x86-ubuntu-24-04
 ```
+
+---
 
 
 - **Update the file and shell provisioners:** Let's remove the file provisioners as we dont need to transfer the files again.
@@ -254,31 +284,3 @@ GEM5_RESOURCE_JSON_APPEND=./completed/local-gapbs-resource.json gem5 x86-fs-gapb
 ```
 
 This script should run the bfs benchmark.
-
----
-
-## Let's see how we can access the terminal using m5term
-
-- We are going to run the same [gem5 GAPBS config](../../materials/02-Using-gem5/07-full-system/x86-fs-gapbs-kvm-run.py) but with a small change.
-
-Let's change the last `yield True` to `yield False` so that the simulation doesn't exit and we can access the simulation.
-
-```python
-def exit_event_handler():
-    print("first exit event: Kernel booted")
-    yield False
-    print("second exit event: In after boot")
-    yield False
-    print("third exit event: After run script")
-    yield False
-```
-
----
-
-## Again, let's use m5term
-
-Now let's connect to our simulation by using the `m5term` binary
-
-```bash
-m5term 3456
-```
