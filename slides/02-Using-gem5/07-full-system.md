@@ -232,7 +232,7 @@ gzip -d x86-ubuntu-24-04.gz
 `iso_checksum` is the `sha256sum` of the iso file that we are using. To get the `sha256sum` run the following in the linux terminal.
 
 ```bash
-sha256sum ./x86-ubuntu-24-04
+sha256sum ./x86-ubuntu-24-04.gz
 ```
 
 ---
