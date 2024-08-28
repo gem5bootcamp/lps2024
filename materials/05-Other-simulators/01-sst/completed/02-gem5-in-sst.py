@@ -9,7 +9,7 @@ directory in the gem5 repository.
 Usage
 ----
 
-```bash
+```bas
 sst materials/05-Other-simulators/01-sst/02-gem5-in-sst.py
 ```
 

@@ -33,9 +33,7 @@ Properties of these connections between ports are defined here (e.g., latency).
 
 In terms of software design and build considerations, the SST simulator is split between the **SST core** and the **SST elements library**. The core is the simulator itself but without any Components to. The elements library contains the components that can be loaded and run, in an SST simulation.
 
-## SST is parallel!
-
-SST is highly parallelized  Every component can be run as separate thread and use the SST core to communicate with other components. This means that SST is considerably more scalable that gem5. Grander simulations are possible grander hosts.
+This design allows SST to be highly parallelized: a very nice feature that allows it to scale to larger systems.
 
 <!-- This needs moved around and probably resized -->
 ![A very basic distributed system SST could simulate w:400px](01-sst/dist-sst-system.svg)
@@ -44,9 +42,13 @@ SST is highly parallelized  Every component can be run as separate thread and us
 
 ## SST, in comparison to gem5
 
-In comparison, gem5 lacks any real support for distributed systems or any task that requires lots of communicating via some established protocol.  gem5 was never designed with such problems and systems in mind. Instead gem5 focused efforts on simulating the individual computer systems well. For example, gem5 has, and continues to, invest heavily in allowing relatively high fidelity modeling of cache hierarchies, and other microarchitectural details.
+* gem5 lacks any real support for simulating distributed systems or communications between machines.
 
-Additionally, gem5 is a single threaded application. While a user is always able create more more gem5 processes (one per simulated system), there's no framework allowing them to communicate with one another. Quite simply, gem5 cannot simulate large (e.g., supercomputer systems) in timescales that are useful or without coming at the cost of considerable accuracy.
+* gem5 focused efforts on simulating the individual computer systems well.
+
+* gem5 is a single threaded application. While a user is always able create more more gem5 processes (one per simulated system), there's no framework allowing them to communicate with one another.
+
+
 
 
 ![A very basic distributed system SST could simulate w:400px](01-sst/gem5-strong.svg)
@@ -62,7 +64,7 @@ The general idea for having gem5/SST integration is that we can use gem5 to gath
 The idea is to have _gem5 as a SST compoent_.
 
 **Note**: At present this is just one gem5 component per SST simulation.
-This is laregly ok as other SST components can be kept "dump" and left to simulate nothing more than communication from the wider system. Once a simulation is complete we can see both how a compnent fairs and how the system overall performs.
+This is ok if you design your simulations well!
 
 ![A high fidelity gem5 simulation running in an SST simulation w:400px](01-sst/gem5-in-sst.svg)
 
@@ -87,7 +89,7 @@ That should be all your need to do. You should now be in an environment with SST
 
 ## To have an gem5 component, we must first build gem5
 
-To use gem5 as a "component" in SST, you need to build it as a library so it can by incorporated in into a CPP-based wrapper that allows for communication between SST and gem5. d
+To use gem5 as a "component" in SST, you need to build it as a library so it can by incorporated in into a CPP-based wrapper.
 
 To compile gem5 as a library we first use `defconfig` to define the build:
 
@@ -96,7 +98,10 @@ cd gem5/
 scons defconfig build/for_sst build_opts/RISCV
 ```
 
-Here we are saying we want standard RISC-V build and for the sources and binary to be build in `build/for_sst` (this keeps is separate from the standard build).
+Here we are saying:
+
+* We want to use the RISC-V build configuration
+* We want sources and binary to be built in `build/for_sst`.
 
 ---
 
@@ -109,26 +114,28 @@ scons build/for_sst/libgem5_opt.so -j8 --without-tcmalloc --duplicate-sources
 ```
 
 **Note**: There are some funny build requirements here.
-We must build the gem5 library without tcmalloc and with "duplicate sources". The reasons for this isn't important. They are needed for messy, legacy reasons. Please just remember to include these when building gem5 as a library.
+We must build the gem5 library without tcmalloc and with "duplicate sources". The reasons for this isn't important.
 
 ---
 
-## Let's get to know SST better
 
-While we wait for that complication...
 
-SST and gem5 share a lot similar ideas and, sometimes confusingly, nomenclature.
-Please keep in mind that SST components are more like gem5 SimObjects than gem5 components; events are more like gem5 packets sent over gem5 ports, and ports in gem5 are not like-for-like ports in SST. SST requires "links" between ports to connect them.
-
-Like gem5 the SST configuration file is a Python file that describes the system design in terms of components (Simobjects), their parameters, and how they connect together.
-
----
 
 ## Making a toy SST simulation
 
-Here we're going to learn the basics of SST with a pre-built component called `example0`, the full type of which is `simpleElementExample.example0`. **Note**: we will skip how this is created and loaded into SST for now. This example component, unlike others, comes pre-loaded with SST so we needn't worry about the incorporation process.
+While we wait for that complication... let's make a simple SST simulation.
 
-`example0` is a very simple component with a single port to connect to another component (in our case we'll connect to another `example0` component). The `example0` component simulates a set number of events  to the other component (we can think of these are spurts of communication from one component to the other). The simulation ceases after this set number of events have been sent.
+Here we're going to learn the basics of SST with a pre-built component called `example0`, the full type of which is `simpleElementExample.example0`.
+
+
+**Note**: we will skip how this is created and loaded into SST for now. This example component, unlike others, comes pre-loaded with SST so we needn't worry about the incorporation process.
+
+`example0` is a very simple component. It :
+
+1. Has 1 port to connect to another component (in our case we'll connect to another `example0` component).
+2. Simulates a set number of events  to the component it's connected to.
+
+ The simulation ceases after this set number of events have been sent.
 
 ---
 
@@ -205,9 +212,14 @@ link0 = sst.Link("link_c0_c1")
 link0.connect( (component0, "port", "1ns"), (component1, "port", "1ns") )
 ```
 
-The above creates a link called `link_c0_c1` between the `port` of `component0` and the `port` of `component1`. The `"1ns"` is latency. In this case, the same `1ns` value is set for both directions.
+This:
 
-We can already infer what this will simulate: each component will send 20 events, each of which will take 1ns to complete complete. Therefore, the simulation should take 22ns to complete.
+* Creates a link between the `port` of `component0` and the `port` of `component1`.
+* Sets the latency of the link to `1ns` (both directions).
+* Names the link `link_c0_c1` (must be unique).
+
+
+We can already infer what this will simulate: each component will send 20 events, each of which will take 1ns to complete complete.
 
 ---
 
@@ -260,7 +272,7 @@ You can tell from the build output that a gem5 component has been built and dyna
 
 ## Understanding the SST-gem5 integration (well, some of it)
 
-The `ext/sst/gem5.hh` file is relatively simple and gives a high-level view of how gem5 (or, rather, the gem5 library) can be declared and used as a component in SST.
+The `ext/sst/gem5.hh` file (found inside the gem5 repo) is relatively simple and gives a high-level view of how gem5 (or, rather, the gem5 library) can be declared and used as a component in SST.
 
 <!-- _class: code-60-percent -->
 
@@ -278,13 +290,18 @@ class gem5Component: public SST::Component
     bool clockTick(SST::Cycle_t current_cycle);
 ```
 
-This code defines a class `gem5Component` which inherits from `SST::Component`. The four methods methods `init`, `setup`, `finish`, and `clockTick`are overriden virtual methods from the `SST::Component` base-class and are called at different points in the simulation. So far this is very similar to how all SST components are defined.
+By creating a `SST::Component` subclass we are creating a new component. The methods here override the virtual methods of the `SST::Component` class and are called by SST at various points in the simulation.
 
 ---
 
-The remainder of this class definition in `gem5.hh` are the methods used by SST to interact with gem5. You may look over this code and see how it works in
+The remainder of this class definition in `gem5.hh` are the methods used by SST to interact with gem5.
+
 The important part are the MACROS are where our gem5 component links with the SST core.
-They are part Element Language Interface (ELI) which is SST's  API for registerint components and allowing for them to be dynamically loaded in SST simulations.
+They are part Element Language Interface (ELI) which is SST's  API for registering components and allowing for them to be dynamically loaded in SST simulations.
+
+---
+
+## The SST_ELI_REGISTER_COMPONENT macro
 
 ```cpp
 public: // register the component to SST
@@ -298,11 +315,11 @@ public: // register the component to SST
     )
 ```
 
-The above shows usage of `SST_ELI_REGISTER_COMPONENT`. All SST components must be registered with SST using the this macro. When declared, and during compilation, SST will attempt to dynamically link with the library and wrap it as a SST component. Comments have been added here to make it clear what each parameter to this macro does here.
+All SST components must be registered with SST using the this macro. When declared, and during compilation, SST will attempt to dynamically link with the library and wrap it as a SST component.
 
 ---
 
-`SST_ELI_DOCUMENT_PARAMS` is used to declare the parameters of the component. In this case the gem5 component has a single parameter, `cmd`, which is the command to run gem5's configuration..
+## The SST_ELI_DOCUMENT_PARAMS macro
 
 ```cpp
     SST_ELI_DOCUMENT_PARAMS(
@@ -310,7 +327,13 @@ The above shows usage of `SST_ELI_REGISTER_COMPONENT`. All SST components must b
     )
 ```
 
-Finally we have `SST_ELI_DOCUMENT_PORTS` which is used to document the ports of the component. In this case the gem5 component has two ports, `system_port` and `cache_port`, which are used to communicate with the gem5 system and CPU respectively.
+This is used to declare the parameters of the component.
+
+In this case the gem5 component has a single parameter, `cmd`, which is the command to run gem5's configuration.
+
+---
+
+## The SST_ELI_DOCUMENT_PORTS macro
 
 ```cpp
     SST_ELI_DOCUMENT_SUBCOMPONENT_SLOTS(
@@ -320,11 +343,27 @@ Finally we have `SST_ELI_DOCUMENT_PORTS` which is used to document the ports of 
     )
 ```
 
+This is used to register and  document the ports of the component.
+
+In this case the gem5 component has two ports, `system_port` and `cache_port`, which are used to connect to the gem5 system port and CPU respectively.
+
 ---
 
 ## How does this gem5 simulation inside SST keep in-sync with SST?
 
-For gem5 to work with SST they must be simulating with some common understanding of time to exchange information between one another at the right time. The short answer here is gem5 keeps in lockstep with the SST clock but let's look at the code that does so in `ext/sst/gem5.cc`:
+We've defined the component but how is a gem5 simulation and used in SST?
+
+The most important question here is regarding timing: How does gem5 know when to simulate to and for how long?
+
+gem5 simulates at the granularity of ticks (picoseconds).
+SST simulates at the granularity of cycles (nanoseconds).
+
+In short: **SST schedules a gem5 simulation at every cycle
+
+
+
+
+The short answer here is gem5 keeps in lockstep with the SST clock but let's look at the code that does so in `ext/sst/gem5.cc`:
 
 ```cpp
 bool
@@ -400,4 +439,106 @@ These are the parameters we are going to pass to the gem5 component. We _have_ t
 
 ---
 
-**Note**: Will continue with this tutorial. This markdown document is not finished yet.
+## Create the SST component
+
+We append to the file:
+
+```python
+gem5_node = sst.Component("gem5_node", "gem5.gem5Component")
+gem5_node.addParams(cpu_params)
+```
+
+This creates the gem5 component and sets its parameters.
+
+We then add the cache bus.
+
+```python
+cache_bus = sst.Component("cache_bus", "memHierarchy.Bus")
+cache_bus.addParams( { "bus_frequency" : cpu_clock_rate } )
+```
+
+```python
+system_port = gem5_node.setSubComponent(port_list[0], "gem5.gem5Bridge", 0)
+system_port.addParams({ "response_receiver_name": sst_ports["system_port"]})
+
+cache_port = gem5_node.setSubComponent(port_list[1], "gem5.gem5Bridge", 0)
+cache_port.addParams({ "response_receiver_name": sst_ports["cache_port"]})
+```
+
+The above maps the SubComponent to the corresponding simobject.
+
+We then add an L1 Cache and a Memory System, both SST components.
+
+```python
+# L1 cache
+l1_cache = sst.Component("l1_cache", "memHierarchy.Cache")
+l1_cache.addParams(l1_params)
+
+# Memory
+memctrl = sst.Component("memory", "memHierarchy.MemController")
+# `addr_range_end` should be changed accordingly to memory_size_sst
+memctrl.addParams({
+    "debug" : "0",
+    "clock" : "1GHz",
+    "request_width" : "64",
+    "addr_range_end" : addr_range_end,
+})
+memory = memctrl.setSubComponent("backend", "memHierarchy.simpleMem")
+memory.addParams({
+    "access_time" : "30ns",
+    "mem_size" : memory_size_sst
+})
+```
+
+We then connect the component's ports.
+
+Start with connecting CPU to the L1 cache.
+
+```python
+cpu_cache_link = sst.Link("cpu_l1_cache_link")
+cpu_cache_link.connect(
+    (cache_port, "port", cache_link_latency),
+    (cache_bus, "high_network_0", cache_link_latency)
+)
+system_cache_link = sst.Link("system_cache_link")
+system_cache_link.connect(
+    (system_port, "port", cache_link_latency),
+    (cache_bus, "high_network_1", cache_link_latency)
+)
+cache_bus_cache_link = sst.Link("cache_bus_cache_link")
+cache_bus_cache_link.connect(
+    (cache_bus, "low_network_0", cache_link_latency),
+    (l1_cache, "high_network_0", cache_link_latency)
+)
+```
+
+Then the L1 Cache to the Memory:
+
+```python
+# L1 <-> mem
+cache_mem_link = sst.Link("l1_cache_mem_link")
+cache_mem_link.connect(
+    (l1_cache, "low_network_0", cache_link_latency),
+    (memctrl, "direct_link", cache_link_latency)
+)
+```
+
+Then we enable our stats
+
+```python
+stat_params = { "rate" : "0ns" }
+sst.setStatisticLoadLevel(5)
+sst.setStatisticOutput("sst.statOutputTXT", {"filepath" : "./sst-stats.txt"})
+sst.enableAllStatisticsForComponentName("l1_cache", stat_params)
+sst.enableAllStatisticsForComponentName("memory", stat_params)
+```
+
+## Running our example
+
+```bash
+sst materials/05-Other-simulators/01-sst/02-gem5-in-sst.py
+```
+
+
+
+## Appending
